@@ -1,0 +1,16 @@
+{
+  "conditions": [
+    {"id":"bleeding","name":"Bleeding","description":"Open wounds sap strength and focus.","modifiers":{"strength":-1,"grit":-1}},
+    {"id":"sprain","name":"Sprained Joint","description":"Every quick movement threatens another fall.","modifiers":{"agility":-2}},
+    {"id":"infection","name":"Infection","description":"Heat gathers around an untreated wound.","modifiers":{"grit":-2,"presence":-1}},
+    {"id":"fever","name":"Fever","description":"Thoughts drift and the road bends.","modifiers":{"wits":-2,"grit":-1}},
+    {"id":"shaken","name":"Shaken","description":"Fear keeps interrupting deliberate action.","modifiers":{"presence":-1,"wits":-1}},
+    {"id":"concussed","name":"Concussed","description":"Light hurts and balance comes slowly.","modifiers":{"wits":-2,"agility":-1}},
+    {"id":"burned","name":"Burned","description":"Raw skin makes movement and concentration costly.","modifiers":{"grit":-2}},
+    {"id":"irradiated","name":"Irradiated","description":"Nausea and weakness follow the unseen dose.","modifiers":{"strength":-1,"grit":-2}},
+    {"id":"exhausted","name":"Exhausted","description":"Your body is spending reserves it does not have.","modifiers":{"strength":-1,"agility":-1,"wits":-1}},
+    {"id":"inspired","name":"Inspired","description":"A rare certainty sharpens the next two risky choices.","duration_checks":2,"modifiers":{"presence":2}},
+    {"id":"focused","name":"Focused","description":"The next two problems separate into manageable pieces.","duration_checks":2,"modifiers":{"wits":2}},
+    {"id":"steady_hands","name":"Steady Hands","description":"Breath and motion settle for the next two checks.","duration_checks":2,"modifiers":{"agility":2}}
+  ]
+}

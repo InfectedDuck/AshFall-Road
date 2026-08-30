@@ -1,0 +1,15 @@
+.godot/
+.import/
+.idea/
+.vscode/
+builds/
+*.apk
+*.aab
+*.keystore
+*.jks
+android/build/
+backend/functions/lib/
+backend/functions/node_modules/
+backend/functions/.env*
+!.env.example
+debug.log

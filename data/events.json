@@ -1,0 +1,329 @@
+{
+  "events": [
+    {
+      "id":"outskirts_bandits","title":"Ambush at the Pharmacy","body":"Three bandits step from a gutted pharmacy. One carries a hunting bow; the others watch your pack.","weight":5,"unique":false,"adversary_id":"road_bandits",
+      "choices":[
+        {"label":"Rush their leader","approach":"combat","check":{"stat":"strength","dc":13},"success":{"text":"The formation breaks when their leader falls.","items":{"canned_meat":1,"scrap_parts":1}},"failure":{"text":"They drive you back and cut deep before fleeing with supplies.","damage_type":"physical","pressures":{"health":-18},"items":{"canned_meat":-1},"add_conditions":["bleeding"]},"critical_success":{"text":"You disarm the leader without taking a wound. The gang abandons a pistol.","items":{"pipe_pistol":1,"pistol_rounds":4}},"critical_failure":{"text":"You charge into a hidden blade.","damage_type":"physical","pressures":{"health":-30},"add_conditions":["bleeding"]}},
+        {"label":"Break through the alley","approach":"evade","check":{"stat":"agility","dc":12},"success":{"text":"You slip through a service alley before they close the trap.","pressures":{"fatigue":4}},"failure":{"text":"An arrow grazes you as you scramble away.","damage_type":"physical","pressures":{"health":-12,"fatigue":8}}},
+        {"label":"Convince them you carry plague","approach":"social","check":{"stat":"presence","dc":14},"success":{"text":"Your cough and confidence buy a wide path through them."},"failure":{"text":"They recognize the bluff and demand food.","items":{"canned_meat":-1},"pressures":{"fatigue":3}}}
+      ]
+    },
+    {"id":"outskirts_bus","title":"The Sealed Bus","body":"An evacuation bus rests on flat tires. Its rear door is wired shut from inside.","weight":4,"unique":true,"choices":[
+      {"label":"Pry the door apart","approach":"force","check":{"stat":"strength","dc":12},"success":{"text":"The frame yields. Emergency rations remain beneath a seat.","items":{"ration_bar":2,"clean_water":1}},"failure":{"text":"The twisted frame snaps against your shoulder.","damage_type":"physical","pressures":{"health":-10,"fatigue":6},"add_conditions":["sprain"]}},
+      {"label":"Trace the emergency release","approach":"technical","check":{"stat":"wits","dc":11},"success":{"text":"A corroded cable releases the door quietly.","items":{"cloth_bandage":2,"scrap_parts":1}},"failure":{"text":"A dead battery vents into your face.","pressures":{"radiation":6,"health":-5}}}
+    ]},
+    {"id":"outskirts_dogs","title":"The Concrete Pack","body":"Feral dogs fan across the road, testing your distance and fear.","weight":5,"unique":false,"adversary_id":"feral_dogs","choices":[
+      {"label":"Stand and fight","approach":"combat","check":{"stat":"strength","dc":12},"success":{"text":"The pack gives ground after the first hard strike.","items":{"scrap_parts":1}},"failure":{"text":"Teeth find your leg before the animals scatter.","damage_type":"physical","pressures":{"health":-16},"add_conditions":["bleeding"]}},
+      {"label":"Throw them food","requires":{"items":{"canned_meat":1}},"costs":{"items":{"canned_meat":1}},"outcome":{"text":"They descend on the meat while you pass untouched."}},
+      {"label":"Climb the divider","approach":"evade","check":{"stat":"agility","dc":11},"success":{"text":"You vault concrete and keep moving."},"failure":{"text":"You land badly but escape the pack.","pressures":{"health":-6,"fatigue":8},"add_conditions":["sprain"]}}
+    ]},
+    {"id":"outskirts_market","title":"Market Under Tarps","body":"A dozen traders have built a temporary market beneath faded advertising tarps.","weight":3,"unique":true,"choices":[
+      {"label":"Trade stories for medicine","approach":"social","check":{"stat":"presence","dc":12},"success":{"text":"A trader values your warning about the eastern road.","items":{"cloth_bandage":2,"rad_tabs":1}},"failure":{"text":"Your stories sound thin. You buy only a little water.","items":{"clean_water":1,"scrap_parts":-1}}},
+      {"label":"Spot the undervalued salvage","approach":"salvage","check":{"stat":"wits","dc":13},"success":{"text":"You recognize a working scanner under a pile of toys.","items":{"field_scanner":1}},"failure":{"text":"The promising device crumbles after purchase.","items":{"scrap_parts":-1}}}
+    ]},
+    {"id":"outskirts_overpass","title":"Broken Overpass","body":"The road ends at a collapsed span. Wind moves through exposed reinforcement bars.","weight":4,"unique":false,"choices":[
+      {"label":"Cross the exposed beams","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"You balance across and save hours."},"failure":{"text":"A beam turns underfoot. You catch yourself hard.","damage_type":"physical","pressures":{"health":-12,"fatigue":10},"add_conditions":["sprain"]}},
+      {"label":"Take the drainage detour","approach":"survival","check":{"stat":"grit","dc":10},"success":{"text":"The detour is filthy but safe.","pressures":{"fatigue":7,"hunger":4}},"failure":{"text":"You crawl through runoff until your muscles shake.","pressures":{"fatigue":15,"hunger":7}}}
+    ]},
+    {"id":"outskirts_apartment","title":"Curtain in the Window","body":"A clean curtain moves on the third floor of a burned apartment block.","weight":3,"unique":true,"choices":[
+      {"label":"Search the occupied floor","approach":"salvage","check":{"stat":"wits","dc":13},"success":{"text":"The occupant is long gone. A hidden cabinet remains.","items":{"medkit":1,"canned_meat":1}},"failure":{"text":"A rotten stair gives way beneath you.","damage_type":"physical","pressures":{"health":-14},"add_conditions":["concussed"]}},
+      {"label":"Respect the warning and leave","outcome":{"text":"You keep your distance and your strength."}}
+    ]},
+    {"id":"outskirts_siren","title":"The Siren Tower","body":"A civil-defense siren begins to turn, drawing attention from every ruin nearby.","weight":3,"unique":true,"choices":[
+      {"label":"Climb and disable it","approach":"technical","check":{"stat":"wits","dc":13},"success":{"text":"You stop the motor and salvage its charge pack.","items":{"scrap_parts":2},"add_flags":["silenced_siren"]},"failure":{"text":"The mechanism arcs through your tools.","pressures":{"health":-10,"fatigue":8},"add_conditions":["shaken"]}},
+      {"label":"Outwalk the noise","approach":"survival","check":{"stat":"grit","dc":11},"success":{"text":"You put several blocks between yourself and the gathering shapes.","pressures":{"fatigue":6}},"failure":{"text":"The siren follows you in your thoughts long after it fades.","pressures":{"fatigue":12},"add_conditions":["shaken"]}}
+    ]},
+    {"id":"outskirts_cache","title":"Municipal Cache","body":"A yellow emergency locker is bolted beneath a courthouse stair.","weight":3,"unique":true,"choices":[
+      {"label":"Break the lock","approach":"force","check":{"stat":"strength","dc":14},"success":{"text":"The lock tears free with half the bracket.","items":{"clean_water":2,"ration_bar":2}},"failure":{"text":"The bracket shears and cuts your palm.","damage_type":"physical","pressures":{"health":-8},"add_conditions":["bleeding"]}},
+      {"label":"Decode the faded instructions","approach":"technical","check":{"stat":"wits","dc":13},"success":{"text":"The printed override still works.","items":{"rad_tabs":2,"cloth_bandage":1}},"failure":{"text":"The final wrong turn seals the mechanism permanently."}}
+    ]},
+    {"id":"outskirts_child_radio","title":"Voice on Channel Nine","body":"A child's recorded voice repeats coordinates and asks anyone listening to answer.","weight":2,"unique":true,"choices":[
+      {"label":"Answer with calm instructions","approach":"social","check":{"stat":"presence","dc":12},"success":{"text":"A real voice answers. Your directions guide a family toward the market.","add_conditions":["inspired"],"add_flags":["helped_family"]},"failure":{"text":"Only the recording replies. The silence afterward weighs on you.","add_conditions":["shaken"]}},
+      {"label":"Triangulate the signal","approach":"navigation","check":{"stat":"wits","dc":14},"success":{"text":"The signal leads to an abandoned relay kit.","items":{"signal_compass":1,"scrap_parts":1}},"failure":{"text":"Static consumes an hour and drains your focus.","pressures":{"fatigue":8}}}
+    ]},
+    {"id":"outskirts_sinkhole","title":"Street Without a Bottom","body":"A sinkhole has swallowed the intersection. A maintenance shelf is visible below.","weight":3,"unique":false,"choices":[
+      {"label":"Leap the narrow edge","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"Your boots land on sound pavement."},"failure":{"text":"The edge crumbles and you slam into concrete.","damage_type":"physical","pressures":{"health":-15,"fatigue":8},"add_conditions":["sprain"]}},
+      {"label":"Descend with rope","requires":{"items":{"climbing_rope":1}},"approach":"salvage","check":{"stat":"wits","dc":10},"success":{"text":"The shelf holds tools and a sealed canteen.","items":{"scrap_parts":2,"clean_water":1}},"failure":{"text":"The shelf collapses, but the rope saves you.","pressures":{"fatigue":6}}}
+    ]},
+
+    {"id":"flats_toll","title":"Toll Across Nothing","body":"A barricade cuts across the salt. Armed collectors demand payment for a road they did not build.","weight":5,"unique":false,"adversary_id":"toll_gang","choices":[
+      {"label":"Break the barricade","approach":"combat","check":{"stat":"strength","dc":14},"success":{"text":"The collectors scatter and leave ammunition behind.","items":{"revolver_rounds":3,"scrap_parts":1}},"failure":{"text":"A club catches your ribs before you escape.","damage_type":"physical","pressures":{"health":-20},"add_conditions":["shaken"]}},
+      {"label":"Negotiate a smaller toll","approach":"social","check":{"stat":"presence","dc":12},"success":{"text":"They accept one ration and warn you about the crater road.","items":{"ration_bar":-1},"add_flags":["crater_warning"]},"failure":{"text":"They take food and water before opening the gate.","items":{"canned_meat":-1,"clean_water":-1}}},
+      {"label":"Circle them through the glare","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"The salt haze hides your detour.","pressures":{"fatigue":5}},"failure":{"text":"The long loop cooks you inside your clothes.","pressures":{"fatigue":14,"hunger":5}}}
+    ]},
+    {"id":"flats_mirage","title":"Water on the Horizon","body":"A blue line trembles ahead where no map marks water.","weight":4,"unique":false,"choices":[
+      {"label":"Trust the apparent landmark","approach":"risk","check":{"stat":"grit","dc":14},"success":{"text":"The mirage hides an old rain trap with one sealed bottle.","items":{"clean_water":1},"pressures":{"fatigue":5}},"failure":{"text":"You chase light across empty salt.","pressures":{"fatigue":15,"hunger":6}}},
+      {"label":"Check the sun and your tracks","approach":"navigation","check":{"stat":"wits","dc":10},"success":{"text":"You hold the true course and lose no time."},"failure":{"text":"The glare defeats every reference point.","pressures":{"fatigue":8}}}
+    ]},
+    {"id":"flats_tanker","title":"Sunken Tanker","body":"A fuel tanker rests axle-deep in salt, its rear compartment still sealed.","weight":3,"unique":true,"choices":[
+      {"label":"Cut open the cargo locker","approach":"salvage","check":{"stat":"strength","dc":13},"success":{"text":"Inside are road flares and a frame pack.","items":{"frame_pack":1,"scrap_parts":2}},"failure":{"text":"Pressurized fumes ignite against hot metal.","damage_type":"physical","pressures":{"health":-18},"add_conditions":["burned"]}},
+      {"label":"Test for fumes first","approach":"technical","check":{"stat":"wits","dc":12},"success":{"text":"You vent the compartment and recover a shotgun.","items":{"scrap_shotgun":1,"shotgun_shells":2}},"failure":{"text":"The instruments lie; you retreat coughing.","pressures":{"health":-7,"fatigue":8}}}
+    ]},
+    {"id":"flats_dustwall","title":"The Moving Wall","body":"A brown wall of dust erases the northern sky and races toward you.","weight":5,"unique":false,"choices":[
+      {"label":"Anchor beneath a wreck","approach":"survival","check":{"stat":"grit","dc":13},"success":{"text":"You endure the roar beneath chained steel.","pressures":{"fatigue":6}},"failure":{"text":"Dust fills every seam and tears at your lungs.","pressures":{"health":-10,"fatigue":14},"add_conditions":["exhausted"]}},
+      {"label":"Run for the culvert","approach":"evade","check":{"stat":"agility","dc":14},"success":{"text":"You slide into concrete as the storm arrives."},"failure":{"text":"The front catches you in open ground.","damage_type":"physical","pressures":{"health":-14,"fatigue":16},"add_conditions":["shaken"]}}
+    ]},
+    {"id":"flats_bones","title":"Circle of Bones","body":"Human bones have been arranged around a fresh boot print.","weight":3,"unique":true,"choices":[
+      {"label":"Study the warning","approach":"survival","check":{"stat":"wits","dc":11},"success":{"text":"The pattern marks thin salt over a chemical pit.","add_flags":["read_bone_warning"]},"failure":{"text":"You understand only after the crust breaks.","pressures":{"radiation":10,"health":-5}}},
+      {"label":"Recover the intact boots","approach":"risk","check":{"stat":"agility","dc":12},"success":{"text":"A careful step earns useful leather and hidden rounds.","items":{"scrap_parts":1,"pistol_rounds":3}},"failure":{"text":"The salt collapses beneath one leg.","pressures":{"radiation":8,"health":-8}}}
+    ]},
+    {"id":"flats_convoy","title":"Convoy of Mirrors","body":"Three armored carts approach, mirrors flashing coded light.","weight":3,"unique":true,"choices":[
+      {"label":"Return a peaceful signal","approach":"social","check":{"stat":"presence","dc":13},"success":{"text":"The convoy trades water and ammunition for road news.","items":{"clean_water":2,"pistol_rounds":4}},"failure":{"text":"Your wrong sequence resembles a threat. They fire wide and pass.","pressures":{"health":-6,"fatigue":5},"add_conditions":["shaken"]}},
+      {"label":"Hide among the wrecks","approach":"evade","check":{"stat":"agility","dc":11},"success":{"text":"They pass without seeing you."},"failure":{"text":"You remain pinned in hot metal for an hour.","pressures":{"fatigue":12,"hunger":4}}}
+    ]},
+    {"id":"flats_solar","title":"Solar Field","body":"Rows of cracked panels still turn toward the sun with insect precision.","weight":3,"unique":true,"choices":[
+      {"label":"Salvage a charge controller","approach":"technical","check":{"stat":"wits","dc":13},"success":{"text":"You recover valuable components without waking the grid.","items":{"scrap_parts":3,"stimulant":1}},"failure":{"text":"Stored current throws you onto the salt.","pressures":{"health":-12},"add_conditions":["concussed"]}},
+      {"label":"Shelter beneath the panels","approach":"survival","check":{"stat":"grit","dc":9},"success":{"text":"Shade and quiet restore a little strength.","pressures":{"fatigue":-10}},"failure":{"text":"The tracking motors shift and expose you to the heat.","pressures":{"fatigue":5}}}
+    ]},
+    {"id":"flats_crater","title":"Fresh Crater","body":"The road skirts a crater whose glassy floor clicks as it cools.","weight":3,"unique":true,"choices":[
+      {"label":"Search the rim","approach":"salvage","check":{"stat":"wits","dc":14},"success":{"text":"A survey case contains radiation treatment.","items":{"rad_tabs":2,"purifier_ampoule":1}},"failure":{"text":"A hot pocket doses you before the scanner reacts.","pressures":{"radiation":15}}},
+      {"label":"Give it a wide distance","outcome":{"text":"You trade time for certainty.","pressures":{"fatigue":8,"hunger":3}}}
+    ]},
+    {"id":"flats_signal","title":"Numbers in the Static","body":"Your receiver repeats a string of numbers beneath the wind noise.","weight":2,"unique":true,"choices":[
+      {"label":"Decode the sequence","approach":"technical","check":{"stat":"wits","dc":15},"success":{"text":"The numbers map a supply canister buried nearby.","items":{"medkit":1,"rifle_rounds":3},"add_flags":["decoded_numbers"]},"failure":{"text":"Hours of repetition leave you unfocused.","pressures":{"fatigue":10},"add_conditions":["shaken"]}},
+      {"label":"Use it only as a bearing","approach":"navigation","check":{"stat":"wits","dc":11},"success":{"text":"The signal keeps you on the shortest route."},"failure":{"text":"Interference leads you in a slow circle.","pressures":{"fatigue":8}}}
+    ]},
+    {"id":"flats_nightfire","title":"Fire After Sunset","body":"A small fire burns beside the road. A lone traveler keeps both hands visible.","weight":3,"unique":false,"choices":[
+      {"label":"Share the fire","approach":"social","check":{"stat":"presence","dc":11},"success":{"text":"You exchange warnings and sleep in turns.","pressures":{"fatigue":-12},"items":{"ration_bar":1}},"failure":{"text":"The traveler leaves with one of your cans while you sleep.","pressures":{"fatigue":-5},"items":{"canned_meat":-1}}},
+      {"label":"Pass unseen","approach":"evade","check":{"stat":"agility","dc":10},"success":{"text":"You leave the fire behind without revealing yourself."},"failure":{"text":"Loose salt announces you. Both of you retreat nervous and tired.","pressures":{"fatigue":5},"add_conditions":["shaken"]}}
+    ]},
+
+    {"id":"marsh_leeches","title":"Red Water","body":"The water around your boots clouds red as marsh leeches rise from the mud.","weight":5,"unique":false,"adversary_id":"marsh_leeches","choices":[
+      {"label":"Burn them away","approach":"survival","check":{"stat":"wits","dc":12},"success":{"text":"A heated blade drives the parasites back."},"failure":{"text":"Several attach before you reach dry ground.","pressures":{"health":-12,"fatigue":8},"add_conditions":["bleeding"]}},
+      {"label":"Sprint through the channel","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"Speed keeps them from finding purchase.","pressures":{"fatigue":5}},"failure":{"text":"You stumble in the black water.","pressures":{"health":-10,"fatigue":12},"add_conditions":["infection"]}}
+    ]},
+    {"id":"marsh_ferryman","title":"The Ferryman","body":"A narrow skiff waits at the drowned crossing. Its masked owner asks for a story, not payment.","weight":3,"unique":true,"choices":[
+      {"label":"Tell the truth about your road","approach":"social","check":{"stat":"presence","dc":12},"success":{"text":"The ferryman carries you across and gives you tonic.","items":{"bitter_tonic":1},"pressures":{"fatigue":-5}},"failure":{"text":"Your story bores them. You cross by wading.","pressures":{"fatigue":10,"health":-4}}},
+      {"label":"Read the current and cross alone","approach":"navigation","check":{"stat":"wits","dc":13},"success":{"text":"You find a submerged service path."},"failure":{"text":"The current steals a bottle from your pack.","items":{"clean_water":-1},"pressures":{"fatigue":10}}}
+    ]},
+    {"id":"marsh_raiders","title":"Skiffs in the Reeds","body":"Low boats slide from both banks. Masked raiders level patched shotguns.","weight":4,"unique":false,"adversary_id":"bog_raiders","choices":[
+      {"label":"Fire before they close","approach":"combat","check":{"stat":"agility","dc":15},"success":{"text":"The nearest skiff overturns and the rest retreat.","items":{"shotgun_shells":2,"clean_water":1}},"failure":{"text":"Shot tears through reeds and you.","damage_type":"physical","pressures":{"health":-24},"add_conditions":["bleeding"]}},
+      {"label":"Claim the water is poisoned","approach":"social","check":{"stat":"presence","dc":14},"success":{"text":"The raiders hesitate long enough for you to disappear."},"failure":{"text":"They take your medicine as proof of passage.","items":{"rad_tabs":-1,"cloth_bandage":-1}}},
+      {"label":"Use a smoke bomb","requires":{"items":{"smoke_bomb":1}},"costs":{"items":{"smoke_bomb":1}},"outcome":{"text":"Thick smoke hides your retreat among the reeds."}}
+    ]},
+    {"id":"marsh_clinic","title":"Clinic on Stilts","body":"A faded medical cross marks a building balanced above the flood.","weight":3,"unique":true,"choices":[
+      {"label":"Climb the exterior supports","approach":"evade","check":{"stat":"agility","dc":12},"success":{"text":"The pharmacy cabinet still holds a medkit.","items":{"medkit":1,"painkillers":1}},"failure":{"text":"A wet beam gives way beneath you.","damage_type":"physical","pressures":{"health":-13},"add_conditions":["sprain"]}},
+      {"label":"Test the lower rooms first","approach":"medical","check":{"stat":"wits","dc":13},"success":{"text":"You find sealed supplies without disturbing mold.","items":{"cloth_bandage":2,"bitter_tonic":1}},"failure":{"text":"Spores leave you feverish.","add_conditions":["fever"],"pressures":{"health":-6}}}
+    ]},
+    {"id":"marsh_bridge","title":"Bridge of Vines","body":"A service bridge has become a living rope of roots and rusted cable.","weight":4,"unique":false,"choices":[
+      {"label":"Cross quickly","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"You reach the far bank before the structure starts moving."},"failure":{"text":"A cable snaps and throws you against the rail.","damage_type":"physical","pressures":{"health":-12,"fatigue":8}}},
+      {"label":"Reinforce it with rope","requires":{"items":{"climbing_rope":1}},"approach":"technical","check":{"stat":"wits","dc":10},"success":{"text":"The reinforced line makes the crossing methodical."},"failure":{"text":"The knots hold, but the long work drains you.","pressures":{"fatigue":8}}}
+    ]},
+    {"id":"marsh_lights","title":"Lights Beneath the Water","body":"Cold lights move below the flooded road in a deliberate grid.","weight":3,"unique":true,"choices":[
+      {"label":"Follow the pattern","approach":"risk","check":{"stat":"wits","dc":14},"success":{"text":"The lights mark a submerged emergency cache.","items":{"purifier_ampoule":1,"clean_water":2}},"failure":{"text":"The pattern leads into contaminated silt.","pressures":{"radiation":12,"fatigue":6}}},
+      {"label":"Stay on visible ground","approach":"survival","check":{"stat":"grit","dc":10},"success":{"text":"You ignore the lure and maintain pace."},"failure":{"text":"The difficult bank route exhausts you.","pressures":{"fatigue":10}}}
+    ]},
+    {"id":"marsh_hut","title":"Smoke from a Hut","body":"Thin blue smoke rises from a hut with no visible path to it.","weight":3,"unique":true,"choices":[
+      {"label":"Call out from the reeds","approach":"social","check":{"stat":"presence","dc":11},"success":{"text":"An herbalist trades food and tonic for news.","items":{"ration_bar":1,"bitter_tonic":1}},"failure":{"text":"No one answers, but hidden eyes follow you away.","add_conditions":["shaken"]}},
+      {"label":"Approach silently","approach":"evade","check":{"stat":"agility","dc":14},"success":{"text":"The hut is abandoned. Useful filters hang over the hearth.","items":{"filter_mask":1}},"failure":{"text":"A warning dart finds your shoulder.","damage_type":"physical","pressures":{"health":-8},"add_conditions":["fever"]}}
+    ]},
+    {"id":"marsh_filter","title":"Filter Station","body":"A municipal filter station hums weakly above the waterline.","weight":3,"unique":true,"choices":[
+      {"label":"Restart the clean-water line","approach":"technical","check":{"stat":"wits","dc":14},"success":{"text":"The pumps cough out several bottles of clean water.","items":{"clean_water":3},"add_flags":["restarted_filter"]},"failure":{"text":"A ruptured line sprays contaminated water.","pressures":{"radiation":10,"health":-5}}},
+      {"label":"Strip the inactive pump","approach":"salvage","check":{"stat":"strength","dc":12},"success":{"text":"You recover useful parts and a sealed filter mask.","items":{"scrap_parts":3,"filter_mask":1}},"failure":{"text":"The housing shifts onto your hand.","damage_type":"physical","pressures":{"health":-9}}}
+    ]},
+    {"id":"marsh_body","title":"Body in a Raincoat","body":"A body in a bright raincoat is tied upright to a navigation post.","weight":3,"unique":true,"choices":[
+      {"label":"Search for identification","approach":"medical","check":{"stat":"wits","dc":11},"success":{"text":"A waterproof pocket contains a map and radiation tablets.","items":{"rad_tabs":1},"add_flags":["marsh_map"]},"failure":{"text":"The swollen body ruptures when moved.","pressures":{"health":-5},"add_conditions":["infection"]}},
+      {"label":"Leave the dead undisturbed","outcome":{"text":"You mark the place and move on quietly."}}
+    ]},
+    {"id":"marsh_storm","title":"Black Rain","body":"The reeds flatten as warm black rain begins to fall.","weight":4,"unique":false,"choices":[
+      {"label":"Build cover from a road sign","approach":"survival","check":{"stat":"strength","dc":12},"success":{"text":"The metal roof turns the worst of the rain.","pressures":{"fatigue":5,"radiation":3}},"failure":{"text":"The shelter fails and pins you in contaminated mud.","pressures":{"health":-8,"radiation":14,"fatigue":10}}},
+      {"label":"Push for the tree line","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"You reach dense cover before the rain strengthens.","pressures":{"fatigue":8}},"failure":{"text":"The storm overtakes you in the open.","pressures":{"radiation":16,"fatigue":14}}}
+    ]},
+
+    {"id":"industrial_drones","title":"Evacuation Order","body":"Security drones descend from a loading bay, repeating an order to leave the restricted zone.","weight":5,"unique":false,"adversary_id":"drone_swarm","choices":[
+      {"label":"Disable their control link","approach":"technical","check":{"stat":"wits","dc":16},"success":{"text":"The swarm drops harmlessly. Their cells are valuable.","items":{"scrap_parts":3,"field_scanner":1}},"failure":{"text":"A stun pulse throws you against concrete.","damage_type":"physical","pressures":{"health":-20},"add_conditions":["concussed"]}},
+      {"label":"Sprint between blind spots","approach":"evade","check":{"stat":"agility","dc":15},"success":{"text":"You cross the yard between scanning arcs."},"failure":{"text":"A drone tags you with electrified wire.","damage_type":"physical","pressures":{"health":-16,"fatigue":10},"add_conditions":["sprain"]}}
+    ]},
+    {"id":"industrial_generator","title":"Generator Three","body":"A backup generator still turns behind a locked mesh cage.","weight":3,"unique":true,"choices":[
+      {"label":"Stabilize the output","approach":"technical","check":{"stat":"wits","dc":14},"success":{"text":"Stable power opens an emergency locker.","items":{"stimulant":1,"medkit":1,"scrap_parts":1}},"failure":{"text":"A backfeed burns through your gloves.","pressures":{"health":-13},"add_conditions":["burned"]}},
+      {"label":"Tear out the copper","approach":"force","check":{"stat":"strength","dc":13},"success":{"text":"You strip a heavy bundle of useful metal.","items":{"scrap_parts":4}},"failure":{"text":"The spinning assembly catches your sleeve.","damage_type":"physical","pressures":{"health":-14},"add_conditions":["sprain"]}}
+    ]},
+    {"id":"industrial_scavs","title":"Claimed Warehouse","body":"A disciplined scavenger crew watches you from a warehouse roof.","weight":4,"unique":false,"adversary_id":"vault_scavs","choices":[
+      {"label":"Offer information for passage","approach":"social","check":{"stat":"presence","dc":13},"success":{"text":"They accept the trade and add a ration to your pack.","items":{"ration_bar":1}},"failure":{"text":"They search your pack and take valuable medicine.","items":{"medkit":-1,"rad_tabs":-1}}},
+      {"label":"Challenge their weakest guard","approach":"combat","check":{"stat":"strength","dc":15},"success":{"text":"The brief fight earns hard respect and ammunition.","items":{"rifle_rounds":3}},"failure":{"text":"Their crew intervenes before you can recover.","damage_type":"physical","pressures":{"health":-22},"add_conditions":["bleeding"]}},
+      {"label":"Slip through the rail yard","approach":"evade","check":{"stat":"agility","dc":14},"success":{"text":"Freight cars conceal your route."},"failure":{"text":"You crawl beneath rusted cars until your muscles fail.","pressures":{"fatigue":15,"health":-4}}}
+    ]},
+    {"id":"industrial_conveyor","title":"The Moving Line","body":"A factory conveyor lurches to life, carrying sealed crates toward a crusher.","weight":3,"unique":true,"choices":[
+      {"label":"Grab a crate before the crusher","approach":"evade","check":{"stat":"agility","dc":14},"success":{"text":"The crate holds protective padding and shells.","items":{"riot_padding":1,"shotgun_shells":2}},"failure":{"text":"Your arm catches between rollers.","damage_type":"physical","pressures":{"health":-17},"add_conditions":["sprain"]}},
+      {"label":"Stop the line at its panel","approach":"technical","check":{"stat":"wits","dc":13},"success":{"text":"The emergency stop preserves several supply crates.","items":{"canned_meat":2,"clean_water":2}},"failure":{"text":"The labeled controls no longer match the wiring.","pressures":{"fatigue":6}}}
+    ]},
+    {"id":"industrial_office","title":"Executive Shelter","body":"A reinforced office door bears the faded words SHELTER CAPACITY 8.","weight":3,"unique":true,"choices":[
+      {"label":"Guess the manager's override","approach":"technical","check":{"stat":"wits","dc":15},"success":{"text":"Old personnel notes reveal the code. A medical satchel hangs inside.","items":{"medic_satchel":1,"painkillers":1}},"failure":{"text":"The final attempt triggers a chemical lockout.","pressures":{"radiation":7}}},
+      {"label":"Cut through the wall","approach":"force","check":{"stat":"strength","dc":15},"success":{"text":"You peel back paneling and reach stored rations.","items":{"canned_meat":2,"clean_water":1}},"failure":{"text":"Insulation fibers fill your mouth and eyes.","pressures":{"health":-8,"fatigue":8},"add_conditions":["fever"]}}
+    ]},
+    {"id":"industrial_fire","title":"Chemical Fire","body":"Blue flame moves across a loading dock toward stacked pressure drums.","weight":4,"unique":false,"choices":[
+      {"label":"Open the suppression valves","approach":"technical","check":{"stat":"wits","dc":14},"success":{"text":"Foam buries the fire before the drums rupture.","items":{"scrap_parts":1}},"failure":{"text":"A valve bursts and sprays burning residue.","pressures":{"health":-18},"add_conditions":["burned"]}},
+      {"label":"Run the outer fence","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"You clear the blast radius in time.","pressures":{"fatigue":8}},"failure":{"text":"The pressure wave throws you hard.","damage_type":"physical","pressures":{"health":-16,"fatigue":10},"add_conditions":["concussed"]}}
+    ]},
+    {"id":"industrial_tank","title":"Knocking in the Tank","body":"Something knocks three times from inside a sealed water tank.","weight":3,"unique":true,"choices":[
+      {"label":"Open the inspection hatch","approach":"risk","check":{"stat":"grit","dc":14},"success":{"text":"A dehydrated engineer emerges and gives you a scanner.","items":{"field_scanner":1},"add_flags":["rescued_engineer"]},"failure":{"text":"Contaminated pressure sprays from the seal.","pressures":{"radiation":13,"health":-7}}},
+      {"label":"Listen for a pattern","approach":"technical","check":{"stat":"wits","dc":12},"success":{"text":"The knocking is a loose valve, not a person. You safely drain clean water.","items":{"clean_water":2}},"failure":{"text":"The uncertain sound follows you through the factory.","add_conditions":["shaken"]}}
+    ]},
+    {"id":"industrial_crane","title":"Crane Above the Yard","body":"A cargo pallet hangs above the route, suspended by one corroded cable.","weight":3,"unique":false,"choices":[
+      {"label":"Dash beneath it","approach":"evade","check":{"stat":"agility","dc":12},"success":{"text":"You cross before the cable parts."},"failure":{"text":"The pallet clips you as it falls.","damage_type":"physical","pressures":{"health":-18},"add_conditions":["concussed"]}},
+      {"label":"Lower it from the cab","approach":"technical","check":{"stat":"wits","dc":13},"success":{"text":"The pallet contains sealed tools and food.","items":{"scrap_parts":3,"ration_bar":1}},"failure":{"text":"The controls jam and waste precious time.","pressures":{"fatigue":8}}}
+    ]},
+    {"id":"industrial_locker","title":"Names on the Lockers","body":"Workers scratched family names into a row of sealed lockers.","weight":3,"unique":true,"choices":[
+      {"label":"Open only the unmarked locker","approach":"salvage","check":{"stat":"wits","dc":11},"success":{"text":"It holds practical gear without personal remains.","items":{"mechanic_gloves":1,"cloth_bandage":1}},"failure":{"text":"The latch breaks and cuts you.","pressures":{"health":-6},"add_conditions":["bleeding"]}},
+      {"label":"Leave the names closed","outcome":{"text":"You let the dead keep what little remains theirs.","add_conditions":["focused"]}}
+    ]},
+    {"id":"industrial_alarm","title":"Red Shift Alarm","body":"Red lights pulse and factory doors begin sealing in sequence.","weight":4,"unique":false,"choices":[
+      {"label":"Override the door sequence","approach":"technical","check":{"stat":"wits","dc":15},"success":{"text":"You freeze the doors and choose the shortest exit."},"failure":{"text":"The final door catches your pack and crushes supplies.","items":{"clean_water":-1,"canned_meat":-1},"pressures":{"fatigue":6}}},
+      {"label":"Race the closing doors","approach":"evade","check":{"stat":"agility","dc":14},"success":{"text":"You slide through the last gap."},"failure":{"text":"Steel catches your shoulder before reversing.","damage_type":"physical","pressures":{"health":-15},"add_conditions":["sprain"]}}
+    ]},
+
+    {"id":"glass_cult","title":"Pilgrims of the Flash","body":"Robed figures kneel toward the fused horizon. Their exposed skin shines with old burns.","weight":4,"unique":false,"adversary_id":"glass_cult","choices":[
+      {"label":"Recite their road blessing","approach":"social","check":{"stat":"presence","dc":15},"success":{"text":"They accept you as a passing pilgrim and share protective tablets.","items":{"rad_tabs":2}},"failure":{"text":"A wrong phrase marks you as profane.","damage_type":"physical","pressures":{"health":-18},"add_conditions":["shaken"]}},
+      {"label":"Break through their line","approach":"combat","check":{"stat":"strength","dc":17},"success":{"text":"Their ceremonial weapons fail against real force.","items":{"purifier_ampoule":1,"glow_moss":1}},"failure":{"text":"Glass blades open several wounds.","damage_type":"physical","pressures":{"health":-26},"add_conditions":["bleeding"]}},
+      {"label":"Wait beneath the glass ridge","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"The procession passes without looking down."},"failure":{"text":"The reflected heat drains you while you hide.","pressures":{"fatigue":13,"radiation":5}}}
+    ]},
+    {"id":"glass_storm","title":"Needle Storm","body":"The wind lifts splinters of fused glass from the plain.","weight":5,"unique":false,"choices":[
+      {"label":"Wrap up and endure","approach":"survival","check":{"stat":"grit","dc":15},"success":{"text":"Layered cloth turns most of the cutting dust.","pressures":{"fatigue":8}},"failure":{"text":"Glass finds every opening.","damage_type":"physical","pressures":{"health":-18,"fatigue":12},"add_conditions":["bleeding"]}},
+      {"label":"Reach the overturned crawler","approach":"evade","check":{"stat":"agility","dc":15},"success":{"text":"You dive beneath armored wreckage."},"failure":{"text":"The storm catches you meters from cover.","damage_type":"physical","pressures":{"health":-16,"fatigue":15}}}
+    ]},
+    {"id":"glass_bunker","title":"Bunker 41","body":"A blast door protrudes from the glass, its keypad still blinking.","weight":3,"unique":true,"choices":[
+      {"label":"Reconstruct the entry code","approach":"technical","check":{"stat":"wits","dc":16},"success":{"text":"Inside, civil-defense supplies remain sealed.","items":{"purifier_ampoule":1,"medkit":1,"ration_bar":2}},"failure":{"text":"The lock vents irradiated coolant.","pressures":{"radiation":16,"health":-5}}},
+      {"label":"Force the maintenance hatch","approach":"force","check":{"stat":"strength","dc":16},"success":{"text":"The cramped shaft reaches an equipment room.","items":{"hazmat_wrap":1,"rad_tabs":1}},"failure":{"text":"A hinge tears free and crushes your foot.","damage_type":"physical","pressures":{"health":-14},"add_conditions":["sprain"]}}
+    ]},
+    {"id":"glass_shadow","title":"Shadow Without a Body","body":"A human shadow is burned into a standing wall. Fresh footprints end beside it.","weight":3,"unique":true,"choices":[
+      {"label":"Search for the missing traveler","approach":"navigation","check":{"stat":"wits","dc":14},"success":{"text":"You find a sheltered pack and signs the owner turned back.","items":{"scout_leathers":1,"clean_water":1}},"failure":{"text":"The tracks circle a radioactive pocket.","pressures":{"radiation":12,"fatigue":7}}},
+      {"label":"Leave the shadow behind","outcome":{"text":"Some questions are too expensive to answer."}}
+    ]},
+    {"id":"glass_meteor","title":"Hot Metal","body":"A fist-sized fragment smolders in a new crater, too regular to be stone.","weight":3,"unique":true,"choices":[
+      {"label":"Cool and recover it","approach":"technical","check":{"stat":"wits","dc":15},"success":{"text":"The fragment is a fallen drone core worth stripping.","items":{"scrap_parts":4,"field_scanner":1}},"failure":{"text":"The casing opens and doses you.","pressures":{"radiation":18,"health":-8}}},
+      {"label":"Mark the crater and move on","approach":"survival","check":{"stat":"grit","dc":9},"success":{"text":"You resist the lure of rare salvage."},"failure":{"text":"Curiosity costs time even without touching it.","pressures":{"fatigue":5}}}
+    ]},
+    {"id":"glass_pilgrim","title":"The Last Pilgrim","body":"A dying pilgrim offers a sealed ampoule if you carry their metal prayer disk east.","weight":3,"unique":true,"choices":[
+      {"label":"Accept the burden","approach":"social","check":{"stat":"presence","dc":11},"success":{"text":"They trust your promise and die at peace.","items":{"purifier_ampoule":1,"scrap_parts":1},"add_flags":["pilgrim_disk"]},"failure":{"text":"They doubt your words and break the ampoule before dying.","add_conditions":["shaken"]}},
+      {"label":"Treat their burns instead","requires":{"items":{"medkit":1}},"costs":{"items":{"medkit":1}},"outcome":{"text":"The pilgrim survives long enough to guide you around a hot zone.","pressures":{"radiation":-8},"add_conditions":["inspired"]}}
+    ]},
+    {"id":"glass_antenna","title":"Antenna Forest","body":"Hundreds of thin antennas rise from the glass and hum in the same key.","weight":3,"unique":true,"choices":[
+      {"label":"Map the signal pattern","approach":"technical","check":{"stat":"wits","dc":15},"success":{"text":"The pattern points directly toward the Underrail entrance.","add_flags":["underrail_bearing"],"pressures":{"fatigue":-4}},"failure":{"text":"The overlapping frequencies leave you disoriented.","pressures":{"fatigue":10},"add_conditions":["concussed"]}},
+      {"label":"Walk between the quiet rows","approach":"navigation","check":{"stat":"agility","dc":13},"success":{"text":"You avoid the strongest fields."},"failure":{"text":"A discharge crosses your path.","pressures":{"health":-10,"radiation":10}}}
+    ]},
+    {"id":"glass_carcass","title":"Crawler Carcass","body":"A massive cargo crawler lies fused to the plain, its armored belly intact.","weight":3,"unique":true,"choices":[
+      {"label":"Cut into the cargo hold","approach":"salvage","check":{"stat":"strength","dc":15},"success":{"text":"You uncover armor and rifle ammunition.","items":{"riot_padding":1,"rifle_rounds":4}},"failure":{"text":"A stressed plate folds onto you.","damage_type":"physical","pressures":{"health":-20},"add_conditions":["sprain"]}},
+      {"label":"Enter through the driver's hatch","approach":"evade","check":{"stat":"agility","dc":14},"success":{"text":"The cabin contains water and a signal compass.","items":{"clean_water":2,"signal_compass":1}},"failure":{"text":"Broken glass opens your forearm.","damage_type":"physical","pressures":{"health":-10},"add_conditions":["bleeding"]}}
+    ]},
+    {"id":"glass_spring","title":"Warm Spring","body":"Clear water bubbles through a crack in the fused ground, warm enough to steam.","weight":3,"unique":false,"choices":[
+      {"label":"Test and collect the water","approach":"radiation","check":{"stat":"wits","dc":14},"success":{"text":"The water is mineral-heavy but clean.","items":{"clean_water":2},"pressures":{"fatigue":-5}},"failure":{"text":"The harmless reading masks a radioactive pulse.","pressures":{"radiation":14}}},
+      {"label":"Use the warmth without drinking","approach":"survival","check":{"stat":"grit","dc":10},"success":{"text":"Heat loosens your aching muscles.","pressures":{"fatigue":-10}},"failure":{"text":"You stay too long in exposed ground.","pressures":{"radiation":5}}}
+    ]},
+    {"id":"glass_ruins","title":"City of Reflections","body":"Fused building shells multiply your reflection into a crowd.","weight":4,"unique":false,"choices":[
+      {"label":"Navigate by the broken sun","approach":"navigation","check":{"stat":"wits","dc":14},"success":{"text":"You maintain direction through the mirrored streets."},"failure":{"text":"Reflections turn an hour into three.","pressures":{"fatigue":14,"hunger":6}}},
+      {"label":"Move only through shadow","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"The cooler route preserves your strength.","pressures":{"fatigue":3}},"failure":{"text":"A glass shelf collapses under you.","damage_type":"physical","pressures":{"health":-12},"add_conditions":["bleeding"]}}
+    ]},
+
+    {"id":"rail_hunters","title":"Breathing in the Dark","body":"Three sets of careful breathing follow you beyond the reach of your light.","weight":5,"unique":false,"adversary_id":"tunnel_hunters","choices":[
+      {"label":"Turn and attack the sound","approach":"combat","check":{"stat":"wits","dc":16},"success":{"text":"You anticipate the ambush and seize their ammunition.","items":{"pistol_rounds":4,"smoke_bomb":1}},"failure":{"text":"A blade enters from the blind side.","damage_type":"physical","pressures":{"health":-25},"add_conditions":["bleeding"]}},
+      {"label":"Extinguish your light and move","approach":"evade","check":{"stat":"agility","dc":15},"success":{"text":"Your pursuers lose you among service alcoves."},"failure":{"text":"You collide with concrete in the dark.","damage_type":"physical","pressures":{"health":-13,"fatigue":10},"add_conditions":["concussed"]}},
+      {"label":"Offer ammunition for peace","approach":"social","check":{"stat":"presence","dc":15},"success":{"text":"They accept two rounds and reveal a safe tunnel.","items":{"pistol_rounds":-2}},"failure":{"text":"They take the offer as proof you carry more.","damage_type":"physical","pressures":{"health":-18},"items":{"pistol_rounds":-2}}}
+    ]},
+    {"id":"rail_train","title":"Train with Warm Windows","body":"A subway train stands on dead rails. Warm yellow light fills one carriage.","weight":3,"unique":true,"choices":[
+      {"label":"Knock before entering","approach":"social","check":{"stat":"presence","dc":13},"success":{"text":"A hidden family shares a meal and tunnel directions.","pressures":{"hunger":-20,"fatigue":-8},"add_flags":["met_train_family"]},"failure":{"text":"The light dies. No door opens.","add_conditions":["shaken"]}},
+      {"label":"Enter through the roof hatch","approach":"evade","check":{"stat":"agility","dc":14},"success":{"text":"The carriage is an abandoned decoy hiding supplies.","items":{"ration_bar":2,"clean_water":1}},"failure":{"text":"A wire trap throws you from the roof.","damage_type":"physical","pressures":{"health":-16},"add_conditions":["sprain"]}}
+    ]},
+    {"id":"rail_flood","title":"Rising Tunnel Water","body":"A surge of black water advances down the tunnel, carrying debris and dead lights.","weight":4,"unique":false,"choices":[
+      {"label":"Climb the maintenance ladder","approach":"force","check":{"stat":"strength","dc":14},"success":{"text":"You pull yourself above the surge."},"failure":{"text":"The water slams you into the wall.","damage_type":"physical","pressures":{"health":-18,"fatigue":12},"add_conditions":["sprain"]}},
+      {"label":"Race it to the platform","approach":"evade","check":{"stat":"agility","dc":15},"success":{"text":"You reach high ground one breath ahead."},"failure":{"text":"The surge catches and rolls you through rubble.","damage_type":"physical","pressures":{"health":-22,"fatigue":15},"add_conditions":["concussed"]}}
+    ]},
+    {"id":"rail_survivors","title":"Platform Council","body":"A small settlement blocks the platform with shields and questions.","weight":3,"unique":true,"choices":[
+      {"label":"Explain why the Citadel matters","approach":"social","check":{"stat":"presence","dc":14},"success":{"text":"The council grants passage and a field medkit.","items":{"medkit":1},"add_conditions":["inspired"]},"failure":{"text":"They allow passage only after taking a ration.","items":{"ration_bar":-1}}},
+      {"label":"Offer technical help","approach":"technical","check":{"stat":"wits","dc":14},"success":{"text":"You repair their pump and receive a purifier ampoule.","items":{"purifier_ampoule":1},"add_flags":["fixed_platform_pump"]},"failure":{"text":"The repair fails and costs several useful parts.","items":{"scrap_parts":-2}}}
+    ]},
+    {"id":"rail_switch","title":"The Wrong Track","body":"A mechanical route board points east while your signal compass points into a sealed west tunnel.","weight":3,"unique":true,"choices":[
+      {"label":"Trust the signal compass","requires":{"items":{"signal_compass":1}},"approach":"navigation","check":{"stat":"wits","dc":11},"success":{"text":"The sealed tunnel is the old Citadel service line.","pressures":{"fatigue":-5}},"failure":{"text":"Interference leads you to a collapsed loop.","pressures":{"fatigue":12}}},
+      {"label":"Reconstruct the route board","approach":"technical","check":{"stat":"wits","dc":15},"success":{"text":"Faded transfer marks reveal the true route."},"failure":{"text":"The obsolete map sends you through a long maintenance loop.","pressures":{"fatigue":14,"hunger":5}}}
+    ]},
+    {"id":"rail_nest","title":"Nest of Cable","body":"Stripped cable and cloth fill a ticket office. Something inside copies your footsteps.","weight":4,"unique":false,"choices":[
+      {"label":"Drive it out with noise","approach":"combat","check":{"stat":"presence","dc":14},"success":{"text":"An ash stalker flees, leaving its scavenged nest.","items":{"scrap_parts":2,"rad_tabs":1}},"failure":{"text":"The creature attacks through the ticket slot.","damage_type":"physical","pressures":{"health":-19},"add_conditions":["bleeding"]}},
+      {"label":"Pass without changing rhythm","approach":"evade","check":{"stat":"agility","dc":13},"success":{"text":"The mimic does not recognize you as prey."},"failure":{"text":"A copied stumble draws it out.","pressures":{"health":-12,"fatigue":8},"add_conditions":["shaken"]}}
+    ]},
+    {"id":"rail_platform","title":"The Last Vending Machine","body":"One vending machine glows at the end of an otherwise dead platform.","weight":3,"unique":true,"choices":[
+      {"label":"Bypass the payment board","approach":"technical","check":{"stat":"wits","dc":13},"success":{"text":"The machine releases old but sealed food and water.","items":{"ration_bar":2,"clean_water":2}},"failure":{"text":"The anti-tamper cell shocks you.","pressures":{"health":-10},"add_conditions":["concussed"]}},
+      {"label":"Break the front panel","approach":"force","check":{"stat":"strength","dc":14},"success":{"text":"Plastic yields and the shelves are yours.","items":{"ration_bar":1,"stimulant":1}},"failure":{"text":"Safety glass cuts both hands.","pressures":{"health":-12},"add_conditions":["bleeding"]}}
+    ]},
+    {"id":"rail_collapse","title":"Ceiling Dust","body":"Pebbles begin falling from a ceiling already bowed by surface impacts.","weight":4,"unique":false,"choices":[
+      {"label":"Brace the weak section","approach":"force","check":{"stat":"strength","dc":15},"success":{"text":"A steel post holds long enough for you to pass."},"failure":{"text":"The ceiling drops as you retreat.","damage_type":"physical","pressures":{"health":-20,"fatigue":12},"add_conditions":["concussed"]}},
+      {"label":"Find a service bypass","approach":"navigation","check":{"stat":"wits","dc":14},"success":{"text":"A cable duct leads around the collapse."},"failure":{"text":"The bypass dead-ends after a punishing crawl.","pressures":{"fatigue":16,"hunger":5}}}
+    ]},
+    {"id":"rail_signal","title":"Green Signal","body":"A rail signal turns green as you approach, though no grid should remain active.","weight":3,"unique":true,"choices":[
+      {"label":"Follow the powered line","approach":"technical","check":{"stat":"wits","dc":14},"success":{"text":"The line is a guide laid by Citadel engineers.","add_flags":["citadel_signal"],"pressures":{"fatigue":-5}},"failure":{"text":"The line feeds an old security trap.","pressures":{"health":-12},"add_conditions":["shaken"]}},
+      {"label":"Cut power before passing","approach":"force","check":{"stat":"strength","dc":12},"success":{"text":"The signal dies and the tunnel stays quiet."},"failure":{"text":"A capacitor discharges through the cutters.","pressures":{"health":-10}}}
+    ]},
+    {"id":"rail_door","title":"Door Marked EAST CITADEL","body":"A blast door carries the first intact Citadel marking you have seen.","weight":3,"unique":true,"choices":[
+      {"label":"Recover the access cylinder","approach":"salvage","check":{"stat":"wits","dc":15},"success":{"text":"The maintenance housing contains a usable access core.","items":{"scrap_parts":2},"add_flags":["access_core"]},"failure":{"text":"The mechanism consumes your tools and remains sealed.","items":{"scrap_parts":-1},"pressures":{"fatigue":7}}},
+      {"label":"Memorize its challenge code","approach":"technical","check":{"stat":"wits","dc":13},"success":{"text":"You record the sequence for the final gate.","add_flags":["gate_code"]},"failure":{"text":"The code changes before you understand its cycle.","pressures":{"fatigue":6}}}
+    ]},
+
+    {"id":"global_trader","title":"Wandering Trader","body":"A trader pushes a one-wheeled cart and offers a fair exchange before either of you asks names.","global":true,"weight":2,"unique":false,"choices":[
+      {"label":"Trade salvage for supplies","approach":"social","check":{"stat":"presence","dc":11},"success":{"text":"Your eye for value earns food and medicine.","items":{"scrap_parts":-1,"canned_meat":1,"cloth_bandage":1}},"failure":{"text":"You receive a single ration for your parts.","items":{"scrap_parts":-1,"ration_bar":1}}},
+      {"label":"Ask only for road news","approach":"social","check":{"stat":"presence","dc":10},"success":{"text":"The trader's warning sharpens your attention.","add_conditions":["focused"]},"failure":{"text":"Their directions contradict themselves.","pressures":{"fatigue":3}}}
+    ]},
+    {"id":"global_acid_rain","title":"Acid Rain","body":"Rain pits exposed metal and raises white smoke from the road.","global":true,"weight":3,"unique":false,"choices":[
+      {"label":"Build a quick shelter","approach":"survival","check":{"stat":"wits","dc":12},"success":{"text":"Layered debris keeps the worst rain off.","pressures":{"fatigue":4}},"failure":{"text":"The shelter leaks caustic water.","pressures":{"health":-10,"fatigue":8},"add_conditions":["burned"]}},
+      {"label":"Keep moving","approach":"survival","check":{"stat":"grit","dc":13},"success":{"text":"You outlast the short storm.","pressures":{"fatigue":8}},"failure":{"text":"The rain burns through your outer layers.","pressures":{"health":-12,"fatigue":12}}}
+    ]},
+    {"id":"global_pack","title":"Abandoned Pack","body":"A clean-looking backpack sits in the center of the road with no tracks around it.","global":true,"weight":2,"unique":true,"choices":[
+      {"label":"Inspect for traps","approach":"salvage","check":{"stat":"wits","dc":13},"success":{"text":"You disarm a wire and claim the pack's supplies.","items":{"canvas_pack":1,"canned_meat":1,"pistol_rounds":2}},"failure":{"text":"A snap charge fills your hand with fragments.","damage_type":"physical","pressures":{"health":-14},"add_conditions":["bleeding"]}},
+      {"label":"Leave it untouched","outcome":{"text":"The pack remains in the road behind you."}}
+    ]},
+    {"id":"global_stranger","title":"Injured Stranger","body":"A stranger sits against a marker stone, pressing cloth to a deep wound.","global":true,"weight":2,"unique":true,"choices":[
+      {"label":"Treat the wound","requires":{"items":{"cloth_bandage":1}},"costs":{"items":{"cloth_bandage":1}},"approach":"medical","check":{"stat":"wits","dc":11},"success":{"text":"They survive and give you a route token.","items":{"trader_token":1},"add_conditions":["inspired"]},"failure":{"text":"The wound is beyond your skill, but they do not die alone.","add_conditions":["shaken"]}},
+      {"label":"Offer water and move on","requires":{"items":{"clean_water":1}},"costs":{"items":{"clean_water":1}},"outcome":{"text":"They drink, thank you, and point out a safer trail.","pressures":{"fatigue":-4}}}
+    ]},
+    {"id":"global_map","title":"Map Under Glass","body":"A weatherproof route map stands beside the road, amended by dozens of travelers.","global":true,"weight":2,"unique":true,"choices":[
+      {"label":"Reconcile the conflicting marks","approach":"navigation","check":{"stat":"wits","dc":12},"success":{"text":"A consistent route emerges from the layers.","add_conditions":["focused"],"pressures":{"fatigue":-5}},"failure":{"text":"The contradictions cost more time than they save.","pressures":{"fatigue":7}}},
+      {"label":"Add your own warning","approach":"social","check":{"stat":"presence","dc":10},"success":{"text":"Leaving useful knowledge restores a little purpose.","add_conditions":["inspired"]},"failure":{"text":"Your scratched note disappears among hundreds."}}
+    ]},
+    {"id":"global_quiet","title":"A Quiet Mile","body":"For once, the road is empty and the wind carries no warning.","global":true,"weight":3,"unique":false,"choices":[
+      {"label":"Walk at an easy pace","outcome":{"text":"The quiet mile gives your body room to recover.","pressures":{"fatigue":-8}}},
+      {"label":"Use the calm to search","approach":"salvage","check":{"stat":"wits","dc":11},"success":{"text":"A drainage grate hides useful parts.","items":{"scrap_parts":2}},"failure":{"text":"The search spends the calm without reward.","pressures":{"fatigue":3}}}
+    ]},
+    {"id":"global_grave","title":"Roadside Grave","body":"A cairn is marked with a name, a date, and the words THEY KEPT WALKING.","global":true,"weight":2,"unique":true,"choices":[
+      {"label":"Add a stone","outcome":{"text":"You carry the words with you.","add_conditions":["inspired"]}},
+      {"label":"Check beneath the cairn","approach":"risk","check":{"stat":"wits","dc":12},"success":{"text":"A waterproof emergency ration was left for travelers.","items":{"ration_bar":1}},"failure":{"text":"There is nothing but the dead and your embarrassment.","add_conditions":["shaken"]}}
+    ]},
+    {"id":"global_drop","title":"Fallen Supply Pod","body":"A small parachute is tangled around a recent supply pod.","global":true,"weight":2,"unique":true,"choices":[
+      {"label":"Open it before anyone arrives","approach":"technical","check":{"stat":"wits","dc":14},"success":{"text":"The coded latch yields medical supplies.","items":{"medkit":1,"rad_tabs":1,"ration_bar":1}},"failure":{"text":"The pod broadcasts a recovery alarm.","pressures":{"fatigue":8},"add_conditions":["shaken"]}},
+      {"label":"Drag it into cover first","approach":"force","check":{"stat":"strength","dc":13},"success":{"text":"In cover, you open it without competition.","items":{"clean_water":2,"canned_meat":1}},"failure":{"text":"The pod tears a muscle and stays exposed.","pressures":{"health":-8},"add_conditions":["sprain"]}}
+    ]},
+    {"id":"global_bike","title":"Broken Courier Bike","body":"A courier bicycle leans against a marker, chain snapped but cargo box locked.","global":true,"weight":2,"unique":true,"choices":[
+      {"label":"Repair the chain long enough to ride","approach":"technical","check":{"stat":"wits","dc":13},"success":{"text":"A short ride saves strength before the chain fails again.","pressures":{"fatigue":-12}},"failure":{"text":"The repair consumes wire and patience.","items":{"scrap_parts":-1},"pressures":{"fatigue":4}}},
+      {"label":"Open the cargo box","approach":"force","check":{"stat":"strength","dc":12},"success":{"text":"The box contains ammunition and a ration.","items":{"pistol_rounds":3,"ration_bar":1}},"failure":{"text":"The lock breaks your improvised tool.","items":{"scrap_parts":-1}}}
+    ]},
+    {"id":"global_crows","title":"Mutant Crows","body":"Hairless crows line the road and repeat fragments of human speech.","global":true,"weight":3,"unique":false,"choices":[
+      {"label":"Follow the words they repeat","approach":"risk","check":{"stat":"wits","dc":13},"success":{"text":"Their stolen phrase leads to a hidden camp cache.","items":{"canned_meat":1,"cloth_bandage":1}},"failure":{"text":"They lure you toward a radiation pocket.","pressures":{"radiation":9}}},
+      {"label":"Drive them off","approach":"combat","check":{"stat":"presence","dc":11},"success":{"text":"The flock scatters from your noise."},"failure":{"text":"They rake your face before taking flight.","damage_type":"physical","pressures":{"health":-8}}}
+    ]},
+    {"id":"global_clear","title":"Clear Sky","body":"The clouds break. For a few minutes, the world has color again.","global":true,"weight":2,"unique":false,"choices":[
+      {"label":"Stop and breathe","outcome":{"text":"The rare sunlight restores your sense of direction.","pressures":{"fatigue":-6},"remove_conditions":["shaken"]}},
+      {"label":"Use the visibility to scout","approach":"navigation","check":{"stat":"wits","dc":10},"success":{"text":"You identify the safest line ahead.","add_conditions":["focused"]},"failure":{"text":"Distant movement keeps you watching too long.","pressures":{"fatigue":3}}}
+    ]},
+    {"id":"global_snare","title":"Wire at Ankle Height","body":"A glint of wire crosses the trail just above your boots.","global":true,"weight":3,"unique":false,"choices":[
+      {"label":"Disarm and salvage it","approach":"technical","check":{"stat":"wits","dc":12},"success":{"text":"You recover the trigger and useful wire.","items":{"scrap_parts":2}},"failure":{"text":"The snare whips you off your feet.","damage_type":"physical","pressures":{"health":-10},"add_conditions":["sprain"]}},
+      {"label":"Step over and leave quickly","approach":"evade","check":{"stat":"agility","dc":9},"success":{"text":"You pass without disturbing it."},"failure":{"text":"A second hidden line catches your pack.","items":{"clean_water":-1},"pressures":{"fatigue":4}}}
+    ]},
+
+    {"id":"fallback_dust","title":"Dust and Distance","body":"The road offers no shelter, no company, and no useful lie about how far remains.","weight":1,"unique":false,"choices":[
+      {"label":"Keep a steady pace","approach":"survival","check":{"stat":"grit","dc":9},"success":{"text":"You preserve your rhythm through the empty stretch."},"failure":{"text":"The featureless road drains more than expected.","pressures":{"fatigue":7}}},
+      {"label":"Search the roadside","approach":"salvage","check":{"stat":"wits","dc":12},"success":{"text":"You find a usable ration beneath a marker.","items":{"ration_bar":1}},"failure":{"text":"The search wastes strength.","pressures":{"fatigue":5,"hunger":3}}}
+    ]},
+
+    {"id":"final_gate_1","title":"The East Citadel Gate","body":"Floodlights pin you against the final blast door. A loudspeaker demands a valid challenge response.","weight":1,"unique":true,"adversary_id":"citadel_guard","choices":[
+      {"label":"Answer with the recovered gate code","approach":"technical","check":{"stat":"wits","dc":15},"modifier":1,"success":{"text":"The first lock accepts your reconstruction.","next_event":"final_gate_2"},"failure":{"text":"The wrong response triggers warning fire.","damage_type":"physical","pressures":{"health":-20},"next_event":"final_gate_2"},"critical_success":{"text":"The code opens the personnel channel and identifies you as expected.","add_conditions":["focused"],"next_event":"final_gate_2"}},
+      {"label":"Convince the guard you carry vital intelligence","approach":"social","check":{"stat":"presence","dc":17},"success":{"text":"The guard delays execution and moves you to secondary screening.","next_event":"final_gate_2"},"failure":{"text":"The argument buys only seconds before a stun round lands.","damage_type":"physical","pressures":{"health":-22},"add_conditions":["shaken"],"next_event":"final_gate_2"}}
+    ]},
+    {"id":"final_gate_2","title":"Secondary Screening","body":"An armored Warden machine rolls from the gate. Its scanner declares your contamination unacceptable.","weight":1,"unique":true,"adversary_id":"warden_machine","choices":[
+      {"label":"Overload its damaged sensor","approach":"technical","check":{"stat":"wits","dc":18},"success":{"text":"The Warden blinds itself and exposes the manual gate control.","next_event":"final_gate_3"},"failure":{"text":"The machine identifies the attack and fires.","damage_type":"physical","pressures":{"health":-28},"add_conditions":["burned"],"next_event":"final_gate_3"}},
+      {"label":"Attack its wheel assembly","approach":"combat","check":{"stat":"strength","dc":18},"success":{"text":"The damaged assembly folds and the Warden crashes aside.","next_event":"final_gate_3"},"failure":{"text":"Armor turns your strike before the counterattack lands.","damage_type":"physical","pressures":{"health":-30},"add_conditions":["bleeding"],"next_event":"final_gate_3"}},
+      {"label":"Slip through its scanning arc","approach":"evade","check":{"stat":"agility","dc":18},"success":{"text":"You reach the manual controls while the turret searches empty ground.","next_event":"final_gate_3"},"failure":{"text":"The tracking beam catches your movement.","damage_type":"physical","pressures":{"health":-26,"fatigue":10},"next_event":"final_gate_3"}}
+    ]},
+    {"id":"final_gate_3","title":"One Person Through","body":"The inner gate opens a hand's width. The mechanism is failing, the Warden is recovering, and the clean lights of the Citadel wait beyond.","weight":1,"unique":true,"choices":[
+      {"label":"Force the gate apart","approach":"force","check":{"stat":"strength","dc":19},"success":{"text":"Metal screams, then yields. You cross into clean air before it seals.","victory":true},"failure":{"text":"The mechanism closes while the Warden fires through the gap.","damage_type":"physical","pressures":{"health":-100}},"critical_success":{"text":"You tear the failing mechanism free and leave the passage open behind you. The road ends in victory.","victory":true},"critical_failure":{"text":"The gate crushes your last attempt as the Warden fires.","damage_type":"physical","pressures":{"health":-100}}},
+      {"label":"Complete the emergency override","approach":"technical","check":{"stat":"wits","dc":19},"success":{"text":"The ancient controller accepts one final command. The Citadel admits you.","victory":true},"failure":{"text":"The controller rejects the command and energizes the frame.","pressures":{"health":-100}},"critical_success":{"text":"The override restores the entire gate cycle. You walk through under green lights.","victory":true},"critical_failure":{"text":"A final short crosses the control frame and stops your heart.","pressures":{"health":-100}}},
+      {"label":"Order the guard to open it now","approach":"social","check":{"stat":"presence","dc":19},"success":{"text":"Your voice carries every death and mile behind it. Someone inside chooses to believe you.","victory":true},"failure":{"text":"No one answers before the Warden reacquires its target.","damage_type":"physical","pressures":{"health":-100}},"critical_success":{"text":"The guard breaks protocol, opens the gate, and calls you by name. You have reached the Citadel.","victory":true},"critical_failure":{"text":"Your words disappear beneath the Warden's final shot.","damage_type":"physical","pressures":{"health":-100}}}
+    ]}
+  ]
+}
+

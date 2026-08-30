@@ -1,0 +1,17 @@
+{
+  "adversaries": [
+    {"id":"road_bandits","name":"Road Bandits","threat":12,"description":"Hungry people with weapons and a practiced formation.","loot":["pistol_rounds","canned_meat","scrap_parts"]},
+    {"id":"feral_dogs","name":"Feral Dogs","threat":11,"description":"A scarred pack defending a wide hunting ground.","loot":["canned_meat"]},
+    {"id":"ash_stalkers","name":"Ash Stalkers","threat":14,"description":"Pale predators that hunt by vibration in dust storms.","loot":["glow_moss"]},
+    {"id":"toll_gang","name":"Toll Gang","threat":13,"description":"Extortionists who mistake uniforms for legitimacy.","loot":["revolver_rounds","scrap_parts"]},
+    {"id":"marsh_leeches","name":"Marsh Leeches","threat":12,"description":"Hand-long parasites disturbed by warm water.","loot":["bitter_tonic"]},
+    {"id":"bog_raiders","name":"Bog Raiders","threat":15,"description":"Masked skiff riders who know every dry patch.","loot":["shotgun_shells","clean_water"]},
+    {"id":"drone_swarm","name":"Security Drones","threat":16,"description":"Failing machines still obey an evacuation order.","loot":["scrap_parts","field_scanner"]},
+    {"id":"vault_scavs","name":"Vault Scavengers","threat":15,"description":"A disciplined crew protecting its claim.","loot":["rifle_rounds","medkit"]},
+    {"id":"glass_cult","name":"Glass Cult","threat":17,"description":"Pilgrims who treat radiation burns as revelation.","loot":["rad_tabs","purifier_ampoule"]},
+    {"id":"tunnel_hunters","name":"Tunnel Hunters","threat":16,"description":"Silent raiders using darkness as armor.","loot":["smoke_bomb","pistol_rounds"]},
+    {"id":"citadel_guard","name":"Citadel Guard","threat":18,"description":"Well-fed soldiers defending the last clean walls.","loot":["riot_padding","rifle_rounds"]},
+    {"id":"warden_machine","name":"Warden Machine","threat":20,"description":"An armored checkpoint intelligence with no surrender protocol.","loot":["signal_compass"]}
+  ]
+}
+

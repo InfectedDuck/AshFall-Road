@@ -1,0 +1,11 @@
+{
+  "regions": [
+    {"id":"shattered_outskirts","name":"Shattered Outskirts","order":0,"tagline":"The city thins into broken concrete and weed-choked lanes.","travel_radiation":0,"background":"res://assets/backgrounds/region_1_outskirts.png","event_pool":["outskirts_bandits","outskirts_bus","outskirts_dogs","outskirts_market","outskirts_overpass","outskirts_apartment","outskirts_siren","outskirts_cache","outskirts_child_radio","outskirts_sinkhole"]},
+    {"id":"salt_flats","name":"Salt Flats","order":1,"tagline":"White ground, black wrecks, and nowhere to hide.","travel_radiation":1,"background":"res://assets/backgrounds/region_2_salt_flats.png","event_pool":["flats_toll","flats_mirage","flats_tanker","flats_dustwall","flats_bones","flats_convoy","flats_solar","flats_crater","flats_signal","flats_nightfire"]},
+    {"id":"drowned_marches","name":"Drowned Marches","order":2,"tagline":"Flooded roads disappear beneath black reeds.","travel_radiation":1,"background":"res://assets/backgrounds/region_3_marshes.png","event_pool":["marsh_leeches","marsh_ferryman","marsh_raiders","marsh_clinic","marsh_bridge","marsh_lights","marsh_hut","marsh_filter","marsh_body","marsh_storm"]},
+    {"id":"hollow_industrial","name":"Hollow Industrial Zone","order":3,"tagline":"Dead factories breathe whenever the wind turns.","travel_radiation":2,"background":"res://assets/backgrounds/region_4_industrial.png","event_pool":["industrial_drones","industrial_generator","industrial_scavs","industrial_conveyor","industrial_office","industrial_fire","industrial_tank","industrial_crane","industrial_locker","industrial_alarm"]},
+    {"id":"glass_wastes","name":"Glass Wastes","order":4,"tagline":"The horizon shines where the old world burned.","travel_radiation":3,"background":"res://assets/backgrounds/region_5_glass_wastes.png","event_pool":["glass_cult","glass_storm","glass_bunker","glass_shadow","glass_meteor","glass_pilgrim","glass_antenna","glass_carcass","glass_spring","glass_ruins"]},
+    {"id":"underrail","name":"The Underrail","order":5,"tagline":"The last approach runs beneath the poisoned surface.","travel_radiation":1,"background":"res://assets/backgrounds/region_6_underrail.png","event_pool":["rail_hunters","rail_train","rail_flood","rail_survivors","rail_switch","rail_nest","rail_platform","rail_collapse","rail_signal","rail_door"]}
+  ]
+}
+

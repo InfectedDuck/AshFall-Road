@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <exclude domain="file" path="active_run.json" />
+    <exclude domain="file" path="active_run.backup.json" />
+    <exclude domain="file" path="active_run.json.tmp" />
+    <exclude domain="file" path="death_marker.json" />
+</full-backup-content>
