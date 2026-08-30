@@ -1,0 +1,27 @@
+* text=auto
+
+# Keep project and source files consistent across Windows and other systems.
+*.gd text eol=lf
+*.godot text eol=lf
+*.tscn text eol=lf
+*.tres text eol=lf
+*.cfg text eol=lf
+*.json text eol=lf
+*.ts text eol=lf
+*.md text eol=lf
+*.xml text eol=lf
+*.svg text eol=lf
+
+# Never alter binary assets or Android packages.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ogg binary
+*.wav binary
+*.ttf binary
+*.otf binary
+*.apk binary
+*.aab binary
+*.jks binary
+*.keystore binary
