@@ -1,4 +1,6 @@
 * text=auto
+.gitattributes text eol=lf
+.gitignore text eol=lf
 
 # Keep project and source files consistent across Windows and other systems.
 *.gd text eol=lf
