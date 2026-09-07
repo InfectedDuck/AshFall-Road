@@ -1,0 +1,240 @@
+{
+  "combat": {
+    "moves": {
+      "strike": {
+        "damage": 1,
+        "block": 0,
+        "dodge": 0,
+        "incoming": 1,
+        "bonus": 0,
+        "narration": [
+          "{enemy} follows through with {enemy_weapon}, leaving you no time to mistake distance for safety.",
+          "{enemy} closes the narrow space and delivers its ordinary killing motion.",
+          "The warning becomes movement: {enemy} drives {enemy_weapon} through your chosen line."
+        ]
+      },
+      "heavy": {
+        "damage": 1.5,
+        "block": -20,
+        "dodge": 10,
+        "incoming": 1,
+        "bonus": 0,
+        "narration": [
+          "{enemy} commits its whole weight behind {enemy_weapon}; the impact makes the ground seem closer.",
+          "The promised heavy blow arrives. {enemy} has sacrificed balance for a single overwhelming impact.",
+          "{enemy} releases the force it gathered, carrying {enemy_weapon} through a brutally wide arc."
+        ]
+      },
+      "sweep": {
+        "damage": 0.85,
+        "block": 10,
+        "dodge": -20,
+        "incoming": 1,
+        "bonus": 0,
+        "narration": [
+          "{enemy} sweeps {enemy_weapon} across the ground you hoped to use for escape.",
+          "The broad attack takes away the sideways route. {enemy} catches the edge of your movement.",
+          "{enemy} crosses your path with a low, searching sweep instead of a direct blow."
+        ]
+      },
+      "brace": {
+        "damage": 0.6,
+        "block": 0,
+        "dodge": 0,
+        "incoming": 0.5,
+        "bonus": 0,
+        "narration": [
+          "Behind its compact defense, {enemy} answers with a shorter motion of {enemy_weapon}.",
+          "{enemy} stays covered and sends a restrained counter through the small opening you leave.",
+          "The enemy does not abandon its protection. A quick response follows from inside its guarded posture."
+        ]
+      },
+      "charge": {
+        "damage": 0,
+        "block": 0,
+        "dodge": 0,
+        "incoming": 1,
+        "bonus": 0,
+        "narration": [
+          "{enemy} gathers force instead of striking. Its next committed motion will be a heavy blow.",
+          "A tightening movement runs through {enemy}; the gathering force has not reached you yet.",
+          "{enemy} commits to preparation. For this moment there is no blow, only the promise of the next one."
+        ]
+      },
+      "recover": {
+        "damage": 0,
+        "block": 0,
+        "dodge": 0,
+        "incoming": 1,
+        "bonus": 0.25,
+        "narration": [
+          "{enemy} regains its balance without attacking. The exposed interval is already passing.",
+          "The last movement has left {enemy} extended; it spends this exchange putting itself back into position.",
+          "{enemy} settles into reach again. Nothing strikes at you while it recovers its fighting posture."
+        ]
+      }
+    },
+    "families": {
+      "execution": {
+        "description": "Execution: +30% damage against an enemy at or below 40% HP; mastery +45%.",
+        "hit": [
+          "You drive {weapon} through the opening before it closes.",
+          "Your {weapon} catches the enemy as it shifts its weight.",
+          "You commit to the strike, bringing {weapon} home with both feet planted."
+        ]
+      },
+      "counter": {
+        "description": "Counter: Riposte adds 50% damage instead of 25%; mastery 65%.",
+        "hit": [
+          "You turn the enemy's movement against it with {weapon}.",
+          "Your {weapon} answers the space left by the enemy's attack.",
+          "You plant your heel and send {weapon} back along the line of attack."
+        ]
+      },
+      "precision": {
+        "description": "Precision: attacking with Opening adds 30% damage; mastery 40%.",
+        "hit": [
+          "You steady {weapon} and place the shot through a narrow gap.",
+          "The sight of {weapon} settles for a breath. You fire.",
+          "You squeeze the trigger of {weapon} as the enemy crosses your sights."
+        ]
+      },
+      "disruption": {
+        "description": "Disruption: a hit of 15+ interrupts Heavy. Mastery needs 13+. Then unavailable for two exchanges.",
+        "hit": [
+          "You press {weapon} into reach; its charge snaps across the contact.",
+          "A dry electrical crack follows the strike of your {weapon}.",
+          "You close the distance with {weapon}, letting its current carry the blow."
+        ]
+      },
+      "suppression": {
+        "description": "Suppression: a hit of 15+ reduces an organic enemy's response by 30%; mastery 40%. Machines resist suppression.",
+        "hit": [
+          "You bring {weapon} level and fire into the enemy's advance.",
+          "The report of {weapon} cuts across the distance between you.",
+          "You stand your ground, sending a shot from {weapon} into the approaching threat."
+        ]
+      },
+      "unarmed": {
+        "description": "Unarmed: no weapon technique.",
+        "hit": [
+          "You strike with your bare hands and pull back before the reply.",
+          "You put your weight behind a short, desperate blow.",
+          "You find a gap close enough to reach without a weapon."
+        ]
+      }
+    },
+    "narration": {
+      "miss": [
+        "Your attack finds the space the enemy has just left.",
+        "You commit too early. The blow passes without purchase.",
+        "The angle closes before your attack arrives."
+      ],
+      "critical_failure": [
+        "Your footing slips at the moment of commitment, leaving you exposed.",
+        "You overreach. Recovering your balance costs the space you needed.",
+        "The attack carries you past your cover and into the enemy's reach."
+      ],
+      "critical_success": [
+        "Everything aligns for a single, decisive instant.",
+        "You find the cleanest line through the struggle.",
+        "The opening is brief, but you meet it without hesitation."
+      ],
+      "kill_organic": [
+        "The last resistance gives way. The threat can no longer follow you.",
+        "The enemy falls out of the fight, leaving only your breathing.",
+        "Your final strike ends the struggle before another reply can come."
+      ],
+      "kill_machine": [
+        "The mechanism locks. Its weapon falls silent.",
+        "The last drive gives out, leaving metal motionless on the road.",
+        "Its lights go dark one after another. Nothing inside answers again."
+      ],
+      "block_success": [
+        "You catch the force against your guard and turn it aside. A reply is within reach.",
+        "The impact holds against your defense. You shove back into the space it leaves.",
+        "You meet the blow squarely and send it away from your body."
+      ],
+      "block_failure": [
+        "The blow slips past your guard while your weight is committed.",
+        "Your defense folds at the wrong angle, opening a path to your body.",
+        "You brace too late. The impact drives through your exposed stance."
+      ],
+      "dodge_success": [
+        "You step beyond the attack and find a clean line back.",
+        "The strike passes close enough to feel. You are already beside it.",
+        "You move with the enemy's commitment, leaving its attack behind."
+      ],
+      "dodge_failure": [
+        "You try to clear the attack, but your feet cannot find the space.",
+        "The enemy reaches the place you meant to escape into.",
+        "Your sidestep comes a breath too late."
+      ],
+      "idle_defense": [
+        "You hold your defense while the enemy gathers itself. No blow comes.",
+        "You keep clear, but the enemy spends the moment preparing.",
+        "You wait behind your guard. The expected impact never arrives."
+      ],
+      "interrupt": [
+        "The charge breaks the attack before it can land.",
+        "The heavy strike stops halfway through its commitment.",
+        "The enemy's gathering force collapses under the interruption."
+      ],
+      "suppressed": [
+        "The enemy flinches and its reply loses force.",
+        "Your shot breaks its nerve just long enough to blunt the response.",
+        "It pulls away from the report, weakening the attack already begun."
+      ],
+      "opportunity": [
+        "You seize the opening with {weapon}, committing everything to this strike.",
+        "For one breath the fight belongs to you. You bring {weapon} to bear.",
+        "You see the moment you have been waiting for and drive {weapon} into it."
+      ],
+      "flee": [
+        "You break contact and leave the threat behind without stopping to search.",
+        "An opening leads away from the fight. You take it and keep moving.",
+        "You gain enough distance to escape, abandoning any claim to the spoils."
+      ],
+      "flee_failure": [
+        "The route closes before you can break contact.",
+        "You turn toward an exit that the enemy reaches first.",
+        "Your retreat runs out of space. The enemy is still upon you."
+      ],
+      "smoke": [
+        "Smoke fills the space between you. You leave before it thins.",
+        "You pull the fuse and disappear behind the sudden wall of smoke.",
+        "The cloud swallows the fight. You follow its cover out of reach."
+      ],
+      "enemy_hit": [
+        "{enemy} answers with {enemy_weapon}, driving the attack toward you.",
+        "The force of {enemy_weapon} reaches you before you can reset your stance.",
+        "{enemy} follows through, bringing {enemy_weapon} into the exchange."
+      ],
+      "enemy_critical": [
+        "The attack finds a particularly vulnerable opening.",
+        "The full force of the attack arrives before you can recover.",
+        "The enemy catches you at the worst point of the exchange."
+      ],
+      "enemy_fumble": [
+        "The enemy's attack falters before it reaches full force.",
+        "The reply comes awkwardly, with much of its force spent.",
+        "Its movement catches and the strike loses momentum."
+      ],
+      "charge": [
+        "The threat gathers force. The next exchange will be dangerous.",
+        "Nothing strikes yet; the enemy is preparing something heavier.",
+        "You have one breath while the attack takes shape."
+      ],
+      "recover": [
+        "The enemy needs a moment to recover. Its defense is open.",
+        "The last movement leaves it unbalanced and within reach.",
+        "It draws back to recover, leaving you time to act."
+      ],
+      "defended": [
+        "Your defense takes the committed attack away from your body. No injury follows it through.",
+        "You read the motion in time; nothing reaches flesh beneath your equipment.",
+        "The enemy completes its motion, but you have already denied it an effective target."
+      ]
+    }
+  }
+}

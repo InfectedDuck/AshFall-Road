@@ -1,0 +1,141 @@
+{
+  "entries": [
+    {
+      "id":"ledger_family_1","thread":"Family on Channel Nine","order":10,"event_id":"lr_blue_van","hint":"A painted number crosses the Salt Flats.","characters":["talia_vale","elian_vale","sable_vale"],
+      "variants":[
+        {"id":"trusted","requires_any_flags":["lr_family_trusted","lr_family_linked"],"title":"The Blue Van Answers","body":"Talia Vale matched a stranger’s face to the voice that reached her children. Trust remained conditional, written beside each bearing, but Channel Nine became a living frequency instead of an abandoned recording.","character_state":"The Vale family travels east with a working line of contact."},
+        {"id":"distant","requires_any_flags":["lr_family_directed","lr_family_distrusts"],"title":"Directions Without Company","body":"The family accepted information while refusing the person who carried it. Their blue van turned away with every route recorded and every promise treated as evidence still awaiting proof.","character_state":"Talia keeps the survivor outside the family’s plans."},
+        {"id":"silent","requires_any_flags":["lr_family_silenced"],"title":"Channel Nine Goes Dark","body":"An attempted repair ended the family’s final radio contact. The van continued without a voice ahead, leaving the survivor’s callsign associated with both the offer of help and the silence that followed.","character_state":"The Vales travel without a functioning receiver."}
+      ]
+    },
+    {
+      "id":"ledger_family_2","thread":"Family on Channel Nine","order":20,"event_id":"lr_voice_in_reeds","hint":"Blue paint shows between the black reeds.","characters":["talia_vale","elian_vale","sable_vale"],
+      "variants":[
+        {"id":"reunited","requires_any_flags":["lr_family_reunited","lr_family_mobile"],"title":"The Family Leaves Together","body":"Mud, floodwater, and a missing road nearly divided the Vales. Intervention returned Talia to her children or returned their van to firm ground before the marsh could decide for them.","character_state":"The family remains together and mobile."},
+        {"id":"scarred","requires_any_flags":["lr_family_wounded","lr_family_abandoned_van"],"title":"What the Marsh Kept","body":"The Vales escaped, but not intact. Injury or the loss of their blue van reduced a household to what frightened hands could carry across the raised road.","character_state":"Talia is hurt, or the family continues on foot."},
+        {"id":"remote","requires_any_flags":["lr_family_remote_help"],"title":"A Voice Without a Face","body":"Elian followed instructions transmitted from beyond the reeds. The family reached safety without meeting its guide, preserving both gratitude and the distance Talia had requested.","character_state":"Channel Nine remains open, carefully and at a distance."}
+      ]
+    },
+    {
+      "id":"ledger_family_3","thread":"Family on Channel Nine","order":30,"event_id":"lr_last_battery","hint":"A child counts down the life of a battery.","characters":["talia_vale","elian_vale","sable_vale"],
+      "variants":[
+        {"id":"saved","requires_any_flags":["lr_family_saved","lr_family_allied"],"title":"The Last Battery Was Enough","body":"The factory door opened before Channel Nine failed, through machinery or an argument made honest. The Vales brought strangers with them, proving that their idea of family had expanded along the road.","character_state":"The Vales continue east with allies and a remembered debt."},
+        {"id":"hunted","requires_any_flags":["lr_family_separated","lr_family_hunted"],"title":"Static at the Factory","body":"The intervention failed or drew new attention. Channel Nine vanished while the people behind it continued searching for another exit under greater pressure than before.","character_state":"The family’s survival is unresolved."},
+        {"id":"unknown","requires_any_flags":["lr_family_unknown"],"title":"Radio Discipline","body":"Talia received a final bearing and shut the receiver down to preserve its battery. The family’s silence became deliberate, useful, and impossible to distinguish from loss.","character_state":"No later transmission confirms where the Vales went."}
+      ]
+    },
+
+    {
+      "id":"ledger_column_1","thread":"The Quiet Column","order":10,"event_id":"lr_quiet_column","hint":"A procession wraps every buckle in cloth.","characters":["dena_orr","perrin_orr"],
+      "variants":[
+        {"id":"accepted","requires_any_flags":["lr_column_trusts","lr_column_sheltered"],"title":"The Rotor and the Account","body":"Dena Orr accepted evidence from Tower Six and used it to move her families toward shelter. The column treated silence as a practiced survival skill rather than an absence of fear.","character_state":"Dena allows the survivor within the column’s confidence."},
+        {"id":"guarded","requires_any_flags":["lr_column_doubts","lr_column_guarded"],"title":"Outside Their Dust","body":"An uncertain account or damaged evidence made the survivor another risk for Dena to manage. Her people altered their route without argument and carried their suspicion east.","character_state":"The Quiet Column remains wary but alive."},
+        {"id":"refused","requires_any_flags":["lr_column_refused"],"title":"A Burden Declined","body":"The survivor refused responsibility for people drawn by the old siren. Dena accepted the boundary and carried the work herself, without granting the comfort of agreement.","character_state":"Dena remembers who would not share the tower’s consequence."}
+      ]
+    },
+    {
+      "id":"ledger_column_2","thread":"The Quiet Column","order":20,"event_id":"lr_bellkeepers_son","hint":"A bell rings beneath a blanket in the drowned country.","characters":["dena_orr","perrin_orr"],
+      "variants":[
+        {"id":"together","requires_any_flags":["lr_perrin_rescued","lr_column_escaped"],"title":"The Muffled Bell Returns","body":"Perrin returned from the chapel roof while the searchers followed water, noise, or a false trail. Dena’s discipline survived contact with a danger no marching order could make impersonal.","character_state":"Dena and Perrin continue with the column."},
+        {"id":"costly","requires_any_flags":["lr_perrin_saved_column_scattered","lr_column_stripped"],"title":"A Rescue Paid in Baggage","body":"Perrin survived, but the column scattered or surrendered the supplies that made collective travel possible. The families remained people rather than a formation.","character_state":"The column is divided and poorly supplied."},
+        {"id":"bells","requires_any_flags":["lr_dena_stayed"],"title":"Two Bells Across the Marsh","body":"Dena sent the column onward and remained to answer her son. Two muffled bells later crossed the reeds, carrying no proof of reunion or death.","character_state":"Dena and Perrin are missing behind the column."}
+      ]
+    },
+    {
+      "id":"ledger_column_3","thread":"The Quiet Column","order":30,"event_id":"lr_siren_in_glass","hint":"One final alarm waits beneath fused ground.","characters":["dena_orr","perrin_orr"],
+      "variants":[
+        {"id":"saved","requires_any_flags":["lr_column_saved","lr_column_warned_wastes"],"title":"The Warning Chose Its Cost","body":"A flare or the buried siren redirected danger long enough for the column to cross. The warning became a deliberate sacrifice rather than a machine calling blindly into the wastes.","character_state":"The Quiet Column survives the Glass Wastes."},
+        {"id":"broken","requires_any_flags":["lr_column_dispossessed","lr_column_broken"],"title":"Families Without a Formation","body":"The warning exposed too much. Dena’s people escaped only by abandoning property, order, or one another, carrying the meaning of the column without its protection.","character_state":"Scattered members continue east separately."},
+        {"id":"hidden","requires_any_flags":["lr_column_hidden"],"title":"No Alarm Given","body":"The column crossed by patience and shadow. Their silence protected them while leaving every traveler behind without the warning they might have heard.","character_state":"Dena preserves her people and accepts the unseen cost."}
+      ]
+    },
+
+    {
+      "id":"ledger_debt_1","thread":"The Road Debt","order":10,"event_id":"lr_pharmacy_witness","hint":"Medicine bottles carry names instead of labels.","characters":["lio_marr"],
+      "variants":[
+        {"id":"believed","requires_any_flags":["lr_lio_believes","lr_ledger_clue"],"title":"Lio Marr Keeps the Account","body":"Lio preserved the survivor’s testimony beside the records of people harmed by the pharmacy gang. Belief meant inclusion in the evidence, not forgiveness.","character_state":"Lio considers the survivor a difficult witness."},
+        {"id":"accused","requires_any_flags":["lr_lio_accuses","lr_ledger_misread"],"title":"A Name Turned Outward","body":"An embellished account or careless reading gave Lio reason to warn others. The survivor’s callsign joined the road’s disputed records.","character_state":"Lio treats the survivor as part of the danger surrounding the truth."},
+        {"id":"refused","requires_any_flags":["lr_lio_refused"],"title":"The Broken Bottle","body":"The survivor rejected Lio’s right to ask for an account. He preserved the refusal as carefully as any statement.","character_state":"Lio remembers an empty place where testimony should have been."}
+      ]
+    },
+    {
+      "id":"ledger_debt_2","thread":"The Road Debt","order":20,"event_id":"lr_bandit_ledger","hint":"A payroll office lists the debts of a dead road gang.","characters":["lio_marr"],
+      "variants":[
+        {"id":"preserved","requires_any_flags":["lr_ledger_shared","lr_ledger_verified"],"title":"Evidence Divided Among Witnesses","body":"The ledger survived as several imperfect copies or as routes tested against living people. No single faction could own all of its truth afterward.","character_state":"Lio carries a record strengthened by disagreement."},
+        {"id":"contested","requires_any_flags":["lr_ledger_disputed","lr_cache_family_displaced"],"title":"When Records Harm the Living","body":"A spoken name or opened cache made the ledger’s authority injure someone it claimed merely to describe. The archive became harder to trust and more dangerous to discard.","character_state":"Lio questions how the book should be used."},
+        {"id":"burned","requires_any_flags":["lr_ledger_burned"],"title":"The Blackened Corner","body":"The routes and names burned together. Lio saved only a scorched fragment bearing the survivor’s callsign.","character_state":"The road debt continues without its central evidence."}
+      ]
+    },
+    {
+      "id":"ledger_debt_3","thread":"The Road Debt","order":30,"event_id":"lr_last_toll","hint":"A court builds its barrier from stolen furniture.","characters":["lio_marr"],
+      "variants":[
+        {"id":"limited","requires_any_flags":["lr_road_court_limited","lr_road_record_preserved"],"title":"A Court Forced to Doubt Itself","body":"The Last Toll accepted limits or recovered one true ownership from its records. Lio kept testimony useful by denying it absolute authority.","character_state":"Lio remains with a court made less certain and more just."},
+        {"id":"hardened","requires_any_flags":["lr_road_court_hardened","lr_road_record_failed"],"title":"Another Name in the Ledger","body":"The court answered challenge by tightening its practice. The survivor passed beneath the barrier as a subject of future suspicion.","character_state":"Lio’s institution is becoming what it once judged."},
+        {"id":"continuing","requires_any_flags":["lr_road_court_continues"],"title":"No Testimony Offered","body":"The survivor crossed without submitting to the court. Its judgments continued beyond sight, neither corrected nor endorsed.","character_state":"Lio and the Last Toll remain active in the Underrail."}
+      ]
+    },
+
+    {
+      "id":"ledger_water_1","thread":"The Water Commons","order":10,"event_id":"lr_cup_passed_east","hint":"Clear drops fall from a pipe marked by armed hands.","characters":["iven_saye"],
+      "variants":[
+        {"id":"shared","requires_any_flags":["lr_water_shared","lr_water_route_known"],"title":"A Schedule Beside the Valve","body":"Iven Saye helped turn unexpected water into a public obligation and traced the line toward its hidden reservoir. Access created arguments faster than it resolved thirst.","character_state":"Iven travels east to learn who controls the rest of the line."},
+        {"id":"claimed","requires_any_flags":["lr_water_claimed","lr_water_line_damaged"],"title":"The First Blue Mark","body":"Weapons or an accident narrowed access to the pipe. The people guarding water began describing possession as maintenance.","character_state":"Iven remains near a valve controlled by scavengers."},
+        {"id":"taken","requires_any_flags":["lr_water_taken"],"title":"Bottles Before the Argument","body":"The survivor filled containers while ownership remained only words, then left before the first raised weapon made the dispute official.","character_state":"Iven remembers who departed with water before the rules existed."}
+      ]
+    },
+    {
+      "id":"ledger_water_2","thread":"The Water Commons","order":20,"event_id":"lr_thirst_court","hint":"Three cisterns form a court on black glass.","characters":["iven_saye"],
+      "variants":[
+        {"id":"accounted","requires_any_flags":["lr_water_theft_exposed","lr_water_released"],"title":"The Cisterns Opened","body":"Hidden reserves were exposed or the reservoir was opened to immediate need. Abundance ended one argument while beginning a calculation about tomorrow.","character_state":"Iven continues toward the Underrail with less water than hope requires."},
+        {"id":"damaged","requires_any_flags":["lr_water_audit_failed","lr_reservoir_broken"],"title":"Water Lost to Proof","body":"A failed measurement or broken stem spilled what every faction claimed to protect. Repair became the only authority anyone could briefly accept.","character_state":"Iven carries the shortage east."},
+        {"id":"reserved","requires_any_flags":["lr_underrail_water_reserved"],"title":"Water for Unseen Mouths","body":"The court preserved part of the reservoir for a settlement it had never visited. Prudence and theft became the same decision viewed from opposite ends of a pipe.","character_state":"Iven must defend the reservation to those who received less."}
+      ]
+    },
+    {
+      "id":"ledger_water_3","thread":"The Water Commons","order":30,"event_id":"lr_valve_below","hint":"Empty cups wait beneath a dry outlet.","characters":["iven_saye"],
+      "variants":[
+        {"id":"common","requires_any_flags":["lr_water_common_founded","lr_water_decentralized"],"title":"More Than One Valve","body":"The Underrail settlement restored water while weakening any single claim to control it. Iven stayed behind to make shared access into daily practice.","character_state":"Iven tends a fragile water commons."},
+        {"id":"controlled","requires_any_flags":["lr_water_guarded_state","lr_water_single_valve"],"title":"Water Beneath Authority","body":"The outlet worked, but weapons or damaged infrastructure preserved one point of control. Survival returned before freedom did.","character_state":"Iven contests every ration inside a guarded system."},
+        {"id":"abandoned","requires_any_flags":["lr_water_abandoned"],"title":"The Cup Set Down","body":"The survivor left an empty cup beneath the pipe and continued east. The settlement inherited both the repair and the argument.","character_state":"Iven remains with people forced to decide without an outside witness."}
+      ]
+    },
+
+    {
+      "id":"ledger_fire_1","thread":"The Nightfire Caravan","order":10,"event_id":"lr_embers_in_rain","hint":"A familiar traveler guards a covered flame.","characters":["noma"],
+      "variants":[
+        {"id":"helped","requires_any_flags":["lr_caravan_patient_helped","lr_caravan_debt_owed"],"title":"A Place Beside Noma’s Fire","body":"The sick traveler received labor or medicine. Noma added the survivor to a spoken list of people entitled to shelter at a future flame.","character_state":"Noma’s caravan recognizes a debt of hospitality."},
+        {"id":"delayed","requires_any_flags":["lr_caravan_patient_delayed","lr_caravan_patient_worse"],"title":"The Patient Waited","body":"Effort failed to become timely help. Noma’s group carried the sick traveler onward with less certainty and no simple accusation.","character_state":"The caravan remembers the attempt and its cost."},
+        {"id":"distant","requires_any_flags":["lr_caravan_distance_kept"],"title":"The Empty Bedroll","body":"The survivor used the shelter and declined the place offered within the group. Noma folded the unused bedroll back into the caravan’s baggage.","character_state":"Hospitality remains available, but no debt joins the two roads."}
+      ]
+    },
+    {
+      "id":"ledger_fire_2","thread":"The Nightfire Caravan","order":20,"event_id":"lr_names_on_smoke","hint":"A stolen battery keeps one patient warm.","characters":["noma"],
+      "variants":[
+        {"id":"protected","requires_any_flags":["lr_caravan_mechanic_cleared","lr_caravan_guaranteed"],"title":"The Mechanic Remains","body":"Evidence or personal obligation kept the teenage mechanic with Noma’s people. The caravan survived by accepting that property and rescue could not always share a rule.","character_state":"Noma carries the mechanic and a debt east."},
+        {"id":"paid","requires_any_flags":["lr_caravan_heat_lost","lr_caravan_paid_debt"],"title":"Settlement Without Justice","body":"The dispute ended through lost heat or surrendered food. Nobody received a clean verdict, but the caravan continued together.","character_state":"Noma’s supplies and confidence are diminished."},
+        {"id":"surrendered","requires_any_flags":["lr_caravan_mechanic_surrendered"],"title":"A Name Not Burned","body":"The mechanic went with the salvage crew to protect everyone else. Noma refused to call her dead and could not honestly call her safe.","character_state":"The caravan carries an unresolved absence."}
+      ]
+    },
+    {
+      "id":"ledger_fire_3","thread":"The Nightfire Caravan","order":30,"event_id":"lr_warm_windows","hint":"One heated carriage faces another group in the cold.","characters":["noma"],
+      "variants":[
+        {"id":"opened","requires_any_flags":["lr_caravan_fire_shared","lr_caravan_two_fires"],"title":"Warmth Made Larger","body":"The train admitted more people by burning pride, possessions, or another source of power. Noma’s rule of hospitality survived becoming difficult.","character_state":"The caravan approaches the Citadel as more than one group."},
+        {"id":"divided","requires_any_flags":["lr_caravan_divided","lr_caravan_fire_damaged"],"title":"An Open Door Without Trust","body":"Both groups survived the cold, but fear remained visible around the heat. Shelter was achieved without belonging.","character_state":"Noma keeps watch inside a divided train."},
+        {"id":"closed","requires_any_flags":["lr_caravan_closed"],"title":"The Handprint Outside","body":"The caravan obeyed its existing rule and kept the second group outside. A child’s handprint on the window cloth became the record of what order excluded.","character_state":"Noma’s people remain warm and morally unsettled."}
+      ]
+    },
+
+    {"id":"ledger_b41_signal","thread":"Bunker Forty-One","order":10,"event_id":"bunker41_static","title":"Static Beneath the Salt","hint":"A sentence about mercy waits inside old static.","body":"The Bunker Forty-One signal entered the journey, carrying coordinates and a judgement whose speakers should have been dead.","characters":[]},
+    {"id":"ledger_b41_mara","thread":"Bunker Forty-One","order":20,"event_id":"bunker41_cartographer","title":"Mara Venn Under Glass","hint":"Someone maps the sleeping routes below a warm floor.","body":"Mara Venn survived Bunker Forty-One by mapping the intervals between a predator’s movements and the mistakes of everyone who entered before her.","characters":["mara_venn"]},
+    {"id":"ledger_b41_key","thread":"Bunker Forty-One","order":30,"event_id":"bunker41_last_evacuation","title":"The Mercy Key","hint":"A black relay remembers who was refused shelter.","body":"The command archive preserved Bunker Forty-One’s final admission order and the human judgement hidden inside emergency procedure.","characters":[]},
+    {"id":"ledger_b41_warden","thread":"Bunker Forty-One","order":40,"event_id":"bunker41_warden_remembers","title":"The Warden Remembers","hint":"Old authority recognizes older evidence.","body":"The Citadel Warden recognized testimony, records, or relics connected to Bunker Forty-One and was forced to answer more than the survivor standing before it.","characters":[]},
+
+    {"id":"ledger_rustsea_line","thread":"The Rust-Sea","order":10,"event_id":"rustsea_green_line","title":"A Voice on the Green Line","hint":"A rail signal calls from beyond the mapped road.","body":"The Green Line awakened in response to earlier Bunker evidence, carrying Mara Venn’s route or the trace of those seeking her.","characters":["mara_venn"]},
+    {"id":"ledger_rustsea_station","thread":"The Rust-Sea","order":20,"event_id":"rustsea_station_arrivals","title":"The Station Without Arrivals","hint":"Names wait where no train completes its journey.","body":"The drowned station preserved routes, messages, and absences leading toward the Rust-Sea’s hidden survivors.","characters":["mara_venn"]},
+    {"id":"ledger_rustsea_debt","thread":"The Rust-Sea","order":30,"event_id":"rustsea_cartographers_debt","title":"The Cartographer’s Debt","hint":"A map can be alliance, leverage, or betrayal.","body":"Mara’s route toward the Sunken Spire became a test of what the survivor believed was owed between people who had saved, abandoned, or used one another.","characters":["mara_venn"]},
+    {"id":"ledger_rustsea_spire","thread":"The Rust-Sea","order":40,"event_id":"rustsea_last_coordinate","title":"The Last Coordinate","hint":"Every surviving route points toward a drowned height.","body":"The last coordinate established a way toward the Sunken Spire and left the route guarded, delayed, or shared for a future journey.","characters":["mara_venn"]},
+
+    {"id":"ledger_ending_citadel","thread":"Endings","order":10,"event_id":"final_gate_3","category":"ending","title":"One Person Through","hint":"The East Citadel still decides at its final door.","body":"The survivor crossed the final boundary through force, knowledge, or authority and reached the clean air that justified every earlier mile without absolving it.","characters":[]},
+    {"id":"ledger_ending_witness","thread":"Endings","order":20,"event_id":"bunker41_door_closes","category":"ending","title":"The Door That Closes","hint":"A shelter is also a boundary remembered by those outside it.","body":"Bunker Forty-One’s evidence changed the meaning of entry. The survivor reached the Citadel carrying witnesses, private truth, inherited ideology, or the weight of silence.","characters":["mara_venn"]}
+  ]
+}

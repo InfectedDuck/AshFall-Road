@@ -1,5 +1,7 @@
 # Google Play and user-acquisition roadmap
 
+The active version-1 calendar and checkboxes live in `LAUNCH_SPRINT.md`; `RELEASE_CHECKLIST.md` is the final authority for go/no-go. Version 1 is free, contains no ads or purchases, and keeps `ashfall/release/monetization_enabled=false`.
+
 Do not buy the Play Console account merely to continue development. Buy/register after the vertical slice is understandable and stable enough for external testing, because coding, desktop play, local APK export, and direct device installation do not require a Play developer account.
 
 ## Milestone 1: device-ready vertical slice
@@ -24,7 +26,7 @@ Gate: a new tester plays 15–30 minutes, dies, restarts, and can explain why ma
 
 Gate: no single approach dominates most events and no item is mandatory for every winning route.
 
-## Milestone 3: monetization isolation
+## Deferred post-launch: monetization isolation
 
 - Pin and license-review Godot AdMob/UMP and Play Billing plugins.
 - Prove each plugin alone in a blank API 36 custom-Gradle project.
@@ -35,18 +37,17 @@ Gate: no single approach dominates most events and no item is mandatory for ever
 
 Gate: airplane mode permits a complete run, store/ad failures never block it, and previously verified ownership survives death/restart.
 
-## Milestone 4: Play Console setup
+## Milestone 3: Play Console setup
 
 - Register the developer account and complete identity/device verification.
 - Choose the permanent package ID before the first upload; replace the repository placeholder everywhere.
 - Enable Play App Signing and create/back up the upload keystore.
 - Upload the signed AAB to internal testing.
-- Create all four products and configure license testers.
-- Complete support contact, privacy-policy URL, Data Safety, ads declaration, target audience, IARC rating, app access, content declarations, store listing, and asset-license record.
-- Declare teens/adults, not children under 13, and ensure ad serving matches that declaration.
+- Complete support contact, privacy-policy URL, Data Safety, ads declaration (`No` for v1), target audience, IARC rating, app access, content declarations, store listing, and asset-license record.
+- Declare teens/adults, not children under 13.
 - Verify the target API again at upload time. As of 30 August 2026, new apps must target API 36.
 
-## Milestone 5: required closed test
+## Milestone 4: required closed test
 
 Google's current rule applies to personal accounts created after 13 November 2023: at least 12 testers must remain opted in continuously for the preceding 14 days before production access can be requested. Official source: <https://support.google.com/googleplay/android-developer/answer/14151465?hl=en-GB>.
 
@@ -57,12 +58,12 @@ Google's current rule applies to personal accounts created after 13 November 202
 - Ship only necessary closed-test fixes and document version code/date/feedback.
 - After the requirement is met, apply for production access with concrete answers about recruitment, engagement, bugs found, and fixes made.
 
-## Milestone 6: production launch
+## Milestone 5: production launch
 
 - Start with a small staged rollout, then monitor crashes, ANRs, reviews, acquisition, and uninstalls in Play Console.
 - Maintain a rollback-ready previous AAB and do not rotate/lose the upload key.
-- Respond to reproducible data-loss/purchase-loss issues before marketing.
-- Re-run offline, death, restore, consent, ad-removal, and refund checks on the exact production candidate.
+- Respond to reproducible data-loss issues before marketing.
+- Re-run offline, death, restore, interruption, upgrade, accessibility, and responsive-layout checks on the exact production candidate.
 
 ## First 100 legitimate users
 

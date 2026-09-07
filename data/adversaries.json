@@ -1,17 +1,445 @@
 {
   "adversaries": [
-    {"id":"road_bandits","name":"Road Bandits","threat":12,"description":"Hungry people with weapons and a practiced formation.","loot":["pistol_rounds","canned_meat","scrap_parts"]},
-    {"id":"feral_dogs","name":"Feral Dogs","threat":11,"description":"A scarred pack defending a wide hunting ground.","loot":["canned_meat"]},
-    {"id":"ash_stalkers","name":"Ash Stalkers","threat":14,"description":"Pale predators that hunt by vibration in dust storms.","loot":["glow_moss"]},
-    {"id":"toll_gang","name":"Toll Gang","threat":13,"description":"Extortionists who mistake uniforms for legitimacy.","loot":["revolver_rounds","scrap_parts"]},
-    {"id":"marsh_leeches","name":"Marsh Leeches","threat":12,"description":"Hand-long parasites disturbed by warm water.","loot":["bitter_tonic"]},
-    {"id":"bog_raiders","name":"Bog Raiders","threat":15,"description":"Masked skiff riders who know every dry patch.","loot":["shotgun_shells","clean_water"]},
-    {"id":"drone_swarm","name":"Security Drones","threat":16,"description":"Failing machines still obey an evacuation order.","loot":["scrap_parts","field_scanner"]},
-    {"id":"vault_scavs","name":"Vault Scavengers","threat":15,"description":"A disciplined crew protecting its claim.","loot":["rifle_rounds","medkit"]},
-    {"id":"glass_cult","name":"Glass Cult","threat":17,"description":"Pilgrims who treat radiation burns as revelation.","loot":["rad_tabs","purifier_ampoule"]},
-    {"id":"tunnel_hunters","name":"Tunnel Hunters","threat":16,"description":"Silent raiders using darkness as armor.","loot":["smoke_bomb","pistol_rounds"]},
-    {"id":"citadel_guard","name":"Citadel Guard","threat":18,"description":"Well-fed soldiers defending the last clean walls.","loot":["riot_padding","rifle_rounds"]},
-    {"id":"warden_machine","name":"Warden Machine","threat":20,"description":"An armored checkpoint intelligence with no surrender protocol.","loot":["signal_compass"]}
+    {
+      "id": "road_bandits",
+      "name": "Road Bandits",
+      "threat": 12,
+      "xp_reward": 24,
+      "description": "Hungry people with weapons and a practiced formation.",
+      "portrait_id": "enemy_bandits",
+      "loot": [
+        "pistol_rounds",
+        "canned_meat",
+        "scrap_parts"
+      ],
+      "combat": {
+        "max_health": 180,
+        "damage_min": 35,
+        "damage_max": 55,
+        "weapon_name": "Hunting bows and blades",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "favorable"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "strike",
+          "brace",
+          "heavy",
+          "recover"
+        ],
+        "tells": {
+          "strike": "A bandit raises his blade and approaches without looking away.",
+          "brace": "The leader shelters behind a road sign, keeping his knife ready for a short reply.",
+          "heavy": "He lifts his blade high and plants both feet. The committed blow will be difficult to catch but leaves room to sidestep.",
+          "recover": "His blade drags low after the swing. His chest is briefly open."
+        }
+      }
+    },
+    {
+      "id": "feral_dogs",
+      "name": "Feral Dogs",
+      "threat": 11,
+      "xp_reward": 22,
+      "description": "A scarred pack defending a wide hunting ground.",
+      "portrait_id": "enemy_dogs",
+      "loot": [
+        "canned_meat"
+      ],
+      "combat": {
+        "max_health": 120,
+        "damage_min": 22,
+        "damage_max": 36,
+        "weapon_name": "Teeth and claws",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "favorable"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "strike",
+          "heavy",
+          "recover"
+        ],
+        "tells": {
+          "strike": "The lead dog comes low, watching your weapon hand.",
+          "heavy": "The largest dog sinks onto its haunches. Its whole body gathers for a lunge that would crush a weak guard.",
+          "recover": "The dog skids past and scrambles to turn. Its flank is unprotected."
+        }
+      }
+    },
+    {
+      "id": "ash_stalkers",
+      "name": "Ash Stalker",
+      "threat": 14,
+      "xp_reward": 36,
+      "description": "A pale predator that hunts by vibration and copied sound.",
+      "portrait_id": "enemy_stalker",
+      "loot": [
+        "glow_moss"
+      ],
+      "combat": {
+        "max_health": 220,
+        "damage_min": 45,
+        "damage_max": 70,
+        "weapon_name": "Hooked claws",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "risky"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "strike",
+          "heavy",
+          "sweep",
+          "recover"
+        ],
+        "tells": {
+          "strike": "The Stalker tilts its head toward your breathing. One hooked forelimb reaches forward.",
+          "heavy": "Its claws stop scraping. The hind legs fold under a gathering mass that no casual guard will hold.",
+          "sweep": "It flattens its limbs and spreads across the ground, threatening every direction of escape.",
+          "recover": "The creature settles after its rush, claws sunk too deeply to withdraw at once."
+        }
+      }
+    },
+    {
+      "id": "toll_gang",
+      "name": "Toll Gang",
+      "threat": 13,
+      "xp_reward": 30,
+      "description": "Extortionists who mistake uniforms for legitimacy.",
+      "portrait_id": "enemy_toll",
+      "loot": [
+        "revolver_rounds",
+        "scrap_parts"
+      ],
+      "combat": {
+        "max_health": 220,
+        "damage_min": 40,
+        "damage_max": 60,
+        "weapon_name": "Clubs and revolvers",
+        "critical_condition": "shaken",
+        "flee_difficulty": "risky"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "brace",
+          "strike",
+          "heavy",
+          "recover"
+        ],
+        "tells": {
+          "brace": "The collectors close ranks behind their barricade, clubs held for short defensive blows.",
+          "strike": "A collector steps past the barrier, revolver tracking you.",
+          "heavy": "Their largest enforcer raises a club with both hands. It will strike one place with all his weight.",
+          "recover": "The enforcer struggles to lift the fallen club, leaving the line untidy."
+        }
+      }
+    },
+    {
+      "id": "marsh_leeches",
+      "name": "Marsh Leeches",
+      "threat": 12,
+      "xp_reward": 24,
+      "description": "Hand-long parasites disturbed by warm water.",
+      "portrait_id": "enemy_leeches",
+      "loot": [
+        "bitter_tonic"
+      ],
+      "combat": {
+        "max_health": 90,
+        "damage_min": 12,
+        "damage_max": 24,
+        "weapon_name": "Feeding swarm",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "favorable"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "sweep",
+          "strike",
+          "recover"
+        ],
+        "tells": {
+          "sweep": "The water wrinkles all around you. Small bodies spread across every place you could step.",
+          "strike": "The nearest parasites rear toward the warmth of your legs.",
+          "recover": "The feeding mass draws together again, exposing a moment of stillness."
+        }
+      }
+    },
+    {
+      "id": "bog_raiders",
+      "name": "Bog Raiders",
+      "threat": 15,
+      "xp_reward": 44,
+      "description": "Masked skiff riders who know every dry patch.",
+      "portrait_id": "enemy_raiders",
+      "loot": [
+        "shotgun_shells",
+        "clean_water"
+      ],
+      "combat": {
+        "max_health": 250,
+        "damage_min": 50,
+        "damage_max": 75,
+        "weapon_name": "Patched shotguns",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "hard"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "strike",
+          "sweep",
+          "brace"
+        ],
+        "tells": {
+          "strike": "The nearest raider shoulders a patched gun and sights along the barrel.",
+          "sweep": "The skiff turns broadside. Several barrels fan across the narrow bank together.",
+          "brace": "The raiders crouch behind the skiff's plated rim, keeping short bursts aimed at your position."
+        }
+      }
+    },
+    {
+      "id": "drone_swarm",
+      "name": "Security Drones",
+      "threat": 16,
+      "xp_reward": 48,
+      "description": "Failing machines still obey an evacuation order.",
+      "portrait_id": "enemy_drones",
+      "loot": [
+        "scrap_parts",
+        "field_scanner"
+      ],
+      "combat": {
+        "max_health": 260,
+        "damage_min": 50,
+        "damage_max": 80,
+        "weapon_name": "Security emitters",
+        "critical_condition": "burned",
+        "flee_difficulty": "hard"
+      },
+      "narrative_combat": {
+        "organic": false,
+        "sequence": [
+          "strike",
+          "charge",
+          "heavy",
+          "recover"
+        ],
+        "tells": {
+          "strike": "Red targeting lights steady on your chest as the drones drift apart.",
+          "charge": "Emitter coils rise in pitch. A much stronger discharge is building.",
+          "heavy": "The charged emitters converge. Their narrow line promises an impact too powerful to meet casually.",
+          "recover": "The emitters dim and their cooling vents open, exposing the mechanisms beneath."
+        }
+      }
+    },
+    {
+      "id": "vault_scavs",
+      "name": "Vault Scavengers",
+      "threat": 15,
+      "xp_reward": 46,
+      "description": "A disciplined crew protecting its claim.",
+      "portrait_id": "enemy_scavs",
+      "loot": [
+        "rifle_rounds",
+        "medkit"
+      ],
+      "combat": {
+        "max_health": 280,
+        "damage_min": 55,
+        "damage_max": 80,
+        "weapon_name": "Rifles and work axes",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "hard"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "brace",
+          "strike",
+          "heavy",
+          "recover"
+        ],
+        "tells": {
+          "brace": "The crew closes behind a slab of salvage. An axe waits over its edge.",
+          "strike": "A rifle comes over the slab and follows your movement.",
+          "heavy": "An axeman steps into the open and draws the tool far behind him. The blow needs space and momentum.",
+          "recover": "The axe bites the ground. Its owner must wrench it free before defending himself."
+        }
+      }
+    },
+    {
+      "id": "glass_cult",
+      "name": "Glass Cult",
+      "threat": 17,
+      "xp_reward": 62,
+      "description": "Pilgrims who treat radiation burns as revelation.",
+      "portrait_id": "enemy_cult",
+      "loot": [
+        "rad_tabs",
+        "purifier_ampoule"
+      ],
+      "combat": {
+        "max_health": 320,
+        "damage_min": 60,
+        "damage_max": 90,
+        "weapon_name": "Glass blades",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "desperate"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "strike",
+          "sweep",
+          "heavy",
+          "recover"
+        ],
+        "tells": {
+          "strike": "A pilgrim draws a glass edge across the light and advances.",
+          "sweep": "The pilgrims spread their blades into a glittering arc, narrowing the ground you can dodge into.",
+          "heavy": "Their champion raises a long shard overhead. His weight shifts completely into the coming thrust.",
+          "recover": "The shard trembles low after the thrust, leaving its bearer unbalanced."
+        }
+      }
+    },
+    {
+      "id": "tunnel_hunters",
+      "name": "Tunnel Hunters",
+      "threat": 16,
+      "xp_reward": 52,
+      "description": "Silent raiders using darkness as armor.",
+      "portrait_id": "enemy_hunters",
+      "loot": [
+        "smoke_bomb",
+        "pistol_rounds"
+      ],
+      "combat": {
+        "max_health": 300,
+        "damage_min": 65,
+        "damage_max": 95,
+        "weapon_name": "Hidden knives",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "hard"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "strike",
+          "heavy",
+          "brace"
+        ],
+        "tells": {
+          "strike": "A knife catches the tunnel light. Its owner is already moving toward you.",
+          "heavy": "A hunter springs from the wall with both knives forward. The leap has power but little room to turn.",
+          "brace": "The hunters withdraw behind a support pillar, blades waiting close to its edge."
+        }
+      }
+    },
+    {
+      "id": "citadel_guard",
+      "name": "Citadel Guard",
+      "threat": 18,
+      "xp_reward": 75,
+      "description": "Well-fed soldiers defending the last clean walls.",
+      "portrait_id": "enemy_guard",
+      "loot": [
+        "riot_padding",
+        "rifle_rounds"
+      ],
+      "combat": {
+        "max_health": 400,
+        "damage_min": 80,
+        "damage_max": 120,
+        "weapon_name": "Service rifles",
+        "critical_condition": "shaken",
+        "flee_difficulty": "desperate"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "brace",
+          "strike",
+          "charge",
+          "heavy",
+          "recover"
+        ],
+        "tells": {
+          "brace": "The guards close their shields, rifle muzzles resting in the gaps.",
+          "strike": "A rifle swings into a clean firing line.",
+          "charge": "The squad settles into a firing stance. You hear the order to prepare a concentrated volley.",
+          "heavy": "Every barrel fixes on one patch of ground. The volley is about to arrive with overwhelming force.",
+          "recover": "The rifles fall quiet for reloads. Armor shifts apart around busy hands."
+        }
+      }
+    },
+    {
+      "id": "warden_machine",
+      "name": "Warden Machine",
+      "threat": 20,
+      "xp_reward": 100,
+      "description": "An armored checkpoint intelligence with no surrender protocol.",
+      "portrait_id": "enemy_warden",
+      "loot": [
+        "signal_compass"
+      ],
+      "combat": {
+        "max_health": 550,
+        "damage_min": 100,
+        "damage_max": 150,
+        "weapon_name": "Rotary cannon",
+        "critical_condition": "burned",
+        "flee_difficulty": "desperate"
+      },
+      "narrative_combat": {
+        "organic": false,
+        "sequence": [
+          "charge",
+          "heavy",
+          "recover",
+          "sweep"
+        ],
+        "tells": {
+          "charge": "The Warden's rotary cannon accelerates. Warning lights trace the narrow lane it is preparing to erase.",
+          "heavy": "The cannon locks onto your position. Standing behind a weak guard will not stop the concentrated burst.",
+          "recover": "Cooling fins unfold along the silent cannon. For a moment its exposed mechanisms cannot answer.",
+          "sweep": "The cannon turns sideways, sweeping its firing line across the available ground."
+        }
+      }
+    },
+    {
+      "id": "mutant_crows",
+      "name": "Mutant Crows",
+      "threat": 10,
+      "xp_reward": 18,
+      "description": "Hairless scavengers that attack as one shrieking cloud.",
+      "portrait_id": "enemy_crows",
+      "loot": [],
+      "combat": {
+        "max_health": 70,
+        "damage_min": 7,
+        "damage_max": 10,
+        "weapon_name": "Beaks and talons",
+        "critical_condition": "shaken",
+        "flee_difficulty": "easy"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": [
+          "strike",
+          "sweep",
+          "recover"
+        ],
+        "tells": {
+          "strike": "The nearest crows pitch forward, beaks pointing at your hands.",
+          "sweep": "The flock spreads across your path, wings closing off either side.",
+          "recover": "The birds circle beyond reach, struggling to regroup."
+        }
+      }
+    }
   ]
 }
-

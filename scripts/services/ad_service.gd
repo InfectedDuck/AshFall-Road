@@ -5,15 +5,17 @@ const MINIMUM_INTERVAL_MSEC := 600000
 const ELIGIBLE_REGIONS := [2, 4]
 
 var provider_ready := false
+var feature_enabled := false
 var remove_ads := false
 var shown_this_run := 0
 var last_shown_msec := -MINIMUM_INTERVAL_MSEC
 var attempted_regions: Array = []
 
 
-func configure(entitlements: Dictionary) -> void:
+func configure(entitlements: Dictionary, enabled: bool = false) -> void:
+	feature_enabled = enabled
 	remove_ads = bool(entitlements.get("remove_ads", false))
-	provider_ready = Engine.has_singleton("AdMob")
+	provider_ready = feature_enabled and Engine.has_singleton("AdMob")
 
 
 func reset_for_run() -> void:
@@ -39,9 +41,10 @@ func mark_attempted(region_number: int, displayed: bool, now_msec: int) -> void:
 
 
 func status_text() -> String:
+	if not feature_enabled:
+		return "Ads are not included in this release"
 	if remove_ads:
 		return "Ads removed"
 	if not provider_ready:
 		return "Ads unavailable offline"
 	return "Ads ready"
-

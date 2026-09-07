@@ -10,19 +10,21 @@ const PRODUCTS := {
 
 var available := false
 var plugin_detected := false
+var feature_enabled := false
 var entitlements: Dictionary = {}
 var purchase_handler := Callable()
 
 
-func configure(cached_entitlements: Dictionary) -> void:
+func configure(cached_entitlements: Dictionary, enabled: bool = false) -> void:
 	entitlements = cached_entitlements.duplicate(true)
-	plugin_detected = Engine.has_singleton("GodotGooglePlayBilling")
-	available = purchase_handler.is_valid()
+	feature_enabled = enabled
+	plugin_detected = feature_enabled and Engine.has_singleton("GodotGooglePlayBilling")
+	available = feature_enabled and purchase_handler.is_valid()
 
 
 func attach_purchase_handler(handler: Callable) -> void:
 	purchase_handler = handler
-	available = purchase_handler.is_valid()
+	available = feature_enabled and purchase_handler.is_valid()
 
 
 func owns(entitlement_id: String) -> bool:
@@ -30,6 +32,8 @@ func owns(entitlement_id: String) -> bool:
 
 
 func store_status() -> String:
+	if not feature_enabled:
+		return "Purchases are not included in this release"
 	if available:
 		return "Store ready"
 	if plugin_detected:
@@ -42,6 +46,8 @@ func product_id(entitlement_id: String) -> String:
 
 
 func begin_purchase(entitlement_id: String) -> String:
+	if not feature_enabled:
+		return "Purchases are not included in this release."
 	if owns(entitlement_id):
 		return "This item is already owned."
 	var play_product_id := product_id(entitlement_id)

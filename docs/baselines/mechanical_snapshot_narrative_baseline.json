@@ -1,0 +1,1434 @@
+{
+  "captured_for": "NARRATIVE_REFINEMENT_PLAN N00",
+  "data_files": {
+    "data/adversaries.json": {
+      "bytes": 14159,
+      "sha256": "065bcbab7623976127cd9838fbbe3a4605d9b104e81d7a6460297f5588938cc2"
+    },
+    "data/bunker41_events.json": {
+      "bytes": 28349,
+      "sha256": "45d395e4fd1172a216e99ad9cf2a9d179b82f8a0b2f3025704fe0cd2f9c19855"
+    },
+    "data/combat_content.json": {
+      "bytes": 10768,
+      "sha256": "4e98bae243794a7a9ca08ae9e34823647b57ded7bfeb8d17010fcd464d218483"
+    },
+    "data/conditions.json": {
+      "bytes": 2658,
+      "sha256": "14d61b4a2c84be29e71d2b4e907bae40ed3dd2a44adf296b697d5c475f98e93a"
+    },
+    "data/events.json": {
+      "bytes": 196955,
+      "sha256": "6e6b2949887d1e459bb6c51f61118c917d1266dbe1c835a11091cd57f74a3777"
+    },
+    "data/items.json": {
+      "bytes": 16620,
+      "sha256": "6a26ed446ccb6de6bc707d51d7d830dd2cb1686b7fe2e3cc4f6643ec58f12ae4"
+    },
+    "data/legacy_v2_checks.json": {
+      "bytes": 3335,
+      "sha256": "7f40bdcc28fa21afc61bb089881a5a6629228907f46a002e5dbabb45c2d6a6b8"
+    },
+    "data/living_road_events.json": {
+      "bytes": 45456,
+      "sha256": "0a4714a3d3c09ab1294193ef2887045278934ad6fd420dba4b6bab2eef5bd1bc"
+    },
+    "data/narrative_overrides_v1.json": {
+      "bytes": 56880,
+      "sha256": "37b6a8ffad79ec3fa401174bdc0414071403898475997d2d3e4ffc94cb1a3333"
+    },
+    "data/narrative_overrides_v11.json": {
+      "bytes": 79485,
+      "sha256": "692b78a6d9c5c0d6c20d8cffaafd68dc2221d6b092ef5092bea9592576056006"
+    },
+    "data/regions.json": {
+      "bytes": 2360,
+      "sha256": "b3571fb454d4e86a3bae711ef5ef58b2480121f639dac78339c3e325cdf4ab91"
+    },
+    "data/road_ledger.json": {
+      "bytes": 23161,
+      "sha256": "c9ec647551c96e674919b9d3b5850809aa67b674a1bf01c1948a69ec5ee29d34"
+    },
+    "data/rustsea_events.json": {
+      "bytes": 16517,
+      "sha256": "60ffdbf4cb7938d09129d3aafc4ab56d68beb00e2e97116a31e8f0670c78cae8"
+    }
+  },
+  "expanded": {
+    "adversaries": {
+      "ash_stalkers": "6a5b1ed64194bf9dac58b81ca84ef5a7575d45b5abf5e75e290f7015f9c649fe",
+      "bog_raiders": "1d4ebc91bade6963ef5a5c6cdfb6458eb638f9727de07f5caed1a7f0af68fb9c",
+      "citadel_guard": "a0e8505dea47766ba68425fbfcc114b920ac16d08fdb049a1a079854a56628c8",
+      "drone_swarm": "9eb0428008d62be7d329d78f017bc870c54184a38924d444d02c6935f54a7757",
+      "feral_dogs": "371f4c1d3ba9843a5f5377ba7faa53abac0d412d5acdab90a162aaac9b6207bf",
+      "glass_cult": "f6829cad79ba677ec6bcfdeb051989a5cdf2083ffcb2455abad6a456eaf8c2b7",
+      "marsh_leeches": "8b646d7bab017d036aff5e9bf205e270b653fb3efc5a54f8953f9d595916cec2",
+      "mutant_crows": "fbaf74fb01a99480511d804325d21d533a029e83567fc1a08543a728742dbabe",
+      "road_bandits": "1247e8d3003699e076d472a5e1fffaad521c0b73161bdfeebdede18f24360987",
+      "toll_gang": "bf3a7b6241f69d192e9dbbc3c07dc54343be81c434043184ff37a6f987484c6d",
+      "tunnel_hunters": "6d9da698631527e772058e329adde790e246ec4bca45d915abe2840684d06455",
+      "vault_scavs": "25021b11868600b349ddb853d628d18e941fe364571314ef078785933f89a473",
+      "warden_machine": "72cd7c2bee06c1183c11d05faa87276486c1a432c4b7a1f30fed92e7d836357b"
+    },
+    "choice_labels": {
+      "bunker41_ash_procession": [
+        "Join the procession",
+        "Speak the bunker’s truth",
+        "Rob the lantern bearers"
+      ],
+      "bunker41_cartographer": [
+        "Share a ration with Mara",
+        "Take her map and leave",
+        "Heed her warning and withdraw"
+      ],
+      "bunker41_chapel_car": [
+        "Give them the Mercy Key",
+        "Steal the founder’s records",
+        "Refuse their judgement"
+      ],
+      "bunker41_door_breathes": [
+        "Flee with the exposed relay",
+        "Follow the Cinder Wives",
+        "Enter the breathing chamber"
+      ],
+      "bunker41_door_closes": [
+        "Force your way through",
+        "Offer the Mercy Key",
+        "Read the names aloud",
+        "Play the Ash Choir record"
+      ],
+      "bunker41_false_welcome": [
+        "Open the archive",
+        "Leave hope untouched",
+        "Burn the access files"
+      ],
+      "bunker41_fragment_calls": [
+        "Follow the signal",
+        "Use it to mislead pursuers",
+        "Throw it onto the tracks"
+      ],
+      "bunker41_green_platform": [
+        "Take the service route",
+        "Search for Mara’s trail",
+        "Activate the station openly"
+      ],
+      "bunker41_last_evacuation": [
+        "Take the Mercy Key",
+        "Broadcast the abandoned names",
+        "Destroy the records"
+      ],
+      "bunker41_ledger_living": [
+        "Open the sealed rooms",
+        "Copy the ledger and continue",
+        "Destroy the ledger"
+      ],
+      "bunker41_rusted_hatch": [
+        "Take the maintenance shaft",
+        "Force the main hatch",
+        "Mark it and leave"
+      ],
+      "bunker41_static": [
+        "Preserve the recording",
+        "Answer the voice",
+        "Break the receiver"
+      ],
+      "bunker41_warden_remembers": [
+        "Refuse its authority",
+        "Attack the Warden",
+        "Invoke the Bunker record"
+      ],
+      "fallback_dust": [
+        "Keep a steady pace",
+        "Search the roadside"
+      ],
+      "final_gate_1": [
+        "Answer with the recovered gate code",
+        "Convince the guard you carry vital intelligence"
+      ],
+      "final_gate_2": [
+        "Overload its damaged sensor",
+        "Attack its wheel assembly",
+        "Slip through its scanning arc"
+      ],
+      "final_gate_3": [
+        "Force the gate apart",
+        "Complete the emergency override",
+        "Order the guard to open it now"
+      ],
+      "flats_bones": [
+        "Study the warning",
+        "Recover the intact boots"
+      ],
+      "flats_convoy": [
+        "Return a peaceful signal",
+        "Hide among the wrecks",
+        "Repair the awning for a Dust Cloak",
+        "Trade a useful warning for the Lucky Die"
+      ],
+      "flats_crater": [
+        "Search the rim",
+        "Give it a wide distance"
+      ],
+      "flats_dustwall": [
+        "Anchor beneath a wreck",
+        "Run for the culvert"
+      ],
+      "flats_mirage": [
+        "Trust the apparent landmark",
+        "Check the sun and your tracks"
+      ],
+      "flats_nightfire": [
+        "Share the fire",
+        "Pass unseen"
+      ],
+      "flats_signal": [
+        "Decode the sequence",
+        "Use it only as a bearing"
+      ],
+      "flats_solar": [
+        "Salvage a charge controller",
+        "Shelter beneath the panels"
+      ],
+      "flats_tanker": [
+        "Cut open the cargo locker",
+        "Test for fumes first"
+      ],
+      "flats_toll": [
+        "Break the barricade",
+        "Negotiate a smaller toll",
+        "Circle them through the glare"
+      ],
+      "glass_antenna": [
+        "Map the signal pattern",
+        "Walk between the quiet rows"
+      ],
+      "glass_bunker": [
+        "Reconstruct the entry code",
+        "Force the maintenance hatch"
+      ],
+      "glass_carcass": [
+        "Cut into the cargo hold",
+        "Enter through the driver's hatch"
+      ],
+      "glass_cult": [
+        "Recite their road blessing",
+        "Break through their line",
+        "Wait beneath the glass ridge"
+      ],
+      "glass_meteor": [
+        "Cool and recover it",
+        "Mark the crater and move on"
+      ],
+      "glass_pilgrim": [
+        "Accept the burden",
+        "Treat their burns instead"
+      ],
+      "glass_ruins": [
+        "Navigate by the broken sun",
+        "Move only through shadow"
+      ],
+      "glass_shadow": [
+        "Search for the missing traveler",
+        "Leave the shadow behind"
+      ],
+      "glass_spring": [
+        "Test and collect the water",
+        "Use the warmth without drinking"
+      ],
+      "glass_storm": [
+        "Wrap up and endure",
+        "Reach the overturned crawler"
+      ],
+      "global_acid_rain": [
+        "Build a quick shelter",
+        "Keep moving"
+      ],
+      "global_bike": [
+        "Repair the chain long enough to ride",
+        "Open the cargo box"
+      ],
+      "global_clear": [
+        "Stop and breathe",
+        "Use the visibility to scout"
+      ],
+      "global_crows": [
+        "Follow the words they repeat",
+        "Drive them off"
+      ],
+      "global_drop": [
+        "Open it before anyone arrives",
+        "Drag it into cover first"
+      ],
+      "global_grave": [
+        "Add a stone",
+        "Check beneath the cairn"
+      ],
+      "global_map": [
+        "Reconcile the conflicting marks",
+        "Add your own warning"
+      ],
+      "global_pack": [
+        "Inspect for traps",
+        "Leave it untouched"
+      ],
+      "global_quiet": [
+        "Walk at an easy pace",
+        "Use the calm to search"
+      ],
+      "global_snare": [
+        "Disarm and salvage it",
+        "Step over and leave quickly"
+      ],
+      "global_stranger": [
+        "Treat the wound",
+        "Offer water and move on"
+      ],
+      "global_trader": [
+        "Trade salvage for supplies",
+        "Ask only for road news"
+      ],
+      "industrial_alarm": [
+        "Override the door sequence",
+        "Race the closing doors"
+      ],
+      "industrial_conveyor": [
+        "Grab a crate before the crusher",
+        "Stop the line at its panel"
+      ],
+      "industrial_crane": [
+        "Dash beneath it",
+        "Lower it from the cab"
+      ],
+      "industrial_drones": [
+        "Disable their control link",
+        "Sprint between blind spots"
+      ],
+      "industrial_fire": [
+        "Open the suppression valves",
+        "Run the outer fence"
+      ],
+      "industrial_generator": [
+        "Stabilize the output",
+        "Tear out the copper"
+      ],
+      "industrial_locker": [
+        "Open only the unmarked locker",
+        "Leave the names closed",
+        "Open the security locker for the Stun Baton",
+        "Salvage the Scavenger Rig"
+      ],
+      "industrial_office": [
+        "Guess the manager's override",
+        "Cut through the wall",
+        "Unlock the Hunting Rifle cabinet",
+        "Recover the Flare Gun"
+      ],
+      "industrial_scavs": [
+        "Offer information for passage",
+        "Challenge their weakest guard",
+        "Slip through the rail yard"
+      ],
+      "industrial_tank": [
+        "Open the inspection hatch",
+        "Listen for a pattern"
+      ],
+      "lr_bandit_ledger": [
+        "Read the ledger aloud",
+        "Follow the cache marks",
+        "Burn the pages"
+      ],
+      "lr_bellkeepers_son": [
+        "Cross to Perrin",
+        "Draw the searchers away",
+        "Tell Dena to leave him"
+      ],
+      "lr_blue_van": [
+        "Repeat what you told them",
+        "Repair their receiver",
+        "Leave them your bearing"
+      ],
+      "lr_cup_passed_east": [
+        "Keep the line public",
+        "Trace the eastern pipe",
+        "Take water and leave"
+      ],
+      "lr_embers_in_rain": [
+        "Carry the sick traveler",
+        "Search for medicine alone",
+        "Decline the empty bedroll"
+      ],
+      "lr_last_battery": [
+        "Open the security door",
+        "Negotiate with the broker",
+        "Tell them to save the battery"
+      ],
+      "lr_last_toll": [
+        "Make the court name its limits",
+        "Verify the rifle’s owner",
+        "Pass without testimony"
+      ],
+      "lr_names_on_smoke": [
+        "Prove where the charge went",
+        "Offer yourself as guarantor",
+        "Let the crew take her"
+      ],
+      "lr_pharmacy_witness": [
+        "Give Lio the whole account",
+        "Ask what the gang recorded",
+        "Refuse to be judged"
+      ],
+      "lr_quiet_column": [
+        "Tell Dena what happened",
+        "Inspect the burned rotor",
+        "Refuse the tower’s burden"
+      ],
+      "lr_siren_in_glass": [
+        "Carry the flare east",
+        "Sound the buried siren",
+        "Keep the wastes quiet"
+      ],
+      "lr_thirst_court": [
+        "Audit every cistern",
+        "Open the reservoir fully",
+        "Reserve water for the Underrail"
+      ],
+      "lr_valve_below": [
+        "Defend the common valve",
+        "Rebuild the pressure bypass",
+        "Leave them the argument"
+      ],
+      "lr_voice_in_reeds": [
+        "Follow Talia’s tracks",
+        "Free the van first",
+        "Guide them out by radio"
+      ],
+      "lr_warm_windows": [
+        "Open the warm carriage",
+        "Restore the second heater",
+        "Keep the doors barred"
+      ],
+      "marsh_body": [
+        "Search for identification",
+        "Leave the dead undisturbed",
+        "Recover the Rebar Spear",
+        "Recover the Tire Armor"
+      ],
+      "marsh_bridge": [
+        "Cross quickly",
+        "Reinforce it with rope"
+      ],
+      "marsh_clinic": [
+        "Climb the exterior supports",
+        "Test the lower rooms first"
+      ],
+      "marsh_ferryman": [
+        "Tell the truth about your road",
+        "Read the current and cross alone"
+      ],
+      "marsh_filter": [
+        "Restart the clean-water line",
+        "Strip the inactive pump"
+      ],
+      "marsh_hut": [
+        "Call out from the reeds",
+        "Approach silently"
+      ],
+      "marsh_leeches": [
+        "Burn them away",
+        "Sprint through the channel"
+      ],
+      "marsh_lights": [
+        "Follow the pattern",
+        "Stay on visible ground"
+      ],
+      "marsh_raiders": [
+        "Fire before they close",
+        "Claim the water is poisoned",
+        "Use a smoke bomb"
+      ],
+      "marsh_storm": [
+        "Build cover from a road sign",
+        "Push for the tree line"
+      ],
+      "outskirts_apartment": [
+        "Search the occupied floor",
+        "Respect the warning and leave"
+      ],
+      "outskirts_bandits": [
+        "Rush their leader",
+        "Break through the alley",
+        "Convince them you carry plague"
+      ],
+      "outskirts_bus": [
+        "Pry the door apart",
+        "Trace the emergency release"
+      ],
+      "outskirts_cache": [
+        "Break the lock",
+        "Decode the faded instructions",
+        "Take the hanging buckler"
+      ],
+      "outskirts_child_radio": [
+        "Answer with calm instructions",
+        "Triangulate the signal"
+      ],
+      "outskirts_dogs": [
+        "Stand and fight",
+        "Throw them food",
+        "Climb the divider"
+      ],
+      "outskirts_market": [
+        "Trade stories for medicine",
+        "Spot the undervalued salvage",
+        "Earn the Rusted Hatchet",
+        "Earn the Nail Bat"
+      ],
+      "outskirts_overpass": [
+        "Cross the exposed beams",
+        "Take the drainage detour"
+      ],
+      "outskirts_sinkhole": [
+        "Leap the narrow edge",
+        "Descend with rope"
+      ],
+      "outskirts_siren": [
+        "Climb and disable it",
+        "Outwalk the noise"
+      ],
+      "rail_collapse": [
+        "Brace the weak section",
+        "Find a service bypass"
+      ],
+      "rail_door": [
+        "Recover the access cylinder",
+        "Memorize its challenge code"
+      ],
+      "rail_flood": [
+        "Climb the maintenance ladder",
+        "Race it to the platform"
+      ],
+      "rail_hunters": [
+        "Turn and attack the sound",
+        "Extinguish your light and move",
+        "Offer ammunition for peace"
+      ],
+      "rail_nest": [
+        "Drive it out with noise",
+        "Pass without changing rhythm"
+      ],
+      "rail_platform": [
+        "Bypass the payment board",
+        "Break the front panel"
+      ],
+      "rail_signal": [
+        "Follow the powered line",
+        "Cut power before passing"
+      ],
+      "rail_survivors": [
+        "Explain why the Citadel matters",
+        "Offer technical help"
+      ],
+      "rail_switch": [
+        "Trust the signal compass",
+        "Reconstruct the route board"
+      ],
+      "rail_train": [
+        "Knock before entering",
+        "Enter through the roof hatch"
+      ],
+      "rustsea_cartographers_debt": [
+        "Help Mara reach the Spire",
+        "Keep the map and leave her",
+        "Give Mara the Mercy Key"
+      ],
+      "rustsea_false_coordinates": [
+        "Retreat to the embankment",
+        "Cross before it rises",
+        "Enter the hollow below"
+      ],
+      "rustsea_green_line": [
+        "Follow the coordinates",
+        "Trace the signal first",
+        "Silence the speaker"
+      ],
+      "rustsea_last_coordinate": [
+        "Take Mara's mapped route",
+        "Wait for the signal to change",
+        "Leave proof for another traveler"
+      ],
+      "rustsea_quay_names": [
+        "Search for Mara's name",
+        "Copy every name",
+        "Deface the wall"
+      ],
+      "rustsea_salt_crown_wake": [
+        "Free the trapped survivor",
+        "Take supplies and leave",
+        "Climb into the hollow"
+      ],
+      "rustsea_station_arrivals": [
+        "Take Mara's newest route",
+        "Leave Mara a message",
+        "Burn the maps"
+      ],
+      "rustsea_voice_map": [
+        "Trust the shared route",
+        "Silence the receiver",
+        "Name the dead aloud"
+      ]
+    },
+    "conditions": {
+      "bleeding": "dca5ffb187599ece0f71c8e40d975d090a7f5def3ff1fdeda0306838c2991ed4",
+      "burned": "0cea64e35710ac59f9d2a7694f717b5bad5ddbc7d642be3d7cf007dc67c7a6d4",
+      "concussed": "9434bf8de150167373413b2e6aa79a13f7db1763f038c50ab57963c811ef1895",
+      "exhausted": "6b165f8988cd8101517d8acfb576f3eb342dabe00a83db7d85260464270db8ab",
+      "fever": "22fb8ecd235c41b9e63c934b03230e82b33a8fb851b156cd82db2eb5a5e0afcd",
+      "focused": "08436df04a491a06d6e3a99b2c1dd3903d87c3dd9c676788a83d31f34fbc2cca",
+      "infection": "6f33f7a6ac86dc7b5a867039a0b6afca7ea7df966bbec23b90999c5eab5e871c",
+      "inspired": "461da93aa733f41f751a05cd2c798eba0d0a500b4f4b8d5ca51511bf6a952ce0",
+      "irradiated": "35d7901fa04f82e20f6fcfcf29f0706f1db678614f2e3cb5a9c5a5c74daee50a",
+      "momentum": "9e71e9d12f3df3988fdf0149856e753ae552fa3319d69d40b73ca5750f547a20",
+      "shaken": "db23dbd3e267a99a73a768b8dcf18b270ec781ff92456a6ea124d94221cf7b27",
+      "sprain": "ee02bb01b2fd42a6aa55bba011f7b285763a86049afcdc475110a5b88b380ad9",
+      "steady_hands": "c204f7dbe24ce931fa2c114f30db06b89dcb543cfd3bd94c9fcf3962404b0c0b"
+    },
+    "counts": {
+      "checked_choices": 176,
+      "choices": 281,
+      "combat_choices": 11,
+      "flags_produced": 179,
+      "lethal_outcomes": 9,
+      "outcomes": 465
+    },
+    "discoveries": {
+      "ledger_b41_key": "612aa777a2baefb93b5182d081d7ecbdc39673bf70136a4582a0ebf0d51487d0",
+      "ledger_b41_mara": "adb91664171ddbf616f8ab01f2328efc42748ec42a96428758c4c3d91d692ebb",
+      "ledger_b41_signal": "01956deff85af2ff3b17330ea729f8d40698cec2d680f2430eba3beff388a304",
+      "ledger_b41_warden": "02b745c21e6ba654634e996c6d0f461575ea8eb86e091bc35c81e7fab96c1110",
+      "ledger_column_1": "f3af7cd93bfdcf3ea6646f37c589922534f9eab9546d9b4362b9825854bf0d28",
+      "ledger_column_2": "54e0169c4a8d1146ea2e8c95f82ade8c9f46c1b4553c12eba0f7d9f586cd8dcc",
+      "ledger_column_3": "ee1bca29c552051bfdea3c4d24173e4651c2b47fd12e317d9c5aaf4c2e86858f",
+      "ledger_debt_1": "b2b082a440f1bf2e7f4b12b599c42030d0e2020ca2946d2e49cdf0f02ceb1350",
+      "ledger_debt_2": "059df20f2cba4b560047492aece28e75d9c069e2457038ae7c198ea13d563696",
+      "ledger_debt_3": "b5a01bceb12d22eef36ff763a39ec0fabd98c705ea8c4ae53649b6dbb9865911",
+      "ledger_ending_citadel": "d1870431c73b2db3a038089818bc2ce4e666e8a3dcd77165bd1c62619b09997e",
+      "ledger_ending_witness": "1780e3995cc43ffd2acea54b62a0cc7e1652ec5801392449bdcd4a45a510f637",
+      "ledger_family_1": "575a03f84ebac05c8b5fa0071c1201c40ff46ddcfeb6e31e1361cb00d0f6610f",
+      "ledger_family_2": "77d3a4f3df6bf246a63266d435ea800c134ff7e87c24e07a64e824e0d6a6db8a",
+      "ledger_family_3": "8daaf404d20a1c33923c75467c67245b3394972c627b87eb368b45e3f37f4928",
+      "ledger_fire_1": "fe4ba25ab5cd235ba09462714f9c142f9e443d98c59bfbabd3d661d96ca1321c",
+      "ledger_fire_2": "994ce0f92c6abfd2be42b483215d9e320b48d025dd5c75a85bf99760fd8d9c65",
+      "ledger_fire_3": "734b4b824af0e41b31bbf708f69a01e9a8f99b4b9d52bc8469a8762c436d873a",
+      "ledger_rustsea_debt": "94c9badbd3ce087f0aaf780baf99d60b74844e1ea0e845ffc42f70f29aee44bd",
+      "ledger_rustsea_line": "592cf3ca39f03ab0f34cdbd5fff22982cd9fdae76b1e9653ec849585b2df9525",
+      "ledger_rustsea_spire": "dda5ab2f7c786396435d27b09d4246d080bce48edd9edfc33be84e2ea59cccb5",
+      "ledger_rustsea_station": "118df8fc65bedde02a78596d365a4fa54e8e537d21a26f99e1781025dc73c07a",
+      "ledger_water_1": "6ddf23465f18ddcf8f51372fa92d829aa58deca19c4a3971be2098174086a4f6",
+      "ledger_water_2": "cbdb1fa55a9d2500a1227c28c5dec15d9d1a1950a2226654200c87596c564573",
+      "ledger_water_3": "b5835856bd0aae3f8b343cf0779b568a731adecba6fa6d5a93a5971447d5ee6b"
+    },
+    "event_count": 112,
+    "items": {
+      "bitter_tonic": "067e038e1709ca0720f8caf2fea5811ffb1441fc422ac97e379cb513441b14fd",
+      "canned_meat": "4fbc3a57c355d92df44b517636c9174b9e64f8c73572f31b0d8a73f8a75587d9",
+      "canvas_pack": "91e0d7866f68f159d7873769c22f54b2605d5fe7838e7b93581e0fc894ef4757",
+      "clean_water": "11eb9a96a0651feabe405dbed7ebdcd2b616aea3d9f9d20409eba788941fe284",
+      "climbing_rope": "b07c468a783fc679eafd025e64c66c258b172c8f7d4b8613720bed0d3929bdb5",
+      "cloth_bandage": "71a81936a8e2460fdd51be2724429b09afc597807c15a5404f0d5bc0e0325945",
+      "dust_cloak": "d41a7b6aba9a851dcbc5e2c98ad9c596b80f81d3048a4ce89000364df57e3d9a",
+      "field_scanner": "10442e50dc70fb458404a1e93b30747b39ed1c0b5ca0387d4c63b7d82a8a6f3a",
+      "filter_mask": "990765a646eab65e8c584329a159a80531df27e290817fce7a954d268fa3af9a",
+      "flare_gun": "2be60ed0d7215a172fefc121066d504defc125330bfeb3a3e4e1cf2497d1af39",
+      "frame_pack": "cacb1a0d842077311783947a98b6f56de0517bc8fec6bb047a4df245ec1e821a",
+      "glow_moss": "15759672bce76d6930ce4c78956e254e75ca23a564604cc13721220e3a9b8ae1",
+      "hazmat_wrap": "98413c022dad45118547229aef763c11f8b27fc80f4e622ebd6a75623074f9cf",
+      "holdout_revolver": "dce212842ea737d050c08487219cf8739fc9933cd7977d6b24ff860b8bfc7cbb",
+      "hunting_rifle": "2b9e1fa5bccdb7047b23df1fe2905ce4d718112fa6c6f29275558c502b2b23dc",
+      "lucky_die": "9a6537dda3f83f5ff28fd5e5f6a57228f06d20873476b0a73d9f4c270d993fe4",
+      "mechanic_gloves": "81b76c622183623692ad3e8ee6a996c083633a9d4b57cbf514c3a773cbbecde1",
+      "medic_satchel": "1375bb9aef5ca5bad8ff4531666e688478b193dd3f7c10e741c16786895064d2",
+      "medkit": "baa16e277f179f5e07f9be843d8fb986917b3c31dcd1f7ba3d0e32bc639f6c69",
+      "nail_bat": "4505af76c40faf829fffb3d4b9bc0fd08964b8c855b884057fc57d94451bbb1d",
+      "painkillers": "4499e8f0475a56f0b923058e5b7c97e6ec833e7ca9eae213f9deb099e13218d3",
+      "pipe_pistol": "b504934d190f4a4ff41c92ae821624aed7d027abb20210876f8f3382889206b8",
+      "pistol_rounds": "bf16ccc44c35f9e6343da99089e841384028f0ecf489497b8770ac416535ccfa",
+      "plated_coat": "a9dba2848b9d3830e8065fc59d6c827a8938b0ba50fa6c352dbe2a252986d469",
+      "purifier_ampoule": "6c94b08d04c1ce080764778868b1c875c9254d108d2638a3bff84251fc851202",
+      "rad_tabs": "9787cd4ce19cd27cc172d66a5d7df3664fcbf2f2c305559e62c21f0f79e34c0a",
+      "ration_bar": "b32fd8382e1a01629a00161559b2b0230be75d9e35f4cfc4000591e54cbd6ed1",
+      "rebar_spear": "a25b469c74d26aadfb79cb4e14f8656eec8442e76b25c5541a6490b43f5deeb8",
+      "revolver_rounds": "7da8ee274f36c66cc361f6606119d50ed72eb64d0de519f87260d08b9feebaf4",
+      "rifle_rounds": "35faf23f675373b25fe54d14942615675cf750749531709975d41f91812cab3d",
+      "riot_padding": "bc73b3bef4cef0bdf0992a0401036270c47afb4aa85cb61c1d4bfc4ce3528712",
+      "road_shield": "55d4fd6fed53e5c9cc2f2054df08a0b0799e39e5d5fde96b92ab358630cedcf2",
+      "runner_jacket": "ebd9699ec80a2ea3968a0a25a6ad604ccf9b7bc9ea06ef9bd0e1a4ec1caefc94",
+      "rusted_hatchet": "c9fc8dafbfc1a2fc4d8cb45eec9c473a918588bfe7be8970e58cccdc0f394189",
+      "salvage_cleaver": "0cbe41f18a347536337b4b2fd73f23fb966cb97ee73b6bca8035d4fd5a27c89b",
+      "scavenger_rig": "1a1a7e215dfe8c860af82d58bfe1dda985664c987fc80602befbf4f987ddd76d",
+      "scout_leathers": "0331abbe9fcdc1274f671c29b0c6ecaf8e9cde8c835c8181de4928337cb0612b",
+      "scrap_buckler": "894022c0d2e84dad8ebb543883e688ad78bef82772b227d15fb85572244846f5",
+      "scrap_parts": "784ae4a0ac478ea85e7b132161f6057725ef93f9fb026f61f29de04d4b98a559",
+      "scrap_shotgun": "00c76fbcc6383d213bb556034566b7de030a2288267154220c36afca4e224538",
+      "scrap_vest": "ab0fdef3565e1ff61b6d445ab203bd7f5a8fb924013ef258ccd7fa625e3c5f5e",
+      "shock_probe": "39cc1ac4ebf7477940dc90fe366213a6a3bff95c7ee8f4a56de34871516dc113",
+      "shotgun_shells": "65de687954da5be38be9fb933d03c2ffd5d68fcbd94c348c1a60e5a1ca4f5d68",
+      "signal_compass": "f6f34d8ded6b5967c1111483fe3ec69299556d2849f5b26515157f66302a9934",
+      "smoke_bomb": "6ae673f9938e374acbee59f3eb8a9edb556ecce4cf300cdb3d5d1523efe1483f",
+      "stimulant": "97a2d5d4d40a01717d7061c1d6d0534cbb294d0a9c6f4f7bd0ceba6423ab7586",
+      "stun_baton": "1093396202da8cb654d62c57767411cb0fe1016a84ea1bf85b7ee520f5f11556",
+      "tire_armor": "c3d26914b4ac8ce1b0f2a0c9f9e6d5a211c889c9cc40b08116dd55318f499417",
+      "trader_token": "67ac6aab56c451f570794597d7dc147a875448beffb156dbde7a7bcadad3a0f7",
+      "wrecking_bar": "c3dfcb7b95b0524e5607d917e7fb432096944341cd9b82e8c33d7cbc8d26350c"
+    },
+    "signatures": {
+      "bunker41_ash_procession": "3b63b19615cc1193201401c7ea8b81c85a88cbda8217aa612f91cd0775279a56",
+      "bunker41_cartographer": "1e75b3f6750b80e2278760349814b3c814d0a29561365bd19367c350a4dd00f6",
+      "bunker41_chapel_car": "a6f55bc66fa98a40f782aace84a655c24e8d1cf51f60f144fb4a2deef8e326f3",
+      "bunker41_door_breathes": "f13d1bbc425917778e9bff9f22847b06911c564fe0d5806245eda55f230d3d24",
+      "bunker41_door_closes": "81c305e9e8bf855cf51f66ae0d95b77c702de7d95e5a3b4f1bcf2b1956aa35c7",
+      "bunker41_false_welcome": "f21313f819d2545195b1f1afae40ceb86b8cb05bb2481b4163e893d38f3fb28e",
+      "bunker41_fragment_calls": "bda33a94a22c77b0ca64c255434c7f456199f26798b1646380d9fa9c93a5410a",
+      "bunker41_green_platform": "079b74b186b0b6c672d0b5b74e750185fa531a49c88eebe7f0d08eedbe3de16a",
+      "bunker41_last_evacuation": "034b3bcbfa5c3ff9c6ca2c649b221c17d9bf2712bbee696ef5eaa06feabaed99",
+      "bunker41_ledger_living": "e493962784b622a7aa0dc520a17f7a11cf5915ad7ebd9ad9be52fb0243d3cd6e",
+      "bunker41_rusted_hatch": "364b99003ffe116cdb82c4c6d1e7bbd79949825413949f336fc851d99d8db938",
+      "bunker41_static": "743621eb98ce362ea474d6332a1377e52f8478ba7bdf94960d7249cbe01d67dc",
+      "bunker41_warden_remembers": "433284658db89fb7b38c5c4d44d964bc1d878b09e37d8e0e74384f16216d0185",
+      "fallback_dust": "c12b91578226c4ddfb9cddf85a80d813a7e4b7cf3f1254ed25dfddf9658c21a8",
+      "final_gate_1": "d1dec6a06ccffae11cb00943cce59a65842bc940fa6579a21889c02eabff3371",
+      "final_gate_2": "ebbc9110ed59db63b3b0bfdc5658ffe8354682ec5d55b093d07cc487be74795c",
+      "final_gate_3": "fc5124b6d5fd03e8392c5ef3fe2968cd573b0c8c159d641524a27ce4164091d2",
+      "flats_bones": "20e6efde0893b2c96aab2f90bf6bc6ffa741f4b114e08e41ca97a68947d9f27e",
+      "flats_convoy": "fd27ba16f089ad1e51eb3726002e6370d8ec83759bb512f4c954e783527544bf",
+      "flats_crater": "9c00c6c29c8c8153c199a40140107c6377eb46c3862beab07112ba727bdcaae1",
+      "flats_dustwall": "9c55467cb4c3a9807de8c1a4c31ca422fc9c308822c5088c1cac8c4f4de0594c",
+      "flats_mirage": "6b2efb3cf2d2a24584bd54279d72973dd4f9522ac9eecc2364481d00afc08b59",
+      "flats_nightfire": "3c7bd9555a63b6d568349962650a3a80c3d863480d0f18fcd0918346b469db07",
+      "flats_signal": "1786f71cf816105ee8742b20872ca3e17637af5662e5fb8dade3150f66d0f564",
+      "flats_solar": "e3b49cbd5d3f6b5542fff128a6159c676fea3759012580c2c012832e17f7cf32",
+      "flats_tanker": "fd3bb2ce15fdb5b2dfd1aeb52b2383c99655ce1c9c0b7a7d5df4e90a8b375811",
+      "flats_toll": "e446e3c3cdee77d99ec36f4c04204f2583209fbfb34df1440fe3638db9c23c84",
+      "glass_antenna": "ed40a31fbb42388b06efbc8bd6617434b970ae357dce157b2dc32ea6d5b354e6",
+      "glass_bunker": "1e2786f7c0c978c918257c35bc17daa576a98ffc2ef7fc2a3a71d2dd25abd46a",
+      "glass_carcass": "c0579d62286313aa4ee7a129eb6bfc2b266b5d11896f45f0698573b9ed633b2b",
+      "glass_cult": "89b5217822b8c104ae737e346ca72eb24098eb3c52d44c7d6192291ab92fcc95",
+      "glass_meteor": "678fa4625dbe2318e73406081d0ca40470765eb7377cafeaa81517da4ba0329f",
+      "glass_pilgrim": "2d5c7b2b836d6b114ee26b3c8a369a8c7292fc3293802aa0d0c7003fe17b1f70",
+      "glass_ruins": "59a67b3d4dcd5f78f1e9aa0394cb459b3fc2732fe73e2289d81af8cfe056717f",
+      "glass_shadow": "9f9ab6e3caf52d4e4d8b0694eaee736965932d8a0ad1920af32ce34450962f7a",
+      "glass_spring": "8576025b255aad13fba2a7ce2fbcc3faf3231bf3df96be3af3988d3257bb7250",
+      "glass_storm": "6713765575ce478449028e0455e51c00a877d40b35c3be221ee25364776d14ee",
+      "global_acid_rain": "91e3e931a1b3d68d3a01156e9a888578de150be435af3fd6567be309d559e648",
+      "global_bike": "efd1a712178e3bebd4760b49d286037800535be9911227d1c165d398a4909a8c",
+      "global_clear": "076d8c09d1047c90a22c1d5661038abf62b6dca671f5d0824c02fbac7285a3f8",
+      "global_crows": "4a3062a5f4077d9e1fab1d03a997e77154d521411a5250f79da953d58043c8c3",
+      "global_drop": "71877f6f4e5582e6e9068d2e7347ebd8a6baef5844db46d9e972898ec76509c8",
+      "global_grave": "1b50415ce6b7f76bf4c89928605eb7b57cc9510b38ed5b65bb19702b1ca48e4a",
+      "global_map": "46c1a5307720395093d1ceba2905fe4f9b22df1e1af2dc9640b939c792d2f265",
+      "global_pack": "1641845d483c89381a96cf4690ffec183cf4423dc070002840a82e070572696d",
+      "global_quiet": "744c9ee16c79d4927916314ec0a854cad148492b2d879b6e59a9bc8bf554a9db",
+      "global_snare": "37fda6285c29ced12e658d011b6d0f192c9aa50a07087b333dddab03066adf7e",
+      "global_stranger": "6f97e8614452eda62eacd271643c1a4ecf7c72e88ebe641ef5b5f6d136112a23",
+      "global_trader": "e51e62702e0d709144abc49f86fbf16ef26842578ec2edd531e3786167be24cf",
+      "industrial_alarm": "835c0e9d81edeb035bbcffdf893c06b6b1f193f59e1a45940bd0c784b877c040",
+      "industrial_conveyor": "7d6b53d80bb003d88e3d2b686ca06ea5f8d3d1610086a04bf7d2cd00dbf23c0e",
+      "industrial_crane": "c5d4985eb2439893c0580285ab713d2c2fbe9f5d717f4759de2f2d1fdfcc0963",
+      "industrial_drones": "b62054f134ad8e83aa8db8c61b6dee9e61eb86cb7bda7c285d474980be4eb7fc",
+      "industrial_fire": "c96711ce33a80b82fec8268884e202f55e120255688e491e935c4a559bc607a9",
+      "industrial_generator": "40921bcc25fc1026eba7386713bb3a2d133018e01e2907ec9aee8c89f7e49bc8",
+      "industrial_locker": "24e4886c9bee7ffeb623bc0242d166f7d514c1d411d43fcb656276b3fbe8a632",
+      "industrial_office": "6534f9414b52f0bf8407c22ec950adb4057c8dd9f9e0e22d568a4f47686ac061",
+      "industrial_scavs": "833161caa3fb0e2bcd0c40ab09f46939d4a274397eb9e0a5ac5ac1f7d02fd480",
+      "industrial_tank": "e277e8fadcadd3fbbec4d7d145f9e77f5a0c0c93dd9afb67b224082a4e635ef0",
+      "lr_bandit_ledger": "4ebd7edfa2ac49267f95f4d17b1022cd3af9b6c37859aa0e8efb6d5d50c7c941",
+      "lr_bellkeepers_son": "5e1242b263f782d2c7bda91f6f52432945be4c98536c0e94bdde7fa23cb2f688",
+      "lr_blue_van": "a7f5bb2fd17f83755a4869ae111bea32fd2ec843677d2a30d0c07102d4ee361c",
+      "lr_cup_passed_east": "87e4c121dda4fb6eef7e621113b3a9c8dc758afdc43db60379e40be3b14c8472",
+      "lr_embers_in_rain": "dd947c0ccc97bddc38aea8c0a76441b55406b07698d4eb9f777d75f347057aee",
+      "lr_last_battery": "cf369daa75bd37f30c268b0d2375ea77cc54786df19af4ccce3b6d8ee0ef893e",
+      "lr_last_toll": "cfa6d2ff32678f59c4bf1f5f3f830d6aa7961994303ee1dae12ee0a40b1d5c6b",
+      "lr_names_on_smoke": "f13d08d44e639b24aa9b7cceff2e1b3252d146919b9133f3384cdc75e9d4d29a",
+      "lr_pharmacy_witness": "aeea307fcfb463b3c7d2a585a34438a8f3b9125325038e67c75e7d3f88c4e69b",
+      "lr_quiet_column": "91cbb6718cbe84702b4a46d56d3316b969c73927b9f30cb4f383be237cc21030",
+      "lr_siren_in_glass": "52a9aaffbe1151cc2cc02c9eb00f7162cbb6ac509c2e255fd3d73c8447c3c5e6",
+      "lr_thirst_court": "3ae1854f9f045b81da46256ee79af7d80e1d022fc609320c54331e4bea4f5097",
+      "lr_valve_below": "da513c60b531cedef2a5a5c85b564f34eb935f5c8056555998a606cd48b03992",
+      "lr_voice_in_reeds": "c3110e960d8f6c89ccdb8dd981a8b6a59657dbb7a86f72cb837f51391ced7846",
+      "lr_warm_windows": "59551ac02ed0b5f6936b7f30e45105ea2f7f072b0d090432332237722dfb636b",
+      "marsh_body": "03280d6b78e9a4c780dbccaa25db5f7de652bd770f30b67a1a5355bf1dc8c7b0",
+      "marsh_bridge": "d7ce22777de8a641ae363260daf769e67ac56077582ee7d7c11c70369521c423",
+      "marsh_clinic": "882e7daeebcdb43c9e4a14b4628b0cfa6bf1097ae325b360130f0ed16869447a",
+      "marsh_ferryman": "7afb5d8d1444679b14fe4d97775109650e203abc2411fd5b7d0a7793b45c0e3a",
+      "marsh_filter": "153cec9ee9582ad6e20676e4b3197f7943c3906532c783a4929642a2b9a3c296",
+      "marsh_hut": "7f3e8403c369ebca88663b0e904b4d0e47c35b56723be60b027324c875831d15",
+      "marsh_leeches": "061e6b915194e0105b0568643b3de7f3d5eb4127f3d3c03ab0103b81c7c6abcf",
+      "marsh_lights": "556ee7dac8d6fcf77170c2541c87a74635abec91b56bf5d1666095b22f679755",
+      "marsh_raiders": "84584920347c88345bfa23e6aaa6c1155e58af64c5341ac8545a9eee9474fa86",
+      "marsh_storm": "2e7f0fe40d76f96f296b9f2e6520ef3fc143d587c589063f607cf43bd11febee",
+      "outskirts_apartment": "ece1a0d2bed670500baf7dd0980f1816f88a12d19d63b8f9692b046313d3718a",
+      "outskirts_bandits": "8d3dea16f004dbcf730174a4221c74386ba4f99ee8a3aee7be68f8dfd83dd8b9",
+      "outskirts_bus": "9aa5d0f99cf2560e49cf51551ab5b5df9ec11f11cff5223cfc43b3f4258945a2",
+      "outskirts_cache": "94c204cf7d345ef62d7fc386e2d9a4a6788c32d4b1d141cb9c85cc014033562b",
+      "outskirts_child_radio": "99d341feeedd9dd7612425ef7ef9db1098f7957e54b36c5b3be1fe568382eb16",
+      "outskirts_dogs": "4889b9c1b313468b4974f18f264d3029d9b7a9afd6f820011c3b2fc7f68465cd",
+      "outskirts_market": "a0dde48fd61cc2bb6e2095f0dd0d411ea97d7a5a33f7ced4a13e355f78d518f7",
+      "outskirts_overpass": "0fd86930d0e22ed6b10507e936b4ad0e4435bd72591be522b06b4211259162b8",
+      "outskirts_sinkhole": "5fdc77ad76b48b58ec811b4d20d60e5fccf3b04745538c53cc4c915647bf40e6",
+      "outskirts_siren": "1e97ece29546588536759cf141a28aec6b5af1b386b528b4410e26b765160807",
+      "rail_collapse": "c066953586de5387de39f082782c88ecad923c058deab57f8dda59b21714ee2a",
+      "rail_door": "4436bdd9bda347125a13d734e510f4baaa1a7760f84fe9fd85e5fce56f6f449e",
+      "rail_flood": "a18035da77bb1dee48a41dd3276c3f5dcb6b852844277d1d0eb41b646f651fde",
+      "rail_hunters": "d9deeb4d6586c9afab679bd287341ca7e84cb5ccf7f73fa43caf569b9d3ac81e",
+      "rail_nest": "3807ed57a496aa27224afedbc8de1a89f1e57dd086d4fe2d087b5c30b9a20952",
+      "rail_platform": "e513fbffa1b9674d9b20b99b587aad94bc70a77561f2c481f484e117bd34fe3a",
+      "rail_signal": "c42a1742430ed7f9f66cb355e36f3417175e464f26287aaf26571b0f9bea4e5f",
+      "rail_survivors": "9df5c6e619aa7b47414f9b414b7482c7e49b4bcc417c1d6d7dced16fa835a84b",
+      "rail_switch": "0d103ef54924627c38be5ef815305b6bcc10d38ec128dccca983d7ec7a86e0b5",
+      "rail_train": "c933bf6d0f0dcba20cb316e0e28f167ac7e634f9e9d4c7e67a3fb8545cc18cf6",
+      "rustsea_cartographers_debt": "6fe6e95d4fb436090c13eb2a8177a0561ccbc1a9b2eb50aafeee1efe523f82e3",
+      "rustsea_false_coordinates": "67fc04bb429b76d8af44c132e15cb34821311d510c9071865fb16be2a56affb3",
+      "rustsea_green_line": "ae45e9fbddf3303dc61aaba0f335256fe5feb43c4a06f78f4237aa837206f6c6",
+      "rustsea_last_coordinate": "e6af59666701aa3b291abab2bf4631993df16081c7c4fc5654e11684775010b8",
+      "rustsea_quay_names": "3b5a09b692d6a8397e66948e78ab32ffbc5ca02c19690befd7826c62b95ea7c0",
+      "rustsea_salt_crown_wake": "d56e8be5be1c559bbdc7d65a8b3593f60fff882f5dcbcecf62fcc666a9f8a648",
+      "rustsea_station_arrivals": "52c7aaa85b1842d3be41ac4a93280694d80defaa931ed9e1147f54e6ab6792f5",
+      "rustsea_voice_map": "54434923b5150d258dbf6157a5d6d5bd5e5bd0328a64c26d6e172f8942e87b52"
+    }
+  },
+  "launch": {
+    "adversaries": {
+      "ash_stalkers": "6a5b1ed64194bf9dac58b81ca84ef5a7575d45b5abf5e75e290f7015f9c649fe",
+      "bog_raiders": "1d4ebc91bade6963ef5a5c6cdfb6458eb638f9727de07f5caed1a7f0af68fb9c",
+      "citadel_guard": "a0e8505dea47766ba68425fbfcc114b920ac16d08fdb049a1a079854a56628c8",
+      "drone_swarm": "9eb0428008d62be7d329d78f017bc870c54184a38924d444d02c6935f54a7757",
+      "feral_dogs": "371f4c1d3ba9843a5f5377ba7faa53abac0d412d5acdab90a162aaac9b6207bf",
+      "glass_cult": "f6829cad79ba677ec6bcfdeb051989a5cdf2083ffcb2455abad6a456eaf8c2b7",
+      "marsh_leeches": "8b646d7bab017d036aff5e9bf205e270b653fb3efc5a54f8953f9d595916cec2",
+      "mutant_crows": "fbaf74fb01a99480511d804325d21d533a029e83567fc1a08543a728742dbabe",
+      "road_bandits": "1247e8d3003699e076d472a5e1fffaad521c0b73161bdfeebdede18f24360987",
+      "toll_gang": "bf3a7b6241f69d192e9dbbc3c07dc54343be81c434043184ff37a6f987484c6d",
+      "tunnel_hunters": "6d9da698631527e772058e329adde790e246ec4bca45d915abe2840684d06455",
+      "vault_scavs": "25021b11868600b349ddb853d628d18e941fe364571314ef078785933f89a473",
+      "warden_machine": "72cd7c2bee06c1183c11d05faa87276486c1a432c4b7a1f30fed92e7d836357b"
+    },
+    "choice_labels": {
+      "bunker41_ash_procession": [
+        "Join the procession",
+        "Speak the bunker’s truth",
+        "Rob the lantern bearers"
+      ],
+      "bunker41_cartographer": [
+        "Share a ration with Mara",
+        "Take her map and leave",
+        "Heed her warning and withdraw"
+      ],
+      "bunker41_chapel_car": [
+        "Give them the Mercy Key",
+        "Steal the founder’s records",
+        "Refuse their judgement"
+      ],
+      "bunker41_door_breathes": [
+        "Flee with the exposed relay",
+        "Follow the Cinder Wives",
+        "Enter the breathing chamber"
+      ],
+      "bunker41_door_closes": [
+        "Force your way through",
+        "Offer the Mercy Key",
+        "Read the names aloud",
+        "Play the Ash Choir record"
+      ],
+      "bunker41_false_welcome": [
+        "Open the archive",
+        "Leave hope untouched",
+        "Burn the access files"
+      ],
+      "bunker41_fragment_calls": [
+        "Follow the signal",
+        "Use it to mislead pursuers",
+        "Throw it onto the tracks"
+      ],
+      "bunker41_green_platform": [
+        "Take the service route",
+        "Search for Mara’s trail",
+        "Activate the station openly"
+      ],
+      "bunker41_last_evacuation": [
+        "Take the Mercy Key",
+        "Broadcast the abandoned names",
+        "Destroy the records"
+      ],
+      "bunker41_ledger_living": [
+        "Open the sealed rooms",
+        "Copy the ledger and continue",
+        "Destroy the ledger"
+      ],
+      "bunker41_rusted_hatch": [
+        "Take the maintenance shaft",
+        "Force the main hatch",
+        "Mark it and leave"
+      ],
+      "bunker41_static": [
+        "Preserve the recording",
+        "Answer the voice",
+        "Break the receiver"
+      ],
+      "bunker41_warden_remembers": [
+        "Refuse its authority",
+        "Attack the Warden",
+        "Invoke the Bunker record"
+      ],
+      "fallback_dust": [
+        "Keep a steady pace",
+        "Search the roadside"
+      ],
+      "final_gate_1": [
+        "Answer with the recovered gate code",
+        "Convince the guard you carry vital intelligence"
+      ],
+      "final_gate_2": [
+        "Overload its damaged sensor",
+        "Attack its wheel assembly",
+        "Slip through its scanning arc"
+      ],
+      "final_gate_3": [
+        "Force the gate apart",
+        "Complete the emergency override",
+        "Order the guard to open it now"
+      ],
+      "flats_bones": [
+        "Study the warning",
+        "Recover the intact boots"
+      ],
+      "flats_convoy": [
+        "Return a peaceful signal",
+        "Hide among the wrecks",
+        "Repair the awning for a Dust Cloak",
+        "Trade a useful warning for the Lucky Die"
+      ],
+      "flats_crater": [
+        "Search the rim",
+        "Give it a wide distance"
+      ],
+      "flats_dustwall": [
+        "Anchor beneath a wreck",
+        "Run for the culvert"
+      ],
+      "flats_mirage": [
+        "Trust the apparent landmark",
+        "Check the sun and your tracks"
+      ],
+      "flats_nightfire": [
+        "Share the fire",
+        "Pass unseen"
+      ],
+      "flats_signal": [
+        "Decode the sequence",
+        "Use it only as a bearing"
+      ],
+      "flats_solar": [
+        "Salvage a charge controller",
+        "Shelter beneath the panels"
+      ],
+      "flats_tanker": [
+        "Cut open the cargo locker",
+        "Test for fumes first"
+      ],
+      "flats_toll": [
+        "Break the barricade",
+        "Negotiate a smaller toll",
+        "Circle them through the glare"
+      ],
+      "glass_antenna": [
+        "Map the signal pattern",
+        "Walk between the quiet rows"
+      ],
+      "glass_bunker": [
+        "Reconstruct the entry code",
+        "Force the maintenance hatch"
+      ],
+      "glass_carcass": [
+        "Cut into the cargo hold",
+        "Enter through the driver's hatch"
+      ],
+      "glass_cult": [
+        "Recite their road blessing",
+        "Break through their line",
+        "Wait beneath the glass ridge"
+      ],
+      "glass_meteor": [
+        "Cool and recover it",
+        "Mark the crater and move on"
+      ],
+      "glass_pilgrim": [
+        "Accept the burden",
+        "Treat their burns instead"
+      ],
+      "glass_ruins": [
+        "Navigate by the broken sun",
+        "Move only through shadow"
+      ],
+      "glass_shadow": [
+        "Search for the missing traveler",
+        "Leave the shadow behind"
+      ],
+      "glass_spring": [
+        "Test and collect the water",
+        "Use the warmth without drinking"
+      ],
+      "glass_storm": [
+        "Wrap up and endure",
+        "Reach the overturned crawler"
+      ],
+      "global_acid_rain": [
+        "Build a quick shelter",
+        "Keep moving"
+      ],
+      "global_bike": [
+        "Repair the chain long enough to ride",
+        "Open the cargo box"
+      ],
+      "global_clear": [
+        "Stop and breathe",
+        "Use the visibility to scout"
+      ],
+      "global_crows": [
+        "Follow the words they repeat",
+        "Drive them off"
+      ],
+      "global_drop": [
+        "Open it before anyone arrives",
+        "Drag it into cover first"
+      ],
+      "global_grave": [
+        "Add a stone",
+        "Check beneath the cairn"
+      ],
+      "global_map": [
+        "Reconcile the conflicting marks",
+        "Add your own warning"
+      ],
+      "global_pack": [
+        "Inspect for traps",
+        "Leave it untouched"
+      ],
+      "global_quiet": [
+        "Walk at an easy pace",
+        "Use the calm to search"
+      ],
+      "global_snare": [
+        "Disarm and salvage it",
+        "Step over and leave quickly"
+      ],
+      "global_stranger": [
+        "Treat the wound",
+        "Offer water and move on"
+      ],
+      "global_trader": [
+        "Trade salvage for supplies",
+        "Ask only for road news"
+      ],
+      "industrial_alarm": [
+        "Override the door sequence",
+        "Race the closing doors"
+      ],
+      "industrial_conveyor": [
+        "Grab a crate before the crusher",
+        "Stop the line at its panel"
+      ],
+      "industrial_crane": [
+        "Dash beneath it",
+        "Lower it from the cab"
+      ],
+      "industrial_drones": [
+        "Disable their control link",
+        "Sprint between blind spots"
+      ],
+      "industrial_fire": [
+        "Open the suppression valves",
+        "Run the outer fence"
+      ],
+      "industrial_generator": [
+        "Stabilize the output",
+        "Tear out the copper"
+      ],
+      "industrial_locker": [
+        "Open only the unmarked locker",
+        "Leave the names closed",
+        "Open the security locker for the Stun Baton",
+        "Salvage the Scavenger Rig"
+      ],
+      "industrial_office": [
+        "Guess the manager's override",
+        "Cut through the wall",
+        "Unlock the Hunting Rifle cabinet",
+        "Recover the Flare Gun"
+      ],
+      "industrial_scavs": [
+        "Offer information for passage",
+        "Challenge their weakest guard",
+        "Slip through the rail yard"
+      ],
+      "industrial_tank": [
+        "Open the inspection hatch",
+        "Listen for a pattern"
+      ],
+      "marsh_body": [
+        "Search for identification",
+        "Leave the dead undisturbed",
+        "Recover the Rebar Spear",
+        "Recover the Tire Armor"
+      ],
+      "marsh_bridge": [
+        "Cross quickly",
+        "Reinforce it with rope"
+      ],
+      "marsh_clinic": [
+        "Climb the exterior supports",
+        "Test the lower rooms first"
+      ],
+      "marsh_ferryman": [
+        "Tell the truth about your road",
+        "Read the current and cross alone"
+      ],
+      "marsh_filter": [
+        "Restart the clean-water line",
+        "Strip the inactive pump"
+      ],
+      "marsh_hut": [
+        "Call out from the reeds",
+        "Approach silently"
+      ],
+      "marsh_leeches": [
+        "Burn them away",
+        "Sprint through the channel"
+      ],
+      "marsh_lights": [
+        "Follow the pattern",
+        "Stay on visible ground"
+      ],
+      "marsh_raiders": [
+        "Fire before they close",
+        "Claim the water is poisoned",
+        "Use a smoke bomb"
+      ],
+      "marsh_storm": [
+        "Build cover from a road sign",
+        "Push for the tree line"
+      ],
+      "outskirts_apartment": [
+        "Search the occupied floor",
+        "Respect the warning and leave"
+      ],
+      "outskirts_bandits": [
+        "Rush their leader",
+        "Break through the alley",
+        "Convince them you carry plague"
+      ],
+      "outskirts_bus": [
+        "Pry the door apart",
+        "Trace the emergency release"
+      ],
+      "outskirts_cache": [
+        "Break the lock",
+        "Decode the faded instructions",
+        "Take the hanging buckler"
+      ],
+      "outskirts_child_radio": [
+        "Answer with calm instructions",
+        "Triangulate the signal"
+      ],
+      "outskirts_dogs": [
+        "Stand and fight",
+        "Throw them food",
+        "Climb the divider"
+      ],
+      "outskirts_market": [
+        "Trade stories for medicine",
+        "Spot the undervalued salvage",
+        "Earn the Rusted Hatchet",
+        "Earn the Nail Bat"
+      ],
+      "outskirts_overpass": [
+        "Cross the exposed beams",
+        "Take the drainage detour"
+      ],
+      "outskirts_sinkhole": [
+        "Leap the narrow edge",
+        "Descend with rope"
+      ],
+      "outskirts_siren": [
+        "Climb and disable it",
+        "Outwalk the noise"
+      ],
+      "rail_collapse": [
+        "Brace the weak section",
+        "Find a service bypass"
+      ],
+      "rail_door": [
+        "Recover the access cylinder",
+        "Memorize its challenge code"
+      ],
+      "rail_flood": [
+        "Climb the maintenance ladder",
+        "Race it to the platform"
+      ],
+      "rail_hunters": [
+        "Turn and attack the sound",
+        "Extinguish your light and move",
+        "Offer ammunition for peace"
+      ],
+      "rail_nest": [
+        "Drive it out with noise",
+        "Pass without changing rhythm"
+      ],
+      "rail_platform": [
+        "Bypass the payment board",
+        "Break the front panel"
+      ],
+      "rail_signal": [
+        "Follow the powered line",
+        "Cut power before passing"
+      ],
+      "rail_survivors": [
+        "Explain why the Citadel matters",
+        "Offer technical help"
+      ],
+      "rail_switch": [
+        "Trust the signal compass",
+        "Reconstruct the route board"
+      ],
+      "rail_train": [
+        "Knock before entering",
+        "Enter through the roof hatch"
+      ],
+      "rustsea_cartographers_debt": [
+        "Help Mara reach the Spire",
+        "Keep the map and leave her",
+        "Give Mara the Mercy Key"
+      ],
+      "rustsea_false_coordinates": [
+        "Retreat to the embankment",
+        "Cross before it rises",
+        "Enter the hollow below"
+      ],
+      "rustsea_green_line": [
+        "Follow the coordinates",
+        "Trace the signal first",
+        "Silence the speaker"
+      ],
+      "rustsea_last_coordinate": [
+        "Take Mara's mapped route",
+        "Wait for the signal to change",
+        "Leave proof for another traveler"
+      ],
+      "rustsea_quay_names": [
+        "Search for Mara's name",
+        "Copy every name",
+        "Deface the wall"
+      ],
+      "rustsea_salt_crown_wake": [
+        "Free the trapped survivor",
+        "Take supplies and leave",
+        "Climb into the hollow"
+      ],
+      "rustsea_station_arrivals": [
+        "Take Mara's newest route",
+        "Leave Mara a message",
+        "Burn the maps"
+      ],
+      "rustsea_voice_map": [
+        "Trust the shared route",
+        "Silence the receiver",
+        "Name the dead aloud"
+      ]
+    },
+    "conditions": {
+      "bleeding": "dca5ffb187599ece0f71c8e40d975d090a7f5def3ff1fdeda0306838c2991ed4",
+      "burned": "0cea64e35710ac59f9d2a7694f717b5bad5ddbc7d642be3d7cf007dc67c7a6d4",
+      "concussed": "9434bf8de150167373413b2e6aa79a13f7db1763f038c50ab57963c811ef1895",
+      "exhausted": "6b165f8988cd8101517d8acfb576f3eb342dabe00a83db7d85260464270db8ab",
+      "fever": "22fb8ecd235c41b9e63c934b03230e82b33a8fb851b156cd82db2eb5a5e0afcd",
+      "focused": "08436df04a491a06d6e3a99b2c1dd3903d87c3dd9c676788a83d31f34fbc2cca",
+      "infection": "6f33f7a6ac86dc7b5a867039a0b6afca7ea7df966bbec23b90999c5eab5e871c",
+      "inspired": "461da93aa733f41f751a05cd2c798eba0d0a500b4f4b8d5ca51511bf6a952ce0",
+      "irradiated": "35d7901fa04f82e20f6fcfcf29f0706f1db678614f2e3cb5a9c5a5c74daee50a",
+      "momentum": "9e71e9d12f3df3988fdf0149856e753ae552fa3319d69d40b73ca5750f547a20",
+      "shaken": "db23dbd3e267a99a73a768b8dcf18b270ec781ff92456a6ea124d94221cf7b27",
+      "sprain": "ee02bb01b2fd42a6aa55bba011f7b285763a86049afcdc475110a5b88b380ad9",
+      "steady_hands": "c204f7dbe24ce931fa2c114f30db06b89dcb543cfd3bd94c9fcf3962404b0c0b"
+    },
+    "counts": {
+      "checked_choices": 146,
+      "choices": 236,
+      "combat_choices": 11,
+      "flags_produced": 72,
+      "lethal_outcomes": 9,
+      "outcomes": 390
+    },
+    "discoveries": {
+      "ledger_b41_key": "612aa777a2baefb93b5182d081d7ecbdc39673bf70136a4582a0ebf0d51487d0",
+      "ledger_b41_mara": "adb91664171ddbf616f8ab01f2328efc42748ec42a96428758c4c3d91d692ebb",
+      "ledger_b41_signal": "01956deff85af2ff3b17330ea729f8d40698cec2d680f2430eba3beff388a304",
+      "ledger_b41_warden": "02b745c21e6ba654634e996c6d0f461575ea8eb86e091bc35c81e7fab96c1110",
+      "ledger_ending_citadel": "d1870431c73b2db3a038089818bc2ce4e666e8a3dcd77165bd1c62619b09997e",
+      "ledger_ending_witness": "1780e3995cc43ffd2acea54b62a0cc7e1652ec5801392449bdcd4a45a510f637",
+      "ledger_rustsea_debt": "94c9badbd3ce087f0aaf780baf99d60b74844e1ea0e845ffc42f70f29aee44bd",
+      "ledger_rustsea_line": "592cf3ca39f03ab0f34cdbd5fff22982cd9fdae76b1e9653ec849585b2df9525",
+      "ledger_rustsea_spire": "dda5ab2f7c786396435d27b09d4246d080bce48edd9edfc33be84e2ea59cccb5",
+      "ledger_rustsea_station": "118df8fc65bedde02a78596d365a4fa54e8e537d21a26f99e1781025dc73c07a"
+    },
+    "event_count": 97,
+    "items": {
+      "bitter_tonic": "067e038e1709ca0720f8caf2fea5811ffb1441fc422ac97e379cb513441b14fd",
+      "canned_meat": "4fbc3a57c355d92df44b517636c9174b9e64f8c73572f31b0d8a73f8a75587d9",
+      "canvas_pack": "91e0d7866f68f159d7873769c22f54b2605d5fe7838e7b93581e0fc894ef4757",
+      "clean_water": "11eb9a96a0651feabe405dbed7ebdcd2b616aea3d9f9d20409eba788941fe284",
+      "climbing_rope": "b07c468a783fc679eafd025e64c66c258b172c8f7d4b8613720bed0d3929bdb5",
+      "cloth_bandage": "71a81936a8e2460fdd51be2724429b09afc597807c15a5404f0d5bc0e0325945",
+      "dust_cloak": "d41a7b6aba9a851dcbc5e2c98ad9c596b80f81d3048a4ce89000364df57e3d9a",
+      "field_scanner": "10442e50dc70fb458404a1e93b30747b39ed1c0b5ca0387d4c63b7d82a8a6f3a",
+      "filter_mask": "990765a646eab65e8c584329a159a80531df27e290817fce7a954d268fa3af9a",
+      "flare_gun": "2be60ed0d7215a172fefc121066d504defc125330bfeb3a3e4e1cf2497d1af39",
+      "frame_pack": "cacb1a0d842077311783947a98b6f56de0517bc8fec6bb047a4df245ec1e821a",
+      "glow_moss": "15759672bce76d6930ce4c78956e254e75ca23a564604cc13721220e3a9b8ae1",
+      "hazmat_wrap": "98413c022dad45118547229aef763c11f8b27fc80f4e622ebd6a75623074f9cf",
+      "holdout_revolver": "dce212842ea737d050c08487219cf8739fc9933cd7977d6b24ff860b8bfc7cbb",
+      "hunting_rifle": "2b9e1fa5bccdb7047b23df1fe2905ce4d718112fa6c6f29275558c502b2b23dc",
+      "lucky_die": "9a6537dda3f83f5ff28fd5e5f6a57228f06d20873476b0a73d9f4c270d993fe4",
+      "mechanic_gloves": "81b76c622183623692ad3e8ee6a996c083633a9d4b57cbf514c3a773cbbecde1",
+      "medic_satchel": "1375bb9aef5ca5bad8ff4531666e688478b193dd3f7c10e741c16786895064d2",
+      "medkit": "baa16e277f179f5e07f9be843d8fb986917b3c31dcd1f7ba3d0e32bc639f6c69",
+      "nail_bat": "4505af76c40faf829fffb3d4b9bc0fd08964b8c855b884057fc57d94451bbb1d",
+      "painkillers": "4499e8f0475a56f0b923058e5b7c97e6ec833e7ca9eae213f9deb099e13218d3",
+      "pipe_pistol": "b504934d190f4a4ff41c92ae821624aed7d027abb20210876f8f3382889206b8",
+      "pistol_rounds": "bf16ccc44c35f9e6343da99089e841384028f0ecf489497b8770ac416535ccfa",
+      "plated_coat": "a9dba2848b9d3830e8065fc59d6c827a8938b0ba50fa6c352dbe2a252986d469",
+      "purifier_ampoule": "6c94b08d04c1ce080764778868b1c875c9254d108d2638a3bff84251fc851202",
+      "rad_tabs": "9787cd4ce19cd27cc172d66a5d7df3664fcbf2f2c305559e62c21f0f79e34c0a",
+      "ration_bar": "b32fd8382e1a01629a00161559b2b0230be75d9e35f4cfc4000591e54cbd6ed1",
+      "rebar_spear": "a25b469c74d26aadfb79cb4e14f8656eec8442e76b25c5541a6490b43f5deeb8",
+      "revolver_rounds": "7da8ee274f36c66cc361f6606119d50ed72eb64d0de519f87260d08b9feebaf4",
+      "rifle_rounds": "35faf23f675373b25fe54d14942615675cf750749531709975d41f91812cab3d",
+      "riot_padding": "bc73b3bef4cef0bdf0992a0401036270c47afb4aa85cb61c1d4bfc4ce3528712",
+      "road_shield": "55d4fd6fed53e5c9cc2f2054df08a0b0799e39e5d5fde96b92ab358630cedcf2",
+      "runner_jacket": "ebd9699ec80a2ea3968a0a25a6ad604ccf9b7bc9ea06ef9bd0e1a4ec1caefc94",
+      "rusted_hatchet": "c9fc8dafbfc1a2fc4d8cb45eec9c473a918588bfe7be8970e58cccdc0f394189",
+      "salvage_cleaver": "0cbe41f18a347536337b4b2fd73f23fb966cb97ee73b6bca8035d4fd5a27c89b",
+      "scavenger_rig": "1a1a7e215dfe8c860af82d58bfe1dda985664c987fc80602befbf4f987ddd76d",
+      "scout_leathers": "0331abbe9fcdc1274f671c29b0c6ecaf8e9cde8c835c8181de4928337cb0612b",
+      "scrap_buckler": "894022c0d2e84dad8ebb543883e688ad78bef82772b227d15fb85572244846f5",
+      "scrap_parts": "784ae4a0ac478ea85e7b132161f6057725ef93f9fb026f61f29de04d4b98a559",
+      "scrap_shotgun": "00c76fbcc6383d213bb556034566b7de030a2288267154220c36afca4e224538",
+      "scrap_vest": "ab0fdef3565e1ff61b6d445ab203bd7f5a8fb924013ef258ccd7fa625e3c5f5e",
+      "shock_probe": "39cc1ac4ebf7477940dc90fe366213a6a3bff95c7ee8f4a56de34871516dc113",
+      "shotgun_shells": "65de687954da5be38be9fb933d03c2ffd5d68fcbd94c348c1a60e5a1ca4f5d68",
+      "signal_compass": "f6f34d8ded6b5967c1111483fe3ec69299556d2849f5b26515157f66302a9934",
+      "smoke_bomb": "6ae673f9938e374acbee59f3eb8a9edb556ecce4cf300cdb3d5d1523efe1483f",
+      "stimulant": "97a2d5d4d40a01717d7061c1d6d0534cbb294d0a9c6f4f7bd0ceba6423ab7586",
+      "stun_baton": "1093396202da8cb654d62c57767411cb0fe1016a84ea1bf85b7ee520f5f11556",
+      "tire_armor": "c3d26914b4ac8ce1b0f2a0c9f9e6d5a211c889c9cc40b08116dd55318f499417",
+      "trader_token": "67ac6aab56c451f570794597d7dc147a875448beffb156dbde7a7bcadad3a0f7",
+      "wrecking_bar": "c3dfcb7b95b0524e5607d917e7fb432096944341cd9b82e8c33d7cbc8d26350c"
+    },
+    "signatures": {
+      "bunker41_ash_procession": "3b63b19615cc1193201401c7ea8b81c85a88cbda8217aa612f91cd0775279a56",
+      "bunker41_cartographer": "1e75b3f6750b80e2278760349814b3c814d0a29561365bd19367c350a4dd00f6",
+      "bunker41_chapel_car": "a6f55bc66fa98a40f782aace84a655c24e8d1cf51f60f144fb4a2deef8e326f3",
+      "bunker41_door_breathes": "f13d1bbc425917778e9bff9f22847b06911c564fe0d5806245eda55f230d3d24",
+      "bunker41_door_closes": "81c305e9e8bf855cf51f66ae0d95b77c702de7d95e5a3b4f1bcf2b1956aa35c7",
+      "bunker41_false_welcome": "f21313f819d2545195b1f1afae40ceb86b8cb05bb2481b4163e893d38f3fb28e",
+      "bunker41_fragment_calls": "bda33a94a22c77b0ca64c255434c7f456199f26798b1646380d9fa9c93a5410a",
+      "bunker41_green_platform": "079b74b186b0b6c672d0b5b74e750185fa531a49c88eebe7f0d08eedbe3de16a",
+      "bunker41_last_evacuation": "034b3bcbfa5c3ff9c6ca2c649b221c17d9bf2712bbee696ef5eaa06feabaed99",
+      "bunker41_ledger_living": "e493962784b622a7aa0dc520a17f7a11cf5915ad7ebd9ad9be52fb0243d3cd6e",
+      "bunker41_rusted_hatch": "364b99003ffe116cdb82c4c6d1e7bbd79949825413949f336fc851d99d8db938",
+      "bunker41_static": "743621eb98ce362ea474d6332a1377e52f8478ba7bdf94960d7249cbe01d67dc",
+      "bunker41_warden_remembers": "433284658db89fb7b38c5c4d44d964bc1d878b09e37d8e0e74384f16216d0185",
+      "fallback_dust": "c12b91578226c4ddfb9cddf85a80d813a7e4b7cf3f1254ed25dfddf9658c21a8",
+      "final_gate_1": "d1dec6a06ccffae11cb00943cce59a65842bc940fa6579a21889c02eabff3371",
+      "final_gate_2": "ebbc9110ed59db63b3b0bfdc5658ffe8354682ec5d55b093d07cc487be74795c",
+      "final_gate_3": "fc5124b6d5fd03e8392c5ef3fe2968cd573b0c8c159d641524a27ce4164091d2",
+      "flats_bones": "20e6efde0893b2c96aab2f90bf6bc6ffa741f4b114e08e41ca97a68947d9f27e",
+      "flats_convoy": "fd27ba16f089ad1e51eb3726002e6370d8ec83759bb512f4c954e783527544bf",
+      "flats_crater": "9c00c6c29c8c8153c199a40140107c6377eb46c3862beab07112ba727bdcaae1",
+      "flats_dustwall": "9c55467cb4c3a9807de8c1a4c31ca422fc9c308822c5088c1cac8c4f4de0594c",
+      "flats_mirage": "6b2efb3cf2d2a24584bd54279d72973dd4f9522ac9eecc2364481d00afc08b59",
+      "flats_nightfire": "22f3568d8c5258a2304abec4c668e94e84511ad2e5d79ac844cbdf9286ea0fb7",
+      "flats_signal": "1786f71cf816105ee8742b20872ca3e17637af5662e5fb8dade3150f66d0f564",
+      "flats_solar": "e3b49cbd5d3f6b5542fff128a6159c676fea3759012580c2c012832e17f7cf32",
+      "flats_tanker": "fd3bb2ce15fdb5b2dfd1aeb52b2383c99655ce1c9c0b7a7d5df4e90a8b375811",
+      "flats_toll": "e446e3c3cdee77d99ec36f4c04204f2583209fbfb34df1440fe3638db9c23c84",
+      "glass_antenna": "ed40a31fbb42388b06efbc8bd6617434b970ae357dce157b2dc32ea6d5b354e6",
+      "glass_bunker": "1e2786f7c0c978c918257c35bc17daa576a98ffc2ef7fc2a3a71d2dd25abd46a",
+      "glass_carcass": "c0579d62286313aa4ee7a129eb6bfc2b266b5d11896f45f0698573b9ed633b2b",
+      "glass_cult": "89b5217822b8c104ae737e346ca72eb24098eb3c52d44c7d6192291ab92fcc95",
+      "glass_meteor": "678fa4625dbe2318e73406081d0ca40470765eb7377cafeaa81517da4ba0329f",
+      "glass_pilgrim": "2d5c7b2b836d6b114ee26b3c8a369a8c7292fc3293802aa0d0c7003fe17b1f70",
+      "glass_ruins": "59a67b3d4dcd5f78f1e9aa0394cb459b3fc2732fe73e2289d81af8cfe056717f",
+      "glass_shadow": "9f9ab6e3caf52d4e4d8b0694eaee736965932d8a0ad1920af32ce34450962f7a",
+      "glass_spring": "8576025b255aad13fba2a7ce2fbcc3faf3231bf3df96be3af3988d3257bb7250",
+      "glass_storm": "6713765575ce478449028e0455e51c00a877d40b35c3be221ee25364776d14ee",
+      "global_acid_rain": "91e3e931a1b3d68d3a01156e9a888578de150be435af3fd6567be309d559e648",
+      "global_bike": "efd1a712178e3bebd4760b49d286037800535be9911227d1c165d398a4909a8c",
+      "global_clear": "076d8c09d1047c90a22c1d5661038abf62b6dca671f5d0824c02fbac7285a3f8",
+      "global_crows": "4a3062a5f4077d9e1fab1d03a997e77154d521411a5250f79da953d58043c8c3",
+      "global_drop": "71877f6f4e5582e6e9068d2e7347ebd8a6baef5844db46d9e972898ec76509c8",
+      "global_grave": "1b50415ce6b7f76bf4c89928605eb7b57cc9510b38ed5b65bb19702b1ca48e4a",
+      "global_map": "46c1a5307720395093d1ceba2905fe4f9b22df1e1af2dc9640b939c792d2f265",
+      "global_pack": "1641845d483c89381a96cf4690ffec183cf4423dc070002840a82e070572696d",
+      "global_quiet": "744c9ee16c79d4927916314ec0a854cad148492b2d879b6e59a9bc8bf554a9db",
+      "global_snare": "37fda6285c29ced12e658d011b6d0f192c9aa50a07087b333dddab03066adf7e",
+      "global_stranger": "6f97e8614452eda62eacd271643c1a4ecf7c72e88ebe641ef5b5f6d136112a23",
+      "global_trader": "e51e62702e0d709144abc49f86fbf16ef26842578ec2edd531e3786167be24cf",
+      "industrial_alarm": "835c0e9d81edeb035bbcffdf893c06b6b1f193f59e1a45940bd0c784b877c040",
+      "industrial_conveyor": "7d6b53d80bb003d88e3d2b686ca06ea5f8d3d1610086a04bf7d2cd00dbf23c0e",
+      "industrial_crane": "c5d4985eb2439893c0580285ab713d2c2fbe9f5d717f4759de2f2d1fdfcc0963",
+      "industrial_drones": "b62054f134ad8e83aa8db8c61b6dee9e61eb86cb7bda7c285d474980be4eb7fc",
+      "industrial_fire": "c96711ce33a80b82fec8268884e202f55e120255688e491e935c4a559bc607a9",
+      "industrial_generator": "40921bcc25fc1026eba7386713bb3a2d133018e01e2907ec9aee8c89f7e49bc8",
+      "industrial_locker": "24e4886c9bee7ffeb623bc0242d166f7d514c1d411d43fcb656276b3fbe8a632",
+      "industrial_office": "6534f9414b52f0bf8407c22ec950adb4057c8dd9f9e0e22d568a4f47686ac061",
+      "industrial_scavs": "833161caa3fb0e2bcd0c40ab09f46939d4a274397eb9e0a5ac5ac1f7d02fd480",
+      "industrial_tank": "e277e8fadcadd3fbbec4d7d145f9e77f5a0c0c93dd9afb67b224082a4e635ef0",
+      "marsh_body": "03280d6b78e9a4c780dbccaa25db5f7de652bd770f30b67a1a5355bf1dc8c7b0",
+      "marsh_bridge": "d7ce22777de8a641ae363260daf769e67ac56077582ee7d7c11c70369521c423",
+      "marsh_clinic": "882e7daeebcdb43c9e4a14b4628b0cfa6bf1097ae325b360130f0ed16869447a",
+      "marsh_ferryman": "7afb5d8d1444679b14fe4d97775109650e203abc2411fd5b7d0a7793b45c0e3a",
+      "marsh_filter": "b4886d5d1fdc6edd292b9a55ca36f40443477b0e60958f1fbc36198eacc96f1e",
+      "marsh_hut": "7f3e8403c369ebca88663b0e904b4d0e47c35b56723be60b027324c875831d15",
+      "marsh_leeches": "061e6b915194e0105b0568643b3de7f3d5eb4127f3d3c03ab0103b81c7c6abcf",
+      "marsh_lights": "556ee7dac8d6fcf77170c2541c87a74635abec91b56bf5d1666095b22f679755",
+      "marsh_raiders": "84584920347c88345bfa23e6aaa6c1155e58af64c5341ac8545a9eee9474fa86",
+      "marsh_storm": "2e7f0fe40d76f96f296b9f2e6520ef3fc143d587c589063f607cf43bd11febee",
+      "outskirts_apartment": "ece1a0d2bed670500baf7dd0980f1816f88a12d19d63b8f9692b046313d3718a",
+      "outskirts_bandits": "75d46f079463d15c4fda1a4b2b8551847ffa7db77adafe611503b891909ca577",
+      "outskirts_bus": "9aa5d0f99cf2560e49cf51551ab5b5df9ec11f11cff5223cfc43b3f4258945a2",
+      "outskirts_cache": "94c204cf7d345ef62d7fc386e2d9a4a6788c32d4b1d141cb9c85cc014033562b",
+      "outskirts_child_radio": "95c2242bbcd4e1f67cdafdbc286b7807770095e4acb6c515ce1d7583f0ab04fd",
+      "outskirts_dogs": "4889b9c1b313468b4974f18f264d3029d9b7a9afd6f820011c3b2fc7f68465cd",
+      "outskirts_market": "a0dde48fd61cc2bb6e2095f0dd0d411ea97d7a5a33f7ced4a13e355f78d518f7",
+      "outskirts_overpass": "0fd86930d0e22ed6b10507e936b4ad0e4435bd72591be522b06b4211259162b8",
+      "outskirts_sinkhole": "5fdc77ad76b48b58ec811b4d20d60e5fccf3b04745538c53cc4c915647bf40e6",
+      "outskirts_siren": "52584615785deb71df7c0ab1c6ae7208158a9989b17452571b1568e49c6761a6",
+      "rail_collapse": "c066953586de5387de39f082782c88ecad923c058deab57f8dda59b21714ee2a",
+      "rail_door": "4436bdd9bda347125a13d734e510f4baaa1a7760f84fe9fd85e5fce56f6f449e",
+      "rail_flood": "a18035da77bb1dee48a41dd3276c3f5dcb6b852844277d1d0eb41b646f651fde",
+      "rail_hunters": "d9deeb4d6586c9afab679bd287341ca7e84cb5ccf7f73fa43caf569b9d3ac81e",
+      "rail_nest": "3807ed57a496aa27224afedbc8de1a89f1e57dd086d4fe2d087b5c30b9a20952",
+      "rail_platform": "e513fbffa1b9674d9b20b99b587aad94bc70a77561f2c481f484e117bd34fe3a",
+      "rail_signal": "c42a1742430ed7f9f66cb355e36f3417175e464f26287aaf26571b0f9bea4e5f",
+      "rail_survivors": "9df5c6e619aa7b47414f9b414b7482c7e49b4bcc417c1d6d7dced16fa835a84b",
+      "rail_switch": "0d103ef54924627c38be5ef815305b6bcc10d38ec128dccca983d7ec7a86e0b5",
+      "rail_train": "c933bf6d0f0dcba20cb316e0e28f167ac7e634f9e9d4c7e67a3fb8545cc18cf6",
+      "rustsea_cartographers_debt": "6fe6e95d4fb436090c13eb2a8177a0561ccbc1a9b2eb50aafeee1efe523f82e3",
+      "rustsea_false_coordinates": "67fc04bb429b76d8af44c132e15cb34821311d510c9071865fb16be2a56affb3",
+      "rustsea_green_line": "ae45e9fbddf3303dc61aaba0f335256fe5feb43c4a06f78f4237aa837206f6c6",
+      "rustsea_last_coordinate": "e6af59666701aa3b291abab2bf4631993df16081c7c4fc5654e11684775010b8",
+      "rustsea_quay_names": "3b5a09b692d6a8397e66948e78ab32ffbc5ca02c19690befd7826c62b95ea7c0",
+      "rustsea_salt_crown_wake": "d56e8be5be1c559bbdc7d65a8b3593f60fff882f5dcbcecf62fcc666a9f8a648",
+      "rustsea_station_arrivals": "52c7aaa85b1842d3be41ac4a93280694d80defaa931ed9e1147f54e6ab6792f5",
+      "rustsea_voice_map": "54434923b5150d258dbf6157a5d6d5bd5e5bd0328a64c26d6e172f8942e87b52"
+    }
+  }
+}

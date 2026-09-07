@@ -10,13 +10,19 @@ run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://assets/ui/icon.svg"
 
+[ashfall]
+
+release/monetization_enabled=false
+release/living_road_enabled=false
+
 [display]
 
-window/size/viewport_width=540
-window/size/viewport_height=960
-window/size/window_width_override=540
+window/size/viewport_width=393
+window/size/viewport_height=852
+window/size/window_width_override=443
 window/size/window_height_override=960
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/handheld/orientation=1
 
 [rendering]

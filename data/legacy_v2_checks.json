@@ -1,0 +1,32 @@
+{
+  "legacy_checks": {
+    "outskirts_bandits:1": 12, "outskirts_bandits:2": 14, "outskirts_bus:0": 12, "outskirts_bus:1": 11, "outskirts_dogs:2": 11,
+    "outskirts_market:0": 12, "outskirts_market:1": 13, "outskirts_overpass:0": 13, "outskirts_overpass:1": 10, "outskirts_apartment:0": 13,
+    "outskirts_siren:0": 13, "outskirts_siren:1": 11, "outskirts_cache:0": 14, "outskirts_cache:1": 13, "outskirts_child_radio:0": 12,
+    "outskirts_child_radio:1": 14, "outskirts_sinkhole:0": 13, "outskirts_sinkhole:1": 10, "flats_toll:1": 12, "flats_toll:2": 13,
+    "flats_mirage:0": 14, "flats_mirage:1": 10, "flats_tanker:0": 13, "flats_tanker:1": 12, "flats_dustwall:0": 13,
+    "flats_dustwall:1": 14, "flats_bones:0": 11, "flats_bones:1": 12, "flats_convoy:0": 13, "flats_convoy:1": 11,
+    "flats_solar:0": 13, "flats_solar:1": 9, "flats_crater:0": 14, "flats_signal:0": 15, "flats_signal:1": 11,
+    "flats_nightfire:0": 11, "flats_nightfire:1": 10, "marsh_leeches:0": 12, "marsh_leeches:1": 13, "marsh_ferryman:0": 12,
+    "marsh_ferryman:1": 13, "marsh_raiders:1": 14, "marsh_clinic:0": 12, "marsh_clinic:1": 13, "marsh_bridge:0": 13,
+    "marsh_bridge:1": 10, "marsh_lights:0": 14, "marsh_lights:1": 10, "marsh_hut:0": 11, "marsh_hut:1": 14,
+    "marsh_filter:0": 14, "marsh_filter:1": 12, "marsh_body:0": 11, "marsh_storm:0": 12, "marsh_storm:1": 13,
+    "industrial_drones:0": 16, "industrial_drones:1": 15, "industrial_generator:0": 14, "industrial_generator:1": 13, "industrial_scavs:0": 13,
+    "industrial_scavs:2": 14, "industrial_conveyor:0": 14, "industrial_conveyor:1": 13, "industrial_office:0": 15, "industrial_office:1": 15,
+    "industrial_fire:0": 14, "industrial_fire:1": 13, "industrial_tank:0": 14, "industrial_tank:1": 12, "industrial_crane:0": 12,
+    "industrial_crane:1": 13, "industrial_locker:0": 11, "industrial_alarm:0": 15, "industrial_alarm:1": 14, "glass_cult:0": 15,
+    "glass_cult:2": 13, "glass_storm:0": 15, "glass_storm:1": 15, "glass_bunker:0": 16, "glass_bunker:1": 16,
+    "glass_shadow:0": 14, "glass_meteor:0": 15, "glass_meteor:1": 9, "glass_pilgrim:0": 11, "glass_antenna:0": 15,
+    "glass_antenna:1": 13, "glass_carcass:0": 15, "glass_carcass:1": 14, "glass_spring:0": 14, "glass_spring:1": 10,
+    "glass_ruins:0": 14, "glass_ruins:1": 13, "rail_hunters:1": 15, "rail_hunters:2": 15, "rail_train:0": 13,
+    "rail_train:1": 14, "rail_flood:0": 14, "rail_flood:1": 15, "rail_survivors:0": 14, "rail_survivors:1": 14,
+    "rail_switch:0": 11, "rail_switch:1": 15, "rail_nest:1": 13, "rail_platform:0": 13, "rail_platform:1": 14,
+    "rail_collapse:0": 15, "rail_collapse:1": 14, "rail_signal:0": 14, "rail_signal:1": 12, "rail_door:0": 15,
+    "rail_door:1": 13, "global_trader:0": 11, "global_trader:1": 10, "global_acid_rain:0": 12, "global_acid_rain:1": 13,
+    "global_pack:0": 13, "global_stranger:0": 11, "global_map:0": 12, "global_map:1": 10, "global_quiet:1": 11,
+    "global_grave:1": 12, "global_drop:0": 14, "global_drop:1": 13, "global_bike:0": 13, "global_bike:1": 12,
+    "global_crows:0": 13, "global_clear:1": 10, "global_snare:0": 12, "global_snare:1": 9, "fallback_dust:0": 9,
+    "fallback_dust:1": 12, "final_gate_1:0": 15, "final_gate_1:1": 17, "final_gate_2:0": 18, "final_gate_2:2": 18,
+    "final_gate_3:0": 19, "final_gate_3:1": 19, "final_gate_3:2": 19
+  }
+}

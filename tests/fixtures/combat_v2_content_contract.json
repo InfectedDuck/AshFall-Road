@@ -1,0 +1,412 @@
+{
+  "comment": "Locked combat-v2 mechanical additions. Deliberate shield reward changes; existing enemy HP/damage preserved.",
+  "adversaries": [
+    {
+      "id": "road_bandits",
+      "combat": {
+        "max_health": 180,
+        "damage_min": 35,
+        "damage_max": 55,
+        "weapon_name": "Hunting bows and blades",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "favorable"
+      },
+      "sequence": [
+        "strike",
+        "brace",
+        "heavy",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 24
+    },
+    {
+      "id": "feral_dogs",
+      "combat": {
+        "max_health": 120,
+        "damage_min": 22,
+        "damage_max": 36,
+        "weapon_name": "Teeth and claws",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "favorable"
+      },
+      "sequence": [
+        "strike",
+        "heavy",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 22
+    },
+    {
+      "id": "ash_stalkers",
+      "combat": {
+        "max_health": 220,
+        "damage_min": 45,
+        "damage_max": 70,
+        "weapon_name": "Hooked claws",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "risky"
+      },
+      "sequence": [
+        "strike",
+        "heavy",
+        "sweep",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 36
+    },
+    {
+      "id": "toll_gang",
+      "combat": {
+        "max_health": 220,
+        "damage_min": 40,
+        "damage_max": 60,
+        "weapon_name": "Clubs and revolvers",
+        "critical_condition": "shaken",
+        "flee_difficulty": "risky"
+      },
+      "sequence": [
+        "brace",
+        "strike",
+        "heavy",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 30
+    },
+    {
+      "id": "marsh_leeches",
+      "combat": {
+        "max_health": 90,
+        "damage_min": 12,
+        "damage_max": 24,
+        "weapon_name": "Feeding swarm",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "favorable"
+      },
+      "sequence": [
+        "sweep",
+        "strike",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 24
+    },
+    {
+      "id": "bog_raiders",
+      "combat": {
+        "max_health": 250,
+        "damage_min": 50,
+        "damage_max": 75,
+        "weapon_name": "Patched shotguns",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "hard"
+      },
+      "sequence": [
+        "strike",
+        "sweep",
+        "brace"
+      ],
+      "organic": true,
+      "xp_reward": 44
+    },
+    {
+      "id": "drone_swarm",
+      "combat": {
+        "max_health": 260,
+        "damage_min": 50,
+        "damage_max": 80,
+        "weapon_name": "Security emitters",
+        "critical_condition": "burned",
+        "flee_difficulty": "hard"
+      },
+      "sequence": [
+        "strike",
+        "charge",
+        "heavy",
+        "recover"
+      ],
+      "organic": false,
+      "xp_reward": 48
+    },
+    {
+      "id": "vault_scavs",
+      "combat": {
+        "max_health": 280,
+        "damage_min": 55,
+        "damage_max": 80,
+        "weapon_name": "Rifles and work axes",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "hard"
+      },
+      "sequence": [
+        "brace",
+        "strike",
+        "heavy",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 46
+    },
+    {
+      "id": "glass_cult",
+      "combat": {
+        "max_health": 320,
+        "damage_min": 60,
+        "damage_max": 90,
+        "weapon_name": "Glass blades",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "desperate"
+      },
+      "sequence": [
+        "strike",
+        "sweep",
+        "heavy",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 62
+    },
+    {
+      "id": "tunnel_hunters",
+      "combat": {
+        "max_health": 300,
+        "damage_min": 65,
+        "damage_max": 95,
+        "weapon_name": "Hidden knives",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "hard"
+      },
+      "sequence": [
+        "strike",
+        "heavy",
+        "brace"
+      ],
+      "organic": true,
+      "xp_reward": 52
+    },
+    {
+      "id": "citadel_guard",
+      "combat": {
+        "max_health": 400,
+        "damage_min": 80,
+        "damage_max": 120,
+        "weapon_name": "Service rifles",
+        "critical_condition": "shaken",
+        "flee_difficulty": "desperate"
+      },
+      "sequence": [
+        "brace",
+        "strike",
+        "charge",
+        "heavy",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 75
+    },
+    {
+      "id": "warden_machine",
+      "combat": {
+        "max_health": 550,
+        "damage_min": 100,
+        "damage_max": 150,
+        "weapon_name": "Rotary cannon",
+        "critical_condition": "burned",
+        "flee_difficulty": "desperate"
+      },
+      "sequence": [
+        "charge",
+        "heavy",
+        "recover",
+        "sweep"
+      ],
+      "organic": false,
+      "xp_reward": 100
+    },
+    {
+      "id": "mutant_crows",
+      "combat": {
+        "max_health": 70,
+        "damage_min": 7,
+        "damage_max": 10,
+        "weapon_name": "Beaks and talons",
+        "critical_condition": "shaken",
+        "flee_difficulty": "easy"
+      },
+      "sequence": [
+        "strike",
+        "sweep",
+        "recover"
+      ],
+      "organic": true,
+      "xp_reward": 18
+    }
+  ],
+  "weapons": [
+    {
+      "id": "salvage_cleaver",
+      "combat": {
+        "attack_stat": "strength",
+        "damage_min": 36,
+        "damage_max": 56,
+        "ammo_per_attack": 0
+      },
+      "signature": "execution",
+      "two_handed": false
+    },
+    {
+      "id": "pipe_pistol",
+      "combat": {
+        "attack_stat": "agility",
+        "damage_min": 32,
+        "damage_max": 52,
+        "ammo_per_attack": 1
+      },
+      "signature": "precision",
+      "two_handed": false
+    },
+    {
+      "id": "shock_probe",
+      "combat": {
+        "attack_stat": "wits",
+        "damage_min": 28,
+        "damage_max": 46,
+        "ammo_per_attack": 0
+      },
+      "signature": "disruption",
+      "two_handed": false
+    },
+    {
+      "id": "wrecking_bar",
+      "combat": {
+        "attack_stat": "grit",
+        "damage_min": 30,
+        "damage_max": 48,
+        "ammo_per_attack": 0
+      },
+      "signature": "counter",
+      "two_handed": false
+    },
+    {
+      "id": "holdout_revolver",
+      "combat": {
+        "attack_stat": "presence",
+        "damage_min": 34,
+        "damage_max": 56,
+        "ammo_per_attack": 1
+      },
+      "signature": "suppression",
+      "two_handed": false
+    },
+    {
+      "id": "rusted_hatchet",
+      "combat": {
+        "attack_stat": "strength",
+        "damage_min": 24,
+        "damage_max": 38,
+        "ammo_per_attack": 0
+      },
+      "signature": "execution",
+      "two_handed": false
+    },
+    {
+      "id": "rebar_spear",
+      "combat": {
+        "attack_stat": "strength",
+        "damage_min": 30,
+        "damage_max": 48,
+        "ammo_per_attack": 0
+      },
+      "signature": "counter",
+      "two_handed": true
+    },
+    {
+      "id": "nail_bat",
+      "combat": {
+        "attack_stat": "strength",
+        "damage_min": 22,
+        "damage_max": 36,
+        "ammo_per_attack": 0
+      },
+      "signature": "execution",
+      "two_handed": false
+    },
+    {
+      "id": "hunting_rifle",
+      "combat": {
+        "attack_stat": "wits",
+        "damage_min": 55,
+        "damage_max": 90,
+        "ammo_per_attack": 1
+      },
+      "signature": "precision",
+      "two_handed": true
+    },
+    {
+      "id": "scrap_shotgun",
+      "combat": {
+        "attack_stat": "agility",
+        "damage_min": 58,
+        "damage_max": 96,
+        "ammo_per_attack": 1
+      },
+      "signature": "execution",
+      "two_handed": true
+    },
+    {
+      "id": "stun_baton",
+      "combat": {
+        "attack_stat": "agility",
+        "damage_min": 30,
+        "damage_max": 48,
+        "ammo_per_attack": 0
+      },
+      "signature": "disruption",
+      "two_handed": false
+    },
+    {
+      "id": "flare_gun",
+      "combat": {
+        "attack_stat": "presence",
+        "damage_min": 18,
+        "damage_max": 30,
+        "ammo_per_attack": 1
+      },
+      "signature": "suppression",
+      "two_handed": false
+    }
+  ],
+  "shields": [
+    {
+      "id": "scrap_buckler",
+      "icon_id": "item_scrap_buckler",
+      "name": "Scrap Buckler",
+      "description": "A road-sign disc braced with a leather grip. It trades a little freedom of movement for a reliable guard.",
+      "category": "accessory",
+      "weight": 2,
+      "value": 18,
+      "equipment_slot": "accessory",
+      "shield": true,
+      "block_bonus": 15,
+      "dodge_bonus": -5,
+      "modifiers": {}
+    },
+    {
+      "id": "road_shield",
+      "icon_id": "item_road_shield",
+      "name": "Road Shield",
+      "description": "A reinforced barrier plate with a grip salvaged from a security door. Too cumbersome to move around quickly.",
+      "category": "accessory",
+      "weight": 4,
+      "value": 30,
+      "equipment_slot": "accessory",
+      "shield": true,
+      "block_bonus": 20,
+      "dodge_bonus": -10,
+      "modifiers": {}
+    }
+  ]
+}

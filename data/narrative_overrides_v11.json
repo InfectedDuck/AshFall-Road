@@ -1,0 +1,944 @@
+{
+  "events": [
+    {
+      "id": "marsh_leeches",
+      "body": "The raised road disappears beneath a channel colored red by iron silt. Hand-long leeches turn in the water wherever your shadow crosses, surfacing on pale undersides before vanishing again. The nearest dry ground lies twenty strides away. Heat from a blade may keep them back long enough to wade; speed may deny them purchase. Both require entering water already responding to the warmth of your body.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You hold steel over the flame until old oil smokes, then sweep the hot blade just beneath the surface. The leeches recoil from each hiss. You reach the far bank without feeding them, carrying only the stink of scorched water.",
+            "failure": "The blade cools faster than the channel clears. Several parasites attach beneath your clothes before dry ground, leaving wounds that continue bleeding after you tear them free. The crossing ends with weakened legs and blood in your footprints."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You enter at a run and never let either boot settle in the silt. Dark shapes strike and miss behind each stride. The far bank receives you breathless but untouched, while the channel knots briefly where your wake closes.",
+            "failure": "A submerged curb catches your toe and throws you chest-deep. Leeches find skin before you regain footing. You escape after ripping them away with muddy fingers, carrying infected bites and the exhaustion of panic through contaminated water."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_ferryman",
+      "body": "A narrow boat waits beside a road sign protruding from black water. Its ferryman wears a coat sewn with ticket stubs and asks no payment in objects. Instead, they request one true account from the road behind you—something useful enough to deserve passage. A drowned service path may cross nearby, visible only where current wrinkles around submerged curbs. The ferryman watches to see whether you trust memory or water.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You tell the part of your journey that makes you least impressive. The ferryman recognizes truth by its unnecessary detail and poles across without another question. On the far bank, they give you bitter tonic brewed for travelers who have swallowed marsh water.",
+            "failure": "Your account reaches for meaning before it earns attention. The ferryman pushes away mid-sentence, leaving you to wade beside the boat’s narrowing wake. Cold current bruises your legs and turns an offered crossing into exhausting self-transport."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "Reeds bend differently above the buried service road. You follow that straight disturbance while water remains below your waist, reaching the far side without needing the ferryman’s judgement. Their boat is gone when you look back.",
+            "failure": "The apparent curb ends where floodwater tore away the road. Current turns you sideways and pulls a bottle from its loop before you find footing. You reach shore depleted, watching your own clean water drift beyond reach."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_raiders",
+      "body": "Three skiffs slide from the reeds with their engines wrapped in cloth. The riders carry short guns high above the water and steer by poles rather than noise. One gestures for your pack while another cuts off the raised path behind you. A chemical rainbow spreads between the boats. The raiders avoid touching it, though whether from knowledge or performance is impossible to tell before they close.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "victory": "Your first shots punch through the nearest skiff’s waterline. Its crew overturns while the others choose distance over rescue. Two dry shells and a sealed bottle float inside a tied case, salvage from an ambush that leaves widening rings among the reeds."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You name symptoms produced by the rainbow and point to stains on their own poles. The lead raider hesitates long enough for doubt to spread between boats. You enter thick reeds before anyone volunteers to test the water.",
+            "failure": "They have crossed this stain for weeks and recognize the invention. Rather than punish the bluff, they take radiation tablets and bandages as a passage fee. Your medicine disappears into the lead skiff while every weapon remains politely raised."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "outcome": "The smoke bomb blooms low over the water and turns boats, reeds, and path into the same gray absence. You move by touch until engines cough behind you. When air clears, one useful escape has become an empty casing."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_clinic",
+      "body": "A rural clinic stands above floodwater on timber stilts, its lower rooms dark behind green algae. The exterior supports form a climb toward an intact pharmacy window. Inside, cabinet doors hang open at water level and pale mold follows the ceiling in branching fans. Reaching the upper medicine avoids those rooms but trusts rotten wood; searching below keeps both feet supported and brings every breath closer to spores.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You distribute weight across three supports and enter through the pharmacy window. A medkit and painkillers remain behind a childproof latch that defeated hurried looters. The building sways once while you descend, then settles back into black water.",
+            "failure": "A wet crossbeam separates from its nails and drops you against the next support. You catch the frame before reaching the flood, but your ankle folds beneath the recovery. The pharmacy stays above while pain makes the ground route unavoidable."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You test each lower doorway with a pole and follow the room where air still moves outward. Sealed bandages and bitter tonic wait above its mold line. You leave before disturbing the pale growth across the neighboring ceiling.",
+            "failure": "The floor holds, but your first opened cabinet releases a cloud trapped behind its door. Fever begins as warmth beneath the eyes before you reach daylight. The clinic recedes through mist while your body mistakes infection for cold."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_bridge",
+      "body": "Vines have grown through the suspension cables of an old footbridge, binding rust and living fiber into one structure. Water below carries whole branches fast enough to strike the pylons. The bridge shifts before you step onto it, though no wind reaches the reeds. A rope could distribute the load along its intact side. Speed might cross before movement becomes collapse. Either choice asks the bridge to remain one thing a little longer.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You cross with short steps timed between the bridge’s longer swings. The far boards rise beneath your final stride just as vines begin tearing from the near pylon. The structure survives behind you, changed enough that nobody should repeat the method.",
+            "failure": "A cable parts with a sound like a struck instrument and throws you into the rail. You cling while the deck tilts, then crawl the remaining distance. Bruised ribs and drained arms record every movement the broken bridge demanded."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You thread rope through vine-bound cable and tighten each section before transferring weight. The bridge complains without changing shape. Recovery takes time on the far bank, but the crossing remains methodical rather than desperate.",
+            "failure": "The knots hold exactly as intended; tying them across a moving deck consumes more strength than expected. You arrive safely with hands cramped and shoulders trembling, the rope still marking a route another traveler might trust."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_lights",
+      "body": "Pale lights move beneath the water in a repeating sequence: three close together, one apart, then darkness. They are too regular for animals and too mobile for fixed lamps. Each cycle begins farther east, paralleling the drowned road before curving into deeper reeds. The visible bank offers slower footing among roots. Following the pattern means deciding whether it marks emergency infrastructure or teaches travelers to enter contaminated silt.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "The sequence matches submerged hazard beacons pointing toward a civil-defense cache. You reach its handle between pulses and recover clean water with a purifier ampoule. The lights continue onward, guiding nobody after you leave their measured route.",
+            "failure": "The beacons belong to broken survey drones drifting with the current, not a fixed path. You follow them into radioactive silt that releases bubbles around every step. By the time the pattern exposes its drift, contamination has entered your route."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You keep both boots on roots whose surfaces remain visible above water. The lights pace you from below and finally turn away. Their unanswered invitation costs no supplies, only the discipline of refusing a possible cache.",
+            "failure": "The bank narrows into walls of reed and tangled root. Avoiding the water requires climbing, doubling back, and carrying your pack overhead. You preserve distance from the lights while surrendering strength to every obstacle they bypass."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_hut",
+      "body": "Wood smoke threads between reeds from a hut raised on mismatched poles. Bundles of herbs hang beneath its eaves, dry despite the mist. No boat is tied outside, but one shutter closes when you step onto the approach. Calling out offers whoever watches time to judge you. Moving silently may reveal whether the hut is occupied, while announcing exactly what kind of visitor believes secrecy is safer than manners.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "An herbalist answers from a concealed platform behind the hut, crossbow lowered but ready. Road news purchases ration bars and bitter tonic. They correct one rumor before you leave and never invite you across the threshold.",
+            "failure": "Nobody answers, yet smoke continues from the chimney and the closed shutter shifts against the wind. You withdraw beneath attention you cannot locate. Reeds click behind you for half a mile, turning every pause into imagined pursuit."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You circle through shallow water and discover the hut empty, its smoke produced by a banked insect fire. A filter mask hangs above the hearth beside a note granting it to whoever leaves the door secured.",
+            "failure": "A warning dart enters your shoulder before you touch the first support. The dose is meant to disable rather than kill, and heat spreads from the puncture until your thoughts arrive blurred and slow. You retreat while someone unseen retrieves a second dart and chooses not to release it."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_filter",
+      "body": "A municipal filter station hums above the flood, drawing black water through pipes that vibrate beneath the walkway. One output gauge still shows pressure toward the eastern settlements; another has been stripped to bare threads. Restarting the clean line could serve people beyond sight and fill your bottles. Removing the inactive pump offers certain parts while making permanent what may only be a repairable failure.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You clear the intake and reset each stage rather than forcing the final pump. Brown water becomes cloudy, then clear. Three bottles fill from the test outlet while the main line begins carrying pressure east toward people who may never know who restored it.",
+            "failure": "A corroded coupling parts under renewed pressure and sprays contaminated water across your face and chest. You close the intake before the station floods, but radiation and chemical heat remain on skin the marsh cannot rinse clean."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "The inactive housing separates without pulling the live line beside it. Gears and wire enter your pack along with a sealed filter mask from the service cabinet. Behind you, the empty mount makes future repair visibly less likely.",
+            "failure": "The pump casing shifts off its brace and traps your hand against the walkway. You lever free before rising water reaches the machinery, leaving blood on a component too heavy to recover and the station no easier to restore."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_body",
+      "body": "A body in a yellow raincoat floats face-down against a road marker, held there by the coat’s hood. The material is clean enough that death came after the last storm. One waterproof pocket is fastened beneath the collar where swelling has not reached it. Searching may return a name, a route, or contamination. Leaving the body untouched preserves its remaining dignity and every unanswered reason it stopped here.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You turn the body using the raincoat rather than exposed skin. The pocket contains radiation tablets, a route map, and identification for Lysa Dorn. You copy the marsh markings before returning her face beneath the water’s dark reflection.",
+            "failure": "The raincoat tears where trapped gas has swollen the body. Contaminated fluid reaches a cut you did not know was open. You retreat sickened, unable to recover a name and painfully aware that the dead can still be harmed."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "outcome": "You wedge a branch between the body and marker so current cannot drag it into open water. The yellow coat remains visible for anyone searching by description. You leave without a name, carrying restraint instead of information."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "A length of reinforcing bar has been driven through the road marker and ground to a point by somebody who came before. You work it free in slow chest-deep pulls, keeping your footing and the raincoat undisturbed behind you.",
+            "failure": "The bar refuses every angle you can brace against in moving water. Your boots lose the shelf twice, and the third attempt costs more than the first two together. You give the post back to the flood and wade out with nothing."
+          }
+        },
+        {
+          "index": 3,
+          "outcomes": {
+            "success": "Beneath the raincoat, the body wears plates cut from truck tire and wired into a vest. Freeing it takes both hands, careful weight, and longer than respect would prefer. The rubber is heavy, but it stops what cloth cannot.",
+            "failure": "Flood silt has packed the wiring solid where the plates overlap. You brace against the marker and pull until your arms will not close, and the body settles deeper with every attempt. You stop while stopping is still your decision."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_storm",
+      "body": "Rain begins black, each drop spreading an oily ring across standing water. Frogs and insects stop together. A fallen road sign offers enough metal for a low roof if you can anchor it before the wind rises. The nearest tree line is visible through reeds but farther than the storm’s advancing curtain. Remaining exposed risks contamination; poor shelter may hold poisoned water close instead of keeping it away.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You angle the sign so black runoff drains behind the raised verge and weight its corners with broken asphalt. The metal roof booms above you but does not fold. Minor contamination reaches your boots; the storm’s worst remains outside.",
+            "failure": "Wind catches the sign before the final anchor and drives one edge into mud across your legs. Black water pools around the improvised roof while you struggle free. Shelter becomes a trap that concentrates radiation, exhaustion, and bruising together."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You reach dense branches before the rain thickens and pull intact leaves over exposed gear. The sprint empties your lungs, but contaminated drops spend themselves on layered canopy instead of skin.",
+            "failure": "Distance shrinks too slowly. Black rain overtakes you among reeds with no structure high enough to hide beneath. You push onward while contaminated water follows every seam, arriving at the trees only after exposure and fatigue have accumulated."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_drones",
+      "body": "A loading-bay door lifts by itself, shedding rust in a straight orange curtain. Three security drones descend behind it with their lenses already searching. Their evacuation order is calm, feminine, and decades too late; between repetitions, one unit corrects another’s aim with insect precision. The control link pulses from a relay above the yard. Painted blind spots remain on the concrete, but several end beneath hanging chains that turn whenever the drones pass.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You interrupt the relay during the silence between commands. All three drones settle onto the concrete as gently as sleeping birds. Their intact cells and a portable scanner come free beneath your tools, still warm with obedient power.",
+            "failure": "The relay changes frequency as you reach it. A blue pulse erases your balance and drives the back of your skull against concrete. When sight returns, the drones are gone; nausea and a deep concussion remain behind."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You wait for three scanning arcs to separate, then cross each shadow before its lens returns. Electrified wire snaps shut on empty air behind your heel. The evacuation order follows, polite and increasingly distant.",
+            "failure": "A blind spot closes one pace earlier than its painted boundary promises. Electrified wire coils around your ankle and hurls you sideways. You cut free before the drones reel you closer, but the joint swells beneath a fresh sprain."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_generator",
+      "body": "Generator Three turns behind a locked mesh cage, its flywheel wobbling through every revolution. Half the indicator lamps glow green; the others have melted into black beads. A copper bus shakes against its ceramic mounts, feeding power somewhere deeper in the factory. Stabilizing the old machine could reopen emergency stores. Stripping its windings would yield certain salvage, provided the rotating assembly does not take cloth, fingers, and patience together.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You balance the failing phases one breaker at a time until the flywheel loses its stutter. An emergency locker releases with a clean mechanical click, offering medicine, stimulant, and salvage kept dry through years of neglect.",
+            "failure": "A buried charge returns through the supposedly dead bus. Heat blooms across your gloves before you wrench free, leaving angry burns along both palms. The generator continues turning, indifferent to the smell of scorched fabric."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You brace the flywheel and unwind copper in heavy, lacquered loops. The generator sighs into stillness while useful metal fills your pack. Darkness spreads through the connected corridor, revealing how much of the factory it kept alive.",
+            "failure": "Your sleeve enters the assembly before the improvised brake catches. The fabric twists your arm hard against the cage. You tear loose without losing the limb, though the shoulder answers every later movement with a sprain’s bright warning."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_scavs",
+      "body": "Figures appear along the warehouse roof in measured intervals: one at each stairwell, two behind a sandbagged sign, another watching the rail yard. Their equipment is repaired rather than scavenged, and no weapon wavers. A woman with white welding marks across her mask asks what news travels east. Freight cars offer a concealed route around them, but their undercarriages sink deep into soot and razor filings.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You trade names, road closures, and one honest warning. The masked woman tests each detail against a marked map, then waves you through with a ration. Her crew remembers your face without pretending friendship.",
+            "failure": "Your account contradicts a signal report they received that morning. The crew searches your pack with disciplined hands and confiscates what medicine they find as payment for wasted time. Nobody raises a voice or offers an appeal."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "victory": "Their weakest guard proves neither weak nor alone, but you remain standing when the warehouse falls quiet. The masked woman calls the outcome earned rather than forgiven and slides rifle cartridges across the roof before granting passage."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "You crawl beneath freight cars while rooftop attention remains on the road. Couplings hide each movement, and soot swallows the sound. You emerge beyond the final switch unnoticed, carrying no prize except an unchallenged route.",
+            "failure": "The rail yard extends through collapsed cars and blocked switches farther than the roof suggested. You crawl until elbows bleed and muscles shake, escaping observation only by spending the strength needed for the miles ahead."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_conveyor",
+      "body": "A conveyor wakes as you cross the sorting floor. Sealed crates jolt from darkness toward a crusher whose jaws close with slow, hydraulic certainty. Stenciled labels promise medical packing, food reserve, and riot-control stock, though age has erased which crate carries which. The emergency panel blinks behind a guard rail. Reaching it takes longer than snatching one load from the moving belt, and every roller is polished by what it has already consumed.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You match the belt’s pace, seize one crate by its straps, and let momentum carry it clear. Inside, riot padding cushions two sealed shotgun shells. The crusher closes on the empty space your arm just occupied.",
+            "failure": "A loose strap winds around a roller and catches your forearm with it. You wrench backward before bone enters the mechanism. The belt takes skin and strength, leaving the wrist swollen and unwilling to close on anything quickly while the chosen crate disappears."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You trace the emergency circuit past three mislabeled switches and stop the line before the next crushing stroke. Several reserve crates remain intact, their cans and water clean beneath layers of industrial dust.",
+            "failure": "The panel diagrams describe wiring that was replaced long ago. Each attempt starts another section of belt, and shutting everything down consumes precious time. You leave fatigued while the crusher continues its empty, punctual labor."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_office",
+      "body": "A reinforced office stands above the factory floor on concrete pillars. Its door still reads SHELTER CAPACITY 8, though scratches around the frame suggest more than eight once begged outside it. A chemical lock protects the keypad. Personnel notices curl behind dusty glass, possibly preserving the manager’s habits and override. Thin wall panels offer another entrance, but yellow insulation leaks through every old seam like diseased fur.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "The personnel board remembers an anniversary the keypad accepts as authority. Inside, eight chairs face a silent radio, and a medical satchel hangs untouched beside painkillers. You take the supplies without disturbing the names written underneath.",
+            "failure": "Your final guess triggers the chemical lockout. Bitter vapor spills from the keypad and coats your mouth before you clear the landing. The dose leaves radiation clicking through your meter while the sealed room keeps its dead arithmetic."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You cut along existing corrosion, peel the panel inward, and enter between supports. Emergency cans and sealed water wait beneath a table set for eight. The unopened door preserves whatever promise the shelter once made.",
+            "failure": "The wall opens, but insulation pours over your face and into every fold of clothing. You retreat coughing, eyes streaming, your body already heating toward fever. The office remains visible through the hole and unreachable through the fibers."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "A long cabinet stands behind the desk with its hinges turned inward and its code printed nowhere. You read the personnel notices until one date appears often enough to be somebody’s habit. It opens on a hunting rifle and four rounds.",
+            "failure": "Every date on the personnel board opens nothing. After the third attempt the cabinet drops an internal bar across its own face and will not reset while you stand there. You spend the last of the light on a door that stopped answering."
+          }
+        },
+        {
+          "index": 3,
+          "outcomes": {
+            "success": "An emergency kit is mounted above the shelter door, higher than anyone without a ladder should reach. You climb the pillar bracing and work the bracket loose one-handed. The flare gun drops into your palm with three shells still clipped beside it.",
+            "failure": "The bracket holds; the pillar does not. You slide down its corroded face and spend several minutes on the floor deciding that nothing is broken. The kit stays mounted above the door, catching light you can no longer reach."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_fire",
+      "body": "Blue flame travels soundlessly across the loading dock, following a spilled chemical toward drums marked with pressure warnings. Their steel sides already tick as heat enters them. Suppression pipes run overhead, each valve painted a different emergency color beneath identical rust. The outer fence offers distance if you can reach it before rupture. Opening the correct line might bury the fire and preserve the dock; opening the wrong one will feed something volatile into it.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "The foam line coughs once, then covers the dock beneath a rising white field. Blue flame vanishes before the first drum seal fails. You recover usable fittings from the cooled valve while chemical snow hisses around your boots.",
+            "failure": "Corrosion tears the valve stem from its housing. Burning residue sprays across your sleeve and catches before you can turn away. You smother it against the floor, but the burn remains bright and wet beneath improvised dressing."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You run the fence line while the drums begin changing shape. The first rupture arrives after you clear the concrete wall. Heat presses against your back, and exhaustion takes its share, but no shrapnel finds you.",
+            "failure": "The nearest drum bursts before distance becomes shelter. Its pressure wave lifts you from your feet and drives shoulder and skull into the fence. You wake beneath falling ash, concussed and depleted, with smaller explosions continuing behind you."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_tank",
+      "body": "Three knocks sound from a sealed water tank above the processing floor. After an exact pause, they repeat. Condensation trembles on the inspection hatch, and the pressure needle sits just below its red mark. Someone may be rationing breath inside; a loose valve may be striking the wall as the tank settles. Opening the seal risks whatever has pressurized beneath it. Listening longer risks answering a machine while a living person weakens out of sight.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You bleed pressure through the service line before lifting the hatch. A dehydrated engineer unfolds from the darkness, clutching a field scanner wrapped in oilcloth. They surrender it gratefully and limp toward a route you mark west.",
+            "failure": "The first loosened bolt releases a contaminated jet across your face and chest. You force the hatch closed while the gauge falls. Whatever made the knocking stops, leaving radiation, raw skin, and uncertainty as its only answer."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You measure the interval against vibration in the feed pipe. The knocks follow pressure, not breath. After draining the line safely, you collect clean water while the loose valve taps slower, then falls silent.",
+            "failure": "The sequence almost forms a deliberate reply, then changes whenever you decide it cannot. You leave without opening the tank. Three knocks follow through adjoining pipes until doubt hardens into a shaken vigilance you cannot dismiss."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_crane",
+      "body": "A cargo pallet hangs above the only clear path through the yard. One corroded cable carries its weight; individual wires snap and recoil with soft metallic pings. The crane cab overlooks the load from a rusted ladder, its windows black with soot. Running beneath requires trusting the remaining strands for seconds. Lowering the pallet may reveal useful cargo, but the old controls could spend the cable’s final strength before setting anything safely down.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You cross when the pallet’s slow swing carries weight away from the weakest strand. The cable parts after your second step beyond its shadow. Cargo destroys the route behind you, but not the body that judged it.",
+            "failure": "The cable unbraids as you reach the midpoint. One corner of the falling pallet catches your shoulder and spins your head against concrete. You crawl from the settling cargo while the yard tilts and doubles, uninterested in what the crates contained."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "The cab controls answer in reluctant jolts. You lower the pallet until its frame rests squarely, then cut the cable without tension. Sealed tools and a ration bar reward the patience the suspended route demanded.",
+            "failure": "The lowering lever jams halfway and the brake refuses to release. You spend an hour testing dead circuits before accepting the load will remain overhead. Nothing wounds you except fatigue and the daylight surrendered to useless machinery."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_locker",
+      "body": "A row of worker lockers survives in the changing room, each door scratched with family names instead of employee numbers. Some list children beneath them; others carry dates that stop on evacuation day. One locker remains unmarked and tightly sealed. Opening it avoids disturbing a named grave, yet anonymity may conceal its own danger. Leaving every door closed preserves the small boundary these workers drew when the factory still claimed ownership of everything else.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "Behind the unmarked door, work gloves lie folded around a bandage. A broad road shield rests against the back. You take the impersonal equipment and leave every named locker shut; for once, useful things demand no trespass against the dead.",
+            "failure": "A hidden edge breaks through the latch and opens your palm. Blood runs across names you meant to avoid disturbing. You bind the cut, but bleeding continues beneath the wrap while the locker remains stubbornly sealed."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "outcome": "You read every visible family name once and touch none of the handles. Restraint brings no food or equipment, only a steadier sense of where necessity should end. The focus remains when the changing room disappears behind you."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "Behind the unmarked door sits a second lock: a security cabinet bolted to the wall. You read the wear on its dial and turn through the numbers a guard’s hand repeated for years. A charged baton waits inside, its cell still holding.",
+            "failure": "You work the dial through every pattern the wear suggests until the changing room has gone fully dark. The cabinet accepts none of them and seizes harder with each wrong sequence. The shift you spent buys one more sealed door."
+          }
+        },
+        {
+          "index": 3,
+          "outcomes": {
+            "success": "A carrying rig hangs inside the locker frame, bolted through the metal by someone who meant to keep it. You tear the frame open around the bolts. The harness comes away with its pouches intact and room for what you keep leaving behind.",
+            "failure": "The frame bends instead of breaking and folds the rig’s shoulder strap into a crease no weight will ever cross again. You stop before the whole row comes down across the benches. What is left is scrap nobody will wear."
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_alarm",
+      "body": "Red lamps ignite one after another down the assembly corridor. A flat voice announces shift evacuation while blast doors begin sealing in sequence toward you. The wall console can freeze the pattern if its surviving circuits still obey. Otherwise, the closing gaps form a race whose finish keeps narrowing. Each door bears dents at shoulder height and deep scratches near the floor, evidence that earlier workers learned exactly how little time the alarm allowed.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You isolate the timing circuit before the nearest door completes its descent. Every barrier stops at a different height, leaving one clean passage through. The silent alarm lights continue counting a disaster no longer able to move.",
+            "failure": "The console pauses one door but accelerates the next. Steel pins your pack against the floor and crushes food and water before you cut the straps free. You escape carrying less and breathing harder beneath the red pulse."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You commit before the first gap reaches knee height. Each slide begins before the previous roll ends, boots striking sparks from concrete. The last door closes on your shadow and leaves the alarm voiceless behind steel.",
+            "failure": "Your shoulder reaches the final opening a fraction too late. The safety strip reverses the door after its full weight lands, leaving the joint twisted and swollen. You stagger through before damaged machinery changes its mind."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_cult",
+      "body": "Robed figures kneel where the fused plain rises toward a horizon split by heat. Their exposed skin carries old burns polished with oil, and each pilgrim holds a blade made from the ground itself. They whisper a road blessing in alternating lines while a child watches for mistakes. A glass ridge offers concealment beneath reflected heat. Crossing their procession demands either the right sacred words, enough force to break formation, or patience inside a place that slowly cooks whatever hides there.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You return the blessing with its forgotten final line. Suspicion leaves the child’s face first. The pilgrims press radiation tablets into your hand and open their ranks, accepting you as another traveler carrying damage toward meaning.",
+            "failure": "One misplaced word empties the prayer of sound. The pilgrims rise together, calling you profane, and their glass staffs find bone before you escape the ring. Distance ends the pursuit, not the shaking they leave behind."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "victory": "Ceremonial blades break when their owners discover you will not kneel. The surviving pilgrims scatter across their mirrored horizon. You recover purifier fluid and strange edible moss from offerings they abandon, then leave before devotion regroups."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "You flatten beneath the ridge and count breaths while the procession passes above. Their song moves east without faltering. When you rise, shallow knee prints remain warm in the glass and every pilgrim is already a distortion.",
+            "failure": "The ridge magnifies the sun instead of blocking it. You remain hidden while heat drains strength and radiation wakes beneath the surface. By the procession’s final verse, concealment has exacted more than discovery might have."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_storm",
+      "body": "Wind combs the plain until slivers lift from the fused surface. They begin as glitter around your boots, then rise into a moving wall of needles fine enough to enter seams and lungs. Layered cloth may turn the smallest fragments if wrapped before the gale arrives. An overturned crawler waits across open ground, armored belly facing the storm. Its shadow promises shelter, but the air between already shines with cutting dust.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You bind cuffs, collar, and mask before the needles thicken. Glass whispers against layered cloth throughout the crossing, cutting fabric instead of flesh. The effort exhausts you, but each knot survives until the wind empties.",
+            "failure": "The wrapping loosens first beneath one arm, then everywhere at once. Glass enters every opening and leaves bright cuts across skin already fighting the wind. You emerge bleeding, depleted, and sparkling with fragments too small to remove."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You reach the crawler as the storm erases the horizon. Armored plating absorbs the barrage with a hiss like heavy rain. Beneath it, you listen to glass bury your tracks and wait for silence.",
+            "failure": "The shining wall overtakes you within sight of shelter. You dive the final distance through cutting air, arriving beneath the crawler with blood on your sleeves and no strength left to resent those missing meters."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_bunker",
+      "body": "A blast door protrudes from fused ground at an angle, half of its civil-defense number buried beneath black glass. The keypad still blinks green. Through the inspection slit, emergency shelves stand upright beyond drifts of pale dust. A maintenance hatch lies lower, its hinges swollen but reachable through a narrow shaft. The main lock may remember its evacuation code; the secondary entrance may yield to force. Both seams breathe air colder than the plain.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "Emergency placards provide the sequence once read in the order their arrows intended. The door releases a hand’s width. Inside, purifier fluid, medicine, and ration bars remain sealed beneath dust no living occupant disturbed.",
+            "failure": "The final digit wakes a coolant defense instead of the lock. Irradiated vapor pours through the keypad housing and catches you at eye level. You retreat coughing while the green display calmly requests another authorized attempt."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You break one hinge and guide the hatch inward before its weight can fall. The cramped shaft ends in an equipment room where a hazard wrap and radiation tablets hang beside empty protective suits.",
+            "failure": "The hinge tears from concrete sooner than expected. The hatch drops across your foot, trapping it until leverage and panic make space. You escape the shaft with the joint swollen into a punishing sprain."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_shadow",
+      "body": "A human shadow is burned into the only wall still standing, arms raised against a light that erased the body. Fresh boot prints approach it from the west and simply stop. No return tracks cross the glass. The shape’s empty hands point toward a shallow ravine where reflected heat hides the ground. Following may explain the missing traveler or repeat their mistake. Leaving asks you to accept a disappearance without adding yourself to it.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "The tracks resume beneath a shelf of mirrored stone where glare concealed them. A sheltered pack waits beside a message saying its owner turned back. You take scout leathers and water they deliberately left for whoever continued east.",
+            "failure": "Each print leads deeper into a pocket where your meter climbs faster than your footsteps. The trail circles the wall from the opposite side. By the time you understand the loop, radiation and exhaustion have already answered it."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "outcome": "You place the vanished traveler beyond the list of questions worth a life. Their footprints stay unfinished beside the burned silhouette. The road ahead offers no explanation, only distance from an absence that wanted company."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_meteor",
+      "body": "A fist-sized object smolders inside a crater too new to hold dust. Its casing is machined, not stone, and four black vanes have folded around a pulsing central seam. The glass beneath it softens with every pulse. Cooling the object might preserve a valuable drone core before heat ruptures its shell. Marking the site and leaving avoids direct exposure, although rare salvage exerts its own gravity long after the sensible decision is made.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "Water turns to steam before touching the casing, but repeated cooling slows the pulse. You open the fallen core safely and recover dense salvage with an intact scanner nested inside its heat-blackened vanes.",
+            "failure": "The cooling shell contracts around a pressurized seam. It opens toward you with a flash of irradiated vapor and hot fragments. You abandon the crater carrying burns beneath your clothing and contamination beneath the burns."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You scratch a warning circle beyond the crater and walk before possession becomes a reason. The pulse continues behind you, smaller with each mile. Nothing enters your pack, and nothing dangerous opens beside your hands.",
+            "failure": "You mark the crater, reconsider the angle of its vanes, then circle twice for a better look. Curiosity never becomes contact, yet it consumes enough daylight to leave your next miles more tiring than they deserved."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_pilgrim",
+      "body": "A lone pilgrim rests against a blade of glass with burns shining beneath torn robes. One hand guards a sealed purifier ampoule; the other offers a metal prayer disk stamped with an eastern sun. They ask you to carry the disk toward the Citadel, where someone may still remember the name scratched behind it. Their breathing leaves little time for persuasion. Treating the wounds instead would spend their remaining attention on survival rather than promises.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You repeat the scratched name without pretending to know its owner. The pilgrim hears enough truth to release both disk and ampoule, then dies facing east. Their small metal burden gains weight after the breathing stops.",
+            "failure": "Your promise sounds too polished to someone who has listened to pilgrims lie about duty. They crush the ampoule beneath a stone before dying. The useless prayer disk remains in their fist, and doubt follows you from the body."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "outcome": "You cool the burns and spend medicine on the living rather than bargaining with the dying. The pilgrim survives long enough to describe a clean route around the hot zone. Their gratitude steadies you beyond the final sight of them."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_antenna",
+      "body": "Hundreds of thin antennas rise directly from the fused plain, all humming the same low note. Their shadows point in conflicting directions while small arcs pass between neighboring tips. At the field’s center, changing tones resemble coordinates hidden inside a warning. Mapping that structure could reveal the Underrail entrance. Quiet rows along the edge carry weaker current, but their safe appearance shifts whenever the wind bends one antenna toward another.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You separate repeating bearings from the electrical chorus and mark where their lines converge east. The pattern names an Underrail approach more directly than any road. Certainty lightens the next miles despite the time spent listening.",
+            "failure": "Three frequencies align inside your skull and refuse to separate again. You stumble from the field following a bearing that keeps turning. The resulting concussion and fatigue make silence feel like another signal you have failed to understand."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You move only when the quiet rows separate and stop whenever the humming climbs. No arc reaches you. The field closes behind with all antennas still singing, its hidden destination neither learned nor needed.",
+            "failure": "A bent mast enters the neighboring field as you pass. Current crosses your path in a white sheet, throwing you onto radioactive glass. You rise injured and contaminated before the charged rows can align again."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_carcass",
+      "body": "A cargo crawler lies fused belly-down across the plain, tracks sunk into black glass as if the ground swallowed it while hot. Its armored hold remains sealed beneath buckled plates. The driver’s hatch hangs open above a ladder glazed sharp by the flash. Cutting cargo access risks moving metal that still carries impossible strain. Climbing into the cabin offers a smaller prize and edges capable of opening skin with almost no pressure.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You release the stressed plates in sequence and let each settle before entering. Riot padding and rifle cartridges wait inside a hold distorted around them. The crawler keeps its larger secrets beneath glass you cannot cut.",
+            "failure": "A plate folds along a heat-weakened seam and pins you against the chassis. You lever it aside before breath runs out, but the trapped limb swells immediately. The unopened cargo remains above your fresh sprain."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You cover the hatch edges and lower yourself through the driver’s harness. Water sits beneath the seat beside a signal compass still tracking east. Its needle steadies the moment it enters open air.",
+            "failure": "A nearly invisible edge slices your forearm as you shift through the hatch. Blood makes every remaining handhold uncertain. You retreat and bind the wound before exploring farther, leaving the cabin and its unknown contents intact."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_spring",
+      "body": "Clear water bubbles through a crack in the fused ground, steaming despite the wind. Mineral bands around the pool form white, green, and warning-yellow rings. No animal tracks approach it, but an old test strip container lies open nearby with two strips remaining. Drinking nothing still leaves the spring’s warmth available to loosen exhausted muscles. Staying near exposed glass, however, may exchange one kind of relief for radiation too quiet to feel.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "Both test strips settle on the same clean reading. The water tastes metallic but carries no dangerous pulse, filling your bottles while its heat eases some fatigue. Steam hides you until the collection is complete.",
+            "failure": "The first reading appears harmless because the spring’s pulse falls between color changes. Your meter reveals the truth after the bottles are full. You discard them, but the radiation already taken cannot be poured away."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You sit outside the mineral rings and let rising warmth enter cramped legs and shoulders. Rest returns without drinking a drop. When the meter shifts, you are already standing and ready to leave.",
+            "failure": "Relief makes the exposed pool seem safer with every minute. You stay through one invisible pulse too many. The warmth leaves your muscles, but a smaller burden of radiation accompanies you from the spring."
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_ruins",
+      "body": "Fused building shells multiply your reflection into a crowd that walks half a step out of time. Streets appear straight until mirrored walls return them from impossible angles. The broken sun remains visible in fragments above the roofline, offering direction if you can distinguish sky from reflection. Shadowed passages promise cooler travel, though their shelves of glass have cracked under decades of tension and sometimes settle without warning.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You follow only the sun whose position changes when clouds move. False streets peel away from the route one by one. Your reflections remain trapped in side corridors while the real road opens east.",
+            "failure": "A mirrored sunrise draws you through the same intersection three times before its unmoving cloud exposes the lie. Lost hours consume strength and food. The reflected crowd seems better fed when you finally abandon it."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You remain beneath overhangs where the glass stays cool enough to touch. The route bends but never doubles back, preserving precious strength while every bright avenue burns empty beside you.",
+            "failure": "A suspended shelf gives way above the darkest passage. Falling glass opens a line across your shoulder before you escape the collapse. You bind the bleeding beneath sunlight the safer route had asked you to avoid."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_hunters",
+      "body": "Three sets of breathing follow beyond the reach of your light. They stop whenever you stop and resume one step after you move, careful enough to make uncertainty part of the ambush. Turning lets you choose the ground before hidden hunters close. Extinguishing the lamp offers service alcoves and equal blindness. An offer of ammunition might purchase peace, though announcing that you carry rounds also gives strangers a reason to stop negotiating.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "victory": "You turn before the breathing reaches striking distance. Violence flashes across rails, pillars, and the narrow territory of your lamp. When the last hunter falls, pistol rounds and a smoke bomb explain how patiently they planned for prey."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "Darkness takes both sides equally, but you counted the alcoves while light remained. You enter one without changing pace and let the hunters follow your fading footfalls. Their breathing passes close enough to warm the air.",
+            "failure": "Your shoulder finds a concrete pillar at full speed. The impact drops you hard and rings through the tunnel, giving pursuit a perfect bearing. You escape by moving concussed through darkness that now tilts beneath every step."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "You roll two cartridges into the light and name the tunnel you intend to leave. A hand collects the payment without showing its owner. One hunter whispers a safe route, and all three breaths withdraw.",
+            "failure": "The offered rounds prove that your pack contains more worth taking. A blade reaches from darkness while another hand collects the ammunition. You break their line wounded, poorer, and aware that courtesy became intelligence for an enemy."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_train",
+      "body": "A subway train waits on dead rails with warm yellow light behind one carriage window. Condensation clouds the glass from inside. Someone has covered the neighboring windows with route maps and blankets, leaving only this deliberate square visible. Knocking announces a guest to whoever maintains the heat. The roof hatch offers entry without trust, but a thin wire runs from its handle into darkness. Shelter below ground often survives by teaching strangers the cost of surprise.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "Your knock receives three coded taps before the door opens. A hidden family shares a hot meal and marks safe junctions on your map. They watch you eat before allowing themselves to believe you will leave peacefully.",
+            "failure": "The window goes black at the first knock. No footsteps answer, yet warmth continues leaking beneath the carriage. You walk away under silent observation, shaken by the certainty that living people chose darkness when they heard you."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You disarm the roof wire and enter a carriage arranged to appear occupied from outside. Its builders are gone, but ration bars and sealed water remain beneath one bench, payment for understanding the decoy.",
+            "failure": "The trip wire releases the hatch instead of an alarm. Metal strikes your shoulder and throws you from the carriage roof. You limp away with a sprain while yellow light continues shining through an entirely empty window."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_flood",
+      "body": "Water trembles between the rails before a roar enters the tunnel. A black surge rounds the bend carrying broken seats, dead signal lamps, and branches from some opening far above. The maintenance ladder begins at shoulder height on the wall, its lower rungs missing. A platform waits farther downline beyond a shallow curve. Climbing depends on one violent reach; running depends on ground the approaching water is already beginning to hide.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You jump, catch the first surviving rung, and pull your legs clear as the surge fills the tunnel. Debris hammers the wall below. The ladder bends but keeps you above everything the water carries.",
+            "failure": "Your wet hand slips from the rung as the flood arrives. Water drives you against tile and twists one leg beneath floating debris. You climb after the worst passes, injured and exhausted by the current’s blunt insistence."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You run along sleepers while the roar fills every space behind you. The platform edge reaches your hands one breath before water takes your feet. Its surge breaks below and spends itself against concrete.",
+            "failure": "Hidden rubble turns your final stride into a fall. The surge rolls you through seats, branches, and black water before throwing you onto the platform stairs. You come up battered and emptied of strength, the stairs swaying under a head that cannot hold them still."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_survivors",
+      "body": "Shields made from station signs block the platform stairs. Behind them, a settlement has arranged lamps so every visitor stands illuminated while the council remains in shadow. They ask why reaching the Citadel should matter more than the food and safety consumed along the way. A pump coughs beneath the platform between questions. Persuasion may earn passage through their guarded tunnel; repairing the failing machine could answer more honestly, if your tools understand its age.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You describe the Citadel as a chance rather than a promise and admit what the road has already disproved. The council recognizes honesty, grants passage, and gives you a medkit. Their guarded hope strengthens your own.",
+            "failure": "Your reasons sound like slogans worn smooth by distance. The council opens its barrier only after claiming a ration for the people protecting this platform. They do not call it payment, and you cannot call it theft."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You clear the submerged intake and align a drive belt cut from mismatched machinery. Clean water reaches the settlement taps in a coughing rush. The council pays with purifier fluid and opens the eastern maintenance gate.",
+            "failure": "The pump’s housing accepts your repair, then tears the new pieces apart when pressure returns. Useful salvage disappears inside grinding gears. The council still permits passage, though their silence follows more sharply than accusation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_switch",
+      "body": "A mechanical route board points EAST through a tunnel whose rails remain polished by dripping water. Your signal compass points west at a service door welded shut. Dust on the old transfer diagram hides several destination marks, while electrical interference nudges the compass needle whenever a relay clicks overhead. One guide was built before the disaster; the other may be responding to something built afterward. Either can turn certainty into miles underground.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "The compass bearing steadies after you move beyond the relay. Behind the welded door, a service line runs directly toward Citadel infrastructure. Knowing the route removes wasted distance and returns some strength to your pace.",
+            "failure": "The needle follows interference through a collapsed loop and points back at the same sealed junction from the opposite side. Hours of dark walking buy only fatigue and proof that an instrument can be confidently wrong."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You clean the route board layer by layer until faded transfer marks reveal how service trains once bypassed the public line. The reconstructed path bends east without entering the flooded sections shown by newer stains.",
+            "failure": "A temporary construction symbol resembles the permanent Citadel mark in weak light. You follow it through a maintenance loop that consumes time, strength, and food before returning you to the original board."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_nest",
+      "body": "Stripped cable, ticket stubs, and pieces of clothing fill the station office from floor to ceiling. Something inside copies your footsteps with a delay too precise for echo. When you shift weight, cloth settles in imitation. Noise could force the creature into the open before it chooses the angle. Passing without changing rhythm might deny it the hesitation that marks uncertain prey, provided your body obeys even when another set of steps joins beneath the same skin of darkness.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "victory": "Your first violent sound draws the Ash Stalker from its cable nest exactly where expected. The tunnel magnifies the struggle into thunder. After it falls, salvage and radiation tablets emerge from the possessions woven around its sleeping place."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You maintain the same measured pace while copied footsteps multiply beside you. The mimic waits for a stumble that never comes. Its final imitation continues alone after you turn the corner.",
+            "failure": "Loose tile shifts under one heel and your rhythm breaks. The answering stumble comes from inside the office, followed by a rush. You escape its first strike wounded, fatigued, and shaken by footsteps that remain perfectly yours."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_platform",
+      "body": "One vending machine glows at the end of a dead platform, its display requesting payment in a currency whose symbol no longer exists. Sealed food and water remain visible behind scratched plastic. The payment board can be reached through a narrow service slot carrying a steady electrical hum. Breaking the front offers direct access through safety glass designed to fragment inward, toward the hands of anyone impatient enough to test it.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You bridge the purchase contacts without waking the alarm circuit. The machine dispenses food and water one item at a time, thanking an absent customer after each. Its light dies peacefully when the final bottle drops.",
+            "failure": "The anti-tamper cell releases its stored charge through your tool. Muscles lock and your forehead strikes the display before you fall clear. The machine remains lit, goods untouched, while concussion blurs its courteous payment instructions."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You strike the panel along its weakened frame instead of the glass center. Plastic folds outward, yielding a ration and stimulant before the shelves jam. Enough remains visible to make restraint feel strangely expensive.",
+            "failure": "The safety pane behaves exactly as designed, showering inward across both hands. You withdraw bleeding before the opening is wide enough to use. Packaged food waits behind red-smeared glass you can no longer grip safely."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_collapse",
+      "body": "Pebbles fall from a ceiling bowed between two support arches. Each lands several seconds before the next, a countdown without a known final number. A discarded steel post could brace the weakest section long enough for passage if placed under changing weight. A cable duct opens near the floor and appears to continue around the damage. Its darkness hides whether the bypass returns to the line or narrows into a tomb too small for turning.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You seat the post beneath an intact beam and cross while pressure travels through it in groaning waves. The ceiling falls after you clear the arch. Dust chases east, but the weight remains behind.",
+            "failure": "The post punches through rotten concrete instead of distributing force. Ceiling slabs descend as you retreat, striking head and back before the arch seals. You crawl from the dust concussed, injured, and drained by excavation."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "The cable duct widens beyond its first turn and crosses above the collapsed section. You crawl between dead lines until a service panel opens east of the damage, untouched by falling stone.",
+            "failure": "The duct narrows around an old junction box and ends against poured concrete. Reversing the entire crawl costs strength and food. You return to the bowed ceiling with less daylight, fewer options, and scraped patience."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_signal",
+      "body": "A rail signal turns green as you approach, though every visible cable has been severed. Light spills across standing water and reveals fresh maintenance marks leading down one powered line. Citadel engineers may have left a guide for travelers they expected. Old security systems also used green to draw authorized movement into controlled ground. Cutting the signal would let you pass without answering either invitation, assuming its capacitors have not spent decades saving one last defense.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "The powered markers repeat at every junction, each recently cleaned and aimed east. You follow them through the shortest tunnel and recognize deliberate Citadel work. Relief enters your stride alongside the dangerous fact of being expected.",
+            "failure": "The green path ends beneath a dormant restraint frame that wakes when you cross its sensor. Metal lashes out before you retreat. The trap releases, but injury and shaken nerves accompany you from its obedient light."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You ground the remaining charge before cutting the feed. Green fades to black without triggering anything deeper in the line. You pass through honest darkness, neither guided nor identified by whatever powered it.",
+            "failure": "The capacitor holds more than the dead cable suggests. Current crosses your cutters and locks both arms before throwing you clear. The signal flickers once, returns to green, and watches you leave with burned hands."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_door",
+      "body": "A blast door carries the first intact EAST CITADEL seal you have seen. Its maintenance housing contains a cylindrical mechanism surrounded by warnings about consumed tools and unauthorized extraction. Above it, a challenge display cycles six symbols before resetting to black. Recovering the cylinder may provide a physical access core. Memorizing the code risks nothing but error, yet its sequence changes subtly whenever distant relays click, as if the door is testing more than memory.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You disengage the retaining teeth in the order stamped beneath the housing. The access cylinder slides free around a core of reusable components. Somewhere beyond the door, a mechanism acknowledges the removal.",
+            "failure": "The housing accepts your improvised tool and rotates it beyond reach. Internal teeth grind the piece into useless metal while the cylinder stays locked. You leave salvage behind and spend additional strength reopening the maintenance cover."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You group the challenge symbols by relay interval rather than visible order. The cycle resolves into a repeatable gate code, which you record from memory only after the display confirms it twice.",
+            "failure": "One symbol changes during every third relay click, breaking the pattern you thought complete. Repeated attempts consume time without revealing which version the Citadel expects. You leave fatigued beneath a door that continues examining you."
+          }
+        }
+      ]
+    },
+    {
+      "id": "final_gate_1",
+      "body": "The East Citadel rises from poisoned haze in clean vertical lines, too orderly to belong at the end of this road. Floodlights pin you against its outer blast door. Hidden machinery vibrates beneath your boots while rifle apertures open above. A loudspeaker requests the current challenge response and begins a visible countdown. The code recovered underground may satisfy a system older than its guards. Your own intelligence might persuade a living watcher, but hesitation already has a measured limit.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You answer in the relay’s cadence, including the pause the written code never showed. Locks withdraw one layer at a time. The outer door admits you to secondary screening while weapons remain trained from above.",
+            "failure": "One symbol belongs to an older cycle. Warning fire strikes before you finish correcting it, driving you wounded into the screening channel. The Citadel allows entry only because its machinery has already decided to examine you closer.",
+            "critical_success": "The code does more than open the first lock: it identifies your route as expected civil-defense traffic. A hidden personnel channel wakes and escorts you through the outer door while the rifle apertures close above."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You name the failed settlements, active threats, and routes only a traveler could know. A human voice interrupts the countdown. Execution is delayed, and the outer door opens toward secondary screening without offering anything resembling welcome.",
+            "failure": "Your intelligence reaches a guard trained to hear desperation as contamination. A stun round lands while the speaker requests supporting evidence. You wake wounded inside the screening lane, shaken but temporarily more useful alive than dead."
+          }
+        }
+      ]
+    },
+    {
+      "id": "final_gate_2",
+      "body": "Cold lamps strip every shadow from the screening court. An armored Warden machine rolls from the inner gate, its damaged wheel assembly leaving a bright groove across concrete. Scanners travel over your wounds, supplies, and irradiated clothing before declaring contamination beyond admission limits. One sensor flickers whenever the turret turns. The manual gate control stands behind its patrol arc. This machine was built to outlast arguments; reaching the Citadel now means blinding it, breaking it, or moving through the fraction it cannot see.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "Your signal enters during the sensor’s damaged refresh and fills its vision with impossible targets. The Warden rotates toward ghosts, exposing the manual controls. Its voice continues refusing entry to positions where nobody stands.",
+            "failure": "The machine isolates your interference and traces it back before the overload settles. A precise shot burns across you, but the damaged sensor fails to confirm the kill. You reach the manual gate under its next blind sweep."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "victory": "The Warden fights with the certainty of a law that never expected appeal. You break its wheel assembly until armor folds and the turret strikes concrete. The inner controls wait beyond its disabled, still-speaking body."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "You study the tracking beam until its return sweep leaves one narrow absence. Crossing that interval carries you behind the turret before its calculations update. Your hand reaches the manual controls while it searches empty concrete.",
+            "failure": "The beam reverses before the damaged motor should permit it. Fire catches you in the open and forces a desperate final movement. Wounded and exhausted, you reach the controls as the Warden begins reacquiring your position."
+          }
+        }
+      ]
+    },
+    {
+      "id": "final_gate_3",
+      "body": "The inner gate opens no wider than a hand. Clean air escapes through the gap, smelling of rain and filtered metal, while the mechanism grinds toward permanent failure. Behind you, the Warden’s systems recover one weapon at a time. Warning lamps state that forcing the gate may trigger crushing closure; the emergency controller displays lethal voltage around rejected commands. A guard watches through armored glass. Every path can admit one person, and every mistake now ends within sight of shelter.",
+      "choices": [
+        {
+          "index": 0,
+          "outcomes": {
+            "success": "You enter both hands into the narrowing seam and push until old gears surrender teeth. The opening widens around you, then seals behind your final step. Clean air enters lungs that had stopped believing in it.",
+            "failure": "The gate reverses with the full force announced by its warning lamps. You are trapped as the recovering Warden fires through the narrowing seam. The Citadel remains close enough for your final breath to taste clean.",
+            "critical_success": "You feel the failing gear hesitate and drive your weight into that exact weakness. The mechanism tears free instead of closing, leaving the passage open behind you. For once, survival creates a door another person might use.",
+            "critical_failure": "The weakened gear releases without resistance, and the sudden movement carries you beneath the descending frame. The Warden fires through the remaining gap. Clean air reaches you for one brief breath before steel and impact finish the journey."
+          }
+        },
+        {
+          "index": 1,
+          "outcomes": {
+            "success": "You rebuild the emergency sequence from every relay lesson gathered below. The controller accepts one final command and spends its remaining power opening the gate. Beyond it, impossible clean corridors wait without explanation.",
+            "failure": "The controller identifies an unauthorized sequence and energizes the entire frame exactly as its red symbols promised. Current crosses your body before the command can be withdrawn. The gate records another rejected entrant and remains closed.",
+            "critical_success": "You recognize the emergency controller as a smaller version of every relay that guided you east. One perfect sequence restores the entire gate cycle. Green lights lead through an opening wide enough to enter standing upright.",
+            "critical_failure": "The first command bridges two circuits the warning diagram kept separate. Full gate voltage crosses the panel and stops your heart before your hand can withdraw. The controller resets above a body officially recorded as an electrical fault."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "You order the watching guard to decide as a person before the machine decides for them. Every death and mile gives the words weight. A human hand reaches the override, and the gate opens just enough.",
+            "failure": "The guard steps back from the glass. No override answers before the Warden reacquires its target, as the countdown clearly warned it would. The final shot ends the road beneath clean lights meant for someone else.",
+            "critical_success": "You speak the guard’s name from the badge behind the glass. Recognition breaks protocol where argument could not. They open the gate, call your own name from the screening record, and pull you through before the Warden fires.",
+            "critical_failure": "Your demand becomes noise inside armored glass. The guard looks toward the recovering Warden instead of the override, and the turret completes the aim its alarms announced. The final shot erases every word before the gate can answer."
+          }
+        }
+      ]
+    }
+  ]
+}

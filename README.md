@@ -1,26 +1,34 @@
 # Ashfall Road
 
-Ashfall Road is an offline-first, portrait-oriented post-apocalyptic D20 roguelike built with Godot 4.7.2 and GDScript.
+Ashfall Road is an offline-first, portrait-oriented post-apocalyptic systems roguelike built with Godot 4.7.2 and GDScript.
 
 ## Current gameplay
 
 - Choose one of three equal-budget randomly generated survivors.
-- Travel through six regions in a fixed order.
-- Resolve data-driven events using visible D20 odds and modifiers.
-- Manage Health, Hunger, Fatigue, Radiation, equipment, ammunition, consumables, and carrying weight.
-- Rest only at checkpoints after every five regional events.
+- Travel through six regions in a fixed order, with one guaranteed supply opportunity per region.
+- Read simple stat-based success percentages, then reveal a concealed, persisted D20 roll.
+- Earn run-only XP from survival, difficult successes, checkpoints, and defeated enemies. Each level banks an uncapped stat point that can be allocated at a checkpoint; death erases all progression.
+- Fight authored adversaries in deterministic multi-round portrait combat using Attack, Block, Dodge, Item, Flee, and a once-per-fight Opportunity; see the prepared D20, real HP changes, armor blocks, status effects, and damage feedback on one cinematic battle screen.
+- Manage a Grit-based threshold heart pool, four meal icons, Fatigue, Radiation, equipment, ammunition, consumables, and carrying weight.
+- Read event and outcome prose through a configurable typewriter reveal; double-tap the narrative to reveal it immediately.
+- Use a responsive, reference-style icon inventory with four equipment slots, five vertical filter icons, a fixed capacity footer, item detail sheets, equipping, unequipping, consumption, and confirmed dropping.
+- Lose one meal after every two normal journey events; starvation removes one 50-HP heart at subsequent hunger ticks.
+- Rest only at checkpoints after choosing which food to consume.
 - Reach the final three-stage encounter or lose the active run permanently.
 - Keep only settings, cosmetic entitlements, and run-history summaries after death.
-- Resume an interrupted roll from its persisted D20 result without duplicating an outcome.
-- Play through seven generated portrait environments with accessible text and motion settings.
+- Resume interrupted event and combat rolls without duplicating damage, ammunition, loot, or outcomes.
+- Review finished runs and recovered lore in the Road Chronicle, then let the staged v1.1 expansion return ordinary choices as five cross-region human stories with fifteen further chapters.
 
 ## Implemented content
 
-- 6 sequential regions, 60 region events, 12 global events, 1 safe fallback, and a 3-stage finale.
-- 48 items, 12 adversary archetypes, and 12 conditions/injuries.
-- Equipment slots, weight capacity, ammunition, consumables, armor mitigation, survival thresholds, checkpoints, and run history.
-- Offline JSON saves with temporary-file replacement, active-run backup, schema hooks, and a death marker.
-- Offline-safe ad and billing facades plus a TypeScript purchase-verification backend.
+- 6 sequential regions, 60 base region events, 12 base global events, a 13-scene Bunker Forty-One narrative arc, an 8-scene Mara Venn/Rust-Sea expansion, 1 safe fallback, and a Bunker-aware 3-stage finale, with 97 loaded events in v1.
+- Bespoke prose overrides are active for all 76 baseline events in v1. The Road Chronicle exposes the ten reachable lore chapters alongside the latest twenty run summaries. The optional Living Road pack adds 15 callback events, five recurring-human threads, ten mutually exclusive equipment rewards, and fifteen further chapters when its release flag is enabled.
+- 50 items (including two shields), 13 adversary archetypes, and 13 conditions/injuries, including checkpoint Momentum.
+- Layered Dossier survivor HUD with heart/meal vitals, a tappable five-stat symbol capsule, persistent pressure strip, placeholder portraits/item runes, drawn D20, and tactical combat screen.
+- Locally bundled Literata narrative and Inter interface fonts, with their OFL licences, for complete offline presentation.
+- Data-driven weapons and adversaries, armor mitigation, ammunition fallback, critical effects, combat log, and flee rules.
+- Offline schema-5 JSON saves with atomic replacement, backup recovery, idempotent run-only XP rewards, versioned prepared-roll recovery, and a death marker.
+- Explicitly disabled launch-v1 ad and billing facades plus a deferred TypeScript purchase-verification backend.
 - 7 original portrait region backgrounds and a scalable vector application icon.
 
 ## Run locally
@@ -29,7 +37,7 @@ Ashfall Road is an offline-first, portrait-oriented post-apocalyptic D20 rogueli
 2. Run the project with F6/F5.
 3. For automated checks, run the headless test entrypoint described in `docs/TESTING.md`.
 
-The core game has no network dependency. Android ads and purchases are isolated behind adapters and remain disabled until their platform plugins and store credentials are configured.
+The launch-v1 game has no network dependency, advertising, or purchases. Deferred Android monetization remains isolated behind disabled adapters until a tested post-launch release deliberately enables it and updates the store declarations.
 
 ## Project guides
 
@@ -38,5 +46,15 @@ The core game has no network dependency. Android ads and purchases are isolated 
 - [Content authoring](docs/CONTENT_AUTHORING.md)
 - [Monetization integration](docs/MONETIZATION.md)
 - [Testing](docs/TESTING.md)
+- [Four-week launch sprint](docs/LAUNCH_SPRINT.md)
+- [Closed-test guide and feedback form](docs/CLOSED_TESTING.md)
+- [Release checklist](docs/RELEASE_CHECKLIST.md)
+- [Balance workflow](docs/BALANCE_WORKFLOW.md)
+- [Visual style guide](docs/UI_STYLE_GUIDE.md)
 - [Google Play release roadmap](docs/RELEASE_ROADMAP.md)
 - [Asset provenance](docs/ASSET_PROVENANCE.md)
+- [Bunker Forty-One narrative map](docs/BUNKER41_NARRATIVE.md)
+- [Mega-Chain expansion progress](docs/MEGA_CHAIN_EXPANSION.md)
+- [Living Road narrative bible](docs/LIVING_ROAD_NARRATIVE_BIBLE.md)
+
+Combat rules 2 adds committed enemy tells, weapon signatures/mastery, shield builds and Manual/Quick Roll. Existing saved fights keep their legacy rules until they end. See [the implementation and measured balance report](docs/NARRATIVE_COMBAT_REPORT.md); Samsung testing remains required before release.

@@ -6,15 +6,11 @@ This is a drafting aid, not legal advice. Replace every bracketed field and make
 
 ## Overview
 
-Ashfall Road is an offline-first mobile game published by [LEGAL NAME OR STUDIO]. The core game does not require an account or internet connection. Game-run data, settings, tutorial state, run history, selected cosmetic theme, and locally cached purchase ownership are stored on the player's device.
+Ashfall Road is an offline mobile game published by [LEGAL NAME OR STUDIO]. Version 1 does not require an account or internet connection. Game-run data, settings, tutorial state, and run-history summaries are stored on the player's device.
 
-## Advertising
+## Advertising and purchases
 
-The free version may use Google AdMob to display limited interstitial advertising. Google and its partners may process device identifiers, approximate location derived from network information, advertising interactions, diagnostics, and consent choices according to the player's region and privacy settings. The game uses Google's User Messaging Platform where required. Players can access privacy options from [LOCATION IN APP]. Owners of Remove Ads do not receive ad requests from the game.
-
-## Purchases
-
-Google Play processes payments. The game sends a Google Play product ID and purchase token to [BACKEND OPERATOR/FIREBASE REGION] to verify non-consumable ownership. The backend stores a one-way hash of the purchase token plus product, order metadata where available, acknowledgement state, and verification timestamps. Payment-card details are not received by the publisher.
+Version 1 contains no advertising SDK, displays no advertisements, offers no in-app purchases, and sends no purchase token to a developer backend. This policy and the Google Play Data Safety declaration must be updated before any future advertising or purchasing feature is enabled.
 
 ## Analytics and accounts
 
@@ -22,15 +18,15 @@ Version 1 does not use an external analytics SDK, player account, cloud gameplay
 
 ## Retention and deletion
 
-Active-run data is deleted when the survivor dies. Profile and verified non-consumable ownership remain on the device. Backend verification records are retained for [RETENTION PERIOD] to prevent replay and manage refunds. To request deletion of backend-linked data, contact [SUPPORT EMAIL] with [PRACTICAL VERIFICATION PROCESS]. Uninstalling the app deletes local data unless the Android operating system restores permitted profile data from backup.
+Active-run data is deleted when the survivor dies. Settings and run-history summaries remain on the device. Version 1 creates no developer-operated account or backend record. Uninstalling the app deletes local data unless the Android operating system restores permitted profile data from backup.
 
 ## Children
 
 Ashfall Road is intended for teens and adults and is not directed to children under 13. [ADD REGION-SPECIFIC AGE LANGUAGE AFTER POLICY REVIEW.]
 
-## Security and international processing
+## Security and platform processing
 
-Reasonable technical measures are used to protect verification data. Processing may occur in [COUNTRIES/REGIONS]. No method of electronic storage is guaranteed to be completely secure.
+Reasonable technical measures are used to protect local data. Google Play may independently process install, acquisition, crash, ANR, and store information under Google's terms and privacy policy. No method of electronic storage is guaranteed to be completely secure.
 
 ## Changes and contact
 

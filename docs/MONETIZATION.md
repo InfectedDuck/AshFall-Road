@@ -2,11 +2,13 @@
 
 Monetization is optional infrastructure around an offline game. A missing connection, denied consent, no-fill, plugin exception, store outage, or verification timeout must never delay a choice, checkpoint, save, death, restart, or complete run.
 
+Version 1 launches free with `ashfall/release/monetization_enabled=false`. The settings store and ad status are hidden, both service facades refuse activation, and no ad or billing plugin is bundled. Everything below is deferred post-launch work and requires updated privacy/Data Safety/ads declarations before the flag may change.
+
 ## Current implementation boundary
 
 - `AdService` owns eligibility: only completed regions 2 and 4, at most two per run, at least ten minutes apart, never replay a missed opportunity, and disabled by cached Remove Ads ownership.
 - `BillingService` owns the product allowlist, cached ownership checks, offline store status, and the callback boundary for a future Android billing adapter.
-- The settings UI lists all four non-consumable products but disables buying when the adapter is unavailable.
+- The settings UI lists products only when the post-launch monetization feature flag is deliberately enabled.
 - `backend/functions` verifies purchases with Google, requires Firebase App Check, accepts only allowlisted products, grants only completed purchases, stores a token hash rather than a raw token, and acknowledges the purchase server-side.
 
 The Android plugins and store credentials are deliberately not bundled. Pin exact plugin commits/releases only after an isolated Godot 4.7/API 36 test succeeds.
@@ -31,8 +33,8 @@ Official UMP setup: <https://developers.google.com/admob/android/privacy>
 | Entitlement | Play product ID | Type |
 |---|---|---|
 | Remove Ads | `ashfall_remove_ads` | Non-consumable |
-| Rust Theme | `ashfall_theme_rust` | Non-consumable |
-| Night Theme | `ashfall_theme_night` | Non-consumable |
+| Cinder Rust Theme | `ashfall_theme_rust` | Non-consumable |
+| Signal at Night Theme | `ashfall_theme_night` | Non-consumable |
 | Supporter Bundle | `ashfall_supporter_bundle` | Non-consumable |
 
 No product changes stats, odds, resources, survivability, resurrection, or run progression.
