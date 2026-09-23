@@ -137,7 +137,8 @@ func _soak(count: int) -> Dictionary:
 	var totals := {
 		"runs": count, "deaths": 0, "victories": 0, "unfinished": 0, "errors": 0,
 		"regions_reached": 0, "events_resolved": 0, "levels": 0, "combats": 0,
-		"equipment_found": 0, "recovery_checked": 0, "recovery_mismatches": 0,
+		"equipment_found": 0, "talents_taken": 0, "trades_made": 0,
+		"recovery_checked": 0, "recovery_mismatches": 0,
 		"causes": {}, "region_deaths": {},
 	}
 	for index in range(count):
@@ -148,6 +149,8 @@ func _soak(count: int) -> Dictionary:
 		totals["errors"] += int(outcome["errors"])
 		totals["combats"] += int(outcome["combats"])
 		totals["equipment_found"] += int(outcome["equipment_found"])
+		totals["talents_taken"] += int(outcome["talents_taken"])
+		totals["trades_made"] += int(outcome["trades_made"])
 		totals["regions_reached"] += int(outcome["regions_reached"])
 		totals["events_resolved"] += int(outcome["events_resolved"])
 		totals["levels"] += int(outcome["level"])
@@ -175,6 +178,8 @@ func _soak(count: int) -> Dictionary:
 	totals["mean_level"] = snappedf(float(totals["levels"]) / runs, 0.01)
 	totals["mean_combats"] = snappedf(float(totals["combats"]) / runs, 0.01)
 	totals["mean_equipment_found"] = snappedf(float(totals["equipment_found"]) / runs, 0.01)
+	totals["mean_talents_taken"] = snappedf(float(totals["talents_taken"]) / runs, 0.01)
+	totals["mean_trades_made"] = snappedf(float(totals["trades_made"]) / runs, 0.01)
 	return totals
 
 
@@ -197,6 +202,8 @@ func _play(seed_value: int, candidate_index: int, options: Dictionary) -> Dictio
 	var errors := 0
 	var combats := 0
 	var equipment_found := 0
+	var talents_taken := 0
+	var trades_made := 0
 	var skipped := 0
 	var recovery_checked := false
 	var recovery_matched := true
@@ -230,6 +237,10 @@ func _play(seed_value: int, candidate_index: int, options: Dictionary) -> Dictio
 			recording.append(decision)
 		if applied.has("event") and str(applied["event"].get("outcome", "")) == "combat":
 			combats += 1
+		if bool(applied.get("legal", false)) and str(decision.get("type", "")) == "talent":
+			talents_taken += 1
+		if bool(applied.get("legal", false)) and str(decision.get("type", "")) == "trade":
+			trades_made += 1
 		if trace_enabled and applied.has("event"):
 			trace["events"].append(applied["event"])
 		var owned_now := _equipment_ids(game)
@@ -260,6 +271,8 @@ func _play(seed_value: int, candidate_index: int, options: Dictionary) -> Dictio
 		"level": int(summary.get("level", 1)),
 		"combats": combats,
 		"equipment_found": equipment_found,
+		"talents_taken": talents_taken,
+		"trades_made": trades_made,
 		"errors": errors,
 		"skipped": skipped,
 		"steps": steps,
@@ -306,9 +319,19 @@ func _policy_decision(game: GameEngine, rng: RandomNumberGenerator) -> Dictionar
 			if int(game.run_state.get("unspent_stat_points", 0)) > 0:
 				var stat := str(GameEngine.STATS[rng.randi_range(0, GameEngine.STATS.size() - 1)])
 				return {"type": "allocate", "stat": stat}
+			if game.talent_choice_available() and rng.randi_range(0, 1) == 0:
+				var options := game.list_talent_options()
+				return {"type": "talent", "talent": str(options[rng.randi_range(0, options.size() - 1)].get("id", ""))}
 			var food := game.available_food_items()
-			if not food.is_empty() and rng.randi_range(0, 1) == 0:
+			var affordable: Array = []
+			for index in range(game.checkpoint_offers().size()):
+				if bool(game.trade_preview(index).get("available", false)):
+					affordable.append(index)
+			var roll := rng.randi_range(0, 2)
+			if not food.is_empty() and roll == 0:
 				return {"type": "checkpoint", "action": "rest", "food": str(food[rng.randi_range(0, food.size() - 1)])}
+			if not affordable.is_empty() and roll <= 1:
+				return {"type": "trade", "index": int(affordable[rng.randi_range(0, affordable.size() - 1)])}
 			return {"type": "checkpoint", "action": "press_on"}
 	return {"type": "noop"}
 
@@ -354,6 +377,18 @@ func _apply_decision(game: GameEngine, decision: Dictionary, phase: String) -> D
 			proposed[stat] = int(proposed.get(stat, 1)) + 1
 			var allocation := game.confirm_stat_allocation(proposed)
 			return {"legal": bool(allocation.get("success", false))}
+		"talent":
+			if phase != "checkpoint":
+				return {"legal": false}
+			return {"legal": bool(game.select_talent(str(decision.get("talent", ""))).get("success", false))}
+		"trade":
+			if phase != "checkpoint":
+				return {"legal": false}
+			var deal := game.accept_trade(int(decision.get("index", -1)))
+			if not bool(deal.get("success", false)):
+				return {"legal": false}
+			game.leave_checkpoint()
+			return {"legal": true}
 		"checkpoint":
 			if phase != "checkpoint":
 				return {"legal": false}
@@ -389,6 +424,8 @@ func _region_snapshot(game: GameEngine) -> Dictionary:
 		"level": int(game.run_state.get("level", 1)),
 		"experience": int(game.run_state.get("experience", 0)),
 		"conditions": (survivor.get("conditions", []) as Array).duplicate(),
+		"scrap": int(survivor.get("inventory", {}).get("scrap_parts", 0)),
+		"talents": (game.run_state.get("talents", []) as Array).duplicate(),
 	}
 
 
@@ -407,6 +444,7 @@ func _print_soak(soak: Dictionary) -> void:
 	print("  mean regions reached %.2f | mean events %.2f | mean level %.2f" % [
 		float(soak["mean_regions_reached"]), float(soak["mean_events_resolved"]), float(soak["mean_level"])])
 	print("  mean combats %.2f | mean equipment found %.2f" % [float(soak["mean_combats"]), float(soak["mean_equipment_found"])])
+	print("  mean talents taken %.2f | mean trades made %.2f" % [float(soak["mean_talents_taken"]), float(soak["mean_trades_made"])])
 	print("  engine errors %d | recovery checks %d | recovery mismatches %d" % [
 		int(soak["errors"]), int(soak["recovery_checked"]), int(soak["recovery_mismatches"])])
 

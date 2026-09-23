@@ -154,6 +154,28 @@ The trace records, per region, health, satiety, Fatigue, Radiation, level, exper
 
 **These numbers describe a random policy, not a person.** 765 of the 981 deaths are starvation, which is what happens when nothing manages supplies; it is evidence that the hunger system applies consistently over long play, and it is not a statement about how hard the game is for a human. Deaths concentrate in the Hollow Industrial Zone (288), Drowned Marches (247), and Glass Wastes (196).
 
+### Robustness soak after talents and checkpoint trading — September 2026
+
+The soak policy was extended to the new checkpoint systems: it takes a talent when offered (about half the time), buys an affordable trade offer, and otherwise rests or presses on as before. Recorded talent and trade decisions replay deterministically.
+
+1,000 seeded runs under the extended policy:
+
+| Measure | Value |
+|---|---|
+| Engine errors | **0** |
+| Recovery checks / mismatches | 25 / **0** |
+| Replay reproduces the recorded run | **true** |
+| Deaths | 998 |
+| Victories | 2 |
+| Unfinished (stranded) | **0** |
+| Mean regions reached | 3.59 |
+| Mean events resolved | 15.37 |
+| Mean level | 2.83 |
+| Mean talents taken | 1.05 |
+| Mean trades made | 0.69 |
+
+728 of the 998 deaths are starvation, and deaths concentrate in the same three zones (Hollow Industrial Zone 321, Drowned Marches 252, Glass Wastes 173). The shape matches the pre-change soak: a random policy still dies unmanaged, and no run strands. The small dip in reach versus the earlier table comes with the policy change itself — it now spends supplies on trades a person would weigh first — so it is not read as a difficulty change. Trade prices (2–8 scrap, water for food) clear regularly at 0.69 purchases per run, which keeps Barter a live option without making it the default. No cost or difficulty retune follows from this soak; talent values stay at their initial tuning until human playtests report.
+
 ## Findings
 
 ### Release blocker: an event that can strand a run — REPAIRED BY N04
