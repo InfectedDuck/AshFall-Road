@@ -2,6 +2,7 @@ class_name StatsCapsule
 extends Button
 
 const UiTypeScript = preload("res://scripts/ui/ui_type.gd")
+const UiIconWidget = preload("res://scripts/ui/ui_icon.gd")
 
 signal details_requested
 
@@ -28,7 +29,7 @@ func configure(stats: Dictionary, palette: Dictionary, font_scale: float, unspen
 	# The canvas stat pill is five badges and a chevron in a 36pt-tall rounded
 	# row; 130 is the narrowest that keeps every value legible at artboard width.
 	custom_minimum_size = Vector2(130, 44)
-	tooltip_text = "Open stat explanations"
+	tooltip_text = _accessibility_text(stats, unspent_points)
 	accessibility_name = _accessibility_text(stats, unspent_points)
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = palette["surface_raised"]
@@ -52,12 +53,9 @@ func configure(stats: Dictionary, palette: Dictionary, font_scale: float, unspen
 		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		badge.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		badge.add_theme_constant_override("separation", -2)
-		var symbol := Label.new()
-		symbol.text = stat_symbol(stat)
-		symbol.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		symbol.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		symbol.add_theme_font_size_override("font_size", int(11 * font_scale))
-		symbol.add_theme_color_override("font_color", accent if unspent_points > 0 else muted)
+		var symbol := UiIconWidget.new()
+		symbol.configure(stat, int(12 * font_scale), accent if unspent_points > 0 else muted)
+		symbol.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		badge.add_child(symbol)
 		var value := Label.new()
 		value.text = str(int(stats.get(stat, 0)))

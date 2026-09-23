@@ -30,9 +30,9 @@ const ROLES := {
 	"wordmark": {"size": 30, "family": INTERFACE, "tracking": 0.42},
 }
 
-## Literata sets at 1.6 line height in the canvas; Godot expresses that as extra
-## separation on top of the font's own ascent + descent.
-const PROSE_LINE_SPACING_RATIO := 0.42
+## Keep prose comfortable on a phone without spending a second line on leading.
+## Godot adds this separation to the font's own ascent and descent.
+const PROSE_LINE_SPACING_RATIO := 0.22
 
 static var _font_cache: Dictionary = {}
 

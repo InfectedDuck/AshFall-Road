@@ -7,6 +7,7 @@ const StoryTypewriterScript = preload("res://scripts/ui/story_typewriter.gd")
 const StatsCapsuleScript = preload("res://scripts/ui/stats_capsule.gd")
 const PressureStripScript = preload("res://scripts/ui/pressure_strip.gd")
 const ItemIconScript = preload("res://scripts/ui/item_icon.gd")
+const UiIconScript = preload("res://scripts/ui/ui_icon.gd")
 const EquipmentComparisonScript = preload("res://scripts/domain/equipment_comparison.gd")
 const ResponsiveRulesScript = preload("res://scripts/ui/responsive_rules.gd")
 const UiPaletteScript = preload("res://scripts/ui/ui_palette.gd")
@@ -15,24 +16,21 @@ const PortraitArtScript = preload("res://scripts/ui/portrait_art.gd")
 const StoryDiscoveryScript = preload("res://scripts/domain/story_discovery.gd")
 const UiTypeScript = preload("res://scripts/ui/ui_type.gd")
 const AtmosphereLayersScript = preload("res://scripts/ui/atmosphere_layers.gd")
+const TouchScrollContainerScript = preload("res://scripts/ui/touch_scroll_container.gd")
 
-## Canvas frame metrics. Every artboard is 393x852 with these insets, square
-## corners throughout, and a 52px primary action.
-const SAFE_AREA_TOP := 54
-const SAFE_AREA_BOTTOM := 34
-const SAFE_AREA_SIDE := 20
-## A 360x640 screen at the largest text size cannot afford the full canvas
-## spacing and still keep six combat actions on screen. Padding gives way first;
-## touch targets never do.
-const SAFE_AREA_TOP_COMPACT := 28
-const SAFE_AREA_BOTTOM_COMPACT := 20
+## Leave more of a phone screen for reading. Hardware safe areas are applied
+## separately; decorative padding must not duplicate the system's insets.
+const SAFE_AREA_TOP := 24
+const SAFE_AREA_BOTTOM := 20
+const SAFE_AREA_SIDE := 12
+const SAFE_AREA_TOP_COMPACT := 12
+const SAFE_AREA_BOTTOM_COMPACT := 12
 const CORNER_RADIUS := 0
-const ACTION_HEIGHT := 52
+const ACTION_HEIGHT := 48
 const TOUCH_TARGET := 44
 const FOCUS_RING_WIDTH := 2
 const FOCUS_RING_OFFSET := 2
-## The reveal screen gives the die 220pt of the canvas's 393pt width.
-const REVEAL_DIE_SIZE := 220
+const REVEAL_DIE_SIZE := 168
 const VERDICT_DOT_SIZE := 6
 const SCROLLBAR_GUTTER := 12
 
@@ -99,6 +97,10 @@ var COLOR_RADIATION := Color.WHITE
 func _ready() -> void:
 	if not bootstrap_on_ready:
 		return
+	if OS.has_feature("android"):
+		# Match the portrait phone's width so shorter displays get a shorter
+		# logical viewport and activate the compact layout instead of side bars.
+		get_window().content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP_WIDTH
 	get_tree().quit_on_go_back = false
 	content = ContentRepository.new()
 	saves = SaveService.new()
@@ -163,7 +165,7 @@ func _build_shell() -> void:
 
 	page = VBoxContainer.new()
 	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	page.add_theme_constant_override("separation", 12)
+	page.add_theme_constant_override("separation", 8)
 	shell_column.add_child(page)
 
 	# Contextual guidance lives beside the page rather than over it: it never
@@ -177,9 +179,13 @@ func _build_shell() -> void:
 	tip_banner.add_child(tip_body)
 
 	toast_label = Label.new()
-	toast_label.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	toast_label.position = Vector2(20, -76)
-	toast_label.size = Vector2(500, 52)
+	toast_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	toast_label.offset_left = SAFE_AREA_SIDE
+	toast_label.offset_right = -SAFE_AREA_SIDE
+	toast_label.offset_top = -100
+	toast_label.offset_bottom = -24
+	toast_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	toast_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	toast_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	toast_label.visible = false
@@ -190,8 +196,7 @@ func _build_shell() -> void:
 
 
 func _apply_safe_area() -> void:
-	# Canvas safe areas: 54 above the eyebrow row, 34 below the last action, 20
-	# at the sides. Device insets can only push these further in, never in less.
+	# Reserve hardware cutouts once, while keeping page padding modest.
 	var compact := not ResponsiveRulesScript.uses_full_safe_area(get_viewport_rect().size.y)
 	# A window wider than the design column is letterboxed, not stretched.
 	var letterbox := ResponsiveRulesScript.content_letterbox(get_viewport_rect().size.x)
@@ -199,26 +204,29 @@ func _apply_safe_area() -> void:
 	var right := SAFE_AREA_SIDE + letterbox
 	var top := SAFE_AREA_TOP_COMPACT if compact else SAFE_AREA_TOP
 	var bottom := SAFE_AREA_BOTTOM_COMPACT if compact else SAFE_AREA_BOTTOM
-	if OS.has_feature("android"):
-		var safe := DisplayServer.get_display_safe_area()
-		var window_size := Vector2(DisplayServer.window_get_size())
-		var logical_size := get_viewport_rect().size
-		if safe.size.x > 0 and safe.size.y > 0 and window_size.x > 0 and window_size.y > 0:
-			var scale := Vector2(logical_size.x / window_size.x, logical_size.y / window_size.y)
-			left = maxi(left, roundi(float(safe.position.x) * scale.x) + 8)
-			top = maxi(top, roundi(float(safe.position.y) * scale.y) + 8)
-			right = maxi(right, roundi(float(window_size.x - safe.end.x) * scale.x) + 8)
-			bottom = maxi(bottom, roundi(float(window_size.y - safe.end.y) * scale.y) + 8)
+	var safe := _device_safe_rect()
+	var logical_size := get_viewport_rect().size
+	left = maxi(left, ceili(safe.position.x))
+	top = maxi(top, ceili(safe.position.y))
+	right = maxi(right, ceili(logical_size.x - safe.end.x))
+	bottom = maxi(bottom, ceili(logical_size.y - safe.end.y))
 	content_margin.add_theme_constant_override("margin_left", left)
 	content_margin.add_theme_constant_override("margin_right", right)
 	content_margin.add_theme_constant_override("margin_top", top)
 	content_margin.add_theme_constant_override("margin_bottom", bottom)
 
 
+func _device_safe_rect() -> Rect2:
+	var logical_size := get_viewport_rect().size
+	if not OS.has_feature("android"):
+		return Rect2(Vector2.ZERO, logical_size)
+	return ResponsiveRulesScript.logical_safe_rect(logical_size, Vector2(DisplayServer.window_get_size()), Rect2(DisplayServer.get_display_safe_area()))
+
+
 func _apply_theme() -> void:
 	var ui_theme := Theme.new()
 	var font_scale := float(profile.get("font_scale", 1.0))
-	var base_size := int(18 * font_scale)
+	var base_size := int(16 * font_scale)
 	var high_contrast := bool(profile.get("high_contrast", false))
 	palette = UiPaletteScript.create(str(profile.get("selected_theme", "default")), high_contrast)
 	COLOR_TEXT = palette["text"]
@@ -279,10 +287,10 @@ func _style_box(fill: Color, border: Color, radius: int = CORNER_RADIUS, width: 
 	box.border_color = border
 	box.set_border_width_all(width)
 	box.set_corner_radius_all(radius)
-	box.content_margin_left = 14
-	box.content_margin_right = 14
-	box.content_margin_top = 12
-	box.content_margin_bottom = 12
+	box.content_margin_left = 10
+	box.content_margin_right = 10
+	box.content_margin_top = 8
+	box.content_margin_bottom = 8
 	return box
 
 
@@ -307,7 +315,7 @@ func _type_size(role: String) -> int:
 	return UiTypeScript.size(role, float(profile.get("font_scale", 1.0)))
 
 
-## A label in a named canvas role. Prose roles also carry Literata's 1.6 leading.
+## A label in a named canvas role, with comfortable extra leading for prose.
 func _role_label(text: String, role: String, color: Color = Color(0, 0, 0, 0)) -> Label:
 	var label := _label(text, 0, color)
 	_type(label, role)
@@ -328,7 +336,7 @@ func _eyebrow(text: String, color: Color = Color(0, 0, 0, 0)) -> Label:
 ## the page. Never grows past the canvas size, only shrinks toward it.
 func _fitted_wordmark_size(lettering: String) -> int:
 	var font_scale := float(profile.get("font_scale", 1.0))
-	var available := get_viewport_rect().size.x - float(SAFE_AREA_SIDE * 2)
+	var available := minf(get_viewport_rect().size.x, ResponsiveRulesScript.CONTENT_COLUMN_WIDTH) - float(SAFE_AREA_SIDE * 2)
 	var size := UiTypeScript.size("wordmark", font_scale)
 	while size > 12:
 		var face := UiTypeScript.font("wordmark", UiTypeScript.scale_for_size("wordmark", size))
@@ -385,8 +393,8 @@ func _ledger_row(parent: Node, label_text: String, value_text: String) -> void:
 	rule.draw_center = false
 	rule.border_color = _c("border_subtle")
 	rule.border_width_bottom = 1
-	rule.content_margin_top = 12
-	rule.content_margin_bottom = 12
+	rule.content_margin_top = 8
+	rule.content_margin_bottom = 8
 	row.add_theme_stylebox_override("panel", rule)
 	var line := HBoxContainer.new()
 	line.add_theme_constant_override("separation", 12)
@@ -441,6 +449,7 @@ func _clear_page() -> void:
 	active_story_actions = null
 	active_story_key = ""
 	active_combat_presentation = null
+	_hide_contextual_tip()
 	for child: Node in page.get_children():
 		page.remove_child(child)
 		child.queue_free()
@@ -513,9 +522,9 @@ func _button(text: String, callable: Callable, disabled: bool = false, allow_rec
 	return button
 
 
-func _icon_button(glyph: String, description: String, callable: Callable) -> Button:
+func _icon_button(glyph: String, description: String, callable: Callable, atlas_icon_id: String = "") -> Button:
 	var button := _button(glyph, callable)
-	button.text = glyph
+	button.text = "" if atlas_icon_id != "" else glyph
 	button.custom_minimum_size = Vector2(TOUCH_TARGET, TOUCH_TARGET)
 	button.tooltip_text = description
 	button.accessibility_name = description
@@ -531,19 +540,32 @@ func _icon_button(glyph: String, description: String, callable: Callable) -> But
 	touched.bg_color = _c("surface_raised")
 	button.add_theme_stylebox_override("hover", touched)
 	button.add_theme_stylebox_override("pressed", touched)
+	if atlas_icon_id != "":
+		_add_button_atlas_icon(button, atlas_icon_id, true)
 	return button
+
+
+func _add_button_atlas_icon(button: Button, icon_id: String, centered: bool = false) -> void:
+	var icon := UiIconScript.new()
+	icon.name = "%sIcon" % icon_id.capitalize()
+	var icon_size := int(18 * float(profile.get("font_scale", 1.0)))
+	icon.configure(icon_id, icon_size, _c("icon_ink"))
+	icon.set_anchors_preset(Control.PRESET_CENTER if centered else Control.PRESET_CENTER_LEFT)
+	icon.position = Vector2(-float(icon_size) * 0.5, -float(icon_size) * 0.5) if centered else Vector2(10, -float(icon_size) * 0.5)
+	button.add_child(icon)
 
 
 func _overlay_header(title_text: String, close_callable: Callable) -> HBoxContainer:
 	var header := HBoxContainer.new()
 	var title_label := _eyebrow(title_text)
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	header.add_child(title_label)
 	header.add_child(_icon_button("×", "Close", close_callable))
 	return header
 
 
-func _popup_body(popup: PopupPanel, margin_size: int = 14) -> VBoxContainer:
+func _popup_body(popup: PopupPanel, margin_size: int = 10) -> VBoxContainer:
 	var margin := MarginContainer.new()
 	# Follow the popup's viewport-sized rectangle. Otherwise tall content can
 	# push pinned actions below the phone screen while the popup stays in place.
@@ -554,20 +576,29 @@ func _popup_body(popup: PopupPanel, margin_size: int = 14) -> VBoxContainer:
 	var body := VBoxContainer.new()
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 9)
+	body.add_theme_constant_override("separation", 8)
 	margin.add_child(body)
 	return body
 
 
 func _popup_center_responsive(popup: PopupPanel, width_ratio: float = 0.96, height_ratio: float = 0.96) -> void:
-	popup.popup_centered(ResponsiveRulesScript.overlay_size(get_viewport_rect().size, width_ratio, height_ratio))
+	var rect := ResponsiveRulesScript.overlay_rect(_device_safe_rect(), width_ratio, height_ratio)
+	popup.popup_centered(rect.size)
+	popup.size = rect.size
+	popup.position = rect.position
+	# PopupPanel can reconsider its child minimum on the next layout pass. Pin
+	# the safe viewport again after that pass; readers within the sheet scroll.
+	popup.set_deferred("size", rect.size)
+	popup.set_deferred("position", rect.position)
 
 
 func _popup_bottom_responsive(popup: PopupPanel, width_ratio: float = 0.92, height_ratio: float = 0.66) -> void:
-	var viewport_size := get_viewport_rect().size
-	var popup_size := ResponsiveRulesScript.overlay_size(viewport_size, width_ratio, height_ratio)
-	popup.popup_centered(popup_size)
-	popup.position = Vector2i(maxi(0, roundi((viewport_size.x - popup_size.x) * 0.5)), maxi(8, roundi(viewport_size.y - popup_size.y - 8)))
+	var rect := ResponsiveRulesScript.overlay_rect(_device_safe_rect(), width_ratio, height_ratio, true)
+	popup.popup_centered(rect.size)
+	popup.size = rect.size
+	popup.position = rect.position
+	popup.set_deferred("size", rect.size)
+	popup.set_deferred("position", rect.position)
 
 
 func _panel() -> VBoxContainer:
@@ -587,12 +618,12 @@ func _show_main_menu() -> void:
 	_set_atmosphere("title")
 	var utilities := HBoxContainer.new()
 	utilities.alignment = BoxContainer.ALIGNMENT_END
-	utilities.add_child(_icon_button("⚙", "Open settings", _show_settings))
+	utilities.add_child(_icon_button("⚙", "Open settings", _show_settings, "settings"))
 	page.add_child(utilities)
 	# The canvas title screen holds the wordmark a third of the way down and lets
 	# the whole action stack fall to the bottom edge, with no plate behind it.
 	var lede_spacer := Control.new()
-	lede_spacer.custom_minimum_size.y = 128
+	lede_spacer.custom_minimum_size.y = 48 if ResponsiveRulesScript.is_compact_height(get_viewport_rect().size.y) else 80
 	page.add_child(lede_spacer)
 	_wordmark("Ashfall Road", "Walk until the road ends.")
 	var spacer := Control.new()
@@ -606,10 +637,13 @@ func _show_main_menu() -> void:
 		var survivor: Dictionary = game.run_state.get("survivor", {})
 		var carry := _role_label("%s \"%s\" · Region %d of 6" % [survivor.get("name", "Survivor"), survivor.get("callsign", ""), int(game.run_state.get("region_index", 0)) + 1], "label", _c("muted"))
 		carry.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		carry.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		actions.add_child(carry)
 	else:
 		actions.add_child(_button("New run", _begin_candidate_selection))
-	actions.add_child(_button("Road chronicle", _show_road_chronicle.bind("")))
+	var chronicle_button := _button("   Road chronicle", _show_road_chronicle.bind(""))
+	_add_button_atlas_icon(chronicle_button, "chronicle")
+	actions.add_child(chronicle_button)
 	var about := _button("About & privacy", _show_about)
 	about.custom_minimum_size.y = TOUCH_TARGET
 	about.add_theme_color_override("font_color", _c("muted"))
@@ -633,7 +667,7 @@ func _show_candidates() -> void:
 	_clear_page()
 	_set_atmosphere("survivor")
 	_title("Three came to the fire", "Each carries 15 points of themselves. Pick who walks.")
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	page.add_child(scroll)
 	var list := VBoxContainer.new()
@@ -649,17 +683,21 @@ func _show_candidates() -> void:
 		var identity_row := HBoxContainer.new()
 		identity_row.add_theme_constant_override("separation", 10)
 		var candidate_portrait := PortraitArtScript.create_view(str(candidate.get("portrait_id", "survivor")), _c("muted"), 8)
-		candidate_portrait.custom_minimum_size = Vector2(76, 76)
+		candidate_portrait.custom_minimum_size = Vector2(56, 56)
 		identity_row.add_child(candidate_portrait)
 		var identity_details := VBoxContainer.new()
 		identity_details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		# Canvas survivor card: the name is prose, not accent. Accent on three
 		# cards at once would spend the whole screen's budget on decoration.
-		identity_details.add_child(_role_label("%s \"%s\"" % [candidate["name"], candidate["callsign"]], "title"))
+		var candidate_name := _role_label("%s \"%s\"" % [candidate["name"], candidate["callsign"]], "title")
+		candidate_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		identity_details.add_child(candidate_name)
 		var stat_parts: Array[String] = []
 		for stat: String in GameEngine.STATS:
 			stat_parts.append("%s %d" % [_stat_glyph(stat), candidate["stats"][stat]])
-		identity_details.add_child(_role_label("   ".join(stat_parts), "body", _c("icon_ink")))
+		var candidate_stats := _role_label("   ".join(stat_parts), "body", _c("icon_ink"))
+		candidate_stats.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		identity_details.add_child(candidate_stats)
 		identity_row.add_child(identity_details)
 		card_body.add_child(identity_row)
 		var gear_names: Array[String] = []
@@ -668,7 +706,9 @@ func _show_candidates() -> void:
 				gear_names.append(str(content.get_item(item_id).get("name", item_id)))
 		card_body.add_child(_role_label("Starting gear: %s" % ", ".join(gear_names), "flavour", _c("icon_ink")))
 		var starting_weapon: Dictionary = content.get_item(str(candidate["equipment"].get("weapon", "")))
-		card_body.add_child(_role_label(_weapon_signature_text(starting_weapon, candidate["stats"]), "caption", _c("muted")))
+		var signature := _role_label(_weapon_signature_text(starting_weapon, candidate["stats"]), "caption", _c("muted"))
+		signature.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		card_body.add_child(signature)
 		card_body.add_child(_button("Walk as %s" % candidate["callsign"], _select_candidate.bind(index)))
 		list.add_child(card)
 	page.add_child(_button("Back", _show_main_menu))
@@ -739,7 +779,7 @@ func _show_event() -> void:
 	page.add_child(event_panel)
 	# Story and choices share one natural phone-scrolling surface. This keeps the
 	# decision block directly after the prose instead of pinning it to the bottom.
-	var text_scroll := ScrollContainer.new()
+	var text_scroll := TouchScrollContainerScript.new()
 	text_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	text_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -751,7 +791,6 @@ func _show_event() -> void:
 	text_scroll.add_child(story_stack)
 	var narrative = StoryTypewriterScript.new()
 	narrative.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	narrative.custom_minimum_size.y = 110 if ResponsiveRulesScript.is_compact_height(get_viewport_rect().size.y) else 150
 	_type(narrative, "prose", "normal_font")
 	narrative.add_theme_color_override("default_color", _c("text"))
 	narrative.add_theme_constant_override("line_separation", UiTypeScript.line_spacing("prose", float(profile.get("font_scale", 1.0))))
@@ -784,7 +823,15 @@ func _show_event() -> void:
 	for index in range(choices.size()):
 		var choice: Dictionary = choices[index]
 		var preview := game.get_choice_preview(choice)
+		# A gate the survivor could not yet know about is absent rather than
+		# disabled. Rows keep their authored index, so the engine still resolves
+		# the choice the player actually pressed.
+		if not preview.get("available", false) and bool(preview.get("hidden", false)):
+			continue
+		var guaranteed_cost := _choice_cost_text(choice)
 		var button_text := str(choice.get("label", "Choose"))
+		if guaranteed_cost != "":
+			button_text += "\n%s" % guaranteed_cost
 		if preview.get("available", false):
 			if bool(preview.get("combat", false)):
 				button_text += "\n%s" % preview.get("description", "FIGHT")
@@ -795,13 +842,13 @@ func _show_event() -> void:
 		else:
 			button_text += "\n▣ LOCKED: %s" % preview.get("reason", "Unavailable")
 		var choice_button := _choice_button(button_text, _resolve_choice.bind(index), not preview.get("available", false))
-		choice_button.tooltip_text = str(preview.get("reason", ""))
+		choice_button.tooltip_text = "%s\n%s" % [str(preview.get("reason", "")).strip_edges(), guaranteed_cost] if guaranteed_cost != "" else str(preview.get("reason", ""))
 		choice_list.add_child(choice_button)
 	choice_panel.modulate.a = 0.0
 	choice_panel.visible = false
 	active_story_actions = choice_panel
 	var story_key := _story_instance_key("event", str(game.run_state.get("current_event_id", "")))
-	_start_story(narrative, str(event.get("body", "")), story_key, func() -> void: _reveal_choices(choice_panel))
+	_start_story(narrative, game.resolve_body(event), story_key, func() -> void: _reveal_choices(choice_panel))
 
 
 func _show_survival_strip() -> void:
@@ -845,6 +892,22 @@ func _spoken_choice(lines: PackedStringArray) -> String:
 	return "%s %s" % [spoken, str(lines[1]).strip_edges()]
 
 
+## Prices are known before a choice and use the same item names and pressure
+## vocabulary as the committed receipt. Risk and chance remain separate.
+func _choice_cost_text(choice: Dictionary) -> String:
+	var costs: Dictionary = choice.get("costs", {})
+	var parts: Array[String] = []
+	for item_id: Variant in costs.get("items", {}):
+		var quantity := int(costs["items"][item_id])
+		if quantity > 0:
+			parts.append("%s -%d" % [str(content.get_item(str(item_id)).get("name", item_id)), quantity])
+	for pressure: Variant in costs.get("pressures", {}):
+		var delta := int(costs["pressures"][pressure])
+		if delta != 0:
+			parts.append("%s %s%d" % [str(pressure).capitalize(), "+" if delta >= 0 else "-", absi(delta)])
+	return "GUARANTEED COST - %s" % " | ".join(parts) if not parts.is_empty() else ""
+
+
 ## Canvas choice row: no plate and no fill, just a hairline rule above each
 ## option, an accent chevron, the choice in Literata, and its cost in tracked
 ## Inter underneath. Accent appears once per row, which is what keeps the canvas
@@ -863,8 +926,8 @@ func _choice_button(text: String, callable: Callable, disabled: bool = false) ->
 	normal.set_corner_radius_all(CORNER_RADIUS)
 	normal.content_margin_left = 4
 	normal.content_margin_right = 4
-	normal.content_margin_top = 10
-	normal.content_margin_bottom = 10
+	normal.content_margin_top = 7
+	normal.content_margin_bottom = 7
 	button.add_theme_stylebox_override("normal", normal)
 	var hover := normal.duplicate()
 	hover.draw_center = true
@@ -895,6 +958,7 @@ func _choice_button(text: String, callable: Callable, disabled: bool = false) ->
 	if lines.size() > 1:
 		var detail_label := _role_label(str(lines[1]), "label", _c("disabled") if disabled else _c("muted"))
 		detail_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		detail_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		copy.add_child(detail_label)
 	row.add_child(copy)
@@ -903,7 +967,10 @@ func _choice_button(text: String, callable: Callable, disabled: bool = false) ->
 	# tall it grew once the choice text wraps.
 	var fit_height := func() -> void:
 		if is_instance_valid(button) and is_instance_valid(row):
-			button.custom_minimum_size.y = maxf(float(TOUCH_TARGET), row.get_combined_minimum_size().y + 20.0)
+			button.custom_minimum_size.y = maxf(float(TOUCH_TARGET), row.get_combined_minimum_size().y + 14.0)
+	# Wrapping can shrink the content minimum without resizing the already-tall row.
+	# Refit on minimum-size changes too, so an initial narrow layout cannot latch.
+	row.minimum_size_changed.connect(fit_height)
 	row.resized.connect(fit_height)
 	fit_height.call()
 	return button
@@ -984,7 +1051,7 @@ func _show_conditions() -> void:
 	else:
 		body.add_child(_label("Owned treatments can be used here. Medicine is consumed immediately and the run autosaves.", 12, COLOR_MUTED))
 
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.name = "ConditionsScroll"
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -1040,44 +1107,96 @@ func _show_stat_details() -> void:
 	stat_details_popup.exclusive = true
 	add_child(stat_details_popup)
 	var body := _popup_body(stat_details_popup, 14)
-	body.add_child(_overlay_header("SURVIVOR STATS", _close_stat_details))
-	body.add_child(_label("Your base abilities stay visible in the journey HUD. Equipment and conditions can change how a specific choice feels.", 14, COLOR_MUTED))
-	var scroll := ScrollContainer.new()
+	_show_minimal_stat_details(body)
+	_popup_bottom_responsive(stat_details_popup, 0.92, 0.72)
+
+
+## The HUD opens this compact reference, not a second status screen. Conditions
+## have their own dedicated Status control, where their duration and treatment
+## can be read without competing with the survivor's core abilities.
+func _show_minimal_stat_details(body: VBoxContainer) -> void:
+	body.add_child(_overlay_header("STATS", _close_stat_details))
+	body.add_child(_role_label("Base ability scores and bonuses from equipped gear.", "flavour", _c("muted")))
+	var scroll := TouchScrollContainerScript.new()
+	scroll.name = "StatDetailsScroll"
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body.add_child(scroll)
-	var list := VBoxContainer.new()
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 8)
-	scroll.add_child(list)
+	var list := _scroll_column(scroll, 8)
 	var explanations := {
-		"strength": "Force, carrying capacity, and heavy close-quarters actions.",
-		"agility": "Movement, evasion, careful aim, and getting away safely.",
-		"wits": "Technical work, observation, planning, and reading danger.",
-		"grit": "Maximum hearts, endurance, and holding together under pressure.",
-		"presence": "Negotiation, intimidation, leadership, and keeping your nerve.",
+		"strength": "Force checks, heavy weapons, and carrying capacity. Base Strength adds 3 capacity per point.",
+		"agility": "Movement checks, Dodge and Flee, and agile weapons.",
+		"wits": "Technical and observation checks, planning, and weapons that rely on precision.",
+		"grit": "Endurance checks, weapons that rely on toughness, and your maximum hearts.",
+		"presence": "Social checks, pressure under negotiation, and commanding weapons.",
 	}
 	var stats: Dictionary = game.run_state.get("survivor", {}).get("stats", {})
-	for stat: String in GameEngine.STATS:
-		var panel := PanelContainer.new()
-		var column := VBoxContainer.new()
-		column.add_theme_constant_override("separation", 3)
-		panel.add_child(column)
-		var heading := _label("%s  %s  %d" % [StatsCapsuleScript.stat_symbol(stat), str(GameEngine.STAT_LABELS.get(stat, stat)).to_upper(), int(stats.get(stat, 0))], 16, _accent_color())
-		column.add_child(heading)
-		column.add_child(_label(str(explanations.get(stat, "")), 13, COLOR_TEXT))
-		var adjustments := _stat_adjustment_text(stat)
-		if adjustments != "":
-			column.add_child(_label(adjustments, 12, COLOR_MUTED))
-		list.add_child(panel)
+	for index: int in range(GameEngine.STATS.size()):
+		var stat: String = GameEngine.STATS[index]
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 10)
+		row.tooltip_text = _stat_hover_text(stat)
+		var icon := UiIconScript.new()
+		icon.configure(stat, 30, _accent_color())
+		icon.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		row.add_child(icon)
+		var copy := VBoxContainer.new()
+		copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		copy.add_theme_constant_override("separation", 2)
+		var header := HBoxContainer.new()
+		var name_label := _role_label(str(GameEngine.STAT_LABELS.get(stat, stat)).to_upper(), "label", _accent_color())
+		name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		header.add_child(name_label)
+		header.add_child(_role_label(str(int(stats.get(stat, 0))), "numeric", _c("text")))
+		copy.add_child(header)
+		copy.add_child(_role_label(str(explanations.get(stat, "")), "flavour", _c("text")))
+		copy.add_child(_role_label(_equipment_stat_adjustment_text(stat), "caption", _c("muted")))
+		row.add_child(copy)
+		list.add_child(row)
+		if index < GameEngine.STATS.size() - 1:
+			list.add_child(HSeparator.new())
+	# Conditions intentionally live in the dedicated Status sheet, never here:
+	# the compact reference keeps abilities readable at phone sizes. Name the
+	# way there so an injured survivor is never left guessing.
 	list.add_child(HSeparator.new())
-	list.add_child(_label("ACTIVE CONDITIONS", 14, _accent_color()))
-	var active_conditions: Array = game.run_state.get("survivor", {}).get("conditions", [])
-	if active_conditions.is_empty():
-		list.add_child(_label("None. Your survivor has no active injuries or mental effects.", 13, COLOR_MUTED))
-	else:
-		for condition_id: Variant in active_conditions:
-			list.add_child(_condition_card(str(condition_id), "active"))
-	_popup_bottom_responsive(stat_details_popup, 0.92, 0.72)
+	list.add_child(_role_label("Injuries and boons live under STATUS, with exact penalties and treatments.", "flavour", _c("muted")))
+
+
+## Hover text for one stat row: base value, what currently modifies it, and
+## which weapons answer to it, so a survivor can read a build at a glance.
+func _stat_hover_text(stat: String) -> String:
+	var stats: Dictionary = game.run_state.get("survivor", {}).get("stats", {})
+	var parts: Array[String] = ["%s %d (base)" % [str(GameEngine.STAT_LABELS.get(stat, stat)), int(stats.get(stat, 0))]]
+	var adjustments := _stat_adjustment_text(stat)
+	if adjustments != "":
+		parts.append(adjustments)
+	var fitted: Array[String] = []
+	for item_id: String in content.items:
+		var item: Dictionary = content.get_item(item_id)
+		if str(item.get("category", "")) == "weapon" and str(item.get("combat", {}).get("attack_stat", "")) == stat:
+			fitted.append(str(item.get("name", item_id)))
+	fitted.sort()
+	var hidden := maxi(0, fitted.size() - 4)
+	while fitted.size() > 4:
+		fitted.remove_at(fitted.size() - 1)
+	if not fitted.is_empty():
+		parts.append("Answers: %s%s" % [", ".join(fitted), " +%d more" % hidden if hidden > 0 else ""])
+	return "\n".join(parts)
+
+
+func _equipment_stat_adjustment_text(stat: String) -> String:
+	var equipment_parts: Array[String] = []
+	var survivor: Dictionary = game.run_state.get("survivor", {})
+	for slot: String in survivor.get("equipment", {}):
+		var item_id := str(survivor["equipment"].get(slot, ""))
+		if item_id == "":
+			continue
+		var item: Dictionary = content.get_item(item_id)
+		var value := int(item.get("modifiers", {}).get("stats", {}).get(stat, 0))
+		if value != 0:
+			equipment_parts.append("%s %+.0f" % [str(item.get("name", item_id)), float(value)])
+	return "EQUIPPED: %s" % ", ".join(equipment_parts) if not equipment_parts.is_empty() else "EQUIPPED: no bonus"
 
 
 func _stat_adjustment_text(stat: String) -> String:
@@ -1255,11 +1374,17 @@ func _show_event_roll() -> void:
 	var choices: Array = game.current_event().get("choices", [])
 	var choice_index := int(pending.get("choice_index", -1))
 	var choice_text := str(choices[choice_index].get("label", "Your choice")) if choice_index >= 0 and choice_index < choices.size() else "Your choice"
-	_title("D20 CHECK", choice_text)
+	_title("D20 CHECK")
 	var body := _panel()
+	var scroll := TouchScrollContainerScript.new()
+	scroll.name = "EventRollScroll"
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(scroll)
+	var reading := _scroll_column(scroll, 8)
+	reading.add_child(_role_label(choice_text, "lede"))
 	var prompt := _label("The result is concealed until you roll.", 17, _c("muted"))
 	prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	body.add_child(prompt)
+	reading.add_child(prompt)
 	if int(pending.get("success_chance", -1)) >= 0:
 		var saved_stat := str(pending.get("stat", "wits"))
 		var saved_label := str(pending.get("stat_label", saved_stat.capitalize())).to_upper()
@@ -1267,14 +1392,15 @@ func _show_event_roll() -> void:
 		var required_roll := int(pending.get("required_roll", D20Resolver.required_roll(saved_chance)))
 		var chance_label := _label("[%s] %s • %d%% SUCCESS CHANCE" % [_stat_glyph(saved_stat), saved_label, saved_chance], 16, _accent_color())
 		chance_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		body.add_child(chance_label)
+		reading.add_child(chance_label)
 		var target_label := _label("ROLL %d+" % required_roll, 21, COLOR_TEXT)
 		target_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		body.add_child(target_label)
+		reading.add_child(target_label)
 	var dice = DiceWidgetScript.new()
 	dice.set_palette(palette)
 	dice.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	body.add_child(dice)
+	reading.add_child(dice)
+	# A long choice and Large text may scroll; the way to roll stays on screen.
 	body.add_child(_button("ROLL D20", _commit_event_roll.bind(dice)))
 
 
@@ -1287,10 +1413,12 @@ func _commit_event_roll(dice) -> void:
 
 func _present_event_result(result: Dictionary, dice) -> void:
 	event_committing = true
-	_play_resolution_feedback(result)
 	var final_roll := int(result.get("resolution", {}).get("roll", 0))
 	if dice != null and final_roll > 0:
+		if sound != null:
+			sound.play_effect("dice")
 		await _animate_d20(dice, final_roll)
+	_play_resolution_feedback(result)
 	event_committing = false
 	if str(game.run_state.get("phase", "")) == "death":
 		_finish_run(false)
@@ -1324,7 +1452,11 @@ func _play_resolution_feedback(result: Dictionary) -> void:
 	var resolution: Dictionary = result.get("resolution", {})
 	var outcome := str(resolution.get("outcome", "success"))
 	if sound != null:
-		sound.play_resolution(bool(resolution.get("succeeded", true)), outcome.begins_with("critical"))
+		var phase := str(game.run_state.get("phase", ""))
+		if phase in ["victory", "death"]:
+			sound.play_effect(phase)
+		else:
+			sound.play_resolution(bool(resolution.get("succeeded", true)), outcome.begins_with("critical"))
 
 
 func _show_combat() -> void:
@@ -1343,11 +1475,17 @@ func _show_cinematic_combat() -> void:
 	# one compact pressure strip instead of repeating the complete journey HUD.
 	_show_pressure_strip()
 	var snapshot := game.combat_presentation_snapshot()
+	snapshot["last_exchange"] = game.run_state.get("combat_state", {}).get("last_round", {}).get("presentation", {})
 	if snapshot.is_empty():
 		_render_current()
 		return
 	var profile_data := game.get_player_weapon_profile()
 	snapshot["compact"] = get_viewport_rect().size.y < 760
+	# A creature with no artwork is described rather than labelled; the note lives
+	# with the adversary definition, so the UI reads it rather than inventing one.
+	var fighting: Dictionary = content.get_adversary(str(game.run_state.get("combat_state", {}).get("adversary_id", "")))
+	if snapshot.has("enemy") and str(fighting.get("field_note", "")) != "":
+		snapshot["enemy"]["field_note"] = str(fighting["field_note"])
 	if game.is_narrative_combat():
 		snapshot["action_previews"] = {}
 		for action: String in ["attack", "block", "dodge", "flee", "opportunity"]:
@@ -1442,12 +1580,25 @@ func _present_combat_result(result: Dictionary, presentation) -> void:
 		_render_current()
 		return
 	combat_committing = true
+	if sound != null:
+		sound.play_effect("dice")
 	await presentation.play_round(result, bool(profile.get("reduced_motion", false)))
 	combat_committing = false
 	if sound != null:
 		var player_roll := int(result.get("player_roll", 0))
 		var critical := player_roll in [1, 20] or int(result.get("enemy_roll", 0)) in [1, 20]
-		sound.play_resolution(str(game.run_state.get("phase", "")) != "death", critical)
+		var display: Dictionary = result.get("presentation", {})
+		var action := str(display.get("action", result.get("action", "")))
+		if str(game.run_state.get("phase", "")) == "death":
+			sound.play_effect("death")
+		elif action == "use_item":
+			sound.play_effect("inventory")
+		elif bool(display.get("hit", false)):
+			sound.play_effect("critical_success" if critical and player_roll == 20 else "impact")
+		elif action in ["block", "dodge", "flee"] and player_roll >= int(result.get("required_roll", 20)) and player_roll != 1:
+			sound.play_effect("block" if action == "block" else "evade")
+		else:
+			sound.play_resolution(false, critical)
 	_render_current()
 
 
@@ -1477,7 +1628,7 @@ func _show_combat_tactics() -> void:
 	add_child(action_popup)
 	var body := _popup_body(action_popup)
 	body.add_child(_overlay_header("COMBAT • READ THE OPENING", func() -> void: action_popup.hide()))
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body.add_child(scroll)
@@ -1513,7 +1664,7 @@ func _show_result() -> void:
 	# The die, the arithmetic, the prose and the consequences are one reading and
 	# they scroll together. Continue is pinned below: on a tall result the button
 	# used to be pushed off the bottom of the screen with no way to reach it.
-	var reveal_scroll := ScrollContainer.new()
+	var reveal_scroll := TouchScrollContainerScript.new()
 	reveal_scroll.name = "RevealScroll"
 	reveal_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	reveal_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -1527,7 +1678,8 @@ func _show_result() -> void:
 		var dice = DiceWidgetScript.new()
 		dice.set_palette(palette)
 		dice.set_face(int(resolution.get("roll", 0)))
-		dice.custom_minimum_size = Vector2(REVEAL_DIE_SIZE, REVEAL_DIE_SIZE)
+		var die_size := 132 if ResponsiveRulesScript.is_compact_height(get_viewport_rect().size.y) else REVEAL_DIE_SIZE
+		dice.custom_minimum_size = Vector2(die_size, die_size)
 		dice.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		reveal.add_child(dice)
 		if not bool(profile.get("reduced_motion", false)):
@@ -1544,10 +1696,10 @@ func _show_result() -> void:
 		reveal.add_child(_verdict_row(outcome, outcome_color))
 		var odds := _role_label("%d%% original success chance" % int(resolution.get("success_chance", 100)), "label", _c("muted"))
 		odds.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		odds.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		reveal.add_child(odds)
 	var narrative = StoryTypewriterScript.new()
 	narrative.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	narrative.custom_minimum_size.y = 150
 	_type(narrative, "prose", "normal_font")
 	narrative.add_theme_color_override("default_color", _c("text"))
 	narrative.add_theme_constant_override("line_separation", UiTypeScript.line_spacing("prose", float(profile.get("font_scale", 1.0))))
@@ -1558,8 +1710,11 @@ func _show_result() -> void:
 	active_story_actions = footer
 	var changes: Array = result.get("changes", [])
 	if not changes.is_empty():
-		footer.add_child(_label("CONSEQUENCES", 13, _c("danger") if not bool(resolution.get("succeeded", true)) else _accent_color()))
+		footer.add_child(_label("COMMITTED RECEIPT", 13, _c("danger") if not bool(resolution.get("succeeded", true)) else _accent_color()))
 		footer.add_child(_label("\n".join(changes), 14, _accent_color()))
+	else:
+		footer.add_child(_label("COMMITTED RECEIPT", 13, _c("muted")))
+		footer.add_child(_label("No inventory, vital, pressure, or condition change.", 14, _c("muted")))
 	var xp_awards: Array = result.get("xp_awards", [])
 	if not xp_awards.is_empty():
 		var xp_lines: Array[String] = []
@@ -1614,9 +1769,9 @@ func _after_continue(result: Dictionary) -> void:
 
 
 func _show_checkpoint() -> void:
+	_clear_page()
 	if int(game.run_state.get("unspent_stat_points", 0)) > 0:
 		_show_contextual_tip("checkpoint_allocation")
-	_clear_page()
 	_set_atmosphere("checkpoint")
 	_set_region_background()
 	var region := game.current_region()
@@ -1625,7 +1780,7 @@ func _show_checkpoint() -> void:
 	# The artboard is 852 tall: the checkpoint's copy and its two departures do
 	# not both fit, so the reading scrolls and the departures stay reachable.
 	var body := _panel()
-	var checkpoint_scroll := ScrollContainer.new()
+	var checkpoint_scroll := TouchScrollContainerScript.new()
 	checkpoint_scroll.name = "CheckpointScroll"
 	checkpoint_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	checkpoint_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1644,23 +1799,63 @@ func _show_checkpoint() -> void:
 	var xp_text := "XP MAX" if bool(xp_progress.get("at_max_level", false)) else "%d / %d XP" % [int(xp_progress.get("experience", 0)), int(xp_progress.get("next_threshold", 0))]
 	var banked := int(game.run_state.get("unspent_stat_points", 0))
 	checkpoint_column.add_child(_role_label("Level %d  ·  %s  ·  %d banked point%s" % [int(game.run_state.get("level", 1)), xp_text, banked, "" if banked == 1 else "s"], "label", _accent_color() if banked > 0 else _c("icon_ink")))
+	var checkpoint_progress := checkpoint_column.get_child(-1) as Label
+	checkpoint_progress.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	# Allocation belongs beside the level it changes; only the departures pin.
 	checkpoint_column.add_child(_button("ALLOCATE STAT POINTS", _show_level_allocation, int(game.run_state.get("unspent_stat_points", 0)) <= 0))
 	checkpoint_column.add_child(HSeparator.new())
 	checkpoint_column.add_child(_eyebrow("2 — How do you leave?"))
 	var checkpoint_action := str(game.run_state.get("checkpoint_action", ""))
 	if checkpoint_action == "rest":
-		checkpoint_column.add_child(_role_label("REST COMPLETE • Fatigue reached 0 • HP +25 • one food consumed", "label", _c("success")))
-		body.add_child(_button("CONTINUE JOURNEY AFTER REST", _leave_checkpoint))
+		# This receipt must wrap on a narrow phone. As a single-line tracked label
+		# it enlarged the scroll column and pushed the pinned departure off-screen.
+		checkpoint_column.add_child(_role_label("REST COMPLETE • Fatigue reached 0 • HP +25 • one food consumed", "flavour", _c("success")))
+		var continue_after_rest := _button("CONTINUE JOURNEY AFTER REST", _leave_checkpoint)
+		_add_button_atlas_icon(continue_after_rest, "navigation")
+		body.add_child(_checkpoint_departure(continue_after_rest))
 	else:
 		checkpoint_column.add_child(_role_label("REST • Consume one food, restore its satiety, set Fatigue to 0, and recover 25 HP.", "flavour", _c("icon_ink")))
-		body.add_child(_button("CHOOSE FOOD & REST", _show_rest_food, game.available_food_items().is_empty()))
+		var rest_button := _button("CHOOSE FOOD & REST", _show_rest_food, game.available_food_items().is_empty())
+		_add_button_atlas_icon(rest_button, "rest")
+		body.add_child(_checkpoint_departure(rest_button))
 		checkpoint_column.add_child(_role_label("PRESS ON • Keep your food and gain Momentum: +1 to every stat for the next checked choice. Normal travel adds 5 Fatigue.", "flavour", _c("icon_ink")))
-		body.add_child(_button("CONTINUE JOURNEY — GAIN MOMENTUM", _press_on_checkpoint))
+		var press_on_button := _button("CONTINUE JOURNEY — GAIN MOMENTUM", _press_on_checkpoint)
+		_add_button_atlas_icon(press_on_button, "press_on")
+		body.add_child(_checkpoint_departure(press_on_button))
 	var region_number := int(game.run_state.get("region_index", 0)) + 1
 	if ads.should_attempt(region_number, Time.get_ticks_msec()):
 		# The provider adapter owns display callbacks. A failed or unavailable request is skipped here.
 		ads.mark_attempted(region_number, false, Time.get_ticks_msec())
+
+
+## A Button's text width normally becomes its minimum width even when its text
+## wraps. This holder has the panel's width instead, allowing checkpoint action
+## labels to wrap on an actual phone instead of widening the whole page.
+func _checkpoint_departure(button: Button) -> Control:
+	var holder := Control.new()
+	holder.custom_minimum_size.y = button.custom_minimum_size.y
+	holder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Keep the real text in an overlay label. Button measures its own text as a
+	# non-wrapping minimum width, even with AUTOWRAP_WORD_SMART enabled.
+	var action_text := button.text
+	button.text = ""
+	button.name = "CheckpointDeparture"
+	button.accessibility_name = action_text
+	button.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var label := _role_label(action_text, "action")
+	label.name = "CheckpointDepartureLabel"
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	label.offset_left = 34.0
+	label.offset_right = -10.0
+	label.offset_top = 2.0
+	label.offset_bottom = -2.0
+	button.add_child(label)
+	holder.add_child(button)
+	return holder
 
 
 func _show_rest_food() -> void:
@@ -1675,6 +1870,8 @@ func _rest(food_id: String) -> void:
 
 func _after_rest(result: Dictionary) -> void:
 	if result.get("success", false):
+		if sound != null:
+			sound.play_effect("rest")
 		if is_instance_valid(action_popup):
 			action_popup.hide()
 		_show_checkpoint()
@@ -1725,7 +1922,7 @@ func _show_level_allocation(reset_draft: bool = true) -> void:
 	actions.add_child(keep_button)
 	body.add_child(action_panel)
 	body.add_child(HSeparator.new())
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.custom_minimum_size.y = 120
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -1802,6 +1999,9 @@ func _refresh_level_draft_controls() -> void:
 			var weapon: Dictionary = content.get_item(str(game.run_state["survivor"]["equipment"].get("weapon", "")))
 			if str(weapon.get("combat", {}).get("attack_stat", "")) == stat:
 				detail += "\n" + str(weapon.get("signature", "")).capitalize() + (" MASTERY UNLOCKS ON CONFIRM" if int(current_stats[stat]) < 6 and proposed >= 6 else " • mastery at base 6" if proposed < 6 else " • mastered")
+				var affinity_min := int(weapon.get("affinity_min", 0))
+				if affinity_min > 0:
+					detail += " • AFFINITY MET" if proposed >= affinity_min else " • affinity needs %d (unwieldy until then)" % affinity_min
 			detail_label.text = detail
 		if is_instance_valid(minus_button):
 			minus_button.disabled = proposed <= int(current_stats[stat])
@@ -1815,11 +2015,19 @@ func _confirm_level_draft() -> void:
 
 func _after_allocation(result: Dictionary) -> void:
 	if result.get("success", false):
+		if sound != null:
+			sound.play_effect("level_up")
 		stat_draft = {}
 		if is_instance_valid(level_popup):
 			level_popup.hide()
 		_show_checkpoint()
-		_show_toast("Stat points applied. Choose REST or CONTINUE JOURNEY.")
+		var receipt := "Stat points applied."
+		if int(result.get("heart_gain", 0)) > 0:
+			receipt += " +%d HEART." % int(result["heart_gain"])
+		for stat: Variant in result.get("mastery_unlocked", []):
+			receipt += " %s MASTERY UNLOCKED." % str(stat).to_upper()
+		receipt += " Choose REST or CONTINUE JOURNEY."
+		_show_toast(receipt)
 	else:
 		_show_toast(str(result.get("text", "")))
 
@@ -1884,7 +2092,7 @@ func _finish_run(victory: bool) -> void:
 	_title("THE CITADEL OPENS" if victory else "THE ROAD ENDS", "Victory" if victory else "Permadeath")
 	var body := _panel()
 	# The record scrolls; the two ways out of this screen never do.
-	var summary_scroll := ScrollContainer.new()
+	var summary_scroll := TouchScrollContainerScript.new()
 	summary_scroll.name = "RunSummaryScroll"
 	summary_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	summary_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1965,7 +2173,7 @@ func _build_chronicle_runs() -> void:
 	var completed := _label("%d recorded %s  •  %d deaths  •  %d victories" % [history.size(), "run" if history.size() == 1 else "runs", profile.get("deaths", 0), profile.get("victories", 0)], 14, _c("muted"))
 	completed.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	page.add_child(completed)
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.name = "ChronicleRunsScroll"
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -2036,7 +2244,7 @@ func _build_chronicle_discoveries() -> void:
 	progress.name = "ChronicleProgress"
 	progress.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	page.add_child(progress)
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.name = "ChronicleDiscoveriesScroll"
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
@@ -2097,7 +2305,7 @@ func _continue_run() -> void:
 	add_child(recap_popup)
 	var body := _popup_body(recap_popup, 12)
 	body.add_child(_overlay_header("WHERE YOU STOPPED", _dismiss_recap))
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.name = "ResumeRecapScroll"
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -2135,6 +2343,8 @@ func _resume_recap_lines() -> Array:
 	var last_result: Dictionary = game.run_state.get("last_result", {})
 	if not last_result.is_empty():
 		lines.append("Last choice: %s — %s" % [str(last_result.get("choice", "a decision")), str(last_result.get("outcome_text", ""))])
+		var receipt_changes: Array = last_result.get("changes", [])
+		lines.append("Committed change: %s" % (", ".join(PackedStringArray(receipt_changes)) if not receipt_changes.is_empty() else "none."))
 	var condition_names: Array = []
 	for condition_id: Variant in survivor.get("conditions", []):
 		condition_names.append(str(content.get_condition(str(condition_id)).get("name", condition_id)))
@@ -2157,7 +2367,7 @@ func _show_first_run_tutorial() -> void:
 	add_child(tutorial_popup)
 	var body := _popup_body(tutorial_popup, 15)
 	body.add_child(_overlay_header("HOW THE ROAD WORKS", _dismiss_tutorial))
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(scroll)
 	var instructions := VBoxContainer.new()
@@ -2224,17 +2434,20 @@ func _show_inventory(reset_filter: bool = true) -> void:
 		equipment_grid.add_child(_equipment_slot(slot))
 	body.add_child(equipment_grid)
 
-	var inventory_body := HBoxContainer.new()
+	# A narrow phone needs two equipment rows. Put its five filters above the
+	# pack so their vertical rail cannot impose another 240px minimum height.
+	var horizontal_filters := get_viewport_rect().size.x < ResponsiveRulesScript.COMPACT_EQUIPMENT_WIDTH
+	var inventory_body: BoxContainer = VBoxContainer.new() if horizontal_filters else HBoxContainer.new()
 	inventory_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	inventory_body.add_theme_constant_override("separation", 7)
 	body.add_child(inventory_body)
-	var filters := VBoxContainer.new()
+	var filters: BoxContainer = HBoxContainer.new() if horizontal_filters else VBoxContainer.new()
 	filters.custom_minimum_size.x = 44
 	filters.add_theme_constant_override("separation", 5)
 	inventory_body.add_child(filters)
 	for filter_data: Array in [["all", "◈", "All items"], ["gear", "◆", "Gear"], ["supplies", "+", "Supplies"], ["ammo", "•", "Ammunition"], ["utility", "⌁", "Utility"]]:
 		filters.add_child(_inventory_filter_button(str(filter_data[0]), str(filter_data[1]), str(filter_data[2])))
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.name = "InventoryScroll"
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2248,7 +2461,7 @@ func _show_inventory(reset_filter: bool = true) -> void:
 	scroll.add_child(grid_margin)
 	var grid := GridContainer.new()
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.columns = ResponsiveRulesScript.inventory_columns(get_viewport_rect().size.x - 96.0)
+	grid.columns = ResponsiveRulesScript.inventory_columns(get_viewport_rect().size.x - (48.0 if horizontal_filters else 96.0))
 	grid.add_theme_constant_override("h_separation", 6)
 	grid.add_theme_constant_override("v_separation", 6)
 	grid_margin.add_child(grid)
@@ -2265,7 +2478,7 @@ func _equipment_slot(slot: String) -> Button:
 	var item_id := str(game.run_state["survivor"]["equipment"].get(slot, ""))
 	var item: Dictionary = content.get_item(item_id) if item_id != "" else {}
 	var button := Button.new()
-	button.custom_minimum_size.y = 78
+	button.custom_minimum_size.y = 64
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.tooltip_text = "Open %s equipment slot" % slot
 	button.accessibility_name = "%s slot%s" % [slot.capitalize(), "; equipped with %s" % item.get("name", item_id) if item_id != "" else "; empty"]
@@ -2317,10 +2530,10 @@ func _inventory_filter_button(filter_name: String, glyph: String, description: S
 	return button
 
 
-## Canvas pack footer: the weight glyph, then a labelled row over a 4px meter.
-## Everything is one line each, so a long value can never stack down the edge.
+## The weight label sits above its value so Large text stays legible on phones.
 func _inventory_weight_footer() -> PanelContainer:
 	var panel := PanelContainer.new()
+	panel.name = "InventoryWeightFooter"
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
 	panel.add_child(row)
@@ -2336,15 +2549,11 @@ func _inventory_weight_footer() -> PanelContainer:
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 5)
 	row.add_child(column)
-	var heading := HBoxContainer.new()
-	heading.add_theme_constant_override("separation", 8)
+	var heading := VBoxContainer.new()
+	heading.add_theme_constant_override("separation", 2)
 	column.add_child(heading)
-	# 0.14em, not the eyebrow 0.22em: at artboard width the wider tracking pushes
-	# this row past the sheet and drags the whole popup off screen.
 	var heading_label := _role_label("CARRY WEIGHT", "label", _c("danger") if overweight else _c("muted"))
 	heading_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	heading_label.clip_text = true
-	heading_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	heading.add_child(heading_label)
 	var remaining := capacity - total
 	# "over" rather than "over capacity": the row is already red, and the longer
@@ -2353,8 +2562,8 @@ func _inventory_weight_footer() -> PanelContainer:
 	# Untracked: the canvas sets this readout at 0.02em, and tracked numerals here
 	# only crowd out the label beside them.
 	var value_label := _role_label(value_text, "body", _c("danger") if overweight else _c("text"))
-	# The value keeps its natural width; the label beside it is what gives way.
-	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	value_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	value_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	heading.add_child(value_label)
 	var bar := ProgressBar.new()
 	bar.show_percentage = false
@@ -2401,7 +2610,7 @@ func _inventory_cell(item_id: String) -> Button:
 	var quantity := game.get_item_quantity(item_id)
 	var button := Button.new()
 	button.name = "InventoryCell_%s" % item_id
-	button.custom_minimum_size = Vector2(0, 80)
+	button.custom_minimum_size = Vector2(0, 72)
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.tooltip_text = str(item.get("description", ""))
 	button.accessibility_name = "%s. Quantity %d%s" % [item.get("name", item_id), quantity, ". Equipped" if _is_item_equipped(item_id) else ""]
@@ -2410,7 +2619,7 @@ func _inventory_cell(item_id: String) -> Button:
 	column.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 5)
 	column.add_theme_constant_override("separation", 0)
 	var icon = ItemIconScript.new()
-	icon.custom_minimum_size = Vector2(48, 48)
+	icon.custom_minimum_size = Vector2(40, 40)
 	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon.configure(str(item.get("icon_id", item_id)), str(item.get("category", "utility")), palette)
 	column.add_child(icon)
@@ -2421,6 +2630,7 @@ func _inventory_cell(item_id: String) -> Button:
 	equipped.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	markers.add_child(equipped)
 	var quantity_label := _label("×%d" % quantity, 10, COLOR_TEXT)
+	quantity_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	quantity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	quantity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	markers.add_child(quantity_label)
@@ -2456,7 +2666,7 @@ func _show_item_detail(item_id: String) -> void:
 	body.add_child(_overlay_header(str(item.get("name", item_id)), _close_item_detail))
 	# Description, modifiers, and the comparison share one scroll. The header and
 	# every action stay outside it so they remain reachable on a short screen.
-	var detail_scroll := ScrollContainer.new()
+	var detail_scroll := TouchScrollContainerScript.new()
 	detail_scroll.name = "ItemDetailScroll"
 	detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	detail_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2602,6 +2812,10 @@ func _comparison_row(title: String, current_text: String, proposed_text: String,
 	var value_text := proposed_text if current_text == proposed_text else "%s → %s" % [current_text, proposed_text]
 	var value_label := _label(value_text, 13, value_color)
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	# Both halves of a comparison row expand: without its own share the value
+	# label collapses to ~1px inside the HBox and every value renders one
+	# letter per line. See _ledger_row for the same two-sided pattern.
+	value_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(value_label)
 	return row
 
@@ -2659,7 +2873,12 @@ func _weapon_signature_text(item: Dictionary, stats: Dictionary) -> String:
 	var family := str(item.get("signature", "unarmed"))
 	var stat := str(item.get("combat", {}).get("attack_stat", "strength"))
 	var value := int(stats.get(stat, 0))
-	return "%s • %s\n%s" % [family.capitalize(), "MASTERED" if value >= 6 else "%s %d / 6 base for mastery" % [stat.capitalize(), value], content.combat_data.get("families", {}).get(family, {}).get("description", "")]
+	var lines: Array[String] = ["%s • %s" % [family.capitalize(), "MASTERED" if value >= 6 else "%s %d / 6 base for mastery" % [stat.capitalize(), value]]]
+	var affinity_min := int(item.get("affinity_min", 0))
+	if affinity_min > 0:
+		lines.append("Needs %s %d • %s" % [stat.capitalize(), affinity_min, "GOOD FIT" if value >= affinity_min else "WEAK FIT (unwieldy: −15 hit, −25% damage)"])
+	lines.append(str(content.combat_data.get("families", {}).get(family, {}).get("description", "")))
+	return "\n".join(lines)
 
 
 func _inventory_action(action: String, item_id: String, slot: String = "") -> void:
@@ -2671,6 +2890,8 @@ func _inventory_action(action: String, item_id: String, slot: String = "") -> vo
 
 
 func _after_inventory_action(result: Dictionary) -> void:
+	if sound != null and bool(result.get("success", false)):
+		sound.play_effect("inventory")
 	if is_instance_valid(item_detail_popup):
 		item_detail_popup.hide()
 	_show_toast(str(result.get("text", "")))
@@ -2745,48 +2966,117 @@ func _inventory_actions_locked() -> bool:
 	return _gameplay_locked() or str(game.run_state.get("phase", "")) not in ["event", "result", "checkpoint"]
 
 
+var settings_section := "Reading"
+
+
 func _show_settings() -> void:
 	if _gameplay_locked():
 		return
 	_pause_story(true)
 	if is_instance_valid(settings_popup):
+		settings_popup.hide()
 		settings_popup.queue_free()
 	settings_popup = PopupPanel.new()
 	settings_popup.exclusive = true
 	add_child(settings_popup)
 	var body := _popup_body(settings_popup, 15)
 	body.add_child(_overlay_header("SETTINGS", _close_settings))
-	var scroll := ScrollContainer.new()
+	var tabs := GridContainer.new()
+	tabs.name = "SettingsCategories"
+	tabs.columns = 2
+	tabs.add_theme_constant_override("h_separation", 6)
+	tabs.add_theme_constant_override("v_separation", 6)
+	body.add_child(tabs)
+	for section: String in ["Reading", "Sound", "Display", "Help"]:
+		var tab := _button(section, _select_settings_section.bind(section))
+		tab.toggle_mode = true
+		tab.button_pressed = section == settings_section
+		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tab.accessibility_name = section + (" settings, selected" if section == settings_section else " settings")
+		tabs.add_child(tab)
+	var scroll := TouchScrollContainerScript.new()
+	scroll.name = "SettingsScroll"
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body.add_child(scroll)
-	var options := VBoxContainer.new()
-	options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	options.add_theme_constant_override("separation", 8)
-	scroll.add_child(options)
-	options.add_child(_label("TEXT & ACCESSIBILITY", 12, _c("muted")))
-	options.add_child(_button("STORY REVEAL: %s" % _story_speed_name(), _cycle_story_speed))
-	options.add_child(_button("COMBAT: %s ROLL" % str(profile.get("combat_presentation", "manual")).to_upper(), _cycle_combat_presentation))
-	options.add_child(_button("TEXT SIZE: %s" % _font_scale_name(), _cycle_font_scale))
-	options.add_child(_check_setting("High contrast", "high_contrast"))
-	options.add_child(_check_setting("Reduced motion", "reduced_motion"))
-	options.add_child(_check_setting("Contextual tips", "contextual_tips_enabled"))
-	options.add_child(_button("RESET CONTEXTUAL TIPS", _reset_contextual_tips))
-	options.add_child(_label("AUDIO & FEEDBACK", 12, _c("muted")))
-	options.add_child(_check_setting("Music", "music_enabled"))
-	options.add_child(_check_setting("Sound effects", "sound_enabled"))
-	options.add_child(_check_setting("Haptics", "haptics_enabled"))
-	options.add_child(_label("APPEARANCE & HELP", 12, _c("muted")))
-	options.add_child(_button("THEME: %s" % UiPaletteScript.display_name(str(profile.get("selected_theme", "default"))), _cycle_theme, _available_themes().size() <= 1))
-	options.add_child(_button("HOW TO PLAY", _show_first_run_tutorial))
-	if monetization_enabled:
-		options.add_child(_button("COSMETIC STORE", _show_store))
-		options.add_child(_label(ads.status_text(), 13, _c("muted")))
-	_popup_center_responsive(settings_popup, 0.9, 0.84)
+	var options := _scroll_column(scroll, 10)
+	match settings_section:
+		"Reading":
+			_settings_choice(options, "Text size", "Choose a comfortable reading size.", "font_scale", ["Small", "Normal", "Large"], [0.9, 1.0, 1.2])
+			_settings_choice(options, "Story reveal", "Instant shows the full passage immediately.", "story_text_speed", ["Slow", "Normal", "Fast", "Instant"], ["slow", "normal", "fast", "instant"])
+			_settings_choice(options, "Combat rolls", "Manual waits for your tap. Quick rolls automatically.", "combat_presentation", ["Manual", "Quick"], ["manual", "quick"])
+		"Sound":
+			options.add_child(_check_setting("Sound effects", "sound_enabled"))
+			options.add_child(_role_label("Clicks, dice, combat and journey sounds.", "flavour", _c("muted")))
+			options.add_child(_check_setting("Vibration", "haptics_enabled"))
+			options.add_child(_role_label("A short vibration when a roll resolves.", "flavour", _c("muted")))
+			options.add_child(_button("PREVIEW SOUND", func() -> void:
+				if sound != null:
+					sound.play_effect("success")
+			))
+		"Display":
+			options.add_child(_check_setting("High contrast", "high_contrast"))
+			options.add_child(_role_label("Stronger contrast for text and controls.", "flavour", _c("muted")))
+			options.add_child(_check_setting("Reduced motion", "reduced_motion"))
+			options.add_child(_role_label("Skip dice movement and shorten transitions.", "flavour", _c("muted")))
+			var themes := _available_themes()
+			var theme_names: Array = []
+			for theme_id: String in themes:
+				theme_names.append(UiPaletteScript.display_name(theme_id))
+			_settings_choice(options, "Color theme", "", "selected_theme", theme_names, themes)
+		"Help":
+			options.add_child(_check_setting("Contextual tips", "contextual_tips_enabled"))
+			options.add_child(_role_label("Show brief guidance when a mechanic first appears.", "flavour", _c("muted")))
+			options.add_child(_button("SHOW TIPS AGAIN", func() -> void:
+				_reset_contextual_tips()
+				_show_settings()
+			))
+			options.add_child(_button("HOW TO PLAY", _show_first_run_tutorial))
+			if monetization_enabled:
+				options.add_child(_button("COSMETIC STORE", _show_store))
+	body.add_child(_button("DONE", _close_settings))
+	_popup_center_responsive(settings_popup, 0.94, 0.88)
+
+
+func _select_settings_section(section: String) -> void:
+	settings_section = section
+	_show_settings()
+
+
+func _settings_choice(parent: VBoxContainer, title_text: String, hint: String, key: String, labels: Array, values: Array) -> void:
+	parent.add_child(_role_label(title_text, "title"))
+	if hint != "":
+		parent.add_child(_role_label(hint, "flavour", _c("muted")))
+	var selector := OptionButton.new()
+	selector.name = "Setting_" + key
+	selector.custom_minimum_size.y = TOUCH_TARGET
+	selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	selector.fit_to_longest_item = false
+	selector.accessibility_name = title_text
+	_type(selector, "body")
+	var selected := maxi(values.find(profile.get(key)), 0)
+	for label_text: String in labels:
+		selector.add_item(label_text)
+	selector.select(selected)
+	selector.disabled = values.size() < 2
+	parent.add_child(selector)
+	selector.item_selected.connect(func(index: int) -> void:
+		if not _commit_profile_changes({key: values[index]}):
+			selector.select(maxi(values.find(profile.get(key)), 0))
+			return
+		if key in ["font_scale", "selected_theme"]:
+			_apply_theme()
+			settings_popup.hide()
+			_render_current() if not game.run_state.is_empty() else _show_main_menu()
+			_show_settings()
+	)
 
 
 func _check_setting(label_text: String, key: String) -> CheckButton:
 	var check := CheckButton.new()
 	check.text = label_text
+	check.custom_minimum_size.y = TOUCH_TARGET
 	check.button_pressed = bool(profile.get(key, false))
 	check.toggled.connect(func(value: bool) -> void:
 		if not _toggle_setting(value, key):
@@ -3107,7 +3397,7 @@ func _show_save_recovery(message: String, on_committed: Callable) -> void:
 	parent.add_child(save_recovery_popup)
 	var body := _popup_body(save_recovery_popup, 16)
 	body.add_child(_label("SAVE NEEDS ATTENTION", 20, _c("danger")))
-	var scroll := ScrollContainer.new()
+	var scroll := TouchScrollContainerScript.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body.add_child(scroll)

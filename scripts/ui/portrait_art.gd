@@ -17,6 +17,14 @@ const ENEMY_IDS := [
 	"enemy_guard",
 	"enemy_warden",
 	"enemy_crows",
+	"enemy_skitters",
+	"enemy_widow",
+	"enemy_kilnback",
+	"enemy_cable_eater",
+	"enemy_pox_dogs",
+	"enemy_bile_spewer",
+	"enemy_cinder_mauler",
+	"enemy_salt_colossus",
 ]
 
 
@@ -51,7 +59,10 @@ static func load_texture(portrait_id: String) -> Texture2D:
 	return resource as Texture2D
 
 
-static func create_view(portrait_id: String, fallback_color: Color, fallback_font_size: int = 9) -> Control:
+## `display_name` and `field_note` describe a subject with no artwork yet. When a
+## note is supplied the frame shows the name over the note instead of the raw
+## PORTRAIT/ID placeholder, which the creature bible forbids for the creatures.
+static func create_view(portrait_id: String, fallback_color: Color, fallback_font_size: int = 9, display_name: String = "", field_note: String = "") -> Control:
 	var view := Control.new()
 	view.name = "PortraitArt"
 	view.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -71,9 +82,17 @@ static func create_view(portrait_id: String, fallback_color: Color, fallback_fon
 		view.add_child(image)
 		return view
 
+	var described := field_note.strip_edges() != ""
 	var fallback := Label.new()
-	fallback.name = "PortraitFallback"
-	fallback.text = "PORTRAIT\n%s" % portrait_id.trim_prefix("enemy_").trim_prefix("survivor_").to_upper()
+	fallback.name = "PortraitFieldNote" if described else "PortraitFallback"
+	if described:
+		var subject := display_name.strip_edges()
+		if subject == "":
+			subject = portrait_id.trim_prefix("enemy_").trim_prefix("survivor_").replace("_", " ")
+		fallback.text = "%s\n%s" % [subject.to_upper(), field_note.strip_edges()]
+		fallback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	else:
+		fallback.text = "PORTRAIT\n%s" % portrait_id.trim_prefix("enemy_").trim_prefix("survivor_").to_upper()
 	fallback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	fallback.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	fallback.add_theme_font_size_override("font_size", fallback_font_size)

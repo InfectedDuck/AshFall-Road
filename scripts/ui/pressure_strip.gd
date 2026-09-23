@@ -2,6 +2,7 @@ class_name PressureStrip
 extends PanelContainer
 
 const UiTypeScript = preload("res://scripts/ui/ui_type.gd")
+const UiIconWidget = preload("res://scripts/ui/ui_icon.gd")
 
 var meter_track := Color("#252b2e")
 
@@ -24,21 +25,19 @@ func configure(pressures: Dictionary, palette: Dictionary, font_scale: float) ->
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 12)
 	add_child(row)
-	_add_pressure(row, "◉", "FATIGUE", int(pressures.get("fatigue", 0)), fatigue_color, danger, muted, font_scale)
-	_add_pressure(row, "☢", "RADIATION", int(pressures.get("radiation", 0)), radiation_color, danger, muted, font_scale)
+	_add_pressure(row, "fatigue", "FATIGUE", int(pressures.get("fatigue", 0)), fatigue_color, danger, muted, font_scale)
+	_add_pressure(row, "radiation", "RADIATION", int(pressures.get("radiation", 0)), radiation_color, danger, muted, font_scale)
 
 
-func _add_pressure(parent: HBoxContainer, glyph: String, title: String, value: int, normal_color: Color, danger: Color, muted: Color, font_scale: float) -> void:
+func _add_pressure(parent: HBoxContainer, icon_id: String, title: String, value: int, normal_color: Color, danger: Color, muted: Color, font_scale: float) -> void:
 	var group := VBoxContainer.new()
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	group.add_theme_constant_override("separation", 3)
 	var heading := HBoxContainer.new()
 	heading.add_theme_constant_override("separation", 5)
 	group.add_child(heading)
-	var icon := Label.new()
-	icon.text = glyph
-	icon.add_theme_font_size_override("font_size", int(14 * font_scale))
-	icon.add_theme_color_override("font_color", danger if value >= 75 else normal_color)
+	var icon := UiIconWidget.new()
+	icon.configure(icon_id, int(15 * font_scale), danger if value >= 75 else normal_color)
 	heading.add_child(icon)
 	var label := Label.new()
 	label.text = "%s  %d" % [title, value]

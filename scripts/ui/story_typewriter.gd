@@ -23,11 +23,15 @@ var _time_to_next := 0.0
 var _last_tap_msec := -1000
 var _last_tap_position := Vector2.ZERO
 var _gesture_dragged := false
+var _tap_pressed := false
+var _tap_start := Vector2.ZERO
+var _native_double := false
 
 
 func _ready() -> void:
 	bbcode_enabled = false
 	fit_content = true
+	scroll_active = false
 	selection_enabled = false
 	context_menu_enabled = false
 	# PASS lets the enclosing ScrollContainer receive swipe and drag gestures.
@@ -37,6 +41,9 @@ func _ready() -> void:
 
 
 func start(passage: String, requested_speed: String = "normal", start_at: int = 0, reveal_immediately: bool = false) -> void:
+	_last_tap_msec = -1000
+	_gesture_dragged = false
+	_tap_pressed = false
 	full_text = passage
 	text = passage
 	speed_key = requested_speed if requested_speed in SPEEDS else "normal"
@@ -90,30 +97,30 @@ func _process(delta: float) -> void:
 func _on_gui_input(event: InputEvent) -> void:
 	if is_reveal_complete():
 		return
-	if event is InputEventScreenDrag:
-		_gesture_dragged = true
-		return
 	if event is InputEventMouseMotion and event.button_mask & MOUSE_BUTTON_MASK_LEFT:
-		_gesture_dragged = true
+		if _tap_pressed and event.position.distance_to(_tap_start) > 10.0:
+			_gesture_dragged = true
 		return
-	var pressed := false
-	var position := Vector2.ZERO
-	var native_double := false
-	if event is InputEventScreenTouch:
-		pressed = event.pressed
-		position = event.position
-		native_double = event.double_tap
-	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		pressed = event.pressed
-		position = event.position
-		native_double = event.double_click
-	if not pressed:
+	# Touch also produces mouse input in this project. Count the mouse path
+	# once, so one physical tap cannot be mistaken for a double tap.
+	if not event is InputEventMouseButton or event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	if event.pressed:
+		_tap_pressed = true
+		_tap_start = event.position
+		_native_double = event.double_click
+		_gesture_dragged = false
+		return
+	if not _tap_pressed:
+		return
+	_tap_pressed = false
+	# Wait for the finger to lift: even a second press can become a swipe.
+	if _gesture_dragged:
+		_last_tap_msec = -1000
 		return
 	var now := Time.get_ticks_msec()
-	var custom_double := not _gesture_dragged and now - _last_tap_msec <= DOUBLE_TAP_MSEC and position.distance_to(_last_tap_position) <= DOUBLE_TAP_DISTANCE
+	var custom_double: bool = now - _last_tap_msec <= DOUBLE_TAP_MSEC and event.position.distance_to(_last_tap_position) <= DOUBLE_TAP_DISTANCE
 	_last_tap_msec = now
-	_last_tap_position = position
-	_gesture_dragged = false
-	if native_double or custom_double:
+	_last_tap_position = event.position
+	if _native_double or custom_double:
 		reveal_all()
-		accept_event()

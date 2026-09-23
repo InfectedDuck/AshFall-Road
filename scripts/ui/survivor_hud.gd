@@ -6,6 +6,7 @@ const StatsCapsuleWidget = preload("res://scripts/ui/stats_capsule.gd")
 const PortraitArtWidget = preload("res://scripts/ui/portrait_art.gd")
 const ExperienceRules = preload("res://scripts/domain/experience_rules.gd")
 const UiTypeScript = preload("res://scripts/ui/ui_type.gd")
+const UiIconWidget = preload("res://scripts/ui/ui_icon.gd")
 
 signal inventory_requested
 signal settings_requested
@@ -35,6 +36,11 @@ func configure(survivor: Dictionary, palette: Dictionary, font_scale: float = 1.
 	var portrait := PanelContainer.new()
 	portrait.name = "SurvivorPortraitFrame"
 	portrait.custom_minimum_size = Vector2(64, 64)
+	# The outer HUD already supplies padding. An inherited panel style here
+	# padded the portrait a second time and inflated the whole identity row.
+	var portrait_frame := StyleBoxFlat.new()
+	portrait_frame.bg_color = palette["surface_raised"]
+	portrait.add_theme_stylebox_override("panel", portrait_frame)
 	var portrait_view := PortraitArtWidget.create_view(str(survivor.get("portrait_id", "survivor")), muted, int(8 * font_scale))
 	portrait_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	portrait.add_child(portrait_view)
@@ -79,8 +85,11 @@ func configure(survivor: Dictionary, palette: Dictionary, font_scale: float = 1.
 			point_label.add_theme_color_override("font_color", accent)
 			details.add_child(point_label)
 
-	var information := HBoxContainer.new()
-	information.add_theme_constant_override("separation", 5)
+	# A survivor can grow to seven hearts. Flow the stats onto the next line
+	# when those hearts and Large text cannot share a narrow phone's width.
+	var information := HFlowContainer.new()
+	information.add_theme_constant_override("h_separation", 5)
+	information.add_theme_constant_override("v_separation", 3)
 	outer.add_child(information)
 	var vitals_block := VBoxContainer.new()
 	vitals_block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -94,7 +103,7 @@ func configure(survivor: Dictionary, palette: Dictionary, font_scale: float = 1.
 	heart_row.add_theme_constant_override("separation", 2)
 	var heart_meter = IconMeterWidget.new()
 	heart_meter.name = "HeartMeter"
-	heart_meter.configure(hearts, health, 50.0, "♥", "♡", danger, muted, int(HEART_ICON_SIZE * font_scale), "Heart")
+	heart_meter.configure(hearts, health, 50.0, "♥", "♡", danger, muted, int(HEART_ICON_SIZE * font_scale), "Heart", "health")
 	heart_row.add_child(heart_meter)
 	var hp_label := Label.new()
 	hp_label.text = " %d / %d" % [health, maximum]
@@ -113,7 +122,7 @@ func configure(survivor: Dictionary, palette: Dictionary, font_scale: float = 1.
 	var satiety := int(vitals.get("satiety", 0))
 	var food_meter = IconMeterWidget.new()
 	food_meter.name = "FoodMeter"
-	food_meter.configure(4, satiety, 1.0, "◆", "◇", accent, muted, int(MEAL_ICON_SIZE * font_scale), "Meal reserve")
+	food_meter.configure(4, satiety, 1.0, "◆", "◇", accent, muted, int(MEAL_ICON_SIZE * font_scale), "Meal reserve", "food")
 	meal_row.add_child(food_meter)
 	vitals_block.add_child(meal_row)
 
@@ -124,17 +133,18 @@ func configure(survivor: Dictionary, palette: Dictionary, font_scale: float = 1.
 	information.add_child(capsule)
 
 	if show_utilities:
-		utility_slot.add_child(_utility_button("⚙", "Open settings", settings_requested.emit, font_scale))
+		utility_slot.add_child(_utility_button("settings", "Open settings", settings_requested.emit, font_scale))
 		identity.add_child(utility_slot)
 
 
 func make_inventory_link(font_scale: float = 1.0) -> Button:
 	var button := Button.new()
-	button.text = "▣  INVENTORY"
+	button.text = "   INVENTORY"
 	button.tooltip_text = "Open inventory"
 	button.accessibility_name = "Open inventory"
 	button.custom_minimum_size = Vector2(126, 44)
 	button.add_theme_font_size_override("font_size", int(11 * font_scale))
+	_add_button_icon(button, "inventory", font_scale)
 	button.pressed.connect(inventory_requested.emit)
 	return button
 
@@ -142,21 +152,34 @@ func make_inventory_link(font_scale: float = 1.0) -> Button:
 func make_conditions_link(condition_count: int, font_scale: float = 1.0) -> Button:
 	var button := Button.new()
 	button.name = "ConditionsLink"
-	button.text = "◇  STATUS  %d" % condition_count
+	button.text = "   STATUS  %d" % condition_count
 	button.tooltip_text = "Review helpful and harmful conditions"
 	button.accessibility_name = "Open survivor status. %d active conditions" % condition_count
 	button.custom_minimum_size = Vector2(126, 44)
 	button.add_theme_font_size_override("font_size", int(11 * font_scale))
+	_add_button_icon(button, "status", font_scale)
 	button.pressed.connect(conditions_requested.emit)
 	return button
 
 
-func _utility_button(glyph: String, description: String, callback: Callable, font_scale: float) -> Button:
+func _utility_button(icon_id: String, description: String, callback: Callable, font_scale: float) -> Button:
 	var button := Button.new()
-	button.text = glyph
 	button.tooltip_text = description
 	button.accessibility_name = description
 	button.custom_minimum_size = Vector2(44, 44)
-	button.add_theme_font_size_override("font_size", int(18 * font_scale))
+	_add_button_icon(button, icon_id, font_scale, true)
 	button.pressed.connect(callback)
 	return button
+
+
+func _add_button_icon(button: Button, icon_id: String, font_scale: float, centered: bool = false) -> void:
+	var icon := UiIconWidget.new()
+	icon.name = "%sIcon" % icon_id.capitalize()
+	var icon_size := int((18 if centered else 16) * font_scale)
+	icon.configure(icon_id, icon_size)
+	icon.set_anchors_preset(Control.PRESET_CENTER if centered else Control.PRESET_CENTER_LEFT)
+	if centered:
+		icon.position = Vector2(-float(icon_size) * 0.5, -float(icon_size) * 0.5)
+	else:
+		icon.position = Vector2(8, -float(icon_size) * 0.5)
+	button.add_child(icon)

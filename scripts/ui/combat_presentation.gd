@@ -5,6 +5,7 @@ const PortraitArtWidget = preload("res://scripts/ui/portrait_art.gd")
 const DiceWidget = preload("res://scripts/ui/dice_widget.gd")
 const CriticalFont = preload("res://assets/fonts/Literata.ttf")
 const InterfaceFont = preload("res://assets/fonts/Inter.ttf")
+const TouchScrollContainerScript = preload("res://scripts/ui/touch_scroll_container.gd")
 
 signal action_requested(action: String)
 signal items_requested
@@ -36,6 +37,8 @@ var feed_body: VBoxContainer
 var feed_scroll: ScrollContainer
 var narrative_rules := false
 var compact_mode := false
+var player_feedback: Label
+var enemy_feedback: Label
 
 
 func configure(snapshot: Dictionary, theme_palette: Dictionary, scale_value: float, attack_profile: Dictionary, flee_preview: Dictionary, items_available: bool) -> void:
@@ -86,11 +89,10 @@ func configure(snapshot: Dictionary, theme_palette: Dictionary, scale_value: flo
 	feed_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	feed_panel.add_theme_stylebox_override("panel", _box(palette["surface"], palette["border_subtle"]))
 	add_child(feed_panel)
-	var feed_scroll := ScrollContainer.new()
+	var feed_scroll := TouchScrollContainerScript.new()
 	feed_scroll.name = "CombatFeedScroll"
 	feed_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	feed_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	feed_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	feed_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	feed_panel.add_child(feed_scroll)
 	var feed := VBoxContainer.new()
@@ -209,7 +211,7 @@ func _combatant_card(combatant: Dictionary, player_side: bool, snapshot: Diction
 	stage.custom_minimum_size = (Vector2(64, 64) if compact_mode else Vector2(100, 170)) if narrative_rules else Vector2(116, 96) * font_scale
 	stage.size_flags_horizontal = Control.SIZE_SHRINK_CENTER if narrative_rules and compact_mode else Control.SIZE_EXPAND_FILL
 	body.add_child(stage)
-	var portrait := PortraitArtWidget.create_view(str(combatant.get("portrait_id", "portrait")), palette["muted"], int(11 * font_scale))
+	var portrait := PortraitArtWidget.create_view(str(combatant.get("portrait_id", "portrait")), palette["muted"], int(11 * font_scale), str(combatant.get("name", "")), str(combatant.get("field_note", "")))
 	portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	stage.add_child(portrait)
 	var flash := ColorRect.new()
@@ -243,6 +245,25 @@ func _combatant_card(combatant: Dictionary, player_side: bool, snapshot: Diction
 	var weapon := _label(str(combatant.get("weapon", "Unarmed")), 10, palette["muted"])
 	weapon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	body.add_child(weapon)
+	if narrative_rules:
+		var feedback := _label("", 10, palette["text"])
+		feedback.name = "PlayerPortraitFeedback" if player_side else "EnemyPortraitFeedback"
+		feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		feedback.text = portrait_feedback(snapshot.get("last_exchange", {}), player_side)
+		if compact_mode:
+			var feedback_scroll := TouchScrollContainerScript.new()
+			feedback_scroll.name = "PortraitFeedbackScroll"
+			feedback_scroll.custom_minimum_size.y = 32
+			feedback_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+			feedback.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			feedback_scroll.add_child(feedback)
+			body.add_child(feedback_scroll)
+		else:
+			body.add_child(feedback)
+		if player_side:
+			player_feedback = feedback
+		else:
+			enemy_feedback = feedback
 	if player_side and not str(combatant.get("ammo", "")).is_empty():
 		var ammo := _label(str(combatant.get("ammo", "")), 9, palette["accent"])
 		ammo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -349,6 +370,7 @@ func _configure_narrative(snapshot: Dictionary, items_available: bool) -> void:
 	var armor: Dictionary = snapshot["armor"]
 	status.text = "ARMOR %d • −%d / −%d%% | STATUS ⓘ" % [armor["rating"], armor["flat"], armor["percent"]]
 	status.custom_minimum_size.y = 44
+	status.text = "STATUS & PROTECTION"
 	status.add_theme_font_size_override("font_size", int(11 * font_scale))
 	status.tooltip_text = "\n".join(snapshot.get("status_labels", [])) + "\nEnemy critical: " + str(snapshot["enemy"].get("critical_condition", "None"))
 	status.pressed.connect(func() -> void: status_requested.emit())
@@ -359,9 +381,9 @@ func _configure_narrative(snapshot: Dictionary, items_available: bool) -> void:
 		var conditions := 0
 		for status_text: String in active:
 			if status_text.begins_with("RIPOSTE"):
-				windows.append("RIPOSTE NEXT")
+				windows.append("Next attack stronger")
 			elif status_text.begins_with("OPENING"):
-				windows.append("OPENING NEXT")
+				windows.append("Next attack easier")
 			elif status_text.begins_with("INTERRUPT"):
 				windows.append(status_text)
 			else:
@@ -432,7 +454,7 @@ func _configure_narrative(snapshot: Dictionary, items_available: bool) -> void:
 		var window_label := _label(" | ".join(windows), 10, palette["accent"])
 		window_label.name = "AttackWindowStatus"
 		exchange_body.add_child(window_label)
-	feed_scroll = ScrollContainer.new()
+	feed_scroll = TouchScrollContainerScript.new()
 	feed_scroll.name = "CombatFeedScroll"
 	feed_scroll.custom_minimum_size.y = 44
 	feed_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -459,9 +481,9 @@ func _configure_narrative(snapshot: Dictionary, items_available: bool) -> void:
 		if int(preview.get("chance", 0)) > 0 and action != "opportunity":
 			label += " • %d%%" % preview["chance"]
 		if action in ["attack", "opportunity"]:
-			label += "\nROLL %d+ • %d–%d DMG" % [preview.get("required_roll", 0), preview.get("damage_min", 0), preview.get("damage_max", 0)]
+			label += "\n%d–%d damage" % [preview.get("damage_min", 0), preview.get("damage_max", 0)]
 		elif action in ["block", "dodge"]:
-			label += "\nROLL %d+ • %s" % [preview.get("required_roll", 0), "RIPOSTE" if action == "block" else "OPENING"]
+			label += "\nStop the attack"
 		elif action == "item":
 			label += "\nENEMY RESPONDS"
 		elif action == "flee":
@@ -514,6 +536,8 @@ func _play_narrative_round(result: Dictionary, reduced: bool) -> void:
 		feed_body.add_child(_combat_feed_entry(entry))
 	call_deferred("_scroll_feed", feed_scroll)
 	var display: Dictionary = result["presentation"]
+	player_feedback.text = portrait_feedback(display, true)
+	enemy_feedback.text = portrait_feedback(display, false)
 	var roll := int(display.get("player_roll", 0))
 	var action := str(display["action"])
 	if roll > 0:
@@ -539,7 +563,7 @@ func _play_narrative_round(result: Dictionary, reduced: bool) -> void:
 		if int(display["enemy_damage"]) > 0:
 			await _strike(enemy_art, enemy_flash, player_art, player_flash, -1.0, enemy_roll == 20, reduced)
 		await _animate_health(true, int(display.get("player_health_after_item", display["player_health_before"])), int(display["player_health_after"]), reduced)
-		var incoming := "ENEMY • −%d HP • ARMOR −%d" % [display["enemy_damage"], display.get("armor_blocked", 0)]
+		var incoming := "You lost %d HP" % int(display["enemy_damage"])
 		if enemy_roll in [1, 20]:
 			incoming = ("CRITICAL SUCCESS" if enemy_roll == 20 else "CRITICAL FAILURE") + " • " + incoming
 		await _show_effect(incoming, palette["danger"], reduced)
@@ -672,6 +696,9 @@ func _combat_feed_entry(entry: Dictionary) -> HBoxContainer:
 	var actor := str(entry.get("actor", "system"))
 	var kind := str(entry.get("kind", "system"))
 	var message := str(entry.get("text", ""))
+	var original_message := message
+	if narrative_rules:
+		message = readable_log(entry)
 	var critical := kind in ["critical_success", "critical_failure"]
 	if critical and "CRITICAL" not in message:
 		message = ("CRITICAL SUCCESS — " if kind == "critical_success" else "CRITICAL FAILURE — ") + message
@@ -685,6 +712,9 @@ func _combat_feed_entry(entry: Dictionary) -> HBoxContainer:
 	var prefix := "YOU  ›  " if actor == "player" else "‹  ENEMY  " if actor == "enemy" else ""
 	var label := _label(prefix + message, 14 if critical else 11, label_color)
 	label.name = "CombatFeedText"
+	if narrative_rules:
+		label.text = ("You: " if actor == "player" else "Enemy: " if actor == "enemy" else "") + message
+	label.tooltip_text = original_message
 	label.custom_minimum_size.x = 0
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT if actor == "enemy" else HORIZONTAL_ALIGNMENT_LEFT if actor == "player" else HORIZONTAL_ALIGNMENT_CENTER
 	if critical:
@@ -694,7 +724,50 @@ func _combat_feed_entry(entry: Dictionary) -> HBoxContainer:
 	else:
 		label.add_theme_font_override("font", InterfaceFont)
 	row.add_child(label)
+	if narrative_rules:
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	return row
+
+
+static func portrait_feedback(display: Dictionary, player_side: bool) -> String:
+	if display.is_empty():
+		return "You" if player_side else "Enemy"
+	var lines: Array[String] = []
+	if not player_side:
+		if bool(display.get("hit", false)):
+			lines.append("Lost %d HP" % int(display.get("player_damage", 0)))
+		elif str(display.get("action", "")) in ["attack", "opportunity"]:
+			lines.append("Your attack missed")
+		if bool(display.get("enemy_interrupted", false)):
+			lines.append("Heavy attack cancelled")
+		return "\n".join(lines)
+	lines.append("Lost %d HP" % int(display.get("enemy_damage", 0)))
+	if int(display.get("healing", 0)) > 0:
+		lines.append("Healed %d HP" % int(display["healing"]))
+	if int(display.get("armor_blocked", 0)) > 0:
+		lines.append("Armor blocked %d" % int(display["armor_blocked"]))
+	if bool(display.get("defense_success", false)):
+		lines.append("Stopped the attack")
+	elif int(display.get("exposure_damage", 0)) > 0:
+		lines.append("Off balance: %d extra damage" % int(display["exposure_damage"]))
+	return "\n".join(lines)
+
+
+static func readable_log(entry: Dictionary) -> String:
+	var message := str(entry.get("text", ""))
+	var amount := int(entry.get("amount", 0))
+	if "\n" in message and "ROLL " in message:
+		var story := message.get_slice("\n", 0)
+		if str(entry.get("actor", "")) == "enemy":
+			return "%s\nYou lost %d HP." % [story, amount]
+		if "DAMAGE" in message:
+			return story + ("\nEnemy lost %d HP." % amount if amount > 0 else "\nYour attack missed.")
+		return story
+	if message.begins_with("INTERRUPTED"):
+		return "Enemy's heavy attack cancelled. Interrupt recharges in two exchanges."
+	if message.begins_with("SUPPRESSED"):
+		return message.replace("SUPPRESSED", "Enemy attack weakened").replace("RESPONSE", "Damage")
+	return message.replace("OPPORTUNITY READY", "SPECIAL ATTACK READY")
 
 
 func _actor_log_color(actor: String, kind: String) -> Color:
