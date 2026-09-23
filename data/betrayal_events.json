@@ -1,0 +1,606 @@
+{
+  "events": [
+    {
+      "id": "betrayal_vex_meeting",
+      "title": "Water Cart on the Salt",
+      "global": true,
+      "weight": 4,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 1, "max_region_index": 2},
+      "scene_role": "substantial",
+      "body": "White salt reaches toward a horizon rubbed thin by heat. Each breath dries your tongue while the wind sketches moving lines across the flats and erases the tracks behind you. A two-wheeled water cart stands off the track with its awning patched in three colors, and the woman beside it watches you the way merchants watch weather.\n\nVex Halloran, she says, before you ask, the way people do when the name is worth more than the warning. Her cart carries sealed water, toll schedules copied in pencil, and a smile maintained through several bad seasons. She knows the collectors' rotation by heart and offers to walk the next mile with you, past the barricade, for the price of one shared meal. Her hand never leaves the short blade at her belt.",
+      "choices": [
+        {
+          "label": "Share a meal and hear her out",
+          "approach": "social",
+          "requires": {"items": {"canned_meat": 1}, "reason": "You have no food to share"},
+          "costs": {"items": {"canned_meat": 1}},
+          "outcome": {
+            "text": "You set the tin between you and she eats half, methodically, watching the horizon the whole time. Then she pays in the only coin she trusts: she sketches the collectors' rotation in the salt, marks the sergeant who takes water bribes, and promises to walk the next crossing beside you. Her directions are specific enough to be true. You drink from her skin and feel the day tilt back toward survivable.",
+            "items": {"clean_water": 1},
+            "add_flags": ["trust_vex_1"]
+          }
+        },
+        {
+          "label": "Take the free advice",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "favorable"},
+            "success": {
+              "text": "You let her talk without paying and sift the pitch for the parts that cost her nothing. The rotation times check against the sun and the dust on the sergeant's boots. You memorize the crossing window and give nothing away, and her smile tightens by exactly one notch. You walk on with the window written on the inside of your eyelids, and the salt stops feeling like a locked room.",
+              "add_flags": ["vex_tip"]
+            },
+            "failure": {
+              "text": "Her patter runs faster than your attention and the details blur into salesmanship. You catch the shape of the advice but none of its edges, and by the time you have sorted it the sun has moved. The cart rolls on without you, and the crossing ahead stays exactly as unmapped as the flats themselves. You memorize the sergeant's boots instead, and hope that is enough.",
+              "pressures": {"fatigue": 6}
+            }
+        },
+        {
+          "label": "Refuse and walk wide",
+          "approach": "evade",
+          "outcome": {
+            "text": "You give the cart a wide berth and keep your hand where she can see it. Her smile does not move, but something behind it does the arithmetic of your pack anyway. She calls no warning after you, which feels worse than a threat, and the crossing ahead stays unmapped. The wind keeps erasing even the tracks you came in on.",
+            "add_flags": ["grudge_vex_cold"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_vex_cache",
+      "title": "The Sealed Package",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 7,
+      "eligibility": {"min_region_index": 2, "max_region_index": 3, "requires_flags": ["trust_vex_1"]},
+      "scene_role": "substantial",
+      "body": "Vex finds you where the black water starts, which means she has been asking after you by description. Her cart is gone, traded away; everything she owns rides in one oilskin roll. She has a job for someone she trusts, she says, and the word trusts lands heavier than the roll. A sealed package must travel east, unopened, past the marsh patrols. She shows you the wax seals without letting you touch them: toll marks, freshly pressed. The pay is cartridges and meat, half now if you want it. Her eyes dare you to ask what is inside. The seals are toll marks, freshly pressed, and the patrols she names are real ones you have already dodged.",
+      "choices": [
+        {
+          "label": "Carry the sealed package",
+          "approach": "survival",
+          "check": {"stat": "grit", "difficulty": "risky"},
+            "success": {
+              "text": "You take the package and walk it east through two patrol lines without breaking stride or seal. Vex is waiting where she said she would be, which surprises you more than the patrols did. She pays in pistol cartridges and canned meat, counts it twice, and grips your forearm a second longer than trade requires, and the road feels briefly fair for the first time in regions.",
+              "items": {"pistol_rounds": 3, "canned_meat": 1},
+              "add_flags": ["trust_vex_2"]
+            },
+            "failure": {
+              "text": "Rain finds the one soft corner of the oilskin and the outer wrapping goes grey and suspect. Vex turns the package over twice without opening it and her face closes like a shutter. She pays nothing and her trust goes with the wrapping. Whatever was inside stays sealed, and so does she. You walk on watching every puddle, already rehearsing how to carry better next time.",
+              "pressures": {"fatigue": 8},
+              "add_flags": ["grudge_vex_wary"]
+            }
+        },
+        {
+          "label": "Open it before carrying",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "hard"},
+          "success": {
+            "text": "You lift one seal with a heated blade and float it back down unbroken. Inside: toll scrip and a folded list of carrier descriptions, yours half-written at the bottom. You confront her with the list and take your cut in cartridges for the insult. She does not deny it. She recalculates you instead, out loud, and the new number is colder.",
+            "items": {"pistol_rounds": 2},
+            "add_flags": ["grudge_vex_wary"]
+          },
+          "failure": {
+            "text": "The wax cracks along a line no heat can hide. Vex reads the break at a glance and stops smiling for the first time since the salt flats. She takes the package back and you take nothing, not even the road you came in on, because she is already telling it differently. Someone else carries it by dusk. The road forgets refusals fastest.",
+            "add_conditions": ["shaken"],
+            "add_flags": ["grudge_vex_cold"]
+          }
+        },
+        {
+          "label": "Refuse the job",
+          "approach": "social",
+          "outcome": {
+              "text": "You step back from the package and from her. Something in her posture acknowledges the refusal as a kind of intelligence, but the warmth goes out of the arrangement all the same. She rolls the oilskin tighter and finds someone else before the light changes. Another carrier takes it by dusk, whistling past the patrols you mapped, and the road forgets refusals fastest.",
+            "add_flags": ["grudge_vex_cold"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_vex_ambush",
+      "title": "The Cistern Ambush",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 3, "max_region_index": 4, "requires_flags": ["trust_vex_2"]},
+      "scene_role": "substantial",
+      "adversary_id": "toll_gang",
+      "body": "The cistern squats in the factory dusk like something the buildings grew around and then forgot. Vex walks you in talking about water shares and jumps, and her talk has the exact rhythm of someone counting down. You catch it three steps too late: the pause where an answering whistle should not be, and then is. Collectors rise from behind the settling tanks with their clubs already out, five of them, arranged the way people arrange who have done this with the same partner before. Vex does not run. She steps sideways out of the closing shape and her face does the only honest thing you have ever seen it do, which is stop performing entirely. You were the toll all along, she says, almost gently. Your pack, your route, your description sold two regions back for medicine that is already gone. The collectors close in, and the cistern light goes the color of old pennies.",
+      "choices": [
+        {
+          "label": "Fight through the collectors",
+          "approach": "combat",
+          "combat": {"adversary_id": "toll_gang", "can_flee": true},
+          "victory": {
+            "text": "You go through their line the way a storm goes through canvas, and the collectors discover that a sold traveler fights cheaper than a hired one. Their barricade discipline lasts exactly until the first of them falls, and then it is every collector for the salt. Vex is gone before the last one drops, of course. She was always going to be gone. You strip their tin of heavy cartridges and take back canned meat stamped for an evening you were never meant to see, and the cistern keeps the rest of the story for whoever asks next.",
+            "items": {"revolver_rounds": 3, "canned_meat": 1},
+            "add_flags": ["grudge_vex_betrayed"]
+          }
+        },
+        {
+          "label": "Name Vex's price aloud",
+          "approach": "social",
+          "check": {"stat": "presence", "difficulty": "hard"},
+          "success": {
+            "text": "You speak before the clubs rise, loud enough for the back rank: the medicine, the two regions, the description sold. The collectors hesitate because deals conducted in daylight need witnesses, and Vex's face does something complicated. They let you walk it off for a toll, one tin of meat, and the long education of watching her not meet your eyes. The betrayal stands. So do you, which is the part she failed to price.",
+            "items": {"canned_meat": -1},
+            "add_flags": ["grudge_vex_betrayed"]
+          },
+          "failure": {
+            "text": "Your voice breaks on her name and the moment breaks with it. The collectors take the hesitation for weakness and work you over methodically, emptying your pack of everything that looks like dinner. They leave you breathing because breathing witnesses are cheaper than buried ones. Vex watches the whole thing from the tank stairs, and her expression never changes back.",
+            "damage_type": "physical",
+            "pressures": {"health": -15},
+            "items": {"canned_meat": -2},
+            "add_conditions": ["shaken"],
+            "add_flags": ["grudge_vex_betrayed"]
+          }
+        },
+        {
+          "label": "Run before the net closes",
+          "approach": "evade",
+          "check": {"stat": "agility", "difficulty": "risky"},
+          "success": {
+            "text": "You are moving before the whistle finishes, through the one gap in their shape where Vex used to stand. Clubs whistle past your pack and find only motion. Behind you the collectors argue about whose arrangement this was, and her voice goes thin explaining it. You keep the road and lose the last illusion that the salt flats ever dealt fairly.",
+            "add_flags": ["grudge_vex_betrayed"]
+          },
+          "failure": {
+            "text": "The gap closes a half step before you reach it and a club catches your ribs on the turn. You go over the cistern wall with the whole arrangement coming after, and only the falling dark saves the rest of you. You walk east lighter by blood and by certainty, carrying the exact shape of her face as it stopped performing.",
+            "damage_type": "physical",
+            "pressures": {"health": -10, "fatigue": 8},
+            "add_flags": ["grudge_vex_betrayed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_vex_reckoning",
+      "title": "Waystation Reckoning",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 7,
+      "eligibility": {"min_region_index": 4, "max_region_index": 5, "requires_any_flags": ["grudge_vex_betrayed", "grudge_vex_wary", "grudge_vex_cold"]},
+      "scene_role": "compact",
+      "adversary_id": "road_bandits",
+      "body": "Vex Halloran tends a waystation stove in the glass dusk, alone except for two hired blades pretending not to watch the door. She looks up as you enter and her face runs through every version of you she prepared. The stove ticks as it cools. Outside, the glass holds the last light in long orange seams, and nothing out there is coming to interrupt whatever this is.",
+      "body_variants": [
+        {"requires_any_flags": ["grudge_vex_wary", "grudge_vex_cold"], "text": "Vex Halloran tends a waystation stove in the glass dusk, surprised to see you walking in upright. You never trusted her enough to be sold, and something in her posture admits the loss. Two hired blades pretend not to watch the door. The stove ticks as it cools. Her relief at seeing you upright is real, and so is the calculation underneath it."}
+      ],
+      "choices": [
+        {
+          "label": "Settle it with blades",
+          "approach": "combat",
+          "combat": {"adversary_id": "road_bandits", "can_flee": true},
+          "victory": {
+            "text": "Her blades are hired and fight like it. When they drop, Vex sets down her knife herself. You take the medkit and salvage she was always going to owe you, and leave her the stove.",
+            "items": {"medkit": 1, "scrap_parts": 2},
+            "add_flags": ["vex_settled"]
+          }
+        },
+        {
+          "label": "Make her pay in trade",
+          "approach": "social",
+          "check": {"stat": "presence", "difficulty": "risky"},
+            "success": {
+              "text": "You name your price instead of drawing: rifle cartridges, counted aloud, for the lesson. She pays without haggling. Debts between survivors are settled strangest when both parties survive them, and the smoke between you thins a fraction.",
+              "items": {"rifle_rounds": 4},
+              "add_flags": ["vex_ally"]
+            },
+            "failure": {
+              "text": "The negotiation curdles halfway and neither of you gets what the scene promised. You leave with nothing settled and the stove smoke following you out like an unpaid tab. Nobody draws. Nobody pays. The lesson keeps.",
+              "pressures": {"fatigue": 6},
+              "add_flags": ["vex_closed"]
+            }
+        },
+        {
+          "label": "Walk away owing nothing",
+          "approach": "evade",
+          "outcome": {
+            "text": "You look at her once, catalog the stove and the blades and the woman, and walk past all of it. Some accounts close by being abandoned. The glass dusk takes her back.",
+            "add_flags": ["vex_closed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_slate_claim",
+      "title": "The Ledger Page",
+      "global": true,
+      "weight": 4,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 0, "max_region_index": 1},
+      "scene_role": "substantial",
+      "body": "The man waiting by the mile post has the posture of paperwork. Slate Dench keeps the pharmacy ledger for the road clinics, he says, tapping a watermarked page that carries your description in one margin and a debt in the other. Someone vouched a name like yours for Lio Marr's medicine, and the book does not care about likeness, only ink. His guard stands a careful distance off with folded arms. The debt is one ration, payable now, and the page will be marked clean in front of you. Refusal is also an option, he adds, in the tone of a man who has watched refusal happen and written down what it cost.",
+      "choices": [
+        {
+          "label": "Pay a ration to keep the book clean",
+          "approach": "social",
+          "requires": {"items": {"ration_bar": 1}, "reason": "You carry no ration to spare"},
+          "costs": {"items": {"ration_bar": 1}},
+          "outcome": {
+            "text": "You hand over the ration and Slate marks the page with a stub of pencil, initialing the margin with visible satisfaction. The book closes with a sound like a small door. He remembers payers, he says, and his guard steps back a full pace. Whatever the truth of the voucher, your name now reads clean in the only place it is written down.",
+            "add_flags": ["trust_slate_1"]
+          }
+        },
+        {
+          "label": "Deny it with detail",
+          "approach": "social",
+          "check": {"stat": "presence", "difficulty": "favorable"},
+            "success": {
+              "text": "You walk him through your route day by day until the voucher's dates stop fitting. Slate checks the page twice, frowns at his own ink, and strikes the entry with a single annoyed line. Facts, it turns out, are also a currency here. The guard unfolds his arms by degrees, and the page stays open but harmless, struck through like a healed cut.",
+            "add_flags": ["slate_declined"]
+          },
+            "failure": {
+              "text": "Your dates tangle on the second telling and Slate catches the knot immediately. He makes a fresh note in the margin while his guard takes one step closer. The book now holds two entries where it held one. Denial without proof reads as evasion twice over, and the book is patient. It can wait longer than you can walk, and Slate knows it.",
+            "add_conditions": ["shaken"],
+            "add_flags": ["grudge_slate_cold"]
+          }
+        },
+        {
+          "label": "Threaten the collector",
+          "approach": "force",
+          "check": {"stat": "strength", "difficulty": "risky"},
+            "success": {
+              "text": "You put one hand on the mile post and lean in until the arithmetic changes. Slate closes the ledger with two fingers and steps back, professional to the last. His guard does not move, but the threat has been priced and filed. The page stays open, the guard stays folded, and the debt stays exactly where it was: written, not owed.",
+            "add_flags": ["slate_declined"]
+          },
+            "failure": {
+              "text": "The guard moves faster than your threat and puts you face-down against the mile post before Slate finishes blinking. He dictates the incident to himself while you bleed onto his boots. Your shoulder carries the receipt for days. Slate reads the new entry back to you twice, the way men salt a wound they intend to keep, then closes the book on your protest.",
+            "damage_type": "physical",
+            "pressures": {"health": -8},
+            "add_flags": ["grudge_slate_cold"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_slate_ledger",
+      "title": "The Book Goes East",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 7,
+      "eligibility": {"min_region_index": 1, "max_region_index": 2, "requires_flags": ["trust_slate_1"]},
+      "scene_role": "substantial",
+      "body": "Slate Dench finds you before the salt gives way to marsh, ledger wrapped in oilskin against the damp. He has an errand for someone the book trusts: carry the debt ledger east to the next clinic and deliver it unaltered. He shows you your own clean page first, then the rest of the names, and does not hide that this is a test wearing the clothes of a favor. The book is heavy for paper. Every name in it is somebody's hunger written down by somebody else's hand. Refusal is allowed. The book remembers refusals too, in the same careful hand. You have seen what the clinics charge for trust.",
+      "choices": [
+        {
+          "label": "Carry the ledger faithfully",
+          "approach": "survival",
+          "outcome": {
+            "text": "You carry the oilskin parcel through two regions without loosening its string. Slate receives it at the next clinic, checks every seal, and pays in radiation tablets with a nod that costs him something. The book trusts you now, which is a heavier thing to carry than the book was. The seals hold. The string holds. Your name holds with them.",
+            "pressures": {"fatigue": 6},
+            "items": {"rad_tabs": 2},
+            "add_flags": ["trust_slate_2"]
+          }
+        },
+        {
+          "label": "Alter your own page",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "hard"},
+          "success": {
+            "text": "One rainy night you lift your entry with a damp blade and feather the ink until the voucher reads as settled in full. Slate finds the alteration weeks later, if he ever does, but the freedom is immediate: your name owes nothing to anyone now. The mismatch in the handwriting will outlive the debt itself. Ink remembers longer than men.",
+            "add_flags": ["slate_freed", "grudge_slate_wary"]
+          },
+          "failure": {
+              "text": "The ink feathers wrong and the page shows the smudge like a bruise. Slate says nothing at the handover, which is worse than anger. From then on his eyes follow your hands whenever the book is open, and your name sits in it under a new kind of watch from that handover on. You feel that watch at every clinic crossing for weeks afterward.",
+            "add_conditions": ["shaken"],
+            "add_flags": ["grudge_slate_cold"]
+          }
+        },
+        {
+          "label": "Refuse the errand",
+          "approach": "social",
+          "outcome": {
+              "text": "You hand the oilskin back unopened and step out of the book's trust. Slate accepts it with professional coldness and makes a note you are not shown. The clean page stays clean, but the cold between you could frost glass. He finds another carrier by dusk, and you walk east lighter by the parcel and heavier by the lost trust.",
+            "add_flags": ["grudge_slate_cold"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_slate_knives",
+      "title": "Collateral at Night",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 2, "max_region_index": 3, "requires_flags": ["trust_slate_2"]},
+      "scene_role": "substantial",
+      "adversary_id": "vault_scavs",
+      "body": "They come at the blue hour, when the marsh light lies flat on the water and every sound carries twice. No whistle, no warning, none of Vex Halloran's theater: just a disciplined crew fanning out around your camp with the patience of people collecting, not raiding. Their leader reads from a watermarked page by lantern light, and the page is the ledger you carried faithfully east. Your pack is listed on it as collateral against a debt that was never yours, in Slate Dench's own careful hand. Trust, it turns out, was the signature he needed. The crew leader folds the page away and gives you the courtesy of choosing how this is settled, the way a door gives you the courtesy of choosing which side to be locked on.",
+      "choices": [
+        {
+          "label": "Meet the crew head-on",
+          "approach": "combat",
+          "combat": {"adversary_id": "vault_scavs", "can_flee": true},
+          "victory": {
+            "text": "You meet a disciplined crew with undisciplined fury and the difference decides it before the lantern burns low. Their formation is built for debtors, not fighters, and it comes apart the first time someone refuses to be collected. You strip their cache of rifle cartridges and take back canned meat with your own name practically still on it. Slate's handwriting got you into this; your own hands get you out. The ledger page burns well, and you watch it go.",
+            "items": {"rifle_rounds": 2, "canned_meat": 1},
+            "add_flags": ["grudge_slate_betrayed"]
+          }
+        },
+        {
+          "label": "Read their own page back",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "hard"},
+          "success": {
+            "text": "You carried that book for two regions and you know its marks better than the crew does. You recite the page back at them: the altered date, the margin initialed in the wrong ink, the collateral clause added after the seal. The leader checks the lantern light twice and the crew's patience curdles into doubt. They withdraw to confirm with Slate, which is a retreat wearing procedure's clothes. The betrayal stands proven, which is colder comfort than victory and lasts longer.",
+            "add_flags": ["grudge_slate_betrayed"]
+          },
+            "failure": {
+              "text": "You misremember one mark and the crew leader catches it the way a trap catches a foot. The page is genuine, he says, and your performance proves you know it. They take their collection in food and leave the lesson in bruises. Trust was the signature, and the signature holds. You walk east lighter by two tins and heavier by the knowledge that Slate planned this from the first handshake.",
+            "damage_type": "physical",
+            "pressures": {"health": -15},
+            "items": {"canned_meat": -2},
+            "add_flags": ["grudge_slate_betrayed"]
+          }
+        },
+        {
+          "label": "Slip the cordon",
+          "approach": "evade",
+          "check": {"stat": "agility", "difficulty": "risky"},
+            "success": {
+              "text": "You go through the water instead of the cordon, low and slow, while the lantern light sweeps the camp you are no longer in. By the time the crew reads the empty ground, you are a rumor with a head start. Slate's book keeps your name, but the marsh keeps the rest of you. Somewhere behind you a lantern swings over empty ground, and the crew learns that paper holds nobody who will not be held.",
+            "add_flags": ["grudge_slate_betrayed"]
+          },
+            "failure": {
+              "text": "A crewman hears the water wrong and the cordon tightens like a fist. You take a beating for the attempt and lose half your food to the collection before the dark thins enough to run in. The book keeps everything else, including the part where you trusted it. The beating fades by morning. The entry does not, and neither does the understanding that trust was the signature all along.",
+            "damage_type": "physical",
+            "pressures": {"health": -10, "fatigue": 8},
+            "add_flags": ["grudge_slate_betrayed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_slate_settlement",
+      "title": "The Ledger Office",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 7,
+      "eligibility": {"min_region_index": 3, "max_region_index": 5, "requires_any_flags": ["grudge_slate_betrayed", "slate_freed", "slate_declined", "grudge_slate_cold", "grudge_slate_wary"]},
+      "scene_role": "compact",
+      "body": "Slate Dench keeps a ledger office in the industrial dusk, shelves of watermarked pages behind a counter scarred by counting. He looks up as you enter, pen stopping mid-entry, and his guard shifts his weight by the shelves without looking up from the page he is mending. Dust hangs in the lamplight. Every book in the room is somebody's hunger written down.",
+      "body_variants": [
+        {"requires_any_flags": ["slate_freed"], "text": "Slate Dench keeps a ledger office in the industrial dusk, shelves of watermarked pages behind a scarred counter. He looks up as you enter, and his eyes go at once to your hands, checking for the ink feathering he never proved. Dust hangs in the lamplight between you. His pen stays exactly where it stopped. Neither of you mentions the page."},
+        {"requires_any_flags": ["slate_declined"], "text": "Slate Dench keeps a ledger office in the industrial dusk, shelves of watermarked pages behind a scarred counter. He looks up as you enter and nods once, professional to the last, the way men nod at weather. Dust hangs in the lamplight. The books hold nothing with your name in it, and both of you know it. The pen resumes its entry."}
+      ],
+      "choices": [
+        {
+          "label": "Burn your page",
+          "approach": "force",
+          "check": {"stat": "strength", "difficulty": "risky"},
+          "success": {
+            "text": "You take your page off its shelf and feed it to his own stove. Slate watches the ink curl and says nothing, because the fire is also a kind of payment. A marsh herbalist's tonic changes hands as severance.",
+            "items": {"bitter_tonic": 1},
+            "add_flags": ["slate_closed"]
+          },
+            "failure": {
+              "text": "His guard stops your hand a foot from the shelf. The office goes very still, and you leave with shaking hands and nothing burned but daylight. His guard shows you the door with professional courtesy. The page stays filed.",
+              "pressures": {"fatigue": 6},
+              "add_conditions": ["shaken"],
+              "add_flags": ["slate_closed"]
+            }
+        },
+        {
+          "label": "Buy the debt out",
+          "approach": "social",
+          "requires": {"items": {"scrap_parts": 2}, "reason": "You carry no salvage to pay with"},
+          "costs": {"items": {"scrap_parts": 2}},
+          "outcome": {
+            "text": "You lay two salvage bundles on the scarred counter and watch him mark the page paid in full. Ink, pencil, initial: the whole liturgy of clean. Your name owes nothing now, in the only place it was ever written.",
+            "add_flags": ["slate_closed"]
+          }
+        },
+        {
+          "label": "Leave the book to rot",
+          "approach": "evade",
+          "outcome": {
+            "text": "You turn around in the doorway and leave the office, the shelves, and the whole arithmetic behind. Paper rots faster than people, and the damp is already doing your work for you. Let it.",
+            "add_flags": ["slate_closed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_anselm_invite",
+      "title": "Ministry by the Road",
+      "global": true,
+      "weight": 4,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 3, "max_region_index": 4},
+      "scene_role": "substantial",
+      "body": "Where the factories give way to glass, an old man has built a ministry out of a toppled signboard and four bearing walls of stacked miracles: canes nobody needs anymore, boots worn through by prayer, a child's drawing of a sun. Preacher Anselm of the glass pilgrims offers water from a clay cup and a blessing that costs nothing, he says, the way men say things that have always cost something. His congregation is three burned faithful who watch you the way choirs watch a new voice. The blessing, he explains, is preparation. The glass reveals, the burns consecrate, and the willing walk shining. His hands shake when he lifts the cup, but his voice does not shake at all.",
+      "choices": [
+        {
+          "label": "Kneel for the blessing",
+          "approach": "social",
+          "check": {"stat": "presence", "difficulty": "favorable"},
+          "success": {
+            "text": "You kneel on the bare ground and let the old man lay his shaking hands on your head. The words roll over you like warm water and something in your chest unclenches for the first time in regions. The three faithful nod as one. You rise steadied, watched over, and written into a company you do not yet understand. The water tastes of clay and mercy.",
+            "add_conditions": ["inspired"],
+            "add_flags": ["trust_anselm_1"]
+          },
+          "failure": {
+              "text": "You kneel but your attention will not settle, and Anselm feels the resistance the way a musician feels a missed note. He finishes gently and steps back. The three faithful look away. Whatever the blessing carries, it passes over you like weather over stone, leaving nothing behind it can use. You rise with dust on your knees and no warmth to show for kneeling.",
+            "add_conditions": ["shaken"]
+          }
+        },
+        {
+          "label": "Answer with their own verse",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "hard"},
+          "success": {
+            "text": "You answer his blessing with its forgotten second verse, learned from a pilgrim column seasons back. Anselm stops mid-gesture and the three faithful lean forward together. Respect rearranges the scene without touching it. He presses a fistful of pale moss into your hands and calls you a keeper of the words. The moss is cool in your palm all the way east.",
+            "items": {"glow_moss": 1},
+            "add_flags": ["anselm_respect"]
+          },
+            "failure": {
+              "text": "The verse comes out in the wrong order and the ministry goes cold around you. Anselm lowers the cup without offering it. You feel the exact weight of a door closing politely, and the road beyond it suddenly looks very long and very unblessed. The three faithful study the dust in silence around the cooling brazier, and nobody corrects your misremembered pronunciation.",
+            "add_flags": ["grudge_anselm_cold"]
+          }
+        },
+        {
+          "label": "Refuse the water",
+          "approach": "evade",
+          "outcome": {
+              "text": "You decline the cup and step around the signboard ministry. Anselm does not argue; he simply stops seeing you, the way the glass stops seeing anything that will not shine. The three faithful memorize your back as you go, and the blessing stays where it was poured: on the ground, for no one. The dust takes it before any pilgrim does.",
+            "add_flags": ["grudge_anselm_cold"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_anselm_tithe",
+      "title": "The Tithe Chest",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 7,
+      "eligibility": {"min_region_index": 4, "max_region_index": 4, "requires_flags": ["trust_anselm_1"]},
+      "scene_role": "substantial",
+      "body": "Preacher Anselm waits where the glass runs flat to the horizon, beside a tithe chest banded in copper and already half full of other people's devotion. The burned faithful need medicine, he says, and the willing provide. He looks at your pack the way he looked at the cup: steadily, without greed, with total certainty that the glass provides through the willing. Behind him the three faithful stand in a row that is also a wall. The chest stands open. Everything about the scene is voluntary except the geometry. The three faithful have already given everything they had. What remains in the chest is other people's devotion, stacked to the lid.",
+      "choices": [
+        {
+          "label": "Give a sealed medkit",
+          "approach": "social",
+          "requires": {"items": {"medkit": 1}, "reason": "You carry no sealed medkit to give"},
+          "costs": {"items": {"medkit": 1}},
+          "outcome": {
+            "text": "You set the sealed medkit into the chest and Anselm closes his eyes like a man fed. He presses a resin stick into your palm for courage on the road ahead and names you among the shining. The three faithful bow as one. Giving feels exactly like he said it would, which is the first thing all day that troubles you.",
+            "items": {"choir_incense": 1},
+            "add_flags": ["trust_anselm_2"]
+          }
+        },
+        {
+          "label": "Offer moss instead",
+          "approach": "social",
+          "requires": {"items": {"glow_moss": 1}, "reason": "You carry no moss to offer"},
+          "costs": {"items": {"glow_moss": 1}},
+          "outcome": {
+            "text": "You offer the pale moss instead of medicine and Anselm accepts it without comment, though something in the row behind him shifts. It is a lesser gift and everyone present knows the exchange rate. Trust, like tithes, can apparently be paid in part. The chest closes on your moss the same way it would on medicine. Almost the same way.",
+            "add_flags": ["trust_anselm_2"]
+          }
+        },
+        {
+          "label": "Refuse the chest",
+          "approach": "evade",
+          "outcome": {
+              "text": "You keep your medicine and step back from the open chest. Anselm's certainty does not waver, which is worse than anger. The row behind him closes shoulder to shoulder, and the ministry walks on. Without you in it. You watch their dust settle over the flat glass, and keep walking east with your pack intact and your conscience loud all night.",
+            "add_flags": ["grudge_anselm_cold"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_anselm_brand",
+      "title": "The Night of the Brand",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 4, "max_region_index": 5, "requires_flags": ["trust_anselm_2"]},
+      "scene_role": "substantial",
+      "adversary_id": "glass_cult",
+      "body": "They bring you to the circle after dark, when the fused plain holds the day's heat like a held breath. Preacher Anselm stands at the circle's heart with a brand heating in a brazier of mirrored glass, and his voice carries the way it did at the roadside, except now every word has the weight of walls behind it. The three faithful are thirty. The shining, he says, must be marked to be kept, and the willing bare their shoulders gladly. Your shoulders. The circle closes the way water closes over a stone. Too late you understand the geometry of the tithe chest, the ministry, the blessing: every gift was a wall, and you are inside all of them. Anselm raises the brand and his shaking hands are steady at last, and the cult leans in like a single animal to watch you shine.",
+      "choices": [
+        {
+          "label": "Break their line",
+          "approach": "combat",
+          "combat": {"adversary_id": "glass_cult", "can_flee": true},
+          "victory": {
+            "text": "You go through their glittering arc the way truth goes through liturgy: without asking permission. Ceremonial blades were made for kneeling recipients, not for standing ones, and the circle breaks where you stand. Anselm lowers the brand slowly, and something like grief crosses the certainty. You strip the offering cloth of purifier fluid and a resin stick, and walk out of the circle past thirty witnesses who will tell this story for years. The burns you carry out are only the ones you chose on the road in.",
+            "items": {"purifier_ampoule": 1, "choir_incense": 1},
+            "add_flags": ["grudge_anselm_betrayed"]
+          }
+        },
+        {
+          "label": "Endure the brand",
+          "approach": "force",
+          "check": {"stat": "grit", "difficulty": "hard"},
+          "success": {
+            "text": "You bare your shoulder and take the brand without a sound, and the silence does what no struggle could. The cult expected a scream to complete the shape; your quiet breaks the liturgy instead. Anselm steps back with the iron cooling in his hand, uncertain for the first time. You walk out marked and unbowed, carrying their failure like a second brand, and the iron in you outlasts the iron on you.",
+            "add_conditions": ["iron_will"],
+            "add_flags": ["grudge_anselm_betrayed"]
+          },
+            "failure": {
+              "text": "The brand takes and your scream completes their shape exactly as rehearsed. Something in the sound rearranges the furniture of your head; thoughts arrive now with static riding them. They release you as marked and useless both, which is the cult's favorite kind of witness. You carry the burn and the buzzing east together. Sleep comes in shallow installments between the ringing, and mornings start with the buzzing already underway.",
+            "damage_type": "physical",
+            "pressures": {"health": -12},
+            "add_conditions": ["mind_static"],
+            "add_flags": ["grudge_anselm_betrayed"]
+          }
+        },
+        {
+          "label": "Flee the circle",
+          "approach": "evade",
+          "check": {"stat": "agility", "difficulty": "risky"},
+            "success": {
+              "text": "You move before the brand leaves the brazier, through the one gap in thirty bodies where nobody thought to stand. The circle is built to hold the willing; it has no answer for the unwilling in motion. Behind you the liturgy collapses into shouting, and Anselm's voice follows longest, calling you shining long after shining stopped being on offer. You do not stop running until the plain swallows their shouting, and the night air has never tasted so clean.",
+            "add_flags": ["grudge_anselm_betrayed"]
+          },
+            "failure": {
+              "text": "The circle closes a half step early and the brand kisses your forearm on the way past. You tear free with the burn already blooming and run it east with you. The cult does not follow; marked runners preach better than caught ones. Your arm tells their story now, in raised and shining skin. The cult lets you go as witness and warning both, and your arm preaches at every campfire.",
+            "damage_type": "physical",
+            "pressures": {"health": -10},
+            "add_conditions": ["burned"],
+            "add_flags": ["grudge_anselm_betrayed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "betrayal_anselm_ash",
+      "title": "Ashes at the Gate",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 7,
+      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_any_flags": ["grudge_anselm_betrayed", "anselm_respect", "grudge_anselm_cold"]},
+      "scene_role": "compact",
+      "body": "Preacher Anselm waits on the Underrail approach with his cup and his three faithful, ministry packed for the last mile. He sees you coming and lifts a hand. Behind him the dark swallows the tunnel mouth, and the gate lights burn steady past his shoulder. The faithful stand in their row that is also a wall. Cold air moves past you toward the gate, carrying tunnel damp and distant oil.",
+      "body_variants": [
+        {"requires_any_flags": ["anselm_respect"], "text": "Preacher Anselm waits on the Underrail approach with his cup and his three faithful. He sees you coming and bows from the waist, keeper to keeper, and the row behind him bows too. Keeper to keeper costs nothing here. The cup steams between you in the cold tunnel air, and for once nobody wants anything from anybody. It cannot last."}
+      ],
+      "choices": [
+        {
+          "label": "Preach his crime at the gate",
+          "approach": "social",
+          "check": {"stat": "presence", "difficulty": "risky"},
+            "success": {
+              "text": "You tell the gate crowd about the brand, the circle, the thirty witnesses. Anselm listens without denying a word. The crowd pays in tablets for the warning. Anselm bows to the crowd and then, lower, to you.",
+              "items": {"rad_tabs": 2},
+              "add_flags": ["anselm_closed"]
+            },
+            "failure": {
+              "text": "Your testimony tangles and the crowd drifts back to its own hungers. Anselm bows to you anyway, which is worse than triumph. The gate keeps both your stories. You keep your tablets and your doubt in equal measure.",
+              "add_conditions": ["shaken"],
+              "add_flags": ["anselm_closed"]
+            }
+        },
+        {
+          "label": "Forgive the old man",
+          "approach": "social",
+          "outcome": {
+            "text": "You take the clay cup from his shaking hands and drink. Whatever the glass wanted with you, the old man wanted company. You part almost kindly. The cup is empty and so, finally, is the quarrel.",
+            "add_conditions": ["inspired"],
+            "add_flags": ["anselm_ally"]
+          }
+        },
+        {
+          "label": "Leave him to the glass",
+          "approach": "evade",
+          "outcome": {
+            "text": "You walk past the cup, the row, and the old man without breaking stride. The glass keeps him. The road keeps you. Both ledgers balance. His voice follows you three steps and stops, the way ministries do.",
+            "add_flags": ["anselm_closed"]
+          }
+        }
+      ]
+    }
+  ]
+}

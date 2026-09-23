@@ -7,28 +7,40 @@
       "narrative_priority": 9,
       "weight": 9,
       "unique": true,
-      "eligibility": {"min_region_index": 1, "max_region_index": 1},
+      "eligibility": {
+        "min_region_index": 1,
+        "max_region_index": 1
+      },
       "body": "The flats have a way of making every sound seem borrowed from somewhere else. Near a wrecked weather mast, your receiver wakes beneath its crust of salt and breathes out a woman’s voice through a storm of static. She repeats Bunker Forty-One, then a sentence so calm it becomes frightening: mercy is a door that closes from both sides. Between repetitions, something clicks patiently, as if waiting for an answer.",
       "choices": [
         {
           "label": "Preserve the recording",
           "outcome": {
             "text": "You copy the transmission before the receiver falters. The woman’s final syllables remain trapped in the speaker, intimate and exhausted. Later, when every road sign has been sanded blank, you will still possess proof that someone once tried to warn strangers away from Bunker Forty-One.",
-            "add_flags": ["b41_recording"]
+            "add_flags": [
+              "b41_recording",
+              "b41_voice_heard"
+            ]
           }
         },
         {
           "label": "Answer the voice",
           "outcome": {
             "text": "You give your callsign to the empty flats. Static swallows it, then returns a breath later with nothing changed except the feeling of being heard. At dusk the receiver clicks once without power, and a second voice quietly repeats your name from somewhere impossibly far east.",
-            "add_flags": ["b41_answered"]
+            "add_flags": [
+              "b41_answered",
+              "b41_voice_heard"
+            ]
           }
         },
         {
           "label": "Break the receiver",
           "outcome": {
             "text": "You crush the speaker beneath your heel until the woman’s voice becomes grit and silence. The relief lasts only a moment. The flats remain enormous, and now every gust through the wrecked mast resembles a signal you chose not to understand before continuing east.",
-            "add_flags": ["b41_unprepared"]
+            "add_flags": [
+              "b41_unprepared",
+              "b41_voice_heard"
+            ]
           }
         }
       ]
@@ -40,14 +52,20 @@
       "narrative_priority": 10,
       "weight": 10,
       "unique": true,
-      "eligibility": {"min_region_index": 4, "max_region_index": 4},
+      "eligibility": {
+        "min_region_index": 4,
+        "max_region_index": 4
+      },
       "body": "Bunker Forty-One rises from the glass like a ship’s ruined back. Its blast hatch is warm beneath your palm despite the cold wind. Fresh drag marks cross the fused ground and disappear beneath its rim. Through the inspection pane, a child’s handprint blooms in old soot. Behind the door, something slow shifts its impossible weight through concrete, followed by a breath that makes loose bolts tremble in their sockets.",
       "choices": [
         {
           "label": "Take the maintenance shaft",
           "outcome": {
             "text": "You find the narrow shaft behind a sheet of blistered metal and lower yourself without speaking. The bunker receives you with warm air, dust, and the faint smell of old electrical fires. Somewhere below, the breathing stops. That silence feels less like safety than attention.",
-            "add_flags": ["b41_contact", "b41_quiet_path"],
+            "add_flags": [
+              "b41_contact",
+              "b41_quiet_path"
+            ],
             "next_event": "bunker41_cartographer"
           }
         },
@@ -55,7 +73,10 @@
           "label": "Force the main hatch",
           "outcome": {
             "text": "The hatch opens with a noise that travels down through the bunker’s bones. Emergency lamps wake one by one, coloring the corridor a wounded red. Far below, metal answers metal. You have not entered an abandoned shelter; you have announced yourself inside something that remembers hunger.",
-            "add_flags": ["b41_contact", "b41_forced_entry"],
+            "add_flags": [
+              "b41_contact",
+              "b41_forced_entry"
+            ],
             "next_event": "bunker41_door_breathes"
           }
         },
@@ -63,7 +84,11 @@
           "label": "Mark it and leave",
           "outcome": {
             "text": "You paint a warning where any survivor might see it: DO NOT ENTER. By morning, ash has been pressed into the letters by careful fingertips. Someone has followed you to the hatch, read your warning, and chosen not to listen. Their lantern marks begin appearing eastward.",
-            "add_flags": ["b41_contact", "b41_ash_invite", "b41_unprepared"]
+            "add_flags": [
+              "b41_contact",
+              "b41_ash_invite",
+              "b41_unprepared"
+            ]
           }
         }
       ]
@@ -74,31 +99,53 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["b41_quiet_path"]},
-      "body": "The maintenance shaft opens above a room stitched with chalk lines, string, and carefully stacked cans. A woman sits inside the map she has made, one boot missing, a knife balanced across her knees. She calls herself Mara Venn. Her maps do not mark supplies or exits. They mark when the floor warms, when pipes hum, and where the thing below turns in its sleep. She knows the bunker intimately enough to fear it honestly.",
+      "eligibility": {
+        "requires_flags": [
+          "b41_quiet_path"
+        ]
+      },
+      "body": "The maintenance shaft lets you down into a room somebody has turned into a drawing. Chalk lines run the length of the floor and up two walls. String crosses between nails at head height. Cans weight the corners of the paper, and every can is open and empty and has been for some time.\n\nThe woman sitting inside the drawing does not get up. She has a knife across her knees and one boot, and she moves the knife onto the concrete beside her before she says anything, which is the first thing she wants you to see. Mara Venn, she says, the way a correction is written in a margin.\n\nHer maps do not mark supplies or exits. They mark which hour the floor warms, which pipes hum and for how long, and a long shaded oval low on the east wall labeled in small letters: where it turns over. Nobody alive knows this building's habits better. Nobody alive is more honest about them either, which is why her own route east has I was wrong written across it and left legible.\n\nDo not use the stair past the second landing while the floor is warm, she says. That part she gives away.\n\nThe rest she trades in halves. One person remembers the road, she says, one remembers why. She does not plead for her half and she does not look at your pack. From where you are standing you can hear her stomach.",
       "choices": [
         {
           "label": "Share a ration with Mara",
+          "requires": {
+            "reason": "You have no food to share"
+          },
+          "costs": {
+            "items": {
+              "canned_meat": 1
+            }
+          },
           "outcome": {
-            "text": "Mara eats with both hands around the food, ashamed of her hunger only after it is gone. Then she gives you a folded route to the Underrail and asks you to remember her name if she cannot leave. The map includes a green platform no ordinary traveler should know.",
-            "add_flags": ["b41_mara_helped", "b41_green_invite"]
+            "text": "You take the can out of your pack and put it in her hand, and it costs what it costs. That is one fewer meal between here and the Underrail, and both of you can do the arithmetic standing up.\n\nShe does not thank you at the front of it. She works the lid with her own knife, eats with both hands around the tin, and is ashamed of the hunger only afterwards, when it is gone and there is nothing left to blame it on.\n\nThen she pays. She folds a route east out of one of the wall sheets and marks a station on it that appears on no public map, where the platform signal stands green and does not change. Remember the name, she says. Mara Venn. If I do not get out of here, that is the part I would rather you carried.",
+            "add_flags": [
+              "b41_mara_helped",
+              "b41_green_invite"
+            ]
           }
         },
         {
           "label": "Take her map and leave",
           "outcome": {
-            "text": "Mara gives up the map because the knife in your hand makes argument feel theatrical. She watches you go without pleading. Days later, a rail signal carries a woman’s voice repeating your callsign and the word thief, each repetition clearer than the last.",
-            "add_flags": ["b41_mara_abandoned", "b41_ash_invite", "b41_choir_alerted"]
+            "text": "You do not have to use the knife. You only have to stand between her and the shaft with your hand near it while you lift her sheets off the nails, and she is a woman with one boot who has already told you she cannot fight.\n\nShe lets it go. She does not beg and she does not curse you, and she does not look away either, which is worse. She watches you roll her work up under your arm the way a person watches furniture being carried out of a house.\n\nTwo days east, a rail signal starts up on the maintenance band. It is her voice, flat and exact, reading your callsign, then the word thief, then your callsign again. Each pass arrives cleaner than the last, which means equipment better than hers has begun relaying it.",
+            "add_flags": [
+              "b41_mara_abandoned",
+              "b41_ash_invite",
+              "b41_choir_alerted"
+            ]
           }
         },
         {
           "label": "Heed her warning and withdraw",
           "outcome": {
-            "text": "You leave the deeper bunker untouched. Mara does not thank you; she only nods once, as if you have declined a debt too large to pay. Outside, the glass plain feels bright and simple again, though the closed hatch keeps breathing under your memory.",
-            "add_flags": ["b41_mercy_refused", "b41_ash_invite"]
+            "text": "You take the warning and nothing else. No route, no bargain, no name written down anywhere but in your own head.\n\nMara does not argue you back up the shaft. She nods once, lifts the knife onto her knees again, and returns to shifting a length of string a finger's width to the left, because the work is the same whether or not anybody else ever reads it.\n\nAbove ground the glass is bright and simple and asks nothing of you. You are carrying the food you came with and the same number of routes east, which is none. Behind you, past the landing you did not use, the floor keeps its own schedule. Lantern marks lead away from the hatch, laid down in ash by people who went in anyway.",
+            "add_flags": [
+              "b41_ash_invite"
+            ]
           }
         }
-      ]
+      ],
+      "scene_role": "chapter"
     },
     {
       "id": "bunker41_door_breathes",
@@ -106,21 +153,30 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["b41_forced_entry"]},
-      "body": "Past the forced hatch, Bunker Forty-One has not decayed so much as changed allegiance. Ash-coated figures stand in alcoves wearing scraps of evacuation uniforms. Their mouths move together around instructions no one has followed for decades. Beyond them lies a pressure door bent outward from the other side. Its seams exhale furnace-warm air. Around it are drag scars, crushed rifles, and a handprint too broad to belong to any human.",
+      "eligibility": {
+        "requires_flags": [
+          "b41_forced_entry"
+        ]
+      },
+      "body": "The forced hatch lets you into a bunker that changed sides rather than decaying. Ash-coated figures stand in the alcoves in scraps of evacuation uniform, mouths moving together around orders nobody has followed in decades. A torn wall panel exposes a relay housing, still warm. Beyond it a pressure door hangs bent outward from the other side, its seams breathing furnace air. Drag scars run under it. Two rifles lie crushed by the frame, and above them a handprint too broad for a human. Behind you the hatch stands open on daylight, and the way back is clear.",
       "choices": [
         {
           "label": "Flee with the exposed relay",
           "outcome": {
             "text": "You tear a black relay fragment from the wall and run before the Cinder Wives can decide whether you are patient or intruder. Behind you, their voices become one long evacuation alarm. The fragment warms in your pocket and begins clicking in time with distant rail signals.",
-            "add_flags": ["b41_relay_fragment", "b41_green_invite"]
+            "add_flags": [
+              "b41_relay_fragment",
+              "b41_green_invite"
+            ]
           }
         },
         {
           "label": "Follow the Cinder Wives",
           "outcome": {
             "text": "The ash-coated women turn as one and lead you through rooms of tagged belongings and sealed nursery doors. Their borrowed voices call you resident, witness, and late arrival. At the command corridor, they stop beneath a painted word: SOTERIA. Something deeper in the bunker turns over.",
-            "add_flags": ["b41_contact"],
+            "add_flags": [
+              "b41_contact"
+            ],
             "next_event": "bunker41_last_evacuation"
           }
         },
@@ -139,28 +195,44 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["b41_forced_entry"]},
+      "eligibility": {
+        "requires_flags": [
+          "b41_forced_entry"
+        ],
+        "forbids_flags": [
+          "b41_relay_fragment"
+        ]
+      },
       "body": "The command room is still lit by a single amber monitor. On its screen, a prewar commander reads admission names while families beat against the sealed outer door. Every pause between names is longer than the last. Beneath the console rests a smooth black core, warm as skin: the Mercy Key. The Cinder Wives gather behind you, waiting to learn whether history will be carried, exposed, or erased again.",
       "choices": [
         {
           "label": "Take the Mercy Key",
           "outcome": {
             "text": "The black core releases with a soft mechanical sigh and settles into your palm like a held breath. The monitor stops naming the admitted and begins naming the refused. Each name follows you into the corridor. Far away, an Underrail platform answers with a green light.",
-            "add_flags": ["b41_mercy_key", "b41_green_invite"]
+            "add_flags": [
+              "b41_mercy_key",
+              "b41_green_invite"
+            ]
           }
         },
         {
           "label": "Broadcast the abandoned names",
           "outcome": {
             "text": "You open every surviving channel and let the names travel across the wastes. The Cinder Wives listen without moving. Then, one by one, they speak their own names. Somewhere beyond the bunker, another receiver answers with a choir of voices calling your broadcast blasphemy.",
-            "add_flags": ["b41_abandoned_names", "b41_ash_invite", "b41_choir_alerted"]
+            "add_flags": [
+              "b41_abandoned_names",
+              "b41_ash_invite",
+              "b41_choir_alerted"
+            ]
           }
         },
         {
           "label": "Destroy the records",
           "outcome": {
             "text": "You break the amber monitor and crush its memory housing beneath a fallen chair. The room goes dark except for the Mercy Key’s patient pulse. The Cinder Wives do not stop you. Their silence feels like forgiveness from people who have forgotten how to grant it.",
-            "add_flags": ["b41_records_destroyed"]
+            "add_flags": [
+              "b41_records_destroyed"
+            ]
           }
         }
       ]
@@ -172,28 +244,42 @@
       "narrative_priority": 8,
       "weight": 8,
       "unique": true,
-      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_flags": ["b41_relay_fragment"]},
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 5,
+        "requires_flags": [
+          "b41_relay_fragment"
+        ]
+      },
       "body": "In the Underrail, the relay fragment wakes before you do. Green lamps ignite along a platform abandoned beneath dripping concrete. The fragment clicks against your ribs like a small trapped insect. A train speaker announces an evacuation line that has been dead for generations, then offers no destination. Beyond the tracks, shadows gather at the edge of the light, listening for the choice you make with the thing you carried from Bunker Forty-One.",
       "choices": [
         {
           "label": "Follow the signal",
           "outcome": {
             "text": "You follow the lamps until they form an old service diagram pointing toward the Citadel’s sealed side. The fragment quiets only when you memorize the route. Someone has laid a path for you, though whether it was a rescuer, a jailer, or a machine remains uncertain.",
-            "add_flags": ["b41_green_invite", "b41_fragment_followed"]
+            "add_flags": [
+              "b41_green_invite",
+              "b41_fragment_followed"
+            ]
           }
         },
         {
           "label": "Use it to mislead pursuers",
           "outcome": {
             "text": "You leave the clicking fragment inside a maintenance cart and send it rattling down a dark branch line. Voices follow the false signal with disciplined haste. Much later, you hear one distant scream cut short. The road accepts your escape without telling you who paid for it.",
-            "add_flags": ["b41_choir_hostile", "b41_ash_invite"]
+            "add_flags": [
+              "b41_choir_hostile",
+              "b41_ash_invite"
+            ]
           }
         },
         {
           "label": "Throw it onto the tracks",
           "outcome": {
             "text": "The fragment shatters beneath your heel and the green lamps die in sequence. For a moment, the tunnel is only a tunnel. Then ash prints appear beside the rails, fresh and deliberate. The Ash Choir will find what you broke and decide why you broke it.",
-            "add_flags": ["b41_fragment_discarded", "b41_ash_invite"]
+            "add_flags": [
+              "b41_ash_invite"
+            ]
           }
         }
       ]
@@ -205,14 +291,24 @@
       "narrative_priority": 9,
       "weight": 9,
       "unique": true,
-      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_any_flags": ["b41_ash_invite", "b41_choir_alerted", "b41_unprepared"]},
-      "body": "Lanterns emerge from the Underrail dark in a disciplined line. The people carrying them wear technician coats patched with ash-colored cloth and old radio cords. At their center walks a child in a porcelain mask, speaking Bunker Forty-One evacuation orders in a dead woman’s voice. The Ash Choir does not raise weapons. That is worse. Their leader welcomes you as though your arrival was written into an old maintenance schedule.",
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 5,
+        "requires_any_flags": [
+          "b41_ash_invite",
+          "b41_choir_alerted",
+          "b41_unprepared"
+        ]
+      },
+      "body": "Lanterns emerge from the Underrail dark in a disciplined line. The people carrying them wear technician coats patched with ash-colored cloth and old radio cords, packs strapped over the coats. At their center walks a child in a porcelain mask, speaking Bunker Forty-One evacuation orders in a dead woman’s voice. The Ash Choir does not raise weapons. That is worse. Their leader welcomes you as though your arrival was written into an old maintenance schedule.",
       "choices": [
         {
           "label": "Join the procession",
           "outcome": {
             "text": "The Choir feeds you, warms your hands, and sings softly through the next tunnel. For several minutes they seem like ordinary people trying to preserve one another. Then their leader asks which strangers you would deny entry if food ran short, and everyone waits for your answer.",
-            "add_flags": ["b41_choir_joined"],
+            "add_flags": [
+              "b41_choir_joined"
+            ],
             "next_event": "bunker41_chapel_car"
           }
         },
@@ -220,15 +316,38 @@
           "label": "Speak the bunker’s truth",
           "outcome": {
             "text": "You name the families sealed outside Bunker Forty-One and describe the commander’s voice breaking between decisions. Several lanterns lower. The masked child begins to cry beneath the porcelain. The Choir divides around you: some hearing a warning, others hearing a declaration of war.",
-            "add_flags": ["b41_choir_split", "b41_witness", "b41_green_invite"]
+            "add_flags": [
+              "b41_choir_split",
+              "b41_witness",
+              "b41_green_invite"
+            ]
           }
         },
         {
           "label": "Rob the lantern bearers",
           "outcome": {
-            "text": "You grab at packs in the confusion and come away with nothing worth the theft. The escape is clean only in the first seconds. Behind you, the Choir’s radios switch to one shared frequency and repeat your callsign with clinical patience. A divided faction has become a single enemy.",
-            "add_flags": ["b41_choir_hostile"]
+            "text": "You go for the nearest packs while the lanterns are turning. One tin of meat comes away. A flask of lantern oil comes with it and bursts on the rail, and that fuel is gone. Ten steps on, every radio in the line changes to one frequency and starts saying your callsign, in turn. Nobody is arguing about you now.",
+            "add_flags": [
+              "b41_choir_hostile"
+            ],
+            "items": {
+              "canned_meat": 1
+            }
           }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "b41_abandoned_names"
+          ],
+          "text": "Lanterns come out of the Underrail dark in a disciplined line, carried by people in patched technician coats and heavy packs. At their center a child in a porcelain mask speaks Bunker Forty-One evacuation orders in a dead woman's voice, then, in the same voice, the first three names you sent out of the command room on every channel. The leader raises no weapon. She says the word her radios answered your broadcast with, blasphemy, quietly, as a fact about you. Then she asks whether you will walk with them anyway; the schedule has your arrival on it either way."
+        },
+        {
+          "requires_any_flags": [
+            "b41_mara_abandoned"
+          ],
+          "text": "Lanterns come out of the Underrail dark in a disciplined line, carried by people in patched technician coats and heavy packs. At their center a child in a porcelain mask speaks Bunker Forty-One evacuation orders in a dead woman's voice. Then the child says your callsign, and the word thief, and your callsign again, flat, in Mara Venn's cadence. Their radios are still carrying it, cleaner than she ever sent it. Nobody raises a weapon. The leader welcomes you as if a thief had been expected at this hour, and asks what you think of people who sort strangers."
         }
       ]
     },
@@ -239,14 +358,25 @@
       "narrative_priority": 10,
       "weight": 10,
       "unique": true,
-      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_any_flags": ["b41_green_invite", "b41_mercy_key", "b41_mara_helped", "b41_relay_fragment"]},
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 5,
+        "requires_any_flags": [
+          "b41_green_invite",
+          "b41_mercy_key",
+          "b41_mara_helped",
+          "b41_relay_fragment"
+        ]
+      },
       "body": "A green platform signal cuts through the Underrail haze and illuminates a station absent from every public map. Old evacuation signs point toward EAST CITADEL SERVICE, their arrows covered and uncovered by generations of dust. The Mercy Key warms if you carry it. Mara’s map, if you possess it, ends here in a shaking line. Behind a locked office door, someone has scratched hundreds of names into the paint.",
       "choices": [
         {
           "label": "Take the service route",
           "outcome": {
             "text": "You release the side door and enter a corridor designed for people who were already chosen. The air grows cleaner but no kinder. Along the walls, evacuation tags hang from hooks in careful rows, each one bearing a number where a person’s future should have been.",
-            "add_flags": ["b41_service_route"],
+            "add_flags": [
+              "b41_service_route"
+            ],
             "next_event": "bunker41_false_welcome"
           }
         },
@@ -254,7 +384,9 @@
           "label": "Search for Mara’s trail",
           "outcome": {
             "text": "Mara’s chalk mark appears beneath the platform lip, followed by a newer message: LIVING PEOPLE BELOW. You follow it through a locked staff passage where someone has left water cups outside sealed doors. The Citadel’s hidden route was never as empty as it wanted outsiders to believe.",
-            "add_flags": ["b41_ledger_route"],
+            "add_flags": [
+              "b41_ledger_route"
+            ],
             "next_event": "bunker41_ledger_living"
           }
         },
@@ -262,8 +394,20 @@
           "label": "Activate the station openly",
           "outcome": {
             "text": "You pull the public emergency lever. Lamps race down both tunnels, exposing every path at once. The platform speaker announces an incoming Citadel security response while Ash Choir radios answer from the dark. Whatever reaches you next will know exactly where you chose to stand.",
-            "add_flags": ["b41_public_signal", "b41_ash_invite"]
+            "add_flags": [
+              "b41_public_signal",
+              "b41_ash_invite"
+            ]
           }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "b41_key_surrendered",
+            "rustsea_key_with_mara"
+          ],
+          "text": "A green platform signal cuts through the Underrail haze and lights a station that is on no public map. Old evacuation signs point toward EAST CITADEL SERVICE, their arrows covered and uncovered by generations of dust. The Mercy Key is no longer in your pack, and the signal stands green anyway. It answers whoever holds the core now and does not care that they are not you; the lamps came on for the core, not for the hand that carried it. Behind a locked office door, someone has scratched hundreds of names into the paint."
         }
       ]
     },
@@ -273,28 +417,50 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["b41_choir_joined"]},
+      "eligibility": {
+        "requires_flags": [
+          "b41_choir_joined"
+        ]
+      },
       "body": "The procession boards a subway carriage turned into a chapel. Emergency maps have become altar cloths. Names are scratched into the windows from the inside, then crossed out in ash. The Choir’s founder appears on a damaged monitor: a young Bunker Forty-One technician promising that disciplined mercy will prevent another collapse. The living Choir offers you shelter, food, and a place among them if you accept their right to judge strangers.",
       "choices": [
         {
           "label": "Give them the Mercy Key",
+          "requires": {
+            "flags": [
+              "b41_mercy_key"
+            ],
+            "forbids_flags": [
+              "rustsea_key_with_mara"
+            ],
+            "reason": "You do not hold the Key"
+          },
           "outcome": {
             "text": "The Choir receives the black core as if it were a newborn child. Their relief is painfully human. Then the monitor identifies the founder as one of the people who helped seal Bunker Forty-One’s outer door. The Choir has inherited not salvation, but the machinery of an old betrayal.",
-            "add_flags": ["b41_key_surrendered", "b41_choir_bound"]
+            "add_flags": [
+              "b41_key_surrendered",
+              "b41_choir_bound"
+            ]
           }
         },
         {
           "label": "Steal the founder’s records",
           "outcome": {
             "text": "While the Choir kneels, you copy the founder’s testimony: he survived because someone else was refused. The record is not a weapon until it is heard. You leave the chapel car with proof in your pocket and the knowledge that every believer aboard will kill to bury it.",
-            "add_flags": ["b41_choir_records", "b41_witness"]
+            "add_flags": [
+              "b41_choir_records",
+              "b41_witness"
+            ]
           }
         },
         {
           "label": "Refuse their judgement",
           "outcome": {
             "text": "You tell them no one who survived an apocalypse earns the right to sort the next line of desperate people. The masked child removes their porcelain face and looks suddenly ordinary. Three lantern bearers step away from the altar; everyone else reaches for a weapon.",
-            "add_flags": ["b41_choir_split", "b41_witness"]
+            "add_flags": [
+              "b41_choir_split",
+              "b41_witness"
+            ]
           }
         }
       ]
@@ -305,28 +471,40 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["b41_service_route"]},
+      "eligibility": {
+        "requires_flags": [
+          "b41_service_route"
+        ]
+      },
       "body": "The service corridor ends at a waiting room built for evacuees who never arrived. Children’s shoes sit beneath benches. Thousands of numbered tags hang in drawers beside messages promising clean air, medical care, and onward transport. Beyond a reinforced archive door, Citadel servers still glow. A warning strip repeats that unauthorized access may wake containment systems. It does not say what the systems contain, only that they were never meant to be released.",
       "choices": [
         {
           "label": "Open the archive",
           "outcome": {
             "text": "The archive opens on records of selected families, rejected families, and quotas calculated with serene administrative language. You find Bunker Forty-One’s final order preserved in full. The Citadel was not merely built to save people. It was built to decide, efficiently, who could be left outside.",
-            "add_flags": ["b41_archive_truth", "b41_witness"]
+            "add_flags": [
+              "b41_archive_truth",
+              "b41_witness"
+            ]
           }
         },
         {
           "label": "Leave hope untouched",
           "outcome": {
             "text": "You let the archive remain closed. The clean lights beyond the next wall still mean something uncomplicated if you refuse to read the price paid for them. You continue carrying hope as a deliberate blindness, knowing that it may be the only kind a survivor can afford.",
-            "add_flags": ["b41_mercy"]
+            "add_flags": [
+              "b41_mercy"
+            ]
           }
         },
         {
           "label": "Burn the access files",
           "outcome": {
             "text": "You destroy the local index before any future official can use it to repeat the old sorting. Smoke darkens the waiting room, but the server lights keep glowing behind sealed glass. You have denied someone a weapon and denied yourself evidence, leaving only memory to argue with power.",
-            "add_flags": ["b41_records_destroyed", "b41_mercy"]
+            "add_flags": [
+              "b41_records_destroyed",
+              "b41_mercy"
+            ]
           }
         }
       ]
@@ -337,28 +515,41 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["b41_ledger_route"]},
+      "eligibility": {
+        "requires_flags": [
+          "b41_ledger_route"
+        ]
+      },
       "body": "The staff passage ends at a row of sealed maintenance rooms. A ledger on a wheeled cart lists water deliveries, medicine requests, and names marked STILL BREATHING. Some entries are weeks old. One is Mara Venn’s hand, if she ever escaped the bunker; another carries only a child’s drawing of a green gate. The Citadel service line has become a place where forgotten people survive in the margins of a system that refuses to acknowledge them.",
       "choices": [
         {
           "label": "Open the sealed rooms",
           "outcome": {
             "text": "You spend precious time releasing locks and guiding frightened people into the platform light. Whether Mara is among them or only her map remains, the survivors give you names and testimony. Their existence turns Bunker Forty-One from history into an accusation that still breathes.",
-            "add_flags": ["b41_rescued_survivors", "b41_witness"]
+            "add_flags": [
+              "b41_rescued_survivors",
+              "b41_witness"
+            ]
           }
         },
         {
           "label": "Copy the ledger and continue",
           "outcome": {
             "text": "You copy every name because taking the ledger is easier than opening doors you may not be able to protect. The pages feel heavier than any weapon. When you leave, the people behind the metal call out softly, not asking for promises they have heard before.",
-            "add_flags": ["b41_ledger_copy", "b41_witness"]
+            "add_flags": [
+              "b41_ledger_copy",
+              "b41_witness"
+            ]
           }
         },
         {
           "label": "Destroy the ledger",
           "outcome": {
             "text": "You burn the pages so no Citadel clerk can turn living names into a new quota. The fire gives the sealed corridor one brief warmth. Behind the doors, someone begins singing an evacuation song. You leave with no list, no proof, and no certainty that mercy was served.",
-            "add_flags": ["b41_ledger_burned", "b41_mercy"]
+            "add_flags": [
+              "b41_ledger_burned",
+              "b41_mercy"
+            ]
           }
         }
       ]
@@ -369,33 +560,130 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"min_region_index": 6},
-      "body": "The Warden machine rolls from the Citadel shadow with its weapon lowered but ready. Its scanner pauses on you longer than it should. A damaged display wakes across its armor: BUNKER 41 / SOTERIA / RECORD INCOMPLETE. Whether you carry a key, a testimony, or only an unanswered silence, the machine has found the same old wound beneath your journey. It asks for authorization in the voice of the woman from the salt flats.",
+      "eligibility": {
+        "min_region_index": 6
+      },
+      "body": "The Warden rolls out of the Citadel's shadow on tracks somebody has kept maintained. Its weapon is lowered and ready. Its scanner stops on you and stays there longer than a scan takes. Then a cracked display wakes across the armor: BUNKER 41 / SOTERIA / RECORD INCOMPLETE. It has a record of you, and something in that record is missing, and it wants the gap filled before the gate will open. It asks for authorization in a woman's voice, recorded a long time ago and worn smooth by repetition.",
       "choices": [
         {
           "label": "Refuse its authority",
           "outcome": {
-            "text": "You tell the Warden that no machine, bunker, choir, or city may decide what a human life is worth. Its sensors track your face without expression. Then it raises the weapon. The gate has become simple again: one survivor, one machine, and no inherited permission.",
+            "text": "You tell the Warden that no machine, bunker, choir, or city may decide what a human life is worth. Its sensors track your face without expression. The weapon stays level with your chest and does not fire. The protocol has no procedure for a person who refuses to be authorized, so the machine holds while the gate mechanism takes over behind it.",
             "next_event": "bunker41_door_closes"
           }
         },
         {
           "label": "Attack the Warden",
           "approach": "combat",
-          "combat": {"adversary_id": "warden_machine", "can_flee": false},
+          "combat": {
+            "adversary_id": "warden_machine",
+            "can_flee": false
+          },
           "victory": {
             "text": "The Warden falls hard enough to shake dust from the Citadel wall. Its dying screen repeats the Bunker Forty-One admission list, then clears itself. In the silence afterward, the final gate waits without a machine left to tell you whether you deserve it.",
-            "next_event": "bunker41_door_closes"
+            "next_event": "bunker41_door_closes",
+            "add_flags": [
+              "b41_warden_destroyed"
+            ]
           }
         },
-        {
-          "label": "Invoke the Bunker record",
-          "requires": {"any_flags": ["b41_mercy_key", "b41_witness", "b41_abandoned_names", "b41_choir_records", "b41_rescued_survivors"]},
+                        {
+                            "label": "Invoke the Bunker record",
+                            "requires": {
+                                "any_flags": [
+                                    "b41_witness",
+                                    "b41_abandoned_names",
+                                    "b41_choir_records",
+                                    "b41_rescued_survivors"
+            ]
+          },
           "outcome": {
             "text": "You answer with names, testimony, and the truth buried beneath Bunker Forty-One. The Warden’s weapon lowers by a fraction. Its old protocol cannot call the dead mistaken, yet it cannot call the living unauthorized. For the first time, the machine hesitates before the gate.",
-            "add_flags": ["b41_warden_heard"],
-            "next_event": "bunker41_door_closes"
-          }
+            "add_flags": [
+              "b41_warden_heard"
+            ],
+            "next_event": "bunker41_door_closes",
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_key_surrendered",
+                  "rustsea_key_with_mara"
+                ],
+                "text": "You answer with names and testimony, because the black core itself is no longer yours to raise. The Warden's weapon lowers by a fraction anyway. Its old protocol cannot call the dead mistaken, and the record you carry is spoken rather than held. For the first time, the machine hesitates before the gate."
+              },
+              {
+                "requires_any_flags": [
+                  "b41_rescued_survivors"
+                ],
+                "text": "You answer with the people. You give the room numbers from the sealed corridor and the names of those who walked out into platform light, and how many days each went without water. The Warden's weapon lowers by a fraction. Its protocol can file the dead. It has no column for the living it left off the list, and it stalls."
+              },
+              {
+                "requires_any_flags": [
+                  "b41_archive_truth"
+                ],
+                "text": "You answer with its order. You read the Citadel's final instruction to Bunker Forty-One as the archive kept it: the quota, the phrase about efficient allocation, the line that closes the outer door. The display flickers, matching text it already holds. The weapon lowers by a fraction. It cannot call its own order mistaken, or call you unauthorized to know it."
+              },
+              {
+                "requires_any_flags": [
+                  "b41_ledger_copy"
+                ],
+                "text": "You answer with the copied ledger: names in a clerk's hand and then in yours, each marked still breathing, each with the date of its last water. The scanner reads the pages twice. The weapon lowers by a fraction. The protocol has a list of the admitted and a list of the refused, and these people are on neither, and it stalls."
+              },
+              {
+                "requires_any_flags": [
+                  "b41_abandoned_names"
+                ],
+                "text": "You answer with the names you sent out of the command room on every surviving channel. The Warden has already heard them; it runs the same channels. The display scrolls them back at you in the order you sent them. The weapon lowers by a fraction. The protocol cannot call the refused mistaken, or call a broadcast it received unauthorized, and it stalls."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Present the Mercy Key",
+                            "requires": {
+                                "flags": [
+                                    "b41_mercy_key"
+                                ],
+                                "forbids_flags": [
+                                    "b41_key_surrendered",
+                                    "rustsea_key_with_mara"
+                                ],
+                                "reason": "You do not hold the Key"
+                            },
+                            "outcome": {
+                                "text": "You set the black core on the Warden's scan plate. It recognizes the shape before it recognizes you. An old authorization lights the display, followed by a casualty count and a prompt asking whether its bearer will claim the authority that made it. You say no. The weapon lowers, and the gate mechanism takes over.",
+                                "add_flags": [
+                                    "b41_warden_heard"
+                                ],
+                                "next_event": "bunker41_door_closes"
+                            }
+                        }
+                    ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "b41_public_signal"
+          ],
+          "text": "The Warden rolls out of the Citadel's shadow with its weapon already level. It is not scanning you. It has you. The display across its armor reads BUNKER 41 / SOTERIA / EAST CITADEL SERVICE / RECORD INCOMPLETE, and under that, to the minute, the time you pulled the public lever on the platform. This is the security response the station speaker promised, waiting at the only gate the platform's lines lead to. It asks for authorization in a woman's voice, patient, as if the question had been queued since the lamps came on."
+        },
+        {
+          "requires_any_flags": [
+            "b41_records_destroyed",
+            "b41_ledger_burned"
+          ],
+          "text": "The Warden rolls out of the Citadel's shadow with its weapon lowered and ready, and its scanner stays on you too long. The display wakes across the armor: BUNKER 41 / SOTERIA / RECORD INCOMPLETE, and beneath it a second line with a time on it and the word DESTROYED. You know the time. It was your hands. The gap the machine wants filled is the one you made, and what those files held is in your head now and nowhere the machine can read. It asks for authorization in a woman's voice, recorded long ago and worn smooth."
+        },
+        {
+          "requires_any_flags": [
+            "b41_answered"
+          ],
+          "text": "The Warden rolls out of the Citadel's shadow with its weapon lowered and ready. Its scanner stops on you, and the display wakes across the armor: BUNKER 41 / SOTERIA / RECORD INCOMPLETE. Then it says your callsign. Not asks; says, the way a second voice said your name from far east the dusk you answered the flats. It has held that callsign in a queue since then and wants the rest of the entry. It asks for authorization in the same woman's voice you gave your callsign to in the first place, unhurried, still waiting for an answer."
+        },
+        {
+          "requires_any_flags": [
+            "b41_voice_heard"
+          ],
+          "text": "The Warden rolls out of the Citadel's shadow with its weapon lowered and ready. Its scanner stops on you and stays there longer than a scan takes. A cracked display wakes across the armor: BUNKER 41 / SOTERIA / RECORD INCOMPLETE. It asks for authorization, and you know the voice before the sentence ends. It is the woman from the salt-flats receiver, the one whose sentence about mercy came through crusted static near the wrecked mast. On the flats that sentence was a warning. At this door the same voice is asking for authorization."
         }
       ]
     },
@@ -405,39 +693,145 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"min_region_index": 6},
-      "body": "The East Citadel gate opens only a hand’s width. Clean air spills through it with an almost cruel gentleness. Behind you are the Glass Wastes, the sleeping bunker, the Ash Choir, and every name that never reached safety. Before you are white lights and people who may still believe their walls were built without sacrifice. The mechanism begins to close. Whatever you say or do now will decide which story enters with you.",
+      "eligibility": {
+        "min_region_index": 6
+      },
+      "body": "The East Citadel gate opens a hand's width. Clean air comes through the gap with a gentleness that feels almost like contempt. Behind you the Warden holds where you left it, weapon level, its protocol still waiting on an answer nobody is going to give it. Beyond the gap are white lights and people who have never had to learn what their walls cost. The mechanism starts closing again. What you say or do in the next breath decides which story goes in with you.",
       "choices": [
         {
           "label": "Force your way through",
           "outcome": {
             "text": "You wrench the failing gate wide enough to pass and do not look back until the locks engage. Inside, the clean air tastes almost unreal. You survive, but the road’s unanswered voices remain outside the wall, carrying the silence you chose to preserve.",
-            "victory": true
+            "victory": true,
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_fragment_followed"
+                ],
+                "text": "You let the gap close. The diagram the platform lamps drew for you put a maintenance door along this wall, on the sealed side, on a circuit the fragment knew, and it is there under a plate of grime. It gives at the third kick. The locks engage behind you. You are inside by a way no guard was watching."
+              },
+              {
+                "requires_any_flags": [
+                  "b41_mercy"
+                ],
+                "text": "You wrench the failing gate wide enough to pass and go through without having read the price of the air. The page that would have named it is ash, or still shut behind a door you left closed. You passed the names scratched into the office paint at the green platform, and you did not stop to learn them."
+              }
+            ]
           }
         },
         {
           "label": "Offer the Mercy Key",
-          "requires": {"flags": ["b41_mercy_key"]},
+          "requires": {
+            "flags": [
+              "b41_mercy_key"
+            ],
+            "forbids_flags": [
+              "b41_key_surrendered",
+              "rustsea_key_with_mara"
+            ],
+            "reason": "You do not hold the Key"
+          },
           "outcome": {
             "text": "You place the Mercy Key in the narrowing gap and name it for what it is: not permission, but evidence. The gate staff recognize the old authority and recoil from its history. They admit you under emergency protocol while the bunker’s final judgement follows close behind.",
-            "victory": true
+            "victory": true,
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_rescued_survivors"
+                ],
+                "text": "You hold the Mercy Key into the narrowing gap: evidence, not permission. The staff recognize the old authority and admit you under emergency protocol, one person, as this gate admits. The people you let out of the sealed rooms watch from the lights. The door closes on them as it always has, on the token you chose over their names."
+              },
+              {
+                "requires_any_flags": [
+                  "b41_warden_destroyed"
+                ],
+                "text": "You hold the Mercy Key up to the glass. No machine is left to read it, so a guard must. She pulls a manual older than she is, finds the core's shape in it, and goes white. Then she opens the emergency protocol by hand, a person deciding before the procedure can, and admits you on the authority that sealed the bunker."
+              }
+            ]
           }
         },
         {
           "label": "Read the names aloud",
-          "requires": {"any_flags": ["b41_witness", "b41_abandoned_names", "b41_mara_helped", "b41_rescued_survivors"]},
+          "requires": {
+            "any_flags": [
+              "b41_witness",
+              "b41_abandoned_names",
+              "b41_mara_helped",
+              "b41_rescued_survivors"
+            ]
+          },
           "outcome": {
             "text": "You read the names of the refused until guards, workers, and cameras have all heard them. The gate opens not because the Citadel becomes innocent, but because silence becomes impossible. You enter as a witness, carrying the people its old systems tried to erase.",
-            "victory": true
+            "victory": true,
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_rescued_survivors"
+                ],
+                "text": "You read the names of the refused, and yours is not the only voice reading. The people you let out of the sealed rooms stand in the floodlights and answer each name with their own. The gate opens not because the Citadel is innocent but because the living are standing outside it, saying their names, and you go in with their names."
+              },
+              {
+                "requires_any_flags": [
+                  "b41_ledger_copy",
+                  "b41_archive_truth"
+                ],
+                "text": "You read the names of the refused as the service line's own records had them: in a clerk's order, with the mark that stood beside each one. A worker behind the glass knows the format; she still files in it. Guards and cameras hear the rest, and the gate opens because its own records have been read where nobody can unhear them."
+              },
+              {
+                "requires_any_flags": [
+                  "pilgrim_disk"
+                ],
+                "text": "You read the names of the refused until guards, workers, and cameras have all heard them. The last name is not from any list. It is scratched into the back of a metal prayer disk a dying pilgrim asked you to carry east, and you read it with the others because nobody behind the glass will say which list it belongs on. You go in."
+              }
+            ]
           }
         },
         {
           "label": "Play the Ash Choir record",
-          "requires": {"any_flags": ["b41_choir_joined", "b41_choir_records", "b41_choir_split", "b41_choir_bound"]},
+          "requires": {
+            "any_flags": [
+              "b41_choir_records",
+              "b41_choir_bound"
+            ]
+          },
           "outcome": {
             "text": "The founder’s confession fills the gate speakers: a survivor explaining why others had to be left behind. The Ash Choir’s faith breaks open in public. You enter amid argument, grief, and living doubt, leaving the Citadel unable to pretend its walls were ever clean.",
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_choir_bound"
+                ],
+                "text": "You do not own the confession; the Choir does, and they carry it to the gate with the Key you gave them. Their bearers set the founder’s monitor against the mechanism and let him speak. The faith they built on him breaks open in front of the Citadel’s cameras, and you walk in through the argument it starts."
+              }
+            ],
             "victory": true
           }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "b41_warden_destroyed"
+          ],
+          "text": "The East Citadel gate opens a hand's width, and it opens onto a Warden lying broken across the approach with its display dark. Clean air comes through the gap. Behind the glass the guards look at the wreck, then at one another, then at the wreck again; the decision the machine used to make for them is theirs now, with no procedure to hide it in, and the mechanism is closing while they make it. What you do in the next breath decides which story goes in with you."
+        },
+        {
+          "requires_any_flags": [
+            "b41_warden_heard"
+          ],
+          "text": "The East Citadel gate opens a hand's width. Behind you the Warden has not moved since it hesitated. Its weapon is lowered and its scanner is turned toward the gap rather than toward you, and its display reads RECORD INCOMPLETE with a cursor blinking after it: the machine is taking down what happens next. Clean air comes through the gap. Beyond it are white lights and people who have never had to learn what their walls cost. The mechanism starts closing again, and the record is still open."
+        },
+        {
+          "requires_any_flags": [
+            "b41_choir_hostile"
+          ],
+          "text": "The East Citadel gate opens a hand's width. Clean air comes through the gap. Behind you the Warden holds, weapon level, protocol waiting. Behind it, where the floodlights end, a line of lanterns has stopped exactly at the edge of the light, and the radios in that line are all on one frequency, one that has been following you since the Underrail. The Choir followed it this far. They do not step into the light. The mechanism starts closing again, and whatever you do with it, they are close enough to hear the door decide."
+        },
+        {
+          "requires_any_flags": [
+            "b41_choir_split"
+          ],
+          "text": "The East Citadel gate opens a hand's width. Clean air comes through the gap. Behind you the Warden holds, weapon level, protocol waiting. Farther back, lanterns stand in two groups at the edge of the floodlights, and neither group is speaking to the other. Some of them have come to see what you do with the door. The rest have come to see what the door does with you. The mechanism starts closing again, and both groups go still at the same moment."
         }
       ]
     }

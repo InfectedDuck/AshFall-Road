@@ -18,14 +18,16 @@
             "text": "The formation breaks when their leader falls. When the struggle ends, the sudden quiet feels larger than the fight. You search quickly, tend what hurts, and prepare to leave before new danger arrives.",
             "items": {
               "canned_meat": 1,
-              "scrap_parts": 1
+              "scrap_parts": 1,
+              "chain_wrench": 1
             }
           },
           "critical_victory": {
             "text": "You disarm the leader without taking a wound. The gang abandons a pistol. The final exchange is clean and decisive. You control the aftermath before chance can reverse itself, taking the hard-earned advantage east with you.",
             "items": {
               "pipe_pistol": 1,
-              "pistol_rounds": 4
+              "pistol_rounds": 4,
+              "wolf_fang_charm": 1
             }
           }
         },
@@ -71,7 +73,8 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "outskirts_bus",
@@ -137,6 +140,7 @@
     },
     {
       "id": "outskirts_dogs",
+      "scene_role": "micro",
       "title": "The Concrete Pack",
       "body": "Clouds press low over the broken suburbs. Weeds tremble through pavement seams, paper whispers against rusted fences, and the distant city answers the wind with a long metallic groan. Feral dogs fan across the road, testing your distance and fear.\n\nYou slow down and read the ground, the exits, and the silences between sounds. Something useful may be here, but the place is arranged to punish haste. You must decide which risk deserves your strength.",
       "weight": 5,
@@ -152,7 +156,8 @@
           "victory": {
             "text": "The pack gives ground after the first hard strike. When the struggle ends, the sudden quiet feels larger than the fight. You search quickly, tend what hurts, and prepare to leave before new danger arrives.",
             "items": {
-              "scrap_parts": 1
+              "scrap_parts": 1,
+              "rusted_machete": 1
             }
           }
         },
@@ -203,7 +208,8 @@
       "unique": true,
       "tags": [
         "opening_safe",
-        "opening_equipment"
+        "opening_equipment",
+        "opening_hook"
       ],
       "choices": [
         {
@@ -272,10 +278,12 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "outskirts_overpass",
+      "scene_role": "micro",
       "title": "Broken Overpass",
       "body": "The outskirts smell of wet concrete, cold ash, and old electrical fires. Your footsteps travel farther than they should between the abandoned storefronts, making every doorway feel briefly occupied. The road ends at a collapsed span. Wind moves through exposed reinforcement bars.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 4,
@@ -364,8 +372,18 @@
           "outcome": {
             "text": "You keep your distance and your strength. There is no dramatic answer, only the consequence taking its place among your supplies and scars. You adjust your pack and continue east."
           }
+        },
+        {
+          "label": "Drive the colony out of the stairwell",
+          "approach": "combat",
+          "combat": {"adversary_id": "shutter_skitters", "can_flee": true},
+          "victory": {
+            "text": "You drive the colony out into the cold light and find the household cache where it was packed against smoke and small teeth. The stairwell is quiet when you leave.",
+            "items": {"medkit": 1, "canned_meat": 1}
+          }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "outskirts_siren",
@@ -386,9 +404,7 @@
             "items": {
               "scrap_parts": 2
             },
-            "add_flags": [
-              "silenced_siren"
-            ]
+            "add_flags": []
           },
           "failure": {
             "text": "The mechanism arcs through your tools. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -424,17 +440,20 @@
             ]
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "outskirts_cache",
+      "scene_role": "micro",
       "title": "Municipal Cache",
       "body": "You move beneath apartment shells whose empty windows hold the gray morning like blind eyes. Wind pushes grit along the avenue, and somewhere behind the walls loose metal keeps a patient, irregular beat. A yellow emergency locker is bolted beneath a courthouse stair.\n\nYou slow down and read the ground, the exits, and the silences between sounds. Something useful may be here, but the place is arranged to punish haste. You must decide which risk deserves your strength.",
       "weight": 3,
       "unique": true,
       "tags": [
         "opening_safe",
-        "opening_resource"
+        "opening_resource",
+        "opening_hook"
       ],
       "choices": [
         {
@@ -499,7 +518,8 @@
       "unique": true,
       "tags": [
         "opening_safe",
-        "opening_equipment"
+        "opening_equipment",
+        "opening_hook"
       ],
       "choices": [
         {
@@ -513,9 +533,6 @@
             "text": "A real voice answers. Your directions guide a family toward the market. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "add_conditions": [
               "inspired"
-            ],
-            "add_flags": [
-              "helped_family"
             ]
           },
           "failure": {
@@ -545,11 +562,19 @@
               "fatigue": 8
             }
           }
+        },
+        {
+          "label": "Leave the broadcast running",
+          "outcome": {
+            "text": "You leave the handset where it hangs, its loop carrying on for whoever reaches this corner next. The child asks for Talia again as you move out of range. You have given no answer and learned no bearing."
+          }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "outskirts_sinkhole",
+      "scene_role": "micro",
       "title": "Street Without a Bottom",
       "body": "The outskirts smell of wet concrete, cold ash, and old electrical fires. Your footsteps travel farther than they should between the abandoned storefronts, making every doorway feel briefly occupied. A sinkhole has swallowed the intersection. A maintenance shelf is visible below.\n\nYou slow down and read the ground, the exits, and the silences between sounds. Something useful may be here, but the place is arranged to punish haste. You must decide which risk deserves your strength.",
       "weight": 3,
@@ -563,7 +588,10 @@
             "difficulty": "risky"
           },
           "success": {
-            "text": "Your boots land on sound pavement. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile."
+            "text": "Your boots land on sound pavement. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
+            "pressures": {
+              "fatigue": -4
+            }
           },
           "failure": {
             "text": "The edge crumbles and you slam into concrete. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -602,6 +630,24 @@
               "fatigue": 6
             }
           }
+        },
+        {
+          "label": "Put down the coughing pack",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "pox_dogs",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "You finish the last coughing dog on the concrete and strip its nest: a sealed poultice and salvageable metal. The hard kill leaves your blood singing.",
+            "items": {
+              "purifier_poultice": 1,
+              "scrap_parts": 1
+            },
+            "add_conditions": [
+              "adrenaline"
+            ]
+          }
         }
       ]
     },
@@ -620,10 +666,13 @@
             "adversary_id": "toll_gang"
           },
           "victory": {
-            "text": "The collectors scatter and leave ammunition behind. When the struggle ends, the sudden quiet feels larger than the fight. You search quickly, tend what hurts, and prepare to leave before new danger arrives.",
+            "text": "The collectors scatter and leave ammunition behind. When the struggle ends, the sudden quiet feels larger than the fight. You search quickly, strip a brass precinct star from the chair crease, and prepare to leave before new danger arrives.",
             "items": {
               "revolver_rounds": 3,
-              "scrap_parts": 1
+              "scrap_parts": 1,
+              "canned_meat": 1,
+              "officer_revolver": 1,
+              "brass_star": 1
             }
           }
         },
@@ -671,8 +720,24 @@
               "hunger": 5
             }
           }
+        },
+        {
+          "label": "Trade them the eastern road",
+          "requires": {
+            "stats": {
+              "presence": 4
+            }
+          },
+          "approach": "social",
+          "outcome": {
+            "text": "You tell the collectors what the eastern road actually holds: the crater route, the quiet water, the places where travelers died for nothing. The clerk writes it all down while the old man listens without blinking. When you finish, he waves you through and keeps your story instead of your rations. Walking on costs nothing, and the road feels briefly like something people share.",
+            "add_conditions": [
+              "inspired"
+            ]
+          }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "flats_mirage",
@@ -722,10 +787,19 @@
             }
           }
         }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "read_bone_warning"
+          ],
+          "text": "A blue line trembles where the salt meets the sky, widening when you look away, sliding against your own movement instead of with it. At its far end a low dark ridge stands above the crust, and the ridge is walking. The crust between you and it is split into long parallel fractures, and the salt lying inside them is smoother and darker than weather makes anything. It is the surface the wired bones were arranged around. Whatever laid that down laid this, and is still in sight. Your map shows no water this way and no shelter either."
+        }
       ]
     },
     {
       "id": "flats_tanker",
+      "scene_role": "micro",
       "title": "Sunken Tanker",
       "body": "White salt reaches toward a horizon rubbed thin by heat. Each breath dries your tongue, while the wind sketches moving lines across the flats and erases the tracks behind you. A fuel tanker rests axle-deep in salt, its rear compartment still sealed.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 3,
@@ -739,10 +813,11 @@
             "difficulty": "risky"
           },
           "success": {
-            "text": "Inside are road flares and a frame pack. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
+            "text": "Inside are road flares, a frame pack, and one flare casing repacked by hand into a smoke charge. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
             "items": {
               "frame_pack": 1,
-              "scrap_parts": 2
+              "scrap_parts": 2,
+              "smoke_bomb": 1
             }
           },
           "failure": {
@@ -777,11 +852,30 @@
               "fatigue": 8
             }
           }
+        },
+        {
+          "label": "Walk the fume line",
+          "requires": {
+            "stats": {
+              "grit": 4
+            }
+          },
+          "approach": "survival",
+          "outcome": {
+            "text": "You walk the fume line slowly, breathing shallow through your sleeve. Coming out steady teaches your body to hold pain aside.",
+            "pressures": {
+              "fatigue": 6
+            },
+            "add_conditions": [
+              "iron_will"
+            ]
+          }
         }
       ]
     },
     {
       "id": "flats_dustwall",
+      "scene_role": "micro",
       "title": "The Moving Wall",
       "body": "White salt reaches toward a horizon rubbed thin by heat. Each breath dries your tongue, while the wind sketches moving lines across the flats and erases the tracks behind you. A brown wall of dust erases the northern sky and races toward you.\n\nYou listen until separate noises become a pattern. There are signs of danger and hints of something worth carrying east, but no clean answer. The next few moments will belong entirely to your judgment.",
       "weight": 5,
@@ -837,6 +931,7 @@
     },
     {
       "id": "flats_bones",
+      "scene_role": "micro",
       "title": "Circle of Bones",
       "body": "The flats turn distance into a kind of threat. Heat bends the eastern road, salt rasps beneath your boots, and the sky offers neither shade nor a reliable sense of scale. Human bones have been arranged around a fresh boot print.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 3,
@@ -968,7 +1063,15 @@
             "text": "You describe the toll barricade east of here and how many collectors work it. The crew decides the warning is worth paying for and passes back a weighted die they had been keeping for luck.",
             "items": {
               "lucky_die": 1
-            }
+            },
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "crater_warning"
+                ],
+                "text": "You trade the barricade east of here, and only the part you watched: five collectors in one uniform faded five ways, a revolver kept under a striped umbrella by a man who does not stand up, a clerk who writes every traveler into a school exercise book, and open pan on both flanks that nobody guards because nobody expects a walker to go wide.\n\nThe mirror holds still a long moment. Then a gloved hand passes back a bone die, rounded, its six almost worn away, and the hatch shuts. Somewhere east of here a young woman with a ledger has become a thing three armored carts know about."
+              }
+            ]
           },
           "failure": {
             "text": "Their logs already describe that stretch of road better than you can. The hatch closes politely on your account, and the carts move on. You spend the remaining hour talking to sealed steel.",
@@ -977,10 +1080,12 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "flats_solar",
+      "scene_role": "micro",
       "title": "Solar Field",
       "body": "White salt reaches toward a horizon rubbed thin by heat. Each breath dries your tongue, while the wind sketches moving lines across the flats and erases the tracks behind you. Rows of cracked panels still turn toward the sun with insect precision.\n\nYou listen until separate noises become a pattern. There are signs of danger and hints of something worth carrying east, but no clean answer. The next few moments will belong entirely to your judgment.",
       "weight": 3,
@@ -1070,6 +1175,14 @@
             }
           }
         }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "crater_warning"
+          ],
+          "text": "This is the route the clerk with the exercise book warned you about. A new crater cuts the road, its glass floor clicking as buried heat works out of it, and the survey markers around the rim are clean enough to have been planted this week. Two collectors came out here yesterday and did not come back, and nothing on the ground says why: no vehicle, no bodies, no dropped equipment. One flag carries a strip of lead shielding tied on like mourning cloth. A longer arc stays outside the range where your teeth begin tasting of metal."
+        }
       ]
     },
     {
@@ -1092,9 +1205,7 @@
               "medkit": 1,
               "rifle_rounds": 3
             },
-            "add_flags": [
-              "decoded_numbers"
-            ]
+            "add_flags": []
           },
           "failure": {
             "text": "Hours of repetition leave you unfocused. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse. The memory follows you into the next mile.",
@@ -1181,10 +1292,12 @@
             ]
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "marsh_leeches",
+      "scene_role": "micro",
       "title": "Red Water",
       "body": "Black water presses close to the raised path, carrying reeds, oily rainbows, and bubbles that break without showing what made them. The air tastes green and faintly chemical. The water around your boots clouds red as marsh leeches rise from the mud.\n\nYou slow down and read the ground, the exits, and the silences between sounds. Something useful may be here, but the place is arranged to punish haste. You must decide which risk deserves your strength.",
       "weight": 5,
@@ -1235,6 +1348,21 @@
               "infection"
             ]
           }
+        },
+        {
+          "label": "Drain the breeding pool",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "marsh_leeches",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "You wade in swinging and crush the swarm against the mud until the water runs clear. Wrapped bandages and marsh herbs come out of a drowned kit bag.",
+            "items": {
+              "cloth_bandage": 1,
+              "purifier_poultice": 1
+            }
+          }
         }
       ]
     },
@@ -1259,7 +1387,15 @@
             },
             "pressures": {
               "fatigue": -5
-            }
+            },
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "marsh_map"
+                ],
+                "text": "You give them the name instead. Lysa Dorn, a yellow raincoat held against a road marker by its own hood, and the crossings you copied out of her pocket before you put her face back under.\n\nThe ferryman stops coiling the rope. They ask where the marker stands and they repeat the name once, fixing it, and then they pole across without saying anything else. On the far bank you get the bottle of bitter tonic, and behind you a fresh stub goes onto the coat with her name inked along its edge, stitched where the thread is still bright."
+              }
+            ]
           },
           "failure": {
             "text": "Your story bores them. You cross by wading. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -1277,7 +1413,10 @@
             "difficulty": "risky"
           },
           "success": {
-            "text": "You find a submerged service path. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind."
+            "text": "You find a submerged service path. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
+            "items": {
+              "scrap_parts": 1
+            }
           },
           "failure": {
             "text": "The current steals a bottle from your pack. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse.",
@@ -1289,7 +1428,8 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "marsh_raiders",
@@ -1309,7 +1449,8 @@
             "text": "The nearest skiff overturns and the rest retreat. When the struggle ends, the sudden quiet feels larger than the fight. You search quickly, tend what hurts, and prepare to leave before new danger arrives.",
             "items": {
               "shotgun_shells": 2,
-              "clean_water": 1
+              "clean_water": 1,
+              "bone_cleaver": 1
             }
           }
         },
@@ -1351,6 +1492,7 @@
     },
     {
       "id": "marsh_clinic",
+      "scene_role": "micro",
       "title": "Clinic on Stilts",
       "body": "Mist drifts between drowned roofs and power poles. Insects stitch a high whine through the reeds, then fall silent together whenever your boots disturb the soft ground. A faded medical cross marks a building balanced above the flood.\n\nYou slow down and read the ground, the exits, and the silences between sounds. Something useful may be here, but the place is arranged to punish haste. You must decide which risk deserves your strength.",
       "weight": 3,
@@ -1404,11 +1546,31 @@
               "health": -6
             }
           }
+        },
+        {
+          "label": "Read the dosage chart",
+          "requires": {
+            "stats": {
+              "wits": 4
+            }
+          },
+          "approach": "medical",
+          "outcome": {
+            "text": "You read the dosage chart and mix the right measure from dusty vials. Fever breaks and old infections fade as you rest.",
+            "pressures": {
+              "fatigue": -4
+            },
+            "remove_conditions": [
+              "infection",
+              "fever"
+            ]
+          }
         }
       ]
     },
     {
       "id": "marsh_bridge",
+      "scene_role": "micro",
       "title": "Bridge of Vines",
       "body": "The marsh receives each step with a wet, reluctant sound. Rot and rain hang in the air, and pale ripples cross water too dark to measure. A service bridge has become a living rope of roots and rusted cable.\n\nYou listen until separate noises become a pattern. There are signs of danger and hints of something worth carrying east, but no clean answer. The next few moments will belong entirely to your judgment.",
       "weight": 4,
@@ -1453,6 +1615,29 @@
             "pressures": {
               "fatigue": 8
             }
+          },
+          "costs": {
+            "items": {
+              "climbing_rope": 1
+            }
+          }
+        },
+        {
+          "label": "Kill the thing under the bridge",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "bile_spewer",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "You keep clear of its throat and open the floater's gut in knee-deep water, taking the gland vial and the sealed bottle. Your hands stop shaking and stay steady.",
+            "items": {
+              "mutant_serum": 1,
+              "clean_water": 1
+            },
+            "add_conditions": [
+              "iron_will"
+            ]
           }
         }
       ]
@@ -1502,8 +1687,28 @@
               "fatigue": 10
             }
           }
+        },
+        {
+          "label": "Clear the nesting pool",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "reed_widow",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "The raft breaks apart across the drainage cut and the pale eggs beneath it go dark one by one in the cold water. You cross the cut on foot, dig the civil-defense drum out of the silt at the eastern end, and carry away clean water and a purifier ampoule. Nothing waits on the crossing now. Anyone coming through here after you can walk it without reading the water first.",
+            "items": {
+              "purifier_ampoule": 1,
+              "clean_water": 2,
+              "mutant_hide_vest": 1
+            },
+            "add_flags": [
+              "widow_pool_cleared"
+            ]
+          }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "marsh_hut",
@@ -1546,7 +1751,8 @@
           "success": {
             "text": "The hut is abandoned. Useful filters hang over the hearth. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you.",
             "items": {
-              "filter_mask": 1
+              "filter_mask": 1,
+              "ration_bar": 1
             }
           },
           "failure": {
@@ -1560,7 +1766,8 @@
             ]
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "marsh_filter",
@@ -1581,9 +1788,7 @@
             "items": {
               "clean_water": 3
             },
-            "add_flags": [
-              "restarted_filter"
-            ]
+            "add_flags": []
           },
           "failure": {
             "text": "A ruptured line sprays contaminated water. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -1615,7 +1820,8 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "marsh_body",
@@ -1634,7 +1840,8 @@
           "success": {
             "text": "A waterproof pocket contains a map and radiation tablets. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you.",
             "items": {
-              "rad_tabs": 1
+              "rad_tabs": 1,
+              "purifier_poultice": 1
             },
             "add_flags": [
               "marsh_map"
@@ -1696,10 +1903,12 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "marsh_storm",
+      "scene_role": "micro",
       "title": "Black Rain",
       "body": "Black water presses close to the raised path, carrying reeds, oily rainbows, and bubbles that break without showing what made them. The air tastes green and faintly chemical. The reeds flatten as warm black rain begins to fall.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 4,
@@ -1753,6 +1962,7 @@
     },
     {
       "id": "industrial_drones",
+      "scene_role": "micro",
       "title": "Evacuation Order",
       "body": "Rust-colored dust hangs inside the industrial quarter. Chains sway without operators, vents breathe at uneven intervals, and every painted safety line leads deeper into neglect. Security drones descend from a loading bay, repeating an order to leave the restricted zone.\n\nYou slow down and read the ground, the exits, and the silences between sounds. Something useful may be here, but the place is arranged to punish haste. You must decide which risk deserves your strength.",
       "weight": 5,
@@ -1792,7 +2002,10 @@
             "difficulty": "hard"
           },
           "success": {
-            "text": "You cross the yard between scanning arcs. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile."
+            "text": "You cross the yard between scanning arcs. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
+            "add_conditions": [
+              "steady_hands"
+            ]
           },
           "failure": {
             "text": "A drone tags you with electrified wire. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -1803,6 +2016,51 @@
             },
             "add_conditions": [
               "sprain"
+            ]
+          }
+        },
+        {
+          "label": "Bring down the swarm",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "drone_swarm",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "You smash the swarm out of the air with a bar and strip their cells. Three power cells and useful scrap fall out of the wreckage.",
+            "items": {
+              "scrap_parts": 3
+            }
+          }
+        },
+        {
+          "label": "Ground the swarm with a wired probe",
+          "requires": {
+            "items": {
+              "shock_probe": 1
+            }
+          },
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "favorable"
+          },
+          "success": {
+            "text": "You wire the probe into the relay and turn the swarm's orders back on itself. Two cells drop quietly. Your thoughts feel arranged and quick.",
+            "items": {
+              "scrap_parts": 2
+            },
+            "add_conditions": [
+              "focused"
+            ]
+          },
+          "failure": {
+            "text": "Feedback climbs the probe into your hands and bursts behind your eyes. A machine shriek keeps ringing after the yard goes silent.",
+            "pressures": {
+              "fatigue": 6
+            },
+            "add_conditions": [
+              "mind_static"
             ]
           }
         }
@@ -1864,7 +2122,8 @@
             ]
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "industrial_scavs",
@@ -1892,6 +2151,9 @@
             "items": {
               "medkit": -1,
               "rad_tabs": -1
+            },
+            "pressures": {
+              "fatigue": 8
             }
           }
         },
@@ -1902,9 +2164,12 @@
             "adversary_id": "vault_scavs"
           },
           "victory": {
-            "text": "The fight earns hard respect and ammunition. The threat finally breaks. You remain standing, breathing hard in the aftermath, and claim only what can help you survive the road beyond.",
+            "text": "The fight earns hard respect and ammunition. You claim cartridges, a spike rifle, a furnace maul, and a loop of dredge chain from the smith's corner.",
             "items": {
-              "rifle_rounds": 3
+              "rifle_rounds": 3,
+              "rail_spike_rifle": 1,
+              "slag_maul": 1,
+              "dredge_chain": 1
             }
           }
         },
@@ -1930,6 +2195,7 @@
     },
     {
       "id": "industrial_conveyor",
+      "scene_role": "micro",
       "title": "The Moving Line",
       "body": "Factory stacks divide the sky into narrow strips. Fine soot gathers on your sleeves, machinery ticks as it cools, and old warning lights continue their duties for nobody. A factory conveyor lurches to life, carrying sealed crates toward a crusher.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 3,
@@ -1946,10 +2212,11 @@
             "difficulty": "risky"
           },
           "success": {
-            "text": "The crate holds protective padding and shells. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
+            "text": "The crate holds padding, shells, and a vent-grille guard. You drag it clear before the jaws close and strap the guard to your arm.",
             "items": {
               "riot_padding": 1,
-              "shotgun_shells": 2
+              "shotgun_shells": 2,
+              "fan_guard": 1
             }
           },
           "failure": {
@@ -2085,6 +2352,7 @@
     },
     {
       "id": "industrial_fire",
+      "scene_role": "micro",
       "title": "Chemical Fire",
       "body": "You enter a maze of pipes, loading bays, and corrugated walls. The air carries hot iron and stale lubricant, while unseen structures contract with sudden hammering knocks. Blue flame moves across a loading dock toward stacked pressure drums.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 4,
@@ -2100,7 +2368,9 @@
           "success": {
             "text": "Foam buries the fire before the drums rupture. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
             "items": {
-              "scrap_parts": 1
+              "scrap_parts": 1,
+              "purifier_ampoule": 1,
+              "kiln_plates": 1
             }
           },
           "failure": {
@@ -2158,10 +2428,7 @@
             "text": "A dehydrated engineer emerges and gives you a scanner. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you.",
             "items": {
               "field_scanner": 1
-            },
-            "add_flags": [
-              "rescued_engineer"
-            ]
+            }
           },
           "failure": {
             "text": "Contaminated pressure sprays from the seal. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -2182,7 +2449,10 @@
             "text": "The knocking is a loose valve, not a person. You safely drain clean water. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
               "clean_water": 2
-            }
+            },
+            "add_flags": [
+              "kilnback_rhythm_known"
+            ]
           },
           "failure": {
             "text": "The uncertain sound follows you through the factory. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse.",
@@ -2190,11 +2460,31 @@
               "shaken"
             ]
           }
+        },
+        {
+          "label": "Clear the cooling jacket",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "kilnback",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "You open the cooling jacket and fight the thing living in the plant's last heat until it stops moving with the pressure cycle. The trapped engineer climbs out of the dry chamber without help and walks west. You fill both bottles at the drain cock. The knocking is finished, and the heat cycle behind it is something you understand now.",
+            "items": {
+              "clean_water": 2,
+              "scrap_parts": 2
+            },
+            "add_flags": [
+              "kilnback_rhythm_known"
+            ]
+          }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "industrial_crane",
+      "scene_role": "micro",
       "title": "Crane Above the Yard",
       "body": "You enter a maze of pipes, loading bays, and corrugated walls. The air carries hot iron and stale lubricant, while unseen structures contract with sudden hammering knocks. A cargo pallet hangs above the route, suspended by one corroded cable.\n\nYou slow down and read the ground, the exits, and the silences between sounds. Something useful may be here, but the place is arranged to punish haste. You must decide which risk deserves your strength.",
       "weight": 3,
@@ -2208,7 +2498,10 @@
             "difficulty": "favorable"
           },
           "success": {
-            "text": "You cross before the cable parts. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind."
+            "text": "You cross before the cable parts. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
+            "add_conditions": [
+              "steady_hands"
+            ]
           },
           "failure": {
             "text": "The pallet clips you as it falls. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse.",
@@ -2325,7 +2618,8 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "industrial_alarm",
@@ -2396,7 +2690,9 @@
           "success": {
             "text": "They accept you as a passing pilgrim and share protective tablets. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
-              "rad_tabs": 2
+              "rad_tabs": 2,
+              "glow_moss": 1,
+              "choir_incense": 1
             }
           },
           "failure": {
@@ -2420,7 +2716,8 @@
             "text": "Their ceremonial weapons fail against real force. When the struggle ends, the sudden quiet feels larger than the fight. You search quickly, tend what hurts, and prepare to leave before new danger arrives.",
             "items": {
               "purifier_ampoule": 1,
-              "glow_moss": 2
+              "glow_moss": 2,
+              "kiln_sword": 1
             }
           }
         },
@@ -2446,6 +2743,7 @@
     },
     {
       "id": "glass_storm",
+      "scene_role": "micro",
       "title": "Needle Storm",
       "body": "The glass fields return a warped reflection of the sky. Heat lingers under the surface, distant shapes split into doubles, and exposed metal hums against your equipment. The wind lifts splinters of fused glass from the plain.\n\nYou listen until separate noises become a pattern. There are signs of danger and hints of something worth carrying east, but no clean answer. The next few moments will belong entirely to your judgment.",
       "weight": 5,
@@ -2469,7 +2767,8 @@
             "damage_type": "physical",
             "pressures": {
               "health": -18,
-              "fatigue": 12
+              "fatigue": 12,
+              "radiation": 6
             },
             "add_conditions": [
               "bleeding"
@@ -2484,7 +2783,10 @@
             "difficulty": "hard"
           },
           "success": {
-            "text": "You dive beneath armored wreckage. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind."
+            "text": "You dive beneath armored wreckage. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
+            "pressures": {
+              "fatigue": 4
+            }
           },
           "failure": {
             "text": "The storm catches you meters from cover. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse.",
@@ -2499,6 +2801,7 @@
     },
     {
       "id": "glass_bunker",
+      "scene_role": "micro",
       "title": "Bunker 41",
       "body": "The glass fields return a warped reflection of the sky. Heat lingers under the surface, distant shapes split into doubles, and exposed metal hums against your equipment. A blast door protrudes from the glass, its keypad still blinking.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 3,
@@ -2576,7 +2879,10 @@
             "items": {
               "scout_leathers": 1,
               "clean_water": 1
-            }
+            },
+            "add_flags": [
+              "cinder_traveler_rescued"
+            ]
           },
           "failure": {
             "text": "The tracks circle a radioactive pocket. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse. The memory follows you into the next mile.",
@@ -2592,10 +2898,12 @@
             "text": "Some questions are too expensive to answer. There is no dramatic answer, only the consequence taking its place among your supplies and scars. You adjust your pack and continue east."
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "glass_meteor",
+      "scene_role": "micro",
       "title": "Hot Metal",
       "body": "Fused earth shines beneath the cloud cover like a dark mirror. Every step finds a brittle edge, and the wind makes the shattered plain sing in thin, uneasy notes. A fist-sized fragment smolders in a new crater, too regular to be stone.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 3,
@@ -2620,7 +2928,10 @@
             "pressures": {
               "radiation": 18,
               "health": -8
-            }
+            },
+            "add_conditions": [
+              "burned"
+            ]
           }
         },
         {
@@ -2695,7 +3006,8 @@
             ]
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "glass_antenna",
@@ -2713,11 +3025,9 @@
           },
           "success": {
             "text": "The pattern points directly toward the Underrail entrance. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
-            "add_flags": [
-              "underrail_bearing"
-            ],
+            "add_flags": [],
             "pressures": {
-              "fatigue": -4
+              "fatigue": -8
             }
           },
           "failure": {
@@ -2768,7 +3078,8 @@
             "text": "You uncover armor and rifle ammunition. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
               "riot_padding": 1,
-              "rifle_rounds": 4
+              "rifle_rounds": 4,
+              "sniper_scope": 1
             }
           },
           "failure": {
@@ -2806,11 +3117,30 @@
               "bleeding"
             ]
           }
+        },
+        {
+          "label": "Challenge the Salt Colossus",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "salt_colossus",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "The colossus rises from behind the crawler with pilgrim offerings tangled in its armor. You stay inside its reach and bleed it through the red gaps until the plain stops shaking. Resin sticks and rifle cartridges from its tribute hoard are yours now, and nothing remains standing between you and the horizon. The taste of the hard kill sharpens every strike.",
+            "items": {
+              "choir_incense": 1,
+              "rifle_rounds": 4
+            },
+            "add_conditions": [
+              "bloodlust"
+            ]
+          }
         }
       ]
     },
     {
       "id": "glass_spring",
+      "scene_role": "micro",
       "title": "Warm Spring",
       "body": "The glass fields return a warped reflection of the sky. Heat lingers under the surface, distant shapes split into doubles, and exposed metal hums against your equipment. Clear water bubbles through a crack in the fused ground, warm enough to steam.\n\nYou slow down and read the ground, the exits, and the silences between sounds. Something useful may be here, but the place is arranged to punish haste. You must decide which risk deserves your strength.",
       "weight": 3,
@@ -2909,6 +3239,24 @@
               "bleeding"
             ]
           }
+        },
+        {
+          "label": "Face the smoking brute",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "cinder_mauler",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "The mauler comes through the fused shells with its plates glowing at the seams. You work the gaps and bring it down across its own slag. Its furnace plates fit your harness after some cutting, and scrap from its frame fills your pack for the road east. The kill sings in your blood and steadies your hands for what comes next.",
+            "items": {
+              "kiln_plates": 1,
+              "scrap_parts": 1
+            },
+            "add_conditions": [
+              "bloodlust"
+            ]
+          }
         }
       ]
     },
@@ -2930,7 +3278,8 @@
             "text": "You survive the ambush and seize their ammunition. When the struggle ends, the sudden quiet feels larger than the fight. You search quickly, tend what hurts, and prepare to leave before new danger arrives.",
             "items": {
               "pistol_rounds": 4,
-              "smoke_bomb": 1
+              "smoke_bomb": 1,
+              "nail_smg": 1
             }
           }
         },
@@ -2965,8 +3314,9 @@
           },
           "success": {
             "text": "They accept two rounds and reveal a safe tunnel. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you.",
-            "items": {
-              "pistol_rounds": -2
+            "items": {},
+            "pressures": {
+              "fatigue": -5
             }
           },
           "failure": {
@@ -2975,8 +3325,11 @@
             "pressures": {
               "health": -18
             },
+            "items": {}
+          },
+          "costs": {
             "items": {
-              "pistol_rounds": -2
+              "pistol_rounds": 2
             }
           }
         }
@@ -3038,10 +3391,12 @@
             ]
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "rail_flood",
+      "scene_role": "micro",
       "title": "Rising Tunnel Water",
       "body": "Underground, distance is measured by failing lamps and the echo of your own breathing. Water shines between the rails, trembling before any sound reaches you. A surge of black water advances down the tunnel, carrying debris and dead lights.\n\nYou listen until separate noises become a pattern. There are signs of danger and hints of something worth carrying east, but no clean answer. The next few moments will belong entirely to your judgment.",
       "weight": 4,
@@ -3055,7 +3410,10 @@
             "difficulty": "risky"
           },
           "success": {
-            "text": "You pull yourself above the surge. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind."
+            "text": "You pull yourself above the surge. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
+            "pressures": {
+              "fatigue": 6
+            }
           },
           "failure": {
             "text": "The water slams you into the wall. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse.",
@@ -3145,11 +3503,47 @@
               "scrap_parts": -2
             }
           }
+        },
+        {
+          "label": "Let the traveler speak for you",
+          "approach": "social",
+          "requires": {
+            "flags": [
+              "cinder_traveler_rescued"
+            ],
+            "reason": "Nobody at this table can speak for you",
+            "hidden_when_locked": true
+          },
+          "outcome": {
+            "text": "You do not answer. The traveler at the end of the table does, in the flat voice of somebody who has said it before: a ravine on fused ground, a shelf of mirrored stone, a shadow walking with nothing over it, and a stranger who came down into the heat and took them out across open glass with the thing still moving behind them. Nobody interrupts.\n\nThe barrier comes apart at the hinge end. A man puts a field medkit into your hands, seal unbroken, and you walk off the stairs with the account somebody else was willing to give of you sitting in your chest like a second wind.",
+            "items": {
+              "medkit": 1
+            },
+            "add_conditions": [
+              "inspired"
+            ]
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "cinder_traveler_rescued"
+          ],
+          "text": "Shields cut from station signage close the platform stairs, EXIT and NORTHBOUND wired to scaffold pipe, and every working lamp behind them is turned outward, so that you are the only lit thing on the stairs and the council is a row of voices.\n\nOne of the voices you know. At the end of the table, in a coat somebody here has lent them, sits the traveler you walked out of the ravine in the Glass Wastes, still gray to the wrists, looking at you across the lamps as if to make sure. They came east ahead of you. They are drinking from a cup with both hands.\n\nThe council asks what it asks everyone: why the Citadel should count for more than the food and the roof you have already used up getting here. Under the platform the pump coughs and catches. Three ways off these stairs: your own reasons, your hands in the pump, or the reasons of the person at the end of the table, who has seen what you did on open glass."
+        },
+        {
+          "requires_any_flags": [
+            "met_train_family"
+          ],
+          "text": "Shields cut from station signage close the platform stairs, EXIT and NORTHBOUND lashed to scaffold pipe with wire, and behind them every working lamp is aimed at you, so the council asking the questions is a line of shapes with voices.\n\nThey want your map before they want your reasons, and when you hand it up somebody turns it toward the lamps and stops at the junctions scored into it, the ones marked in the carriage with the warm window, pressed hard enough to dent the paper. A voice says a name you were never told. The marks are their people's hand. The family under the train is family up here, and the question, when it comes, comes slower: why the Citadel should count for more than the food and the roof you have already used up.\n\nUnder the platform the pump coughs, catches, and coughs again, and a woman at the end of the line closes her eyes each time. Talk, or go down and put your hands in the thing everyone is listening to."
         }
       ]
     },
     {
       "id": "rail_switch",
+      "scene_role": "micro",
       "title": "The Wrong Track",
       "body": "Tile fragments crunch beside tracks vanishing east into darkness. Cables sag overhead, stale drafts pass like cautious animals, and somewhere ahead a signal relay clicks. A mechanical route board points east while your signal compass points into a sealed west tunnel.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 3,
@@ -3188,7 +3582,10 @@
             "difficulty": "hard"
           },
           "success": {
-            "text": "Faded transfer marks reveal the true route. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile."
+            "text": "Faded transfer marks reveal the true route. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
+            "pressures": {
+              "fatigue": -8
+            }
           },
           "failure": {
             "text": "The obsolete map sends you through a long maintenance loop. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -3215,10 +3612,13 @@
             "adversary_id": "ash_stalkers"
           },
           "victory": {
-            "text": "The ash stalker falls, leaving its scavenged nest. The threat finally breaks. You remain standing, breathing hard in the aftermath, and claim only what can help you survive the road beyond.",
+            "text": "The ash stalker falls, leaving its scavenged nest. You claim salvage, tablets, a pale cloak, a gland vial, and stalk-hide strips cut for wrapping feet.",
             "items": {
               "scrap_parts": 2,
-              "rad_tabs": 1
+              "rad_tabs": 1,
+              "stalker_cloak": 1,
+              "mutant_serum": 1,
+              "stalkhide_wraps": 1
             }
           }
         },
@@ -3307,6 +3707,7 @@
     },
     {
       "id": "rail_collapse",
+      "scene_role": "micro",
       "title": "Ceiling Dust",
       "body": "Underground, distance is measured by failing lamps and the echo of your own breathing. Water shines between the rails, trembling before any sound reaches you. Pebbles begin falling from a ceiling already bowed by surface impacts.\n\nYou check your gear without taking your eyes from the scene. The obvious path promises speed; the careful one demands time and supplies. Neither feels harmless, and standing still carries its own price.",
       "weight": 4,
@@ -3342,7 +3743,10 @@
             "difficulty": "risky"
           },
           "success": {
-            "text": "A cable duct leads around the collapse. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind."
+            "text": "A cable duct leads around the collapse. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
+            "pressures": {
+              "fatigue": 6
+            }
           },
           "failure": {
             "text": "The bypass dead-ends after a punishing crawl. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse.",
@@ -3350,6 +3754,25 @@
               "fatigue": 16,
               "hunger": 5
             }
+          }
+        },
+        {
+          "label": "Lift the fallen beam",
+          "requires": {
+            "stats": {
+              "strength": 4
+            }
+          },
+          "approach": "force",
+          "outcome": {
+            "text": "You set your shoulders under the fallen beam and heave it straight. The work shakes old hurts loose and leaves you breathing easier.",
+            "pressures": {
+              "fatigue": -4
+            },
+            "remove_conditions": [
+              "sprain",
+              "concussed"
+            ]
           }
         }
       ]
@@ -3403,8 +3826,19 @@
               "health": -10
             }
           }
+        },
+        {
+          "label": "Clear the cable run",
+          "approach": "combat",
+          "combat": {"adversary_id": "cable_eater", "can_flee": true},
+          "victory": {
+            "text": "With the live body gone, the lamps settle into a steady maintenance sequence. You take the copper and connectors it had stripped from the tray, then follow the clear routing marks east.",
+            "items": {"scrap_parts": 3, "wire_rifle": 1},
+            "add_flags": ["citadel_signal"]
+          }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "rail_door",
@@ -3459,7 +3893,8 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "global_trader",
@@ -3479,7 +3914,6 @@
           "success": {
             "text": "Your eye for value earns food and medicine. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
             "items": {
-              "scrap_parts": -1,
               "canned_meat": 1,
               "cloth_bandage": 1
             }
@@ -3487,8 +3921,17 @@
           "failure": {
             "text": "You receive a single ration for your parts. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
             "items": {
-              "scrap_parts": -1,
               "ration_bar": 1
+            }
+          },
+          "requires": {
+            "items": {
+              "scrap_parts": 1
+            }
+          },
+          "costs": {
+            "items": {
+              "scrap_parts": 1
             }
           }
         },
@@ -3512,7 +3955,8 @@
             }
           }
         }
-      ]
+      ],
+      "scene_role": "substantial"
     },
     {
       "id": "global_acid_rain",
@@ -3608,6 +4052,24 @@
           "outcome": {
             "text": "The pack remains in the road behind you. There is no dramatic answer, only the consequence taking its place among your supplies and scars. You adjust your pack and continue east."
           }
+        },
+        {
+          "label": "Work the wire with quick hands",
+          "requires": {
+            "stats": {
+              "agility": 4
+            }
+          },
+          "approach": "evade",
+          "outcome": {
+            "text": "You slide two fingers under the wire and lift it clear without tripping the spring. The pack gives up its pistol rounds easily after that. Your hands keep their speed for the next two miles.",
+            "items": {
+              "pistol_rounds": 2
+            },
+            "add_conditions": [
+              "steady_hands"
+            ]
+          }
         }
       ]
     },
@@ -3669,6 +4131,32 @@
             "pressures": {
               "fatigue": -4
             }
+          }
+        },
+        {
+          "label": "Press the wound with your own coat",
+          "approach": "medical",
+          "check": {
+            "stat": "grit",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You cut the lining out of your coat, fold it into a pad, and hold the wound closed with your own weight until the bleeding slows. The stranger is still breathing when help arrives along the road of markers.",
+            "pressures": {
+              "fatigue": 4
+            },
+            "add_conditions": [
+              "inspired"
+            ]
+          },
+          "failure": {
+            "text": "You press with folded cloth until your hands lose feeling, but the wound takes more than pressure can give back. The stranger stops answering. You are still kneeling beside the marker stone when the road goes quiet again.",
+            "pressures": {
+              "fatigue": 4
+            },
+            "add_conditions": [
+              "shaken"
+            ]
           }
         }
       ]
@@ -3803,6 +4291,7 @@
     },
     {
       "id": "global_drop",
+      "scene_role": "micro",
       "title": "Fallen Supply Pod",
       "body": "For several minutes there is only your breathing and the measured scrape of gear. Then the landscape breaks its pattern, offering a sign that could mean shelter, danger, or both. A small parachute is tangled around a recent supply pod.\n\nYou listen until separate noises become a pattern. There are signs of danger and hints of something worth carrying east, but no clean answer. The next few moments will belong entirely to your judgment.",
       "global": true,
@@ -3821,7 +4310,8 @@
             "items": {
               "medkit": 1,
               "rad_tabs": 1,
-              "ration_bar": 1
+              "ration_bar": 1,
+              "gunslinger_holster": 1
             }
           },
           "failure": {
@@ -3952,7 +4442,11 @@
             "adversary_id": "mutant_crows"
           },
           "victory": {
-            "text": "The flock scatters from your final strike. The threat finally breaks. You remain standing, breathing hard in the aftermath, and claim only what can help you survive the road beyond."
+            "text": "The flock scatters from your final strike. The threat finally breaks. You remain standing, breathing hard in the aftermath, and claim only what can help you survive the road beyond.",
+            "items": {
+              "cloth_bandage": 1,
+              "scrap_parts": 1
+            }
           }
         }
       ]
@@ -4118,7 +4612,15 @@
           "modifier": 1,
           "success": {
             "text": "The first lock accepts your reconstruction. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
-            "next_event": "bunker41_warden_remembers"
+            "next_event": "final_gate_2",
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_contact"
+                ],
+                "next_event": "bunker41_warden_remembers"
+              }
+            ]
           },
           "failure": {
             "text": "The wrong response triggers warning fire. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -4126,14 +4628,37 @@
             "pressures": {
               "health": -20
             },
-            "next_event": "bunker41_warden_remembers"
+            "next_event": "final_gate_2",
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_contact"
+                ],
+                "next_event": "bunker41_warden_remembers"
+              }
+            ]
           },
           "critical_success": {
             "text": "The code opens the personnel channel and identifies you as expected. Instinct, timing, and preparation meet in one clean moment. Even the wasteland seems briefly surprised as you secure the best possible result.",
             "add_conditions": [
               "focused"
             ],
-            "next_event": "bunker41_warden_remembers"
+            "next_event": "final_gate_2",
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_contact"
+                ],
+                "next_event": "bunker41_warden_remembers"
+              }
+            ]
+          },
+          "requires": {
+            "any_flags": [
+              "gate_code",
+              "access_core"
+            ],
+            "reason": "You recovered no gate code"
           }
         },
         {
@@ -4145,7 +4670,15 @@
           },
           "success": {
             "text": "The guard delays execution and moves you to secondary screening. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
-            "next_event": "bunker41_warden_remembers"
+            "next_event": "final_gate_2",
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_contact"
+                ],
+                "next_event": "bunker41_warden_remembers"
+              }
+            ]
           },
           "failure": {
             "text": "The argument buys only seconds before a stun round lands. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse.",
@@ -4156,8 +4689,32 @@
             "add_conditions": [
               "shaken"
             ],
-            "next_event": "bunker41_warden_remembers"
+            "next_event": "final_gate_2",
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_contact"
+                ],
+                "next_event": "bunker41_warden_remembers"
+              }
+            ]
           }
+        }
+      ],
+      "scene_role": "finale",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "b41_voice_heard"
+          ],
+          "text": "The East Citadel stands up out of the poisoned haze with every edge straight, as if the Burning had agreed to stop at its wall. Floodlights find you and hold you against the outer blast door. Machinery you cannot see runs under the concrete without pause, and above the door rifle apertures slide open one after another until six are looking down.\n\nA loudspeaker asks for the current challenge response, and you know whose voice it is before the request is over. It is the woman from the receiver on the salt flats, the one who came through crusted static beside the wrecked weather mast and said that mercy is a door that closes from both sides. On the flats she said Bunker Forty-One, over and over. This is not Bunker Forty-One, and she is here, and she is not warning anyone now. She is asking, in exactly the same tone, while a panel beside the door counts down in red digits under a reader collar and six empty slots.\n\nWhatever her recording was trying to keep strangers away from, its voice is on this side of the wall too, and it is still running. The voice that warned you is the one deciding whether you are traffic or a target.\n\nYour coat carries the whole road: salt, dried marsh water, soot, glass dust, brake dust. The digits pass the halfway mark, and she goes on asking, and somewhere behind her there may be a person listening who is not a recording."
+        },
+        {
+          "requires_any_flags": [
+            "gate_code",
+            "access_core"
+          ],
+          "text": "The East Citadel rises out of the haze too clean to be the end of this road, every line of it vertical, nothing leaning. Floodlights come up in one flat blow and hold you against the outer blast door. Under your boots the concrete hums with machinery that was never shut down, and above the door rifle apertures open in turn, six of them, each with a dark space behind it.\n\nA loudspeaker requests the current challenge response in a recorded woman's voice, level as a timetable, and the panel beside the door lights a reader collar and six slots over a red countdown.\n\nYou have seen this question before, smaller, on a door marked EAST CITADEL a long way beneath you, and you did not walk away from that door with nothing. What it gave you is the shape of the answer this panel wants, if the eastern relays have not shuffled it since. The apertures make plain what a wrong answer costs.\n\nThere is a second way, if the first fails or you distrust it. Whoever sits behind that speaker is a person, or works for one, and a person can be given reasons: the blocks going empty in the west, the glare on the flats, the black water of the marches, the hot yards, the singing glass, the claimed tunnels. The digits are already moving. Answer the machine with what the door gave you, or make a human being stop it."
         }
       ]
     },
@@ -4201,7 +4758,10 @@
           },
           "victory": {
             "text": "The damaged assembly folds and the Warden crashes aside. When the struggle ends, the sudden quiet feels larger than the fight. You search quickly, tend what hurts, and prepare to leave before new danger arrives.",
-            "next_event": "final_gate_3"
+            "next_event": "final_gate_3",
+            "add_flags": [
+              "warden_broken"
+            ]
           }
         },
         {
@@ -4225,12 +4785,21 @@
             "next_event": "final_gate_3"
           }
         }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "b41_voice_heard"
+          ],
+          "text": "Cold lamps in the ceiling of the screening court strip the floor of shadow. The inner gate parts, and an armored Warden rolls out of it on maintained tracks, its damaged wheel assembly cutting a bright groove across the concrete toward you.\n\nScanners cross your wounds and your pack and every layer of road dust in your coat, and then it speaks. Contamination beyond admission limits, it says, in the voice from the salt flats: the woman whose recording came through the crusted receiver beside the wrecked weather mast, saying that mercy is a door that closes from both sides. Here her sentence has changed and her cadence has not. The rotary cannon on the turret starts to turn.\n\nOne sensor on the housing flickers every time the turret swings past, and the flicker has a rhythm. Behind its patrol arc a manual gate control stands open on a pedestal. Blind the machine, break it, or cross the slice of the court it cannot see; her voice will not stop for any of the three."
+        }
       ]
     },
     {
       "id": "final_gate_3",
       "title": "One Person Through",
-      "body": "You stand within reach of the Citadel, close enough to hear ventilation fans beyond the armored wall. The promise of clean air makes every breath outside taste sharper. The inner gate opens a hand's width. The mechanism is failing, the Warden is recovering, and the clean lights of the Citadel wait beyond.\n\nYou listen until separate noises become a pattern. There are signs of danger and hints of something worth carrying east, but no clean answer. The next few moments will belong entirely to your judgment.",
+    "body": "You stand within reach of the Citadel, close enough to hear ventilation fans beyond the armored wall. The promise of clean air makes every breath outside taste sharper. The inner gate opens a hand’s width. A red lamp above the seam marks the failing drive; the plate beside it says the leaves close under their own weight when power dies. The Warden behind you is recovering, its turret ticking toward the gap, and the controller below the plate throws blue sparks across a burned glove fused to its frame.\n\nThe outer court is still open behind you. You can leave the seam and live with the wall remaining a wall. If you touch it, force it, or ask the guard to decide, you do so with the scored metal, the live frame, and the waking weapon plainly in view.",
       "weight": 1,
       "unique": true,
       "choices": [
@@ -4243,12 +4812,28 @@
           },
           "success": {
             "text": "Metal screams, then yields. You cross into clean air before it seals. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you.",
-            "victory": true
+            "victory": true,
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "warden_broken"
+                ],
+                "text": "You put both hands into the seam and push, and the only thing behind you is a machine on its side telling the floor you are contaminated. The drive inside the wall, already failing, fails further under your weight; gears surrender teeth with a sound like a jaw breaking, and the gap opens to a shoulder, then a body. The rifle above the glass stays quiet. Whoever is on it has just watched you walk over the Citadel's Warden, and no order they were given covers what you are doing now.\n\nThe gate seals on your final step, and the lock engages against your spine like a hand. Clean air fills you before you have decided to breathe it. Beyond the glass the guard has not moved. The Citadel's machine is scrap on its own court, and you are inside, with nothing left out there to say whether you deserved it and nobody in here who has decided yet."
+              }
+            ]
           },
           "failure": {
             "text": "The mechanism closes while the Warden fires through the gap. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
             "damage_type": "physical",
-            "lethal": true
+            "lethal": true,
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "warden_broken"
+                ],
+                "text": "You put both hands into the seam and push, and the drive answers with everything the plate promised. The leaves reverse. The gap comes back with your forearms in it, then your shoulder, and the bright scored edge of the seam takes you the way it took whatever it took before.\n\nThere is no cannon. The Warden is on its side telling the floor about contamination and cannot help the gate at all, and the gate needs no help. The leaves close under their own weight, unhurried, and lock, and the guard behind the glass watches it happen to you with the rifle above them still silent. Clean air reaches you once. Then the lock engages, and the last sound is the plate's promise being kept."
+              }
+            ]
           },
           "critical_success": {
             "text": "You tear the failing mechanism free and leave the passage open behind you. The road ends in victory. Instinct, timing, and preparation meet in one clean moment. Even the wasteland seems briefly surprised as you secure the best possible result.",
@@ -4269,7 +4854,21 @@
           },
           "success": {
             "text": "The ancient controller accepts one final command. The Citadel admits you. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
-            "victory": true
+            "victory": true,
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "access_core"
+                ],
+                "text": "The collar at the top of the controller is empty, and it is the same size as the core from the cylinder you backed out of the door marked EAST CITADEL under the rail line. You seat it. It goes in warm at the base, the way it came out, and the red border around the diagram goes out because the controller has just recognized its own hardware.\n\nYou run the emergency sequence with the core in place and the panel takes every command. The drive spends its last power on the gate and the leaves part the width of a body, no more, and you go through sideways with the core still in the collar behind you, because it belongs to the Citadel and the Citadel can have it back. The gate grinds shut and locks. Ahead, a corridor under white light waits, clean and empty and unexplained. The seal you took a piece of has let you in on the strength of the piece."
+              },
+              {
+                "requires_any_flags": [
+                  "gate_code"
+                ],
+                "text": "The controller's diagram is a six-slot cycle, and you know the six. You learned them off a display under the rail line that kept reshuffling until you found the grouping under the shuffle, and you said them at every junction east of that door until they were yours. You key them now in that grouping, against the same relay interval, and the red border goes dark.\n\nThe emergency sequence runs. The controller spends its remaining power on the drive and the leaves part the width of a body, and you go through sideways as the gap starts closing, and it locks behind you with a sound that ends the argument. Ahead is a corridor under white light, clean and unexplained and empty. The code a door in the dark tried to keep from you has just opened the last door in the light, and nobody inside knows yet how you had it."
+              }
+            ]
           },
           "failure": {
             "text": "The controller rejects the command and energizes the frame. The road collects its price without ceremony. You recover what composure you can, mark the lesson, and continue before the setback becomes worse.",
@@ -4282,10 +4881,18 @@
           "critical_failure": {
             "text": "A final short crosses the control frame and stops your heart. One bad moment becomes several before you can contain it. You escape the worst of the chaos, shaken and painfully aware of what the error cost.",
             "lethal": true
+          },
+          "requires": {
+            "any_flags": [
+              "gate_code",
+              "access_core",
+              "citadel_signal"
+            ],
+            "reason": "You never read a Citadel controller"
           }
         },
-        {
-          "label": "Order the guard to open it now",
+                    {
+                        "label": "Order the guard to open it now",
           "approach": "social",
           "check": {
             "stat": "presence",
@@ -4293,7 +4900,15 @@
           },
           "success": {
             "text": "Your voice carries every death and mile behind it. Someone inside chooses to believe you. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you.",
-            "victory": true
+            "victory": true,
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "b41_voice_heard"
+                ],
+                "text": "You look up at the glass and speak to the guard. Behind you the broken Warden is still declaring contamination in the woman's voice from the salt flats, patient, on repeat, and you tell the guard that a recording has been deciding for them and it is on the floor now, so the next decision is theirs, as a person. Every mile since the wrecked mast is in your voice, and you let it be. Open it now, you tell them.\n\nThe rifle above the glass holds. Then a hand reaches across the console to the override and throws it, and the drive picks up, and the gate opens the width of a body. You go through. It locks behind you, and on the far side a voice says something to you, a live one, unrecorded, unsure of itself. After the flats and the doors, that is the first voice at this gate that could have said no and did not."
+              }
+            ]
           },
           "failure": {
             "text": "No one answers before the Warden reacquires its target. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
@@ -4308,7 +4923,29 @@
             "text": "Your words disappear beneath the Warden's final shot. The situation turns at exactly the wrong instant. Shock gives way to pain and bitter understanding, but stopping here would let the disaster finish its work.",
             "damage_type": "physical",
             "lethal": true
-          }
+          },
+          "requires": {
+            "any_flags": [
+              "warden_broken"
+            ],
+                            "reason": "The Warden is still tracking you"
+                        }
+                    },
+                    {
+                        "label": "Step back from the seam",
+                        "outcome": {
+                            "text": "You step clear before the drive gives out. The gate seals, and the guard behind the glass lets it seal; no rifle follows you into the outer court. You keep breathing in poisoned air and turn from the wall with your life, the road behind you still yours to answer.\n\nThe warning lamps run through their last count while the mechanism closes as slowly as a breathing chest. You do not learn whether the guard wanted it shut; their silhouette stays at the glass with one hand on no switch. The Warden's recovery noise dwindles under your footsteps. Beyond the floodlights, you inventory water, pain, and distance, then choose the road away. The Citadel remains shelter another person may reach. Your own life remains a fact, not a failure or an apology.",
+                            "victory": true
+                        }
+                    }
+                ],
+      "scene_role": "chapter",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "warden_broken"
+          ],
+          "text": "The inner gate opens a hand's width and stops there. Clean air comes through the gap with rain and filtered metal in it, and the drive inside the wall grinds down in pitch, dropping toward the note a mechanism makes before it stops for good.\n\nBehind you the Warden lies across its own bright groove with the turret face down on the concrete, still declaring contamination to the floor. Nothing on the court is aiming at you. That is what the guard behind the armored glass above the seam is looking at, back and forth, the wreck and then you, because the decision the machine used to make has just become theirs.\n\nThey are not the only one. Above the glass, rifle apertures matching the ones at the outer door slide open, and a barrel settles into the nearest.\n\nThe leaves of the gate are as thick as a person is wide, and the plate beside the seam says they close under their own weight and lock the moment the drive fails; the seam's edges are scored bright by something that did not get out of the way. The emergency controller below the plate shows a red-bordered diagram, a voltage rating with too many digits, and a burned glove fused to the frame.\n\nNothing has to be touched yet. The gap breathes on you. When the drive quits, the gate closes, and when the guard decides, the rifles do the rest, and the last mistake ends within sight of shelter."
         }
       ]
     }

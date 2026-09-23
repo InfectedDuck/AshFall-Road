@@ -1,166 +1,2111 @@
 {
   "source_flag_patches": [
-    {"event_id":"outskirts_child_radio","choice_index":0,"outcome":"success","add_flags":["lr_channel_helped"]},
-    {"event_id":"outskirts_child_radio","choice_index":0,"outcome":"failure","add_flags":["lr_channel_misled"]},
-    {"event_id":"outskirts_child_radio","choice_index":1,"outcome":"success","add_flags":["lr_channel_traced"]},
-    {"event_id":"outskirts_child_radio","choice_index":1,"outcome":"failure","add_flags":["lr_channel_lost"]},
-    {"event_id":"outskirts_siren","choice_index":0,"outcome":"success","add_flags":["lr_siren_silenced"]},
-    {"event_id":"outskirts_siren","choice_index":0,"outcome":"failure","add_flags":["lr_siren_burned"]},
-    {"event_id":"outskirts_siren","choice_index":1,"outcome":"success","add_flags":["lr_siren_endured"]},
-    {"event_id":"outskirts_siren","choice_index":1,"outcome":"failure","add_flags":["lr_siren_followed"]},
-    {"event_id":"outskirts_bandits","choice_index":0,"outcome":"victory","add_flags":["lr_bandit_leader_killed"]},
-    {"event_id":"outskirts_bandits","choice_index":0,"outcome":"critical_victory","add_flags":["lr_bandit_leader_disarmed"]},
-    {"event_id":"outskirts_bandits","choice_index":1,"outcome":"success","add_flags":["lr_bandits_escaped"]},
-    {"event_id":"outskirts_bandits","choice_index":1,"outcome":"failure","add_flags":["lr_bandits_wounded_escape"]},
-    {"event_id":"outskirts_bandits","choice_index":2,"outcome":"success","add_flags":["lr_bandits_bluffed"]},
-    {"event_id":"outskirts_bandits","choice_index":2,"outcome":"failure","add_flags":["lr_bandits_paid"]},
-    {"event_id":"marsh_filter","choice_index":0,"outcome":"success","add_flags":["lr_filter_repaired"]},
-    {"event_id":"marsh_filter","choice_index":0,"outcome":"failure","add_flags":["lr_filter_poisoned"]},
-    {"event_id":"marsh_filter","choice_index":1,"outcome":"success","add_flags":["lr_filter_stripped"]},
-    {"event_id":"marsh_filter","choice_index":1,"outcome":"failure","add_flags":["lr_filter_broken"]},
-    {"event_id":"flats_nightfire","choice_index":0,"outcome":"success","add_flags":["lr_nightfire_shared"]},
-    {"event_id":"flats_nightfire","choice_index":0,"outcome":"failure","add_flags":["lr_nightfire_robbed"]},
-    {"event_id":"flats_nightfire","choice_index":1,"outcome":"success","add_flags":["lr_nightfire_passed"]},
-    {"event_id":"flats_nightfire","choice_index":1,"outcome":"failure","add_flags":["lr_nightfire_spooked"]}
+    {
+      "event_id": "outskirts_child_radio",
+      "choice_index": 0,
+      "outcome": "success",
+      "add_flags": [
+        "lr_channel_helped"
+      ]
+    },
+    {
+      "event_id": "outskirts_child_radio",
+      "choice_index": 0,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_channel_misled"
+      ]
+    },
+    {
+      "event_id": "outskirts_child_radio",
+      "choice_index": 1,
+      "outcome": "success",
+      "add_flags": [
+        "lr_channel_traced"
+      ]
+    },
+    {
+      "event_id": "outskirts_child_radio",
+      "choice_index": 1,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_channel_lost"
+      ]
+    },
+    {
+      "event_id": "outskirts_siren",
+      "choice_index": 0,
+      "outcome": "success",
+      "add_flags": [
+        "lr_siren_silenced"
+      ]
+    },
+    {
+      "event_id": "outskirts_siren",
+      "choice_index": 0,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_siren_burned"
+      ]
+    },
+    {
+      "event_id": "outskirts_siren",
+      "choice_index": 1,
+      "outcome": "success",
+      "add_flags": [
+        "lr_siren_endured"
+      ]
+    },
+    {
+      "event_id": "outskirts_siren",
+      "choice_index": 1,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_siren_followed"
+      ]
+    },
+    {
+      "event_id": "outskirts_bandits",
+      "choice_index": 0,
+      "outcome": "victory",
+      "add_flags": [
+        "lr_bandit_leader_killed"
+      ]
+    },
+    {
+      "event_id": "outskirts_bandits",
+      "choice_index": 0,
+      "outcome": "critical_victory",
+      "add_flags": [
+        "lr_bandit_leader_disarmed"
+      ]
+    },
+    {
+      "event_id": "outskirts_bandits",
+      "choice_index": 1,
+      "outcome": "success",
+      "add_flags": [
+        "lr_bandits_escaped"
+      ]
+    },
+    {
+      "event_id": "outskirts_bandits",
+      "choice_index": 1,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_bandits_wounded_escape"
+      ]
+    },
+    {
+      "event_id": "outskirts_bandits",
+      "choice_index": 2,
+      "outcome": "success",
+      "add_flags": [
+        "lr_bandits_bluffed"
+      ]
+    },
+    {
+      "event_id": "outskirts_bandits",
+      "choice_index": 2,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_bandits_paid"
+      ]
+    },
+    {
+      "event_id": "marsh_filter",
+      "choice_index": 0,
+      "outcome": "success",
+      "add_flags": [
+        "lr_filter_repaired"
+      ]
+    },
+    {
+      "event_id": "marsh_filter",
+      "choice_index": 0,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_filter_poisoned"
+      ]
+    },
+    {
+      "event_id": "marsh_filter",
+      "choice_index": 1,
+      "outcome": "success",
+      "add_flags": [
+        "lr_filter_stripped"
+      ]
+    },
+    {
+      "event_id": "marsh_filter",
+      "choice_index": 1,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_filter_broken"
+      ]
+    },
+    {
+      "event_id": "flats_nightfire",
+      "choice_index": 0,
+      "outcome": "success",
+      "add_flags": [
+        "lr_nightfire_shared"
+      ]
+    },
+    {
+      "event_id": "flats_nightfire",
+      "choice_index": 0,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_nightfire_robbed"
+      ]
+    },
+    {
+      "event_id": "flats_nightfire",
+      "choice_index": 1,
+      "outcome": "success",
+      "add_flags": [
+        "lr_nightfire_passed"
+      ]
+    },
+    {
+      "event_id": "flats_nightfire",
+      "choice_index": 1,
+      "outcome": "failure",
+      "add_flags": [
+        "lr_nightfire_spooked"
+      ]
+    }
   ],
   "events": [
     {
-      "id":"lr_blue_van","title":"The Blue Van","body":"A blue delivery van waits where the salt road divides, its windows curtained with pieces of a child’s blanket. Someone has painted a crooked nine across the rear doors. A woman stands beside the engine holding a radio above her head, repeating the same callsign you heard in the outskirts. Two children watch from beneath the chassis, ready to crawl deeper if your voice sounds wrong.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"family_on_nine","callback_region":1,"narrative_priority":7,
-      "eligibility":{"min_region_index":1,"max_region_index":1,"requires_any_flags":["lr_channel_helped","lr_channel_misled","lr_channel_traced","lr_channel_lost"],"forbids_flags":["lr_callback_region_1"]},
-      "choices":[
-        {"label":"Repeat what you told them","approach":"social","check":{"stat":"presence","difficulty":"risky"},"success":{"text":"The woman recognizes the cadence before she trusts the face. She introduces herself as Talia Vale and lets the children emerge. Your earlier words brought them this far; she accepts one more direction, though she writes it down instead of thanking you.","add_flags":["lr_family_trusted","lr_callback_region_1"]},"failure":{"text":"Your account changes in one small detail, and Talia hears it. She closes the van doors while you are still speaking. The engine catches on the third attempt, carrying the family south with your callsign written beside a warning in her notebook.","add_conditions":["shaken"],"add_flags":["lr_family_distrusts","lr_callback_region_1"]}},
-        {"label":"Repair their receiver","approach":"technical","check":{"stat":"wits","difficulty":"hard"},"success":{"text":"You clean salt from the contacts and bridge a burned trace with wire. Channel Nine returns beneath your fingers. Talia offers no confession of trust, but she gives you their next frequency and promises to answer once each sunset while the battery lasts.","items":{"scrap_parts":1},"add_flags":["lr_family_linked","lr_callback_region_1"]},"failure":{"text":"The casing opens easily; the corroded board does not forgive the attempt. A final spark kills the receiver. Talia’s anger remains quiet because the children are listening. She leaves you the dead set and takes the road without a voice ahead.","pressures":{"fatigue":5},"add_flags":["lr_family_silenced","lr_callback_region_1"]}},
-        {"label":"Leave them your bearing","outcome":{"text":"You mark the safer line east on their paper map and step away before gratitude becomes obligation. Talia studies the route, then your face. The family keeps the information and none of your company, which may be the most honest bargain available.","add_flags":["lr_family_directed","lr_callback_region_1"]}}
+      "id": "lr_blue_van",
+      "title": "The Blue Van",
+      "body": "A blue delivery van waits where the salt road divides, its windows curtained with pieces of a child's blanket. Someone has painted a crooked nine across the rear doors, high and square, meant to be read from further off than this.\n\nA woman stands at the open engine bay with a radio held above her head, turning slowly the way people turn when they are hunting a signal rather than sending one. She says a callsign into the flat air. Nothing answers it. She says it again anyway, on the same two notes, and you understand she has been doing this for days.\n\nTwo children watch from beneath the chassis. The younger boy keeps both palms flat on the salt, ready to push himself deeper if your voice sounds wrong. The older girl does not move at all, which is worse. The woman lowers the radio when she sees you and does not lower her eyes.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "family_on_nine",
+      "callback_region": 1,
+      "narrative_priority": 7,
+      "eligibility": {
+        "min_region_index": 1,
+        "max_region_index": 2,
+        "requires_any_flags": [
+          "lr_channel_helped",
+          "lr_channel_misled",
+          "lr_channel_traced",
+          "lr_channel_lost"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_1"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Repeat what you told them",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You give the cadence back to her exactly: the same two notes, the same order of landmarks, the water tower before the culvert and not after it. She listens with her head turned slightly away, which is how people listen when they are checking rather than hearing.\n\nThen she introduces herself. Talia Vale, and the children are Elian and Sable, and the boy comes out from under the chassis without being told. She takes one more direction from you and writes it on the paper map in pencil, beneath the last one, where it can be crossed out if it turns out to be wrong.",
+            "add_flags": [
+              "lr_family_trusted",
+              "lr_callback_region_1"
+            ]
+          },
+          "failure": {
+            "text": "You give it back close but not exact. The culvert comes before the water tower, and the second note of the callsign sits a shade high, and both mistakes are small enough that a stranger would never catch them.\n\nTalia Vale catches them. She does not accuse you of anything. She simply stops answering, closes the van doors while you are still explaining, and gets the engine on the third attempt. Through the blanket curtain you can see the girl writing. Your callsign goes onto the map beside a mark that is not a route.",
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_family_distrusts",
+              "lr_callback_region_1"
+            ]
+          },
+          "requires": {
+            "any_flags": [
+              "lr_channel_helped",
+              "lr_channel_misled"
+            ],
+            "reason": "You never spoke to them",
+            "hidden_when_locked": true
+          }
+        },
+        {
+          "label": "Repair their receiver",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You clean salt from the contacts with the edge of your sleeve and bridge a burned trace with a length of wire, and the set comes back with the flat hiss of a channel that is open and empty. Talia does not thank you for it. She keys the handset once, hears the hiss answer her, and hands you a frequency written on the corner of the map.\n\nOne call at sunset, she says. If it goes unanswered twice, do not keep calling. The children have learned what an unanswered call means and she would rather they did not practise it.",
+            "items": {
+              "scrap_parts": 1
+            },
+            "add_flags": [
+              "lr_family_linked",
+              "lr_callback_region_1"
+            ]
+          },
+          "failure": {
+            "text": "The casing opens easily. The board underneath does not forgive being touched: one contact lifts with the corrosion still on it, there is a small blue spark, and Channel Nine stops existing.\n\nTalia's anger stays quiet because the children are listening. She takes the dead set out of your hands, looks at it, and gives it back to you, which is worse than keeping it. They will travel east now with no voice ahead of them and no way to hear one coming. You are carrying the only radio any of you had.",
+            "pressures": {
+              "fatigue": 5
+            },
+            "add_flags": [
+              "lr_family_silenced",
+              "lr_callback_region_1"
+            ]
+          }
+        },
+        {
+          "label": "Leave them your bearing",
+          "outcome": {
+            "text": "You mark the safer line east on their paper map, the culvert road rather than the open pan, and you step back from the van before gratitude can turn into an arrangement.\n\nTalia studies the route. Then she studies you, for longer, and decides not to ask the question she was assembling. The family keeps the information and none of your company. Walking away, you hear the engine catch behind you on the first try, which means she had it running before you arrived and chose to stand in the open anyway.",
+            "add_flags": [
+              "lr_family_directed",
+              "lr_callback_region_1"
+            ]
+          }
+        },
+        {
+          "label": "Show them the relay bearing",
+          "approach": "technical",
+          "requires": {
+            "flags": [
+              "lr_channel_traced"
+            ],
+            "items": {
+              "signal_compass": 1
+            },
+            "reason": "You have no bearing of theirs to give",
+            "hidden_when_locked": true
+          },
+          "costs": {
+            "items": {
+              "signal_compass": 1
+            }
+          },
+          "outcome": {
+            "text": "You take the compass out and put it in her hand while it is still pointing, and you tell her what it is: the relay kit's own bearing, the line their message was cut to follow east. It is the one thing you own that answers the question she has been asking the air for days.\n\nTalia turns it once to watch the needle hold. Then she calls the older girl over and shows her instead of asking you to explain again, which is how you learn that Elian is the one who has been keeping the radio alive. They have a line now.",
+            "add_flags": [
+              "lr_family_linked",
+              "lr_callback_region_1"
+            ]
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_channel_helped"
+          ],
+          "text": "A blue delivery van waits where the salt road divides, its windows curtained with pieces of a child's blanket, a crooked nine painted high across the rear doors.\n\nThe woman at the engine bay has the radio in her hand rather than above her head. She is not hunting a signal. She is waiting on one, and when she hears you on the salt she says the callsign from the outskirts out loud, testing it against your face the way you test a bearing against the sun.\n\nThe children are already out from under the chassis. The younger boy stands close enough to her leg to be pulled behind it; the older girl holds the paper map open with both thumbs, and there is a line drawn on it in pencil that follows the landmarks you named. It stops where your directions stopped. Everything past that is blank, and all three of them are looking at the blank part."
+        },
+        {
+          "requires_any_flags": [
+            "lr_channel_misled"
+          ],
+          "text": "A blue delivery van waits where the salt road divides, its windows curtained with pieces of a child's blanket, a crooked nine painted high across the rear doors.\n\nThe woman at the engine bay is holding the radio above her head and turning, and the callsign she repeats is the one you answered in the outskirts. You gave that channel directions. You gave them twice. Standing here it is obvious that nothing you said arrived: the set in her hand is receiving a recording, the same child's voice on the same loop, and she is answering it the way you answered it, into air that keeps nothing.\n\nTwo children watch from beneath the chassis. The younger boy has both palms flat on the salt. The woman lowers the radio when she sees you, and her face does the arithmetic every stranger on this road gets: how many of you, how close, how fast."
+        },
+        {
+          "requires_any_flags": [
+            "lr_channel_traced"
+          ],
+          "text": "A blue delivery van waits where the salt road divides, its windows curtained with pieces of a child's blanket, a crooked nine painted high across the rear doors.\n\nYou have seen this frequency before, but never this family. In the outskirts you found the relay kit that carried their message and the bearing it was cut to follow, and you never once keyed the handset to say so. The compass in your pack still holds the line.\n\nThe woman at the engine bay holds her radio above her head and turns, hunting a signal on a set that is transmitting into a corridor she cannot see the shape of. Two children watch from beneath the chassis, the younger boy with both palms flat on the salt. She lowers the radio when she sees you and does not lower her eyes. She has no reason at all to know your voice."
+        }
       ]
     },
     {
-      "id":"lr_voice_in_reeds","title":"A Voice in the Reeds","body":"Channel Nine rises from the marsh in broken syllables. The voice belongs to Elian Vale, the older child from the blue van, speaking too softly for the others to hear. Their wheels are buried beside a flooded service road. Talia has gone to find timber and has not returned. Through the reeds you can see the van’s blue roof and a second trail cutting toward it from the water.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"family_on_nine","callback_region":2,"narrative_priority":9,
-      "eligibility":{"min_region_index":2,"max_region_index":2,"requires_any_flags":["lr_family_trusted","lr_family_linked","lr_family_directed","lr_family_distrusts","lr_family_silenced"],"forbids_flags":["lr_callback_region_2"]},
-      "choices":[
-        {"label":"Follow Talia’s tracks","approach":"navigation","check":{"stat":"wits","difficulty":"hard"},"success":{"text":"Talia is waist-deep in a drainage cut, holding a plank above black water while something noses the mud below. You guide her backward by inches. When she reaches firm ground, she says your callsign once, without suspicion this time.","items":{"climbing_rope":1},"add_flags":["lr_family_reunited","lr_callback_region_2"]},"failure":{"text":"The tracks divide where rain has filled them, and you choose the older line. By the time you return, Talia has dragged herself back alone, one boot missing and fever already bright in her eyes. Elian remembers that you went looking.","pressures":{"fatigue":8},"add_conditions":["shaken"],"add_flags":["lr_family_wounded","lr_callback_region_2"]}},
-        {"label":"Free the van first","approach":"force","check":{"stat":"strength","difficulty":"risky"},"success":{"text":"You lever stone beneath the axle and make the children push only when the mud releases its grip. The van reaches the raised road before Talia returns limping through the reeds. She sees that you protected their escape before seeking praise.","items":{"scrap_parts":1},"add_flags":["lr_family_mobile","lr_callback_region_2"]},"failure":{"text":"The wheel spins deeper and coats the children in poisoned mud. You stop before the axle breaks, but the noise carries across the water. Talia returns at a run, and the family abandons the van with only what small hands can carry.","pressures":{"radiation":5,"fatigue":5},"add_flags":["lr_family_abandoned_van","lr_callback_region_2"]}},
-        {"label":"Guide them out by radio","outcome":{"text":"You remain on the raised path and talk Elian through unloading the van, laying boards, and choosing firm reeds. The family escapes without seeing you. At sunset, Channel Nine carries Talia’s thanks followed by a careful request that you keep your distance.","add_flags":["lr_family_remote_help","lr_callback_region_2"]}}
+      "id": "lr_voice_in_reeds",
+      "title": "A Voice in the Reeds",
+      "body": "Channel Nine comes out of the marsh in pieces. The voice is Elian's, the older Vale child, pitched low and close to the handset so the others will not hear her using the battery.\n\nThe van is off the raised road and buried to its axles beside a flooded service cut. Talia went for timber an hour ago. She has not come back, and Elian has stopped saying so out loud in case Sable is listening.\n\nThrough the reeds you can see the blue roof at an angle it should not sit at. You can also see a second trail, cut from the water toward the van, pushing the black stems aside in a line that does not close up behind it.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "family_on_nine",
+      "callback_region": 2,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 2,
+        "max_region_index": 3,
+        "requires_any_flags": [
+          "lr_family_trusted",
+          "lr_family_linked",
+          "lr_family_directed",
+          "lr_family_distrusts",
+          "lr_family_silenced"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_2"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Follow Talia’s tracks",
+          "approach": "navigation",
+          "check": {
+            "stat": "wits",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "The tracks divide twice and you take the newer edge both times, where the water has not yet finished filling the print. You find Talia waist-deep in a drainage cut, holding a plank above the surface with both arms locked, because something has been nosing the mud under her since she went in and she has worked out that the plank is the only part of her it has not tried.\n\nYou bring her backward by inches, along the firm edge, talking the whole way. When her boots find the bank she says your callsign once, and this time there is nothing in it that is checking you.",
+            "items": {
+              "climbing_rope": 1
+            },
+            "add_flags": [
+              "lr_family_reunited",
+              "lr_callback_region_2"
+            ]
+          },
+          "failure": {
+            "text": "The tracks divide where the rain has filled them and you choose the older line, which is the wrong one, and you lose forty minutes proving it.\n\nBy the time you get back Talia has dragged herself out alone. One boot is gone, her leg is opened along the shin from something under the mud, and the fever is already bright in her eyes in a way that will not wait for the marsh to be behind them. She does not blame you; there is no breath spare for it. Elian watches you come back empty-handed from the direction you went, and does not say anything at all.",
+            "pressures": {
+              "fatigue": 8
+            },
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_family_wounded",
+              "lr_callback_region_2"
+            ]
+          }
+        },
+        {
+          "label": "Free the van first",
+          "approach": "force",
+          "check": {
+            "stat": "strength",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You get the jack plate under the axle and lever stone in behind each wheel, and you make the children push only in the moment the mud lets go, so that nothing is wasted and nobody is under the van when it moves.\n\nIt comes up onto the raised road with the sound of a cork leaving a bottle. Talia comes back through the reeds limping ten minutes later, sees the van on firm ground with both children on the far side of it, and understands in one look that you got the escape ready before you went looking for her. She hands you the bracket she broke getting free.",
+            "items": {
+              "scrap_parts": 1
+            },
+            "add_flags": [
+              "lr_family_mobile",
+              "lr_callback_region_2"
+            ]
+          },
+          "failure": {
+            "text": "The wheel spins deep and throws poisoned mud in a fan across both children before you can call it off. You stop before the axle goes, but the sound has already crossed open water in every direction, and sound is the one thing this marsh carries better than it carries people.\n\nTalia comes back at a run. Nobody argues. They take what small hands can carry and leave the van where it sits, blue roof at the wrong angle, doors open, curtains still pinned. Sable keeps turning round to look at it until the reeds close over the last of the paint.",
+            "pressures": {
+              "radiation": 5,
+              "fatigue": 5
+            },
+            "add_flags": [
+              "lr_family_abandoned_van",
+              "lr_callback_region_2"
+            ]
+          }
+        },
+        {
+          "label": "Guide them out by radio",
+          "outcome": {
+            "text": "You stay on the raised path and do it with your voice: unload the heavy side first, lay the boards under the downhill wheels, put your weight where the reeds stand up rather than where they lie flat. Elian relays each instruction to the others in a flat little voice that does not waste a word.\n\nThey are out inside the hour and they never see you. At sunset the channel opens and Talia says thank you, and then asks, carefully, that you keep doing it this way. Whatever is in the water followed the noise of the van and not the family.",
+            "add_flags": [
+              "lr_family_remote_help",
+              "lr_callback_region_2"
+            ]
+          }
+        },
+        {
+          "label": "Cross the cleared cut",
+          "approach": "navigation",
+          "requires": {
+            "flags": [
+              "widow_pool_cleared"
+            ],
+            "reason": "You never cleared the drainage cut",
+            "hidden_when_locked": true
+          },
+          "outcome": {
+            "text": "You do not read the tracks. You go straight down the drainage cut you emptied, on foot, through water that has nothing under it now, and you find Talia at the eastern end with a plank held above the surface in both locked arms, guarding against something that is no longer there.\n\nShe does not believe you until you walk the last stretch in front of her, waist-deep and unhurried. Then she lets the plank go. On the bank she gives you the rope she had carried for the timber, coiled and wet, and says your callsign once, with nothing in it that is checking you.",
+            "items": {
+              "climbing_rope": 1
+            },
+            "add_flags": [
+              "lr_family_reunited",
+              "lr_callback_region_2"
+            ]
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_family_silenced"
+          ],
+          "text": "There is no radio. You are carrying it, dead, since the salt flats, and the marsh gives you the family a different way: a child's voice going flat across open water, shouting the same two words on a count, the way you shout when you have decided that being found matters more than being quiet.\n\nIt is Elian. The van is off the raised road and buried to its axles beside a flooded service cut, the blue roof sitting at an angle it should not. Talia went for timber an hour ago and has not come back, and the girl is calling for her into reeds that return nothing.\n\nYou can see a second trail from here, cut from the water toward the van, pushing the black stems aside in a line that does not close up behind it. Every count she shouts tells it exactly where the van is."
+        }
       ]
     },
     {
-      "id":"lr_last_battery","title":"The Last Battery","body":"Inside a factory break room, a radio speaks your callsign between evacuation notices. The Vale family has sheltered in the building across the yard, but the only door between you is controlled by a failing security circuit. Their final battery is feeding the transmitter. Elian counts its remaining minutes aloud while Talia argues with someone who wants to trade the children’s frequency for passage east.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"family_on_nine","callback_region":3,"narrative_priority":9,
-      "eligibility":{"min_region_index":3,"max_region_index":3,"requires_any_flags":["lr_family_reunited","lr_family_wounded","lr_family_mobile","lr_family_abandoned_van","lr_family_remote_help"],"forbids_flags":["lr_callback_region_3"]},
-      "choices":[
-        {"label":"Open the security door","approach":"technical","check":{"stat":"wits","difficulty":"desperate"},"success":{"text":"You bypass the scorched controller before the battery gives out. The door lifts on a chain of reluctant teeth, revealing the family and three strangers they refused to abandon. Talia gives you a waxed dust cloak saved for their most exposed traveler.","items":{"dust_cloak":1},"add_flags":["lr_family_saved","lr_family_thread_complete","lr_callback_region_3"]},"failure":{"text":"The controller accepts your bridge, then sends current through the frame. You fall clear as the door welds shut. The radio dies after Elian says your callsign. From the yard, you hear the group begin breaking another wall without you.","pressures":{"health":-15,"fatigue":8},"add_conditions":["shaken"],"add_flags":["lr_family_separated","lr_family_thread_complete","lr_callback_region_3"]}},
-        {"label":"Negotiate with the broker","approach":"social","check":{"stat":"presence","difficulty":"hard"},"success":{"text":"You name the broker’s price before he can disguise it as rescue. The strangers turn on his bargain and open their side of the door together. Elian presses a worn bone die into your palm, insisting luck should travel with someone who answers.","items":{"lucky_die":1},"add_flags":["lr_family_allied","lr_family_thread_complete","lr_callback_region_3"]},"failure":{"text":"The broker rebroadcasts your offer as proof that the family has valuable friends. Other voices crowd the frequency. Talia cuts transmission before they can locate her, leaving you with static and the knowledge that your intervention raised the price around them.","pressures":{"fatigue":6},"add_flags":["lr_family_hunted","lr_family_thread_complete","lr_callback_region_3"]}},
-        {"label":"Tell them to save the battery","outcome":{"text":"You give Talia the eastern bearing, then order the radio dark. Her answer is neither forgiveness nor blame. The carrier vanishes, preserving a few hours of power and removing the only thread by which either of you could know what followed.","add_flags":["lr_family_unknown","lr_family_thread_complete","lr_callback_region_3"]}}
+      "id": "lr_last_battery",
+      "title": "The Last Battery",
+      "body": "The radio in the factory break room is saying your callsign. Not calling it; saying it, in a queue, between evacuation notices, the way a name gets read off a list.\n\nThe Vale family is in the building across the yard. Between you and them is a security door on a failing circuit, and the only power in the room is the last battery, which is feeding the transmitter that is saying your name.\n\nElian counts the minutes it has left out loud, because counting is a job and she would rather have one. Behind her, Talia is arguing with a man who has offered the family passage east in exchange for the children's frequency. He is being reasonable about it. That is the part that makes your hands cold.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "family_on_nine",
+      "callback_region": 3,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 3,
+        "max_region_index": 4,
+        "requires_any_flags": [
+          "lr_family_reunited",
+          "lr_family_wounded",
+          "lr_family_mobile",
+          "lr_family_abandoned_van",
+          "lr_family_remote_help"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_3"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Open the security door",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "desperate"
+          },
+          "success": {
+            "text": "You get the plate off the scorched controller and bridge the two contacts that still have metal on them, and the door lifts on a chain of reluctant teeth with maybe a minute of battery left.\n\nThere are more people behind it than there should be. The Vales are there, and three strangers the family took in at some point and did not mention, and Talia's first move is to put herself between you and them until she is certain which kind of arrival you are. Then she goes back inside and comes out with a waxed dust cloak folded flat, kept for the day they reached somewhere.",
+            "items": {
+              "dust_cloak": 1
+            },
+            "add_flags": [
+              "lr_family_saved",
+              "lr_callback_region_3"
+            ]
+          },
+          "failure": {
+            "text": "Your bridge takes. Then the frame takes it too, and current goes through the door and through your hands, and you come off the plate hard enough that the floor decides where you land.\n\nThe door welds itself shut in the closed position. You can hear them on the other side of it. You can hear Elian say your callsign once, checking, and then the battery goes and takes the voice with it.",
+            "pressures": {
+              "health": -15,
+              "fatigue": 8
+            },
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_family_separated",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Negotiate with the broker",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You do not argue with the broker. You price him out loud, in front of the people he is selling to: what the frequency is worth, who he sells it to, what happens to a family whose channel is known. You keep your voice flat and you keep going until the arithmetic is finished.\n\nThe three strangers do the sum first. They open their side of the door themselves and the broker's arrangement stops existing without anybody touching him.",
+            "items": {
+              "lucky_die": 1
+            },
+            "add_flags": [
+              "lr_family_allied",
+              "lr_callback_region_3"
+            ]
+          },
+          "failure": {
+            "text": "You name his price out loud and he takes it as an advertisement. Within a minute he is rebroadcasting your offer as proof that the family has friends worth having, and other voices start crowding onto the frequency to find out how much.\n\nTalia cuts transmission before anyone can triangulate her. The last thing that crosses is her hand going to the switch. You are left with static, a yard, and the knowledge that you turned a family nobody could locate into a family several people are now looking for.",
+            "pressures": {
+              "fatigue": 6
+            },
+            "add_flags": [
+              "lr_family_hunted",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Tell them to save the battery",
+          "outcome": {
+            "text": "You give Talia the eastern bearing, the culvert side of the rail cut, the water that can be trusted and the water that cannot. Then you tell her to shut the radio down and leave it down.\n\nShe does not thank you and she does not argue. The carrier drops mid-word. It preserves a few hours of power, and it removes the only thread by which either of you could ever find out what happened to the other. Elian stops counting. In the quiet afterward you notice you have been listening for a channel that is not going to open again.",
+            "add_flags": [
+              "lr_family_unknown",
+              "lr_callback_region_3"
+            ]
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_family_silenced"
+          ],
+          "text": "There is no transmitter. The Vales have not had a voice since the salt flats, and the sound that brings you across the factory yard is Elian hitting the security door with a length of conduit, twice and then twice again, on a count.\n\nThey are shut in the far building. The door between you runs on a failing circuit and the yard between you runs on nothing at all. Sable is at the wire-glass panel with both hands flat against it, watching the wrong direction, because a child watches the way out and not the way in.\n\nBehind them a man is talking to Talia with his palms open. He has offered the family passage east, and what he wants is the route they have been traveling and the names of everyone who ever answered them. He is being reasonable about it. That is the part that makes your hands cold."
+        },
+        {
+          "requires_any_flags": [
+            "lr_family_reunited"
+          ],
+          "text": "The radio in the factory break room is saying your callsign between evacuation notices, not calling it but reading it from a queue. Talia has added the two-note cadence you gave her after each repetition, and Elian is counting the minutes the last battery has left because counting is a job and she would rather have one.\n\nThe family is in the building across the yard, together this time. You can see Sable hold the security door's wire-glass panel while Talia argues with a man who has offered passage east in exchange for the children's frequency. He is being reasonable about it. That is the part that makes your hands cold.\n\nTalia sees you through the panel and does not stop her argument. She points Elian toward the battery instead, trusting the family to hold one problem while the adults decide what the other costs."
+        }
       ]
     },
-
     {
-      "id":"lr_quiet_column","title":"The Quiet Column","body":"At noon, a line of people crosses the flats without speaking. Cloth wraps every canteen and buckle. Their leader carries a municipal siren rotor like a blackened shield. She names herself Dena Orr and asks whether you passed Tower Six in the outskirts. Behind her, families look west whenever the wind resembles the beginning of an alarm that nobody else can hear.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"quiet_column","callback_region":1,"narrative_priority":7,
-      "eligibility":{"min_region_index":1,"max_region_index":1,"requires_any_flags":["lr_siren_silenced","lr_siren_burned","lr_siren_endured","lr_siren_followed"],"forbids_flags":["lr_callback_region_1"]},
-      "choices":[
-        {"label":"Tell Dena what happened","approach":"social","check":{"stat":"presence","difficulty":"risky"},"success":{"text":"Dena listens without interrupting, weighing your account against the burn on the rotor and the direction of refugee tracks. She accepts the parts that cost you something. The column makes room at its shade cloth and shares the names of its missing.","items":{"clean_water":1},"add_flags":["lr_column_trusts","lr_callback_region_1"]},"failure":{"text":"Your account sounds cleaner than the tower could have been. Dena asks no accusation; she simply repeats different marching instructions to the column. They turn south, leaving you outside their dust and inside the suspicion your certainty created.","add_conditions":["shaken"],"add_flags":["lr_column_doubts","lr_callback_region_1"]}},
-        {"label":"Inspect the burned rotor","approach":"technical","check":{"stat":"wits","difficulty":"favorable"},"success":{"text":"The scoring shows the siren transmitted one final maintenance pulse before stopping. Dena realizes the pulse opened an old service shelter ahead. She copies its bearing for you and orders the column toward cover before the afternoon glare becomes lethal.","items":{"scrap_parts":1},"add_flags":["lr_column_sheltered","lr_callback_region_1"]},"failure":{"text":"A warped spring snaps free and cuts across your fingers. Dena binds the wound but takes the rotor back before you can damage its evidence further. Her kindness is procedural, delivered with the distance reserved for another preventable hazard.","pressures":{"health":-10},"add_flags":["lr_column_guarded","lr_callback_region_1"]}},
-        {"label":"Refuse the tower’s burden","outcome":{"text":"You tell Dena that surviving one machine does not make you responsible for everyone who heard it. She accepts the boundary without agreeing. The column passes in disciplined silence, each wrapped buckle demonstrating the work your refusal leaves to them.","add_flags":["lr_column_refused","lr_callback_region_1"]}}
+      "id": "lr_quiet_column",
+      "title": "The Quiet Column",
+      "body": "At noon a line of people crosses the flats without a sound. Every canteen is sleeved in cloth, every buckle wrapped, and the children walk in the middle of the line where their footsteps are quietest. The woman leading them carries a municipal siren rotor across her chest like a blackened shield, and when she sees you she stops the whole column with one lowered hand.\n\nShe names herself Dena Orr. She asks whether you came out of the outskirts past Tower Six, and answers it herself: the rotor came off that tower, and it was still turning when she reached it, hours after the tracks she took for yours had left the district. She counts on her fingers who came to listen. Two families. A man with dogs. Something she did not stay to name.\n\nBehind her the families look west whenever the wind rises, in case it is carrying the alarm back to them. The rotor's burn is a long smear where the motor cooked itself to a stop. Nobody in the column has spoken.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "quiet_column",
+      "callback_region": 1,
+      "narrative_priority": 7,
+      "eligibility": {
+        "min_region_index": 1,
+        "max_region_index": 2,
+        "requires_any_flags": [
+          "lr_siren_silenced",
+          "lr_siren_burned",
+          "lr_siren_endured",
+          "lr_siren_followed"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_1"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Tell Dena what happened",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "Dena listens without interrupting. She weighs each part of your account against the burn on the rotor and against the refugee tracks she followed out of the district, and she accepts the parts that cost you something and lets the rest stand unexamined.\n\nThe column makes room for you at its shade cloth. A canteen comes out of its sleeve and you fill a bottle from it while a woman at the back recites the names of the column's missing, slowly, so that you can say afterward that you heard them. Dena gives you nothing else. Water and the names are what she has.",
+            "items": {
+              "clean_water": 1
+            },
+            "add_flags": [
+              "lr_column_trusts",
+              "lr_callback_region_1"
+            ]
+          },
+          "failure": {
+            "text": "Your account comes out cleaner than the tower could have been, every decision made in the right order, no moment where you did not know what to do. Dena hears the polish. She accuses you of nothing. She simply turns to the column and repeats a different set of marching instructions, south and wide of the road you are taking, in the same flat voice she uses for everything.\n\nThey go. You are left outside their dust with the sound of your own version still in your ears, wondering which part of it she stopped believing.",
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_column_doubts",
+              "lr_callback_region_1"
+            ]
+          }
+        },
+        {
+          "label": "Inspect the burned rotor",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "favorable"
+          },
+          "success": {
+            "text": "You turn the rotor to the light and read the scoring the way you would read wear on a bearing. The pattern shows a final maintenance pulse before the siren stopped: a coded burst the towers sent to one another when they went down.\n\nDena knows what the pulse was for. It opened an old service shelter east of here, a maintenance vault the towers unlocked for their crews. She copies its bearing onto your map and gives you two lengths of wire out of the rotor's housing, then orders the column toward cover before the afternoon glare on the salt becomes the kind that kills.",
+            "items": {
+              "scrap_parts": 1
+            },
+            "add_flags": [
+              "lr_column_sheltered",
+              "lr_callback_region_1"
+            ]
+          },
+          "failure": {
+            "text": "A warped spring inside the housing lets go under your thumb and lays your fingers open across the knuckles. Dena has a wrapping out before you have finished swearing. She binds the hand tight and neat, then takes the rotor back and turns it out of your reach before you can damage what it still shows.\n\nHer kindness is procedural. It is delivered with the exact distance she reserves for any preventable hazard, and when the column moves again you are walking beside it rather than in it, holding your hand above your heart.",
+            "pressures": {
+              "health": -10
+            },
+            "add_flags": [
+              "lr_column_guarded",
+              "lr_callback_region_1"
+            ]
+          }
+        },
+        {
+          "label": "Refuse the tower’s burden",
+          "outcome": {
+            "text": "You tell Dena that surviving one machine does not make you responsible for everyone who heard it. She takes that in without any change of expression and accepts the boundary without agreeing to it.\n\nThe column passes you in disciplined silence. Each wrapped buckle, each sleeved canteen, each child walking in the quiet middle of the line demonstrates the work your refusal leaves to them, and nobody looks at you as they go. Dena is the last to pass. She says the shade cloth will be wherever the column stops, if you change your mind, and does not say it kindly.",
+            "add_flags": [
+              "lr_column_refused",
+              "lr_callback_region_1"
+            ]
+          }
+        },
+        {
+          "label": "Hand over the charge pack",
+          "approach": "technical",
+          "requires": {
+            "flags": [
+              "lr_siren_silenced"
+            ],
+            "items": {
+              "scrap_parts": 1
+            },
+            "reason": "You carry no charge pack from the tower",
+            "hidden_when_locked": true
+          },
+          "costs": {
+            "items": {
+              "scrap_parts": 1
+            }
+          },
+          "outcome": {
+            "text": "You take the charge pack out and hold it against the socket in the rotor, and it seats. Dena turns the two together until the maintenance stamp on the cell lines up with the one on the housing.\n\nShe knows what a live cell from a tower can do. The maintenance pulse the siren sent before it died opened a service shelter east of here, and the shelter's door runs on this. She copies the bearing onto your map, hands the pack to a man at the front, and gives the order to move toward cover. The tower's last work will be keeping children out of the glare.",
+            "add_flags": [
+              "lr_column_sheltered",
+              "lr_callback_region_1"
+            ]
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_siren_silenced"
+          ],
+          "text": "At noon a line of people crosses the flats without a sound. Every canteen is sleeved in cloth, every buckle wrapped, and the children walk in the middle of the line where their footsteps are quietest. The woman leading them carries a municipal siren rotor across her chest like a blackened shield, and when she sees you she turns it so the scorched face catches the light.\n\nThe burn stops in a clean ring around the cutoff post. She names herself Dena Orr and says what the ring means before you can: somebody pulled that cutoff by hand while the rotor was still turning, because the district went quiet inside a minute and the families who had followed the sound lost it in the streets. She knows what a pulled cutoff looks like and what a burned-out motor looks like, and this is the first.\n\nThe empty socket beside the ring is the shape of the charge pack you carried down the ladder. Behind her the families look west whenever the wind rises, listening for an alarm that stopped."
+        },
+        {
+          "requires_any_flags": [
+            "lr_siren_burned"
+          ],
+          "text": "At noon a line of people crosses the flats without a sound. Every canteen is sleeved in cloth, every buckle wrapped, and the children walk in the middle of the line where their footsteps are quietest. The woman leading them carries a municipal siren rotor across her chest like a blackened shield, and when she sees you she stops the whole column with one lowered hand.\n\nShe names herself Dena Orr. The rotor came off Tower Six, and the burn on it is not the long smear of a motor cooking itself to a stop. It is a bright arc across the housing where a tool bridged the contacts while the rotor was still coming round, and whoever held it was on the ladder. She asks who was on the ladder. Then she looks at your hands, at the shine across the pads of both palms, and does not ask again.\n\nThe tower screamed for hours after that, she says. Behind her the families look west whenever the wind rises, as if it might bring the alarm back."
+        },
+        {
+          "requires_any_flags": [
+            "lr_siren_endured"
+          ],
+          "text": "Dena Orr brings a silent column to a halt when she sees you on the flats. Cloth covers their canteens and buckles; the children keep the quiet center of the line. The rotor across Dena's chest is blackened from Tower Six, and its wrapped edge keeps tapping her coat as the wind shifts.\n\nShe asks how far you got before the tower stopped calling. You tell her the note followed the avenue after you left, giving whatever was moving through the district a fixed place to find. Dena does not call that cowardice or wisdom. She asks which streets the sound carried down, then sends a runner to move the column away from those routes.\n\nThe families watch the western horizon while she folds the information into their marching order. The rotor has gone quiet, but the choice to let it speak still tells Dena where danger may have learned to listen."
+        },
+        {
+          "requires_any_flags": [
+            "lr_siren_followed"
+          ],
+          "text": "The column is already turning south when Dena Orr signals it to stop. Every buckle is wrapped and every canteen sleeved; children walk where the adults can hear each footfall. The rotor she carries from Tower Six is cold, but the wind catches the torn bell cloth around it and makes a dry, repeating beat.\n\nDena asks which way the siren drove you after you left the garage. You give her the doubled streets, the alleys you checked twice, and the ground you lost while the sound kept seeming nearer. She writes none of it down. She repeats the turns aloud to the people who need to avoid them, then changes the column's route.\n\nNobody tells you what leaving should have meant. Dena only says that a warning can scatter people as surely as it gathers them, and the line moves on with more distance between each family."
+        }
       ]
     },
     {
-      "id":"lr_bellkeepers_son","title":"The Bell-Keeper’s Son","body":"A boy stands on a drowned chapel roof, ringing a hand bell beneath a blanket so the sound travels only across the water. Dena’s column waits among the reeds while figures search the opposite bank. She says the boy is her son, Perrin, posted there to draw attention from the families. The water around his roof has begun to move against the wind.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"quiet_column","callback_region":2,"narrative_priority":9,
-      "eligibility":{"min_region_index":2,"max_region_index":2,"requires_any_flags":["lr_column_trusts","lr_column_doubts","lr_column_sheltered","lr_column_guarded","lr_column_refused"],"forbids_flags":["lr_callback_region_2"]},
-      "choices":[
-        {"label":"Cross to Perrin","approach":"survival","check":{"stat":"grit","difficulty":"hard"},"success":{"text":"You enter the water slowly enough that the hidden current does not take your knees. Perrin climbs onto your shoulders with the muffled bell. When you return him, Dena holds his face between both hands before acknowledging what you risked.","pressures":{"fatigue":8},"add_flags":["lr_perrin_rescued","lr_callback_region_2"]},"failure":{"text":"The drowned road drops beneath your second step. You reach the roof bruised and breathless, but the searchers have already seen the disturbance. Perrin returns with you while Dena’s column scatters into smaller, more vulnerable groups.","pressures":{"health":-15,"fatigue":10},"add_flags":["lr_perrin_saved_column_scattered","lr_callback_region_2"]}},
-        {"label":"Draw the searchers away","approach":"evade","check":{"stat":"agility","difficulty":"risky"},"success":{"text":"You break reeds along a false channel and let the searchers glimpse you twice. By the time they discover the deception, Perrin has crossed by rope and the column has vanished. Dena leaves a wrapped ration where your paths divide.","items":{"ration_bar":2},"add_flags":["lr_column_escaped","lr_callback_region_2"]},"failure":{"text":"The searchers refuse the obvious trail and close around the chapel. Dena cuts the column’s baggage loose to create noise downstream. Perrin escapes, but medicine, blankets, and family records drift away beneath black water.","pressures":{"fatigue":6},"add_flags":["lr_column_stripped","lr_callback_region_2"]}},
-        {"label":"Tell Dena to leave him","outcome":{"text":"Dena studies you until the bell sounds again beneath its blanket. She orders the column onward and remains behind alone. Hours later, two muffled bells answer each other across the marsh; you never learn whether they mark reunion or farewell.","add_flags":["lr_dena_stayed","lr_callback_region_2"]}}
+      "id": "lr_bellkeepers_son",
+      "title": "The Bell-Keeper’s Son",
+      "body": "A boy stands on a drowned chapel roof, ringing a hand bell beneath a blanket so the sound travels only across the water. Dena’s column waits among the reeds while figures search the opposite bank. She says the boy is her son, Perrin, and that he tied the crossing rope himself before volunteering for the roof: he knows the bell gives the families time to move. He has stopped once already when Dena signaled, but the water around his roof has begun to move against the wind and the searchers are closing the far bank.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "quiet_column",
+      "callback_region": 2,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 2,
+        "max_region_index": 3,
+        "requires_any_flags": [
+          "lr_column_trusts",
+          "lr_column_doubts",
+          "lr_column_sheltered",
+          "lr_column_guarded",
+          "lr_column_refused"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_2"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Cross to Perrin",
+          "approach": "survival",
+          "check": {
+            "stat": "grit",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You enter the water slowly enough that the hidden current does not take your knees. Perrin climbs onto your shoulders with the muffled bell. On the bank Dena holds his face between both hands, then does what the column does for anyone pulled out of black water: a bottle of bitter tonic pressed into your palm, before she says one word about what you risked.",
+            "pressures": {
+              "fatigue": 8
+            },
+            "add_flags": [
+              "lr_perrin_rescued",
+              "lr_callback_region_2"
+            ],
+            "items": {
+              "bitter_tonic": 1
+            }
+          },
+          "failure": {
+            "text": "The drowned road drops beneath your second step. You reach the roof bruised and breathless, but the searchers have already seen the disturbance. Perrin returns with you while Dena’s column scatters into smaller, more vulnerable groups.",
+            "pressures": {
+              "health": -15,
+              "fatigue": 10
+            },
+            "add_flags": [
+              "lr_perrin_saved_column_scattered",
+              "lr_callback_region_2"
+            ]
+          }
+        },
+        {
+          "label": "Draw the searchers away",
+          "approach": "evade",
+          "check": {
+            "stat": "agility",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You break reeds along a false channel and let the searchers glimpse you twice. By the time they discover the deception, Perrin has crossed by rope and the column has vanished. Dena leaves a wrapped ration where your paths divide.",
+            "items": {
+              "ration_bar": 2
+            },
+            "add_flags": [
+              "lr_column_escaped",
+              "lr_callback_region_2"
+            ]
+          },
+          "failure": {
+            "text": "The searchers refuse the obvious trail and close around the chapel. Dena cuts the column’s baggage loose to create noise downstream. Perrin escapes, but medicine, blankets, and family records drift away beneath black water.",
+            "pressures": {
+              "fatigue": 6
+            },
+            "add_flags": [
+              "lr_column_stripped",
+              "lr_callback_region_2"
+            ]
+          }
+        },
+        {
+          "label": "Tell Dena to leave him",
+          "outcome": {
+            "text": "Dena studies you until the bell sounds again beneath its blanket. She orders the column onward and remains behind alone. Hours later, two muffled bells answer each other across the marsh; you never learn whether they mark reunion or farewell.",
+            "add_flags": [
+              "lr_dena_stayed",
+              "lr_callback_region_2"
+            ]
+          }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_column_refused",
+            "lr_column_doubts",
+            "lr_column_guarded"
+          ],
+          "text": "A boy stands on a drowned chapel roof, ringing a hand bell under a blanket so the sound travels only across the water. You find Dena's column by the bell; she watches you come through the reeds and gives no order about it. Figures are searching the opposite bank. She says the boy is her son, Perrin, posted there to draw the searchers from the families, and she says it to the water rather than to you. She asks you for nothing. The water around his roof has begun to move against the wind."
+        }
       ]
     },
     {
-      "id":"lr_siren_in_glass","title":"A Siren in the Glass","body":"A civil-defense siren lies half fused into the black plain. Dena’s people shelter behind its concrete base while a pilgrim patrol follows their footprints through the reflections. The old rotor could be made to scream once more, drawing the patrol away and every other listener toward the same point. Perrin rests one hand on the switch and waits for an adult to decide what his warning is worth.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"quiet_column","callback_region":4,"narrative_priority":9,
-      "eligibility":{"min_region_index":4,"max_region_index":4,"requires_any_flags":["lr_perrin_rescued","lr_perrin_saved_column_scattered","lr_column_escaped","lr_column_stripped","lr_dena_stayed"],"forbids_flags":["lr_callback_region_4"]},
-      "choices":[
-        {"label":"Carry the flare east","approach":"evade","check":{"stat":"agility","difficulty":"hard"},"success":{"text":"You fire Dena’s flare from a ridge far east, then descend before the patrol surrounds the light. The column crosses behind their backs. Dena leaves the flare gun and remaining shells with you, saying alarms belong to whoever chooses their cost.","items":{"flare_gun":1,"shotgun_shells":3},"add_flags":["lr_column_saved","lr_column_thread_complete","lr_callback_region_4"]},"failure":{"text":"The flare catches beneath an overhang and burns close enough to expose both routes. The column escapes by abandoning its carts while you crawl from the patrol’s search pattern with glass embedded through your outer layers.","pressures":{"health":-20,"fatigue":8},"add_flags":["lr_column_dispossessed","lr_column_thread_complete","lr_callback_region_4"]}},
-        {"label":"Sound the buried siren","approach":"technical","check":{"stat":"wits","difficulty":"desperate"},"success":{"text":"The rotor tears one enormous note from the glass. Reflections throw the sound in every direction, and the patrol divides after phantom columns. Perrin gives you the rebar spear he used as a grounding rod, its handle wrapped in bell cloth.","items":{"rebar_spear":1},"add_flags":["lr_column_warned_wastes","lr_column_thread_complete","lr_callback_region_4"]},"failure":{"text":"The first surge travels through the fused ground instead of the speaker. Everyone feels the vibration. The patrol changes direction at once, and Dena’s people flee separately while the dead siren smokes between them.","pressures":{"health":-15,"radiation":6},"add_conditions":["shaken"],"add_flags":["lr_column_broken","lr_column_thread_complete","lr_callback_region_4"]}},
-        {"label":"Keep the wastes quiet","outcome":{"text":"You disconnect the switch and help bury the bright metal beneath glass dust. Dena leads her people by the longest shadow, accepting the slower route. No alarm betrays them, and no warning reaches the travelers behind.","add_flags":["lr_column_hidden","lr_column_thread_complete","lr_callback_region_4"]}}
+      "id": "lr_siren_in_glass",
+      "title": "A Siren in the Glass",
+      "body": "A civil-defense siren lies half fused into the black plain, its rotor and switch still standing above the glass. Dena's people shelter behind the concrete base while a pilgrim patrol follows their footprints through the reflections. Dena has her flare gun broken open across her knee with one shell in it, the alarm she carries because she chooses when it screams. The buried rotor could be made to scream too, drawing the patrol and every other listener toward the same point. Perrin rests one hand on the switch and waits for an adult to decide what his warning is worth.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "quiet_column",
+      "callback_region": 4,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 4,
+        "max_region_index": 5,
+        "requires_any_flags": [
+          "lr_perrin_rescued",
+          "lr_perrin_saved_column_scattered",
+          "lr_column_escaped",
+          "lr_column_stripped",
+          "lr_dena_stayed"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_4"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Carry the flare east",
+          "approach": "evade",
+          "check": {
+            "stat": "agility",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You fire Dena’s flare from a ridge far east, then descend before the patrol surrounds the light. The column crosses behind their backs. Dena leaves the flare gun and remaining shells with you, saying alarms belong to whoever chooses their cost.",
+            "items": {
+              "flare_gun": 1,
+              "shotgun_shells": 3
+            },
+            "add_flags": [
+              "lr_column_saved",
+              "lr_callback_region_4"
+            ]
+          },
+          "failure": {
+            "text": "The flare catches beneath an overhang and burns close enough to expose both routes. The column escapes by abandoning its carts while you crawl from the patrol’s search pattern with glass embedded through your outer layers.",
+            "pressures": {
+              "health": -20,
+              "fatigue": 8
+            },
+            "add_flags": [
+              "lr_column_dispossessed",
+              "lr_callback_region_4"
+            ]
+          }
+        },
+        {
+          "label": "Sound the buried siren",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "desperate"
+          },
+          "success": {
+            "text": "The rotor tears one enormous note from the glass. Reflections throw the sound in every direction, and the patrol divides after phantom columns. Perrin gives you the rebar spear he used as a grounding rod, its handle wrapped in bell cloth.",
+            "items": {
+              "rebar_spear": 1
+            },
+            "add_flags": [
+              "lr_column_warned_wastes",
+              "lr_callback_region_4"
+            ]
+          },
+          "failure": {
+            "text": "The first surge travels through the fused ground instead of the speaker. Everyone feels the vibration. The patrol changes direction at once, and Dena’s people flee separately while the dead siren smokes between them.",
+            "pressures": {
+              "health": -15,
+              "radiation": 6
+            },
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_column_broken",
+              "lr_callback_region_4"
+            ]
+          }
+        },
+        {
+          "label": "Keep the wastes quiet",
+          "outcome": {
+            "text": "You disconnect the switch and help bury the bright metal beneath glass dust. Dena leads her people by the longest shadow, accepting the slower route. No alarm betrays them, and no warning reaches the travelers behind.",
+            "add_flags": [
+              "lr_column_hidden",
+              "lr_callback_region_4"
+            ]
+          }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_dena_stayed"
+          ],
+          "text": "A civil-defense siren lies half fused into the black plain, its rotor and switch still standing above the glass. Dena's people shelter behind the concrete base, and Perrin is with them, the bell cloth from the drowned chapel tied around his wrist. The two bells you heard across the marsh were the two of them finding each other. Dena has not said so. She has her flare gun broken open across her knee with one shell in it. A pilgrim patrol follows the column's footprints through the reflections. Perrin rests one hand on the rotor's switch and waits."
+        },
+        {
+          "requires_any_flags": [
+            "lr_siren_silenced"
+          ],
+          "text": "A civil-defense siren lies half fused into the black plain, its rotor and switch above the glass. Dena's people shelter behind the base while a pilgrim patrol follows their footprints through the reflections. Dena has her flare gun broken open across her knee with one shell in it. Perrin rests one hand on the rotor's switch. His mother has told him that you pulled the cutoff on Tower Six while it was still turning, and he asks, without looking away from the patrol, whether you are going to silence this one too or let it do what it is for."
+        }
       ]
     },
-
     {
-      "id":"lr_pharmacy_witness","title":"The Pharmacy Witness","body":"A young man has arranged medicine bottles across a salt-stained car hood, each labeled with a traveler’s name rather than a drug. He introduces himself as Lio Marr and asks about the gutted pharmacy in the outskirts. One bottle bears the name of the bandit leader. Another bears your callsign in fresh charcoal. Lio keeps both hands empty while he waits for your version.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"road_debt","callback_region":1,"narrative_priority":7,
-      "eligibility":{"min_region_index":1,"max_region_index":1,"requires_any_flags":["lr_bandit_leader_killed","lr_bandit_leader_disarmed","lr_bandits_escaped","lr_bandits_wounded_escape","lr_bandits_bluffed","lr_bandits_paid"],"forbids_flags":["lr_callback_region_1"]},
-      "choices":[
-        {"label":"Give Lio the whole account","approach":"social","check":{"stat":"presence","difficulty":"hard"},"success":{"text":"You include the fear, the angle of the bow, and what you took afterward. Lio moves one bottle from the dead to the uncertain. He does not forgive you; he decides your account deserves to remain beside the others.","add_flags":["lr_lio_believes","lr_callback_region_1"]},"failure":{"text":"You make yourself sound certain where memory is not. Lio catches the polish and closes his case. Before leaving, he turns your bottle label outward so the next traveler can read the warning he has chosen to write.","add_conditions":["shaken"],"add_flags":["lr_lio_accuses","lr_callback_region_1"]}},
-        {"label":"Ask what the gang recorded","approach":"investigate","check":{"stat":"wits","difficulty":"risky"},"success":{"text":"Lio shows you copied pages from a road ledger: payments, descriptions, and marks beside people selected for recruitment. Your encounter occupies half a line. Someone later added a symbol pointing toward the industrial yards.","add_flags":["lr_ledger_clue","lr_callback_region_1"]},"failure":{"text":"The labels form a code, but you mistake debts for deaths. Lio corrects you only after you name a living traveler as murdered. The error reveals how readily you converted strangers into evidence for your own story.","pressures":{"fatigue":4},"add_flags":["lr_ledger_misread","lr_callback_region_1"]}},
-        {"label":"Refuse to be judged","outcome":{"text":"You knock your bottle from the hood and watch it break without medicine inside. Lio writes nothing while you leave. The empty place in his arrangement becomes its own account, available to whoever reaches him next.","add_flags":["lr_lio_refused","lr_callback_region_1"]}}
+      "id": "lr_pharmacy_witness",
+      "title": "The Pharmacy Witness",
+      "body": "A young man has arranged medicine bottles across a salt-stained car hood, each labeled with a traveler's name rather than a drug. Three rows. He does not say what the rows mean, and the labels say it for him. He introduces himself as Lio Marr and asks about the gutted pharmacy in the outskirts, the one under the green cross.\n\nHe has heard about it already. A boy with a knife told him about a stranger who went through the stockroom and out through the delivery bay and did not stay to argue, and the boy told it as the story of someone who ran. One bottle on the hood bears the bandit leader's name. Another bears your callsign in fresh charcoal, in the middle row, with a space beside it on the hood where a bottle could go.\n\nLio keeps both hands empty and visible while he waits for your version. He has not asked you to sit.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "road_debt",
+      "callback_region": 1,
+      "narrative_priority": 7,
+      "eligibility": {
+        "min_region_index": 1,
+        "max_region_index": 2,
+        "requires_any_flags": [
+          "lr_bandit_leader_killed",
+          "lr_bandit_leader_disarmed",
+          "lr_bandits_escaped",
+          "lr_bandits_wounded_escape",
+          "lr_bandits_bluffed",
+          "lr_bandits_paid"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_1"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Give Lio the whole account",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You include the fear, the angle of the bow, and what happened afterward, and you stop where your memory stops instead of filling the gap. Lio listens with his head down. When you finish he leaves the leader's bottle in the middle row, because you saw her standing and he cannot say she still is, and he moves yours into the row nearest him, beside the accounts he has decided to keep.\n\nHe does not forgive you. He pushes one bottle across the hood: three tablets in cracked orange plastic, the property of a traveler he has confirmed dead, who will not need them now.",
+            "add_flags": [
+              "lr_lio_believes",
+              "lr_callback_region_1"
+            ],
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "lr_bandit_leader_killed"
+                ],
+                "text": "You include the fear, the angle of the bow, and what you took afterward, and you tell him how she died, and you stop where your memory stops instead of filling the gap. Lio listens with his head down. When you finish he moves her bottle into the row for the dead and draws nothing under the line already there. Then he moves yours into the row nearest him, beside the accounts he has decided to keep.\n\nHe does not forgive you. He pushes one bottle across the hood: three tablets in cracked orange plastic, the property of a traveler he has confirmed dead, who will not need them now."
+              },
+              {
+                "requires_any_flags": [
+                  "lr_bandit_leader_disarmed"
+                ],
+                "text": "You include the fear, the angle of the bow, and the moment the pistol came out of her belt into your hand, and you stop where your memory stops instead of filling the gap. Lio listens. When you finish he moves her bottle into the row for the living, because she was standing with her palms open when you left, and standing after, the boy says. Then he moves yours into the row nearest him.\n\nHe does not forgive you. He pushes one bottle across the hood: three tablets in cracked orange plastic, the property of a traveler he has confirmed dead, who will not need them now."
+              }
+            ],
+            "items": {
+              "painkillers": 1
+            }
+          },
+          "failure": {
+            "text": "You make yourself sound certain where memory is not, and the certainty is what he hears. Lio catches the polish and lets you go on for a while so you can hear it too. Then he closes his case.\n\nBefore he leaves, he turns your bottle so the label faces outward, where the next traveler to reach the hood can read the warning he has chosen to write beside your callsign. He does not say what the warning is. He puts the leader's bottle in his coat and takes it with him, and the space it leaves is the only thing on the hood that looks finished.",
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_lio_accuses",
+              "lr_callback_region_1"
+            ]
+          }
+        },
+        {
+          "label": "Ask what the gang recorded",
+          "approach": "investigate",
+          "check": {
+            "stat": "wits",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "Lio takes a fold of copied pages from inside his coat and opens them on the hood: a road ledger, kept by the gang in three hands. Payments. Descriptions. Marks beside the names of travelers selected for recruitment, and a different mark beside those who were not.\n\nYour encounter occupies half a line in the neatest of the hands. Someone later added a symbol beside it, a square with a chimney, pointing toward the industrial yards. Lio lets you read as long as you like and copies nothing for you. What you can carry away is what you can remember, and the symbol is easy to remember.",
+            "add_flags": [
+              "lr_ledger_clue",
+              "lr_callback_region_1"
+            ]
+          },
+          "failure": {
+            "text": "The labels form a code, and you work through it out loud, and you mistake the mark for debt for the mark for death. Lio lets you go on until you name a living traveler as murdered, a woman he spoke to four days ago at the tanker wrecks.\n\nHe corrects you once, quietly, and then says nothing while you take the pages back to the beginning. The error shows both of you how readily you converted strangers into evidence for your own story. By the time the code comes right the light has gone, and he has learned more from you than you have from him.",
+            "pressures": {
+              "fatigue": 4
+            },
+            "add_flags": [
+              "lr_ledger_misread",
+              "lr_callback_region_1"
+            ]
+          }
+        },
+        {
+          "label": "Refuse to be judged",
+          "outcome": {
+            "text": "You knock your bottle from the hood and watch it break on the salt without any medicine inside it. Lio does not flinch and does not reach for it. He writes nothing while you leave.\n\nThe empty place in his arrangement stays empty. He will not fill it with another name, because the space is now its own account, available to whoever reaches him next: a traveler with a callsign who arrived, was asked, and answered with broken glass. You hear him begin to move the other bottles as you walk, restoring the rows around the gap.",
+            "add_flags": [
+              "lr_lio_refused",
+              "lr_callback_region_1"
+            ]
+          }
+        },
+        {
+          "label": "Return the leader's pistol",
+          "approach": "social",
+          "requires": {
+            "flags": [
+              "lr_bandit_leader_disarmed"
+            ],
+            "items": {
+              "pipe_pistol": 1
+            },
+            "reason": "You do not carry her pistol",
+            "hidden_when_locked": true,
+            "forbids_flags": [
+              "lr_bandit_leader_killed"
+            ]
+          },
+          "costs": {
+            "items": {
+              "pipe_pistol": 1
+            }
+          },
+          "outcome": {
+            "text": "You take the pipe pistol out and set it on the hood beside her bottle, grip toward him. The pharmacy dust on the grip still holds the whole print of the hand that carried it before yours, and Lio knows that hand. He looks at the print and does not touch it.\n\nThen he moves her bottle into the row for the living, and yours beside it, and takes a fold of copied pages from his coat: the gang's road ledger, with a symbol beside your half-line pointing toward the industrial yards. The pistol stays on the hood. You keep the cartridges; he does not ask for them.",
+            "add_flags": [
+              "lr_lio_believes",
+              "lr_ledger_clue",
+              "lr_callback_region_1"
+            ]
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_bandit_leader_killed"
+          ],
+          "text": "A young man has arranged medicine bottles across a salt-stained car hood, each labeled with a traveler's name rather than a drug. Three rows. One bottle stands apart from all of them with its cap on and a line drawn under the name, in no row yet, and the name is the bandit leader's. He introduces himself as Lio Marr and says her name the way people say a name they have said all their lives.\n\nHe knows what happened at the pharmacy. A boy with a knife came out of the district a day behind you with the account, and the boy's version was short, because the fight was: close work, over inside a minute, a bow that never got its limb to the ledge. Lio has not decided whether to believe the boy. Another bottle bears your callsign in fresh charcoal, and it is in the middle row, between the living and the dead.\n\nHe keeps both hands empty and visible while he waits for your version. He does not ask you to sit."
+        },
+        {
+          "requires_any_flags": [
+            "lr_bandit_leader_disarmed"
+          ],
+          "text": "A young man has arranged medicine bottles across a salt-stained car hood, each labeled with a traveler's name rather than a drug. Three rows. The bandit leader's bottle stands upright in the row nearest him, and he touches it once while he introduces himself as Lio Marr.\n\nHe knows a stranger took a pistol out of her belt under the green cross, and that she let go of both weapons and stepped back with her palms open, and that she watched the stranger walk away with it. The boy who told him could describe the pipe frame and the pharmacy dust on the grip. Lio looks at your pack while he says this. The pharmacy dust on that grip held a whole print of the hand that carried it, the boy says, and a print like that can be read.\n\nAnother bottle bears your callsign in fresh charcoal. He keeps both hands empty and visible while he waits for your version, and he has not asked you to sit."
+        },
+        {
+          "requires_any_flags": [
+            "lr_bandits_wounded_escape"
+          ],
+          "text": "A young man has arranged medicine bottles across a salt-stained car hood, each labeled with a traveler's name rather than a drug. Three rows. He introduces himself as Lio Marr and asks about the gutted pharmacy in the outskirts, and while he asks he watches how you carry the strap of your pack, high on one side, away from the ribs.\n\nThe boy with the knife told him about a stranger who went over a refrigerator in the alley with their back to the window, and about the arrow that went after them. The boy did not know where it landed. Lio looks at where it landed. He does not ask you to show him. One bottle on the hood bears the bandit leader's name. Another bears your callsign in fresh charcoal, in the middle row.\n\nHe keeps both hands empty and visible while he waits for your version. Nobody died at the pharmacy, and he knows that too."
+        },
+        {
+          "requires_any_flags": [
+            "lr_bandits_paid",
+            "lr_bandits_bluffed"
+          ],
+          "text": "A young man has arranged medicine bottles across a salt-stained car hood, each labeled with a traveler's name rather than a drug. Three rows. He introduces himself as Lio Marr and asks about the gutted pharmacy in the outskirts, and while he asks he looks at your eyes and then at your hands, checking them against a list.\n\nThe boy with the knife recited your symptoms to him in the order the old quarantine posters use, and got the order right, and Lio has been waiting to see whether the stranger who claimed plague under the green cross would arrive coughing. You have not coughed. One bottle on the hood bears the bandit leader's name. Another bears your callsign in fresh charcoal, in the middle row, where he puts the people he cannot place.\n\nHe keeps both hands empty and visible while he waits for your version. Whatever you tell him, the boy's version got here first."
+        }
       ]
     },
     {
-      "id":"lr_bandit_ledger","title":"The Ledger Room","body":"The industrial payroll office has been converted into an archive of roadside theft. Names cover the walls in different hands. Lio stands beneath a ventilation fan, holding the pharmacy gang’s original ledger while former victims argue over whether to publish the routes, burn the evidence, or use it to reclaim what remains. Several entries describe caches that may still be occupied by people who bought protection.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"road_debt","callback_region":3,"narrative_priority":9,
-      "eligibility":{"min_region_index":3,"max_region_index":3,"requires_any_flags":["lr_lio_believes","lr_lio_accuses","lr_ledger_clue","lr_ledger_misread","lr_lio_refused"],"forbids_flags":["lr_callback_region_3"]},
-      "choices":[
-        {"label":"Read the ledger aloud","approach":"social","check":{"stat":"presence","difficulty":"hard"},"success":{"text":"You read every category, including the marks that do not support anyone’s preferred grievance. Anger loses its single direction. Lio gives copied pages to separate witnesses, making the truth harder to own and harder to erase.","add_flags":["lr_ledger_shared","lr_callback_region_3"]},"failure":{"text":"A name you pronounce belongs to a woman in the room. Her account contradicts the ledger, and the crowd hears your reading as another claim of authority. Lio closes the book before the argument becomes punishment.","add_conditions":["shaken"],"add_flags":["lr_ledger_disputed","lr_callback_region_3"]}},
-        {"label":"Follow the cache marks","approach":"navigation","check":{"stat":"wits","difficulty":"risky"},"success":{"text":"The cache symbols align with maintenance numbers painted beneath the loading bays. You recover supplies from an empty compartment and leave the occupied doors untouched. Lio records both the salvage and the restraint in the margin.","items":{"canned_meat":1,"clean_water":1},"add_flags":["lr_ledger_verified","lr_callback_region_3"]},"failure":{"text":"You open a marked room and find a family using it as a home. They recognize the ledger before they recognize Lio. Everyone lowers their hands eventually, but the family leaves with less faith in any written promise.","pressures":{"fatigue":5},"add_flags":["lr_cache_family_displaced","lr_callback_region_3"]}},
-        {"label":"Burn the pages","outcome":{"text":"Fire takes the routes first and the names last. Some victims thank you for ending the gang’s map; others watch the only record of their missing disappear. Lio saves one blackened corner bearing your callsign.","add_flags":["lr_ledger_burned","lr_callback_region_3"]}}
+      "id": "lr_bandit_ledger",
+      "title": "The Ledger Room",
+      "body": "The industrial payroll office has been converted into an archive of roadside theft. Names cover the walls in different hands. Lio stands beneath a ventilation fan, holding the pharmacy gang’s original ledger while former victims argue over whether to publish the routes, burn the evidence, or use it to reclaim what remains. Several entries describe caches that may still be occupied by people who bought protection.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "road_debt",
+      "callback_region": 3,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 3,
+        "max_region_index": 4,
+        "requires_any_flags": [
+          "lr_lio_believes",
+          "lr_lio_accuses",
+          "lr_ledger_clue",
+          "lr_ledger_misread",
+          "lr_lio_refused"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_3"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Read the ledger aloud",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You read every category, including the marks that do not support anyone’s preferred grievance. Anger loses its single direction. Lio gives copied pages to separate witnesses, making the truth harder to own and harder to erase.",
+            "add_flags": [
+              "lr_ledger_shared",
+              "lr_callback_region_3"
+            ]
+          },
+          "failure": {
+            "text": "A name you pronounce belongs to a woman in the room. Her account contradicts the ledger, and the crowd hears your reading as another claim of authority. Lio closes the book before the argument becomes punishment.",
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_ledger_disputed",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Follow the cache marks",
+          "approach": "navigation",
+          "check": {
+            "stat": "wits",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "The cache symbols align with maintenance numbers painted beneath the loading bays. You recover supplies from an empty compartment and leave the occupied doors untouched. Lio records both the salvage and the restraint in the margin.",
+            "items": {
+              "canned_meat": 1,
+              "clean_water": 1
+            },
+            "add_flags": [
+              "lr_ledger_verified",
+              "lr_callback_region_3"
+            ]
+          },
+          "failure": {
+            "text": "You open a marked room and find a family using it as a home. They recognize the ledger before they recognize Lio. Everyone lowers their hands eventually, but the family leaves with less faith in any written promise.",
+            "pressures": {
+              "fatigue": 5
+            },
+            "add_flags": [
+              "lr_cache_family_displaced",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Burn the pages",
+          "outcome": {
+            "text": "Fire takes the routes first and the names last. Some victims thank you for ending the gang’s map; others watch the only record of their missing disappear. Lio saves one blackened corner bearing your callsign.",
+            "add_flags": [
+              "lr_ledger_burned",
+              "lr_callback_region_3"
+            ]
+          }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_lio_refused"
+          ],
+          "text": "The industrial payroll office has been converted into an archive of roadside theft. Names cover the walls in different hands, and the first thing anyone entering reads is a labeled space with no account under it: your callsign, and beside it the date of a broken bottle. Lio stands beneath a ventilation fan holding the pharmacy gang's original ledger while former victims argue over whether to publish the routes, burn the evidence, or use it to reclaim what remains. Several of them look from the blank space to you. Several entries describe caches that may still be occupied."
+        },
+        {
+          "requires_any_flags": [
+            "lr_lio_accuses"
+          ],
+          "text": "The industrial payroll office has been converted into an archive of roadside theft. Names cover the walls in different hands. Yours is written near the door, facing outward the way Lio turned your bottle on the flats, with the warning he wrote then copied under it, and two former victims have put themselves between you and the ledger. Lio stands beneath a ventilation fan holding the pharmacy gang's original book while the room argues over whether to publish the routes, burn the evidence, or use it to reclaim what remains. Several entries describe caches that may still be occupied."
+        },
+        {
+          "requires_any_flags": [
+            "lr_ledger_clue"
+          ],
+          "text": "The industrial payroll office has been converted into an archive of roadside theft. The symbol beside your half-line in the copied pages, the square with a chimney, is painted on the door; this is the room it pointed to. Names cover the walls in different hands. Lio stands beneath a ventilation fan holding the pharmacy gang's original ledger while former victims argue over whether to publish the routes, burn the evidence, or use it to reclaim what remains. He nods to you as someone who already knows what the caches are, and several may still be occupied."
+        }
       ]
     },
     {
-      "id":"lr_last_toll","title":"The Last Toll","body":"A barrier spans the Underrail, built from pharmacy shutters and factory desks. Lio waits beside it with survivors named in the ledger. They stop armed travelers, compare their goods against recorded thefts, and return supplies when testimony agrees. The system has already become a court. A covered bundle behind Lio contains a rifle; a rack beside him holds simpler weapons taken from people who could not prove ownership.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"road_debt","callback_region":5,"narrative_priority":9,
-      "eligibility":{"min_region_index":5,"max_region_index":5,"requires_any_flags":["lr_ledger_shared","lr_ledger_disputed","lr_ledger_verified","lr_cache_family_displaced","lr_ledger_burned"],"forbids_flags":["lr_callback_region_5"]},
-      "choices":[
-        {"label":"Make the court name its limits","approach":"social","check":{"stat":"presence","difficulty":"desperate"},"success":{"text":"You force each judge to state what evidence would make them release a stranger. Contradictions surface before another pack is opened. Lio dismantles the permanent barrier and gives you the battered nail bat that served as its gavel.","items":{"nail_bat":1},"add_flags":["lr_road_court_limited","lr_road_debt_complete","lr_callback_region_5"]},"failure":{"text":"Your challenge sounds like protection for thieves to people who have buried too many victims. The court searches your pack under raised weapons. They return everything, but write your description into the next page of their ledger.","pressures":{"fatigue":7},"add_flags":["lr_road_court_hardened","lr_road_debt_complete","lr_callback_region_5"]}},
-        {"label":"Verify the rifle’s owner","approach":"investigate","check":{"stat":"wits","difficulty":"hard"},"success":{"text":"A repair scratch on the stock matches an entry describing a hunter robbed weeks ago. Lio admits the hunter is dead and offers the rifle to the person who proved its history. Three cartridges remain wrapped beneath the sling.","items":{"hunting_rifle":1,"rifle_rounds":3},"add_flags":["lr_road_record_preserved","lr_road_debt_complete","lr_callback_region_5"]},"failure":{"text":"You match the rifle to the wrong entry. A quiet woman identifies the true repair mark and asks why your confidence should outweigh hers. Lio returns the weapon to its cover, leaving ownership unresolved and your judgment diminished.","add_conditions":["shaken"],"add_flags":["lr_road_record_failed","lr_road_debt_complete","lr_callback_region_5"]}},
-        {"label":"Pass without testimony","outcome":{"text":"You surrender nothing and ask for nothing. Lio raises the barrier because the ledger contains no debt he can prove against you. The court continues behind your back, still useful, still dangerous, and no longer yours to influence.","add_flags":["lr_road_court_continues","lr_road_debt_complete","lr_callback_region_5"]}}
+      "id": "lr_last_toll",
+      "title": "The Last Toll",
+      "body": "A barrier spans the Underrail, built from pharmacy shutters and factory desks. Lio waits beside it with survivors named in the ledger. They stop armed travelers, compare their goods against recorded thefts, and return supplies when testimony agrees. The system has already become a court. A covered bundle behind Lio contains a rifle; a rack beside him holds simpler weapons taken from people who could not prove ownership.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "road_debt",
+      "callback_region": 5,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 6,
+        "requires_any_flags": [
+          "lr_ledger_shared",
+          "lr_ledger_disputed",
+          "lr_ledger_verified",
+          "lr_cache_family_displaced",
+          "lr_ledger_burned"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_5"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Make the court name its limits",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "desperate"
+          },
+          "success": {
+            "text": "You force each judge to state what evidence would make them release a stranger. Contradictions surface before another pack is opened. Lio dismantles the permanent barrier and gives you the battered nail bat that served as its gavel.",
+            "items": {
+              "nail_bat": 1
+            },
+            "add_flags": [
+              "lr_road_court_limited",
+              "lr_callback_region_5"
+            ]
+          },
+          "failure": {
+            "text": "Your challenge sounds like protection for thieves to people who have buried too many victims. The court searches your pack under raised weapons. They return everything, but write your description into the next page of their ledger.",
+            "pressures": {
+              "fatigue": 7
+            },
+            "add_flags": [
+              "lr_road_court_hardened",
+              "lr_callback_region_5"
+            ]
+          }
+        },
+        {
+          "label": "Verify the rifle’s owner",
+          "approach": "investigate",
+          "check": {
+            "stat": "wits",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "A repair scratch on the stock matches an entry describing a hunter robbed weeks ago. Lio admits the hunter is dead and offers the rifle to the person who proved its history. Three cartridges remain wrapped beneath the sling.",
+            "items": {
+              "hunting_rifle": 1,
+              "rifle_rounds": 3
+            },
+            "add_flags": [
+              "lr_road_record_preserved",
+              "lr_callback_region_5"
+            ]
+          },
+          "failure": {
+            "text": "You match the rifle to the wrong entry. A quiet woman identifies the true repair mark and asks why your confidence should outweigh hers. Lio returns the weapon to its cover, leaving ownership unresolved and your judgment diminished.",
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_road_record_failed",
+              "lr_callback_region_5"
+            ]
+          }
+        },
+        {
+          "label": "Pass without testimony",
+          "outcome": {
+            "text": "You surrender nothing and ask for nothing. Lio raises the barrier because the ledger contains no debt he can prove against you. The court continues behind your back, still useful, still dangerous, and no longer yours to influence.",
+            "add_flags": [
+              "lr_road_court_continues",
+              "lr_callback_region_5"
+            ]
+          }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_ledger_verified"
+          ],
+          "text": "A barrier spans the Underrail, built from pharmacy shutters and factory desks. Lio waits beside it with survivors named in the ledger, and the ledger is open on a desk to the margin where he recorded your salvage and your restraint at the occupied doors. Nobody has searched your pack. The court reads that margin aloud before it asks you anything, and because you have handled the cache marks, the question of the rifle in the covered bundle behind Lio is offered to you first. A rack beside him holds weapons taken from people who could not prove ownership."
+        },
+        {
+          "requires_any_flags": [
+            "lr_ledger_shared"
+          ],
+          "text": "A barrier spans the Underrail, built from pharmacy shutters and factory desks. Lio waits beside it with survivors named in the ledger, and three of them hold copies of it, the ones you read aloud. No entry can be quietly revised now; every reading is checked against two other hands before the court accepts it, and one copy lies open on the desk in front of you. They stop armed travelers and compare goods against recorded thefts. A covered bundle behind Lio contains a rifle. A rack beside him holds weapons taken from people who could not prove ownership."
+        },
+        {
+          "requires_any_flags": [
+            "lr_ledger_burned"
+          ],
+          "text": "A barrier spans the Underrail, built from pharmacy shutters and factory desks. Lio waits beside it with survivors named in a ledger that no longer exists; they work from memory, and memory argues with itself. The only written thing on the desk is a blackened corner of paper under a shard of glass, and it bears your callsign, the scrap he saved from your fire. They still stop armed travelers and weigh goods against thefts recalled aloud. A covered bundle behind Lio contains a rifle. A rack beside him holds weapons taken from people who could not prove ownership."
+        }
       ]
     },
-
     {
-      "id":"lr_cup_passed_east","title":"The Cup Passed East","body":"Workers have set chipped cups beneath a pipe that should carry only steam. Clear water falls from it in patient drops. Iven Saye, a former pump technician, says the marsh filter is feeding an old industrial line. Armed scavengers have noticed the same miracle and marked the valve with their colors. Iven asks whether clean water belongs to the hands that restored it, the mouths that need it, or whoever can defend the pipe.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"water_commons","callback_region":3,"narrative_priority":7,
-      "eligibility":{"min_region_index":3,"max_region_index":3,"requires_any_flags":["lr_filter_repaired","lr_filter_poisoned","lr_filter_stripped","lr_filter_broken"],"forbids_flags":["lr_callback_region_3"]},
-      "choices":[
-        {"label":"Keep the line public","approach":"social","check":{"stat":"presence","difficulty":"hard"},"success":{"text":"You make each group name the people who will drink before the people who will guard. The scavengers accept measured shares rather than ownership. Iven scratches a schedule onto the wall where anyone can challenge it.","items":{"clean_water":2},"add_flags":["lr_water_shared","lr_callback_region_3"]},"failure":{"text":"The argument becomes a count of weapons. Families retreat while the scavengers appoint themselves keepers of the valve. Iven fills one bottle for you before the new guards decide even that is theft.","items":{"clean_water":1},"add_flags":["lr_water_claimed","lr_callback_region_3"]}},
-        {"label":"Trace the eastern pipe","approach":"technical","check":{"stat":"wits","difficulty":"risky"},"success":{"text":"The line continues beneath the glass fields toward an emergency reservoir. Iven copies the service marks and warns that opening the distant valves may drain every cup here. Knowledge creates a second dispute before the first is settled.","add_flags":["lr_water_route_known","lr_callback_region_3"]},"failure":{"text":"A pressure seam opens under your tool and hurls contaminated scale across the room. Iven closes the valve before the clear flow is lost, but your skin burns where the old pipe’s residue found it.","pressures":{"health":-10,"radiation":6},"add_flags":["lr_water_line_damaged","lr_callback_region_3"]}},
-        {"label":"Take water and leave","outcome":{"text":"You fill what you can carry while the argument remains words. Iven watches every bottle and says nothing. When the first weapon is raised behind you, the sound resembles a valve struck with a wrench.","items":{"clean_water":2},"add_flags":["lr_water_taken","lr_callback_region_3"]}}
+      "id": "lr_cup_passed_east",
+      "title": "The Cup Passed East",
+      "body": "Workers have set chipped cups beneath a pipe that should carry only steam, and clear water falls from it in patient drops, one every few breaths, each one counted by somebody. Iven Saye, a former pump technician, says the marsh filter station is feeding an old industrial line, and he has been up to the station since. He describes it exactly: an empty mount on the second stage, a pump lying in four feet of black water beneath it, and blood dried on the walkway grating where somebody's knuckles went under the casing. The live line is running on one pump, with nothing to replace it when it fails.\n\nArmed scavengers have noticed the same miracle and marked the valve with their colors. Iven asks whether clean water belongs to the hands that restored it, the mouths that need it, or whoever can defend the pipe. He asks it of you, because you came from the marsh.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "water_commons",
+      "callback_region": 3,
+      "narrative_priority": 7,
+      "eligibility": {
+        "min_region_index": 3,
+        "max_region_index": 4,
+        "requires_any_flags": [
+          "lr_filter_repaired",
+          "lr_filter_poisoned",
+          "lr_filter_stripped",
+          "lr_filter_broken"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_3"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Keep the line public",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You make each group name the people who will drink before the people who will guard, and you make them say it in front of the cups. The scavengers say their names last and quietest. By the end they have accepted measured shares rather than ownership, because ownership would have meant fighting the workers in a room full of witnesses who now know their names.\n\nIven scratches a schedule onto the wall beside the pipe where anyone can challenge it. Your bottles fill under the first line of it, three of them, in the order the schedule says, and nobody raises a hand while it happens.",
+            "items": {
+              "clean_water": 3
+            },
+            "add_flags": [
+              "lr_water_shared",
+              "lr_callback_region_3"
+            ]
+          },
+          "failure": {
+            "text": "The argument becomes a count of weapons before it becomes anything else, and the count is not close. Families retreat from the pipe with their cups still empty while the scavengers appoint themselves keepers of the valve and paint a second ring of their color below the first.\n\nIven fills one bottle for you at the outlet, quickly, before the new guards decide even that is theft, and hands it to you without looking away from the valve. He stays. Someone has to keep the count of who drank and who did not, he says, for whenever the count matters.",
+            "items": {
+              "clean_water": 1
+            },
+            "add_flags": [
+              "lr_water_claimed",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Trace the eastern pipe",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You trace the line east with your hand on the pipe, reading the joints, and it does not stop at the yards. It continues beneath the glass fields toward something the service marks call an emergency reservoir, cut into the ground before the Burning for a city that no longer needs it.\n\nIven copies the marks into the margin of his own notes and then stops, because he can see what they mean. Opening the distant valves may drain every cup here to fill a tank nobody has seen. Knowledge creates a second dispute before the first is settled, and both of you now carry it.",
+            "add_flags": [
+              "lr_water_route_known",
+              "lr_callback_region_3"
+            ]
+          },
+          "failure": {
+            "text": "A pressure seam opens under your tool with a sound like cloth tearing and hurls contaminated scale across the room in a fan. Iven is at the valve before you have finished falling and closes it before the clear flow is lost, but the scale has already found your face and forearms, and it burns wherever the old pipe's residue reached skin.\n\nThe drip resumes, slower. Iven says nothing about the seam. He wraps your arms with a strip of his own shirt and marks the damaged joint on the wall so that whoever repairs it will know it was touched.",
+            "pressures": {
+              "health": -10,
+              "radiation": 6
+            },
+            "add_flags": [
+              "lr_water_line_damaged",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Take water and leave",
+          "outcome": {
+            "text": "You fill what you can carry while the argument remains words, two bottles at the public outlet, and you do not hurry, because hurrying is what a thief does. Iven watches every bottle. He says nothing, and he does not write anything down, which you understand is worse.\n\nYou are at the door when the first weapon comes up behind you. The sound it makes is a valve struck once with a wrench, sharp and flat, and it is not aimed at you. The argument has ended and you are carrying its first cost out into the yard.",
+            "items": {
+              "clean_water": 2
+            },
+            "add_flags": [
+              "lr_water_taken",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Fit the stripped housing back",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "favorable"
+          },
+          "requires": {
+            "flags": [
+              "lr_filter_stripped"
+            ],
+            "items": {
+              "scrap_parts": 2
+            },
+            "reason": "You have no housing to fit back",
+            "hidden_when_locked": true
+          },
+          "costs": {
+            "items": {
+              "scrap_parts": 2
+            }
+          },
+          "success": {
+            "text": "You take the gears and the wound wire out of your pack and set them into the empty second stage in the order they came out, and Iven times the coupling by ear while you seat the housing. The stutter in the drip stops. Two pumps share the load, and the line steadies into a stream that fills a cup while a name is said.\n\nThe scavengers' color loses its meaning in front of everyone, because there is enough now to schedule, and Iven scratches the schedule onto the wall with the returned part named at the top of it. One bottle fills for you from the first full cycle.",
+            "items": {
+              "clean_water": 1
+            },
+            "add_flags": [
+              "lr_water_shared",
+              "lr_callback_region_3"
+            ]
+          },
+          "failure": {
+            "text": "The housing seats a thread off true, and under pressure the second stage finds the fault at once. A seam opens beside the coupling with a sound like cloth tearing and throws contaminated scale across the room. Iven closes the valve before the clear flow is lost, but the scale has found your face and forearms, and the burn arrives after the shock does.\n\nThe gears are in the line now, and wrong. Iven marks the joint on the wall and says nothing about the return, which was the right thing to attempt, badly done in front of people who needed it done well.",
+            "pressures": {
+              "health": -10,
+              "radiation": 6
+            },
+            "add_flags": [
+              "lr_water_line_damaged",
+              "lr_callback_region_3"
+            ]
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_filter_repaired"
+          ],
+          "text": "Workers have set chipped cups beneath a pipe that should carry only steam, and clear water falls from it in a thin steady stream that fills a cup in the time it takes to say a name. Iven Saye, a former pump technician, says the marsh filter station is feeding an old industrial line, and he has been up to the station since. Somebody cleared the intake screen and reset the stages in order, he says, working backward from the intake instead of forcing the last pump to carry the whole line. He can tell from the pressure. He can tell from the flat mineral taste of water pushed through sand, which is in every cup here.\n\nArmed scavengers have noticed the same miracle and marked the valve with their colors, because a line this strong is worth owning. Iven asks whether clean water belongs to the hands that restored it, the mouths that need it, or whoever can defend the pipe. He asks it of you, and waits."
+        },
+        {
+          "requires_any_flags": [
+            "lr_filter_stripped"
+          ],
+          "text": "Workers have set chipped cups beneath a pipe that should carry only steam, and clear water falls from it in drops that come in runs and then stop, come and stop, each pause long enough for the cups to be counted. Iven Saye, a former pump technician, says the marsh filter station is feeding an old industrial line on one pump. The second-stage housing was lifted off its brace, he says. The gears and the wound wire went with whoever lifted it, and the bolts were left on the walkway in a row, which is not how a thief leaves bolts. The stutter in the drip is the single pump cycling with nothing to share the load.\n\nThe gears went east in a stranger's pack, he says. Armed scavengers have marked the valve with their colors. Iven asks whether clean water belongs to the hands that restored it, the mouths that need it, or whoever can defend the pipe, and he asks it of you, looking at the pack."
+        },
+        {
+          "requires_any_flags": [
+            "lr_filter_poisoned"
+          ],
+          "text": "Workers have set chipped cups beneath a pipe that should carry only steam, and water falls from it in patient drops with a rust edge to their color that nobody here is pretending not to see. Iven Saye, a former pump technician, says the marsh filter station is feeding an old industrial line, and it should not be. The coupling on the second stage parted under renewed pressure and the line was shut at both ends; somebody since has reopened it badly, rag and wire around the coupling, and a taste of the untreated draw is getting through with the clean; it can be drunk, he says, and it should not have to be. He will not call the line repaired until someone owns the repair.\n\nArmed scavengers have noticed the flow and marked the valve with their colors; they do not care what color the water is. Iven asks whether clean water belongs to the hands that restored it, the mouths that need it, or whoever can defend the pipe. He asks it of you last."
+        }
       ]
     },
     {
-      "id":"lr_thirst_court","title":"The Thirst Court","body":"Three cistern carts form a triangle on the glass, each guarded by people carrying the same blue valve mark. Iven stands in the center while settlement delegates accuse one another of taking more than their recorded share. Beneath them, the emergency reservoir ticks as it cools. Opening it fully would supply everyone today and leave the Underrail line uncertain tomorrow. Keeping it restricted may turn the guards into rulers before sunset.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"water_commons","callback_region":4,"narrative_priority":9,
-      "eligibility":{"min_region_index":4,"max_region_index":4,"requires_any_flags":["lr_water_shared","lr_water_claimed","lr_water_route_known","lr_water_line_damaged","lr_water_taken"],"forbids_flags":["lr_callback_region_4"]},
-      "choices":[
-        {"label":"Audit every cistern","approach":"investigate","check":{"stat":"wits","difficulty":"hard"},"success":{"text":"Evaporation explains less of the shortage than the guards claimed. Hidden compartments hold water reserved for their own crossing. Iven opens the panels before every delegate, turning suspicion into evidence and evidence into a fragile new agreement.","items":{"clean_water":1},"add_flags":["lr_water_theft_exposed","lr_callback_region_4"]},"failure":{"text":"Heat has warped the gauges differently, and your measurements accuse the wrong cart. A delegate breaks the seal to prove its level, spilling precious water across glass too hot to recover it.","pressures":{"fatigue":6},"add_conditions":["shaken"],"add_flags":["lr_water_audit_failed","lr_callback_region_4"]}},
-        {"label":"Open the reservoir fully","approach":"force","check":{"stat":"strength","difficulty":"risky"},"success":{"text":"The wheel resists until rust breaks in a red ring around the stem. Water enters all three carts at once. The abundance ends today’s court, though Iven quietly marks how fast the reservoir level falls.","items":{"clean_water":2},"add_flags":["lr_water_released","lr_callback_region_4"]},"failure":{"text":"The stem shears before the gate lifts. Iven seals the opening with cloth and resin while the delegates watch their future leak into fused soil. Nobody draws a weapon because every hand is needed.","pressures":{"fatigue":8},"add_flags":["lr_reservoir_broken","lr_callback_region_4"]}},
-        {"label":"Reserve water for the Underrail","outcome":{"text":"You support Iven’s least popular calculation. The surface settlements receive strict portions while an eastern valve remains closed for people none of them can see. The delegates leave calling it prudence, theft, and faith in equal measure.","add_flags":["lr_underrail_water_reserved","lr_callback_region_4"]}}
+      "id": "lr_thirst_court",
+      "title": "The Thirst Court",
+      "body": "Three cistern carts form a triangle on the glass, each guarded by people carrying the same blue valve mark. Iven stands in the center while settlement delegates accuse one another of taking more than their recorded share. Beneath them, the emergency reservoir ticks as it cools. Opening it fully would supply everyone today and leave the Underrail line uncertain tomorrow. Keeping it restricted may turn the guards into rulers before sunset.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "water_commons",
+      "callback_region": 4,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 4,
+        "max_region_index": 5,
+        "requires_any_flags": [
+          "lr_water_shared",
+          "lr_water_claimed",
+          "lr_water_route_known",
+          "lr_water_line_damaged",
+          "lr_water_taken"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_4"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Audit every cistern",
+          "approach": "investigate",
+          "check": {
+            "stat": "wits",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "Evaporation explains less of the shortage than the guards claimed. Hidden compartments under the cart floors hold water reserved for their own crossing, and a sealed purifier ampoule with it. Iven opens the panels before every delegate, turning suspicion into evidence and evidence into a fragile new agreement, and the ampoule goes into your hand as the audit's fee.",
+            "items": {
+              "clean_water": 1,
+              "purifier_ampoule": 1
+            },
+            "add_flags": [
+              "lr_water_theft_exposed",
+              "lr_callback_region_4"
+            ]
+          },
+          "failure": {
+            "text": "Heat has warped the gauges differently, and your measurements accuse the wrong cart. A delegate breaks the seal to prove its level, spilling precious water across glass too hot to recover it.",
+            "pressures": {
+              "fatigue": 6
+            },
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_water_audit_failed",
+              "lr_callback_region_4"
+            ]
+          }
+        },
+        {
+          "label": "Open the reservoir fully",
+          "approach": "force",
+          "check": {
+            "stat": "strength",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "The wheel resists until rust breaks in a red ring around the stem. Water enters all three carts at once. The abundance ends today’s court, though Iven quietly marks how fast the reservoir level falls.",
+            "items": {
+              "clean_water": 2
+            },
+            "add_flags": [
+              "lr_water_released",
+              "lr_callback_region_4"
+            ]
+          },
+          "failure": {
+            "text": "The stem shears before the gate lifts. Iven seals the opening with cloth and resin while the delegates watch their future leak into fused soil. Nobody draws a weapon because every hand is needed.",
+            "pressures": {
+              "fatigue": 8
+            },
+            "add_flags": [
+              "lr_reservoir_broken",
+              "lr_callback_region_4"
+            ]
+          }
+        },
+        {
+          "label": "Reserve water for the Underrail",
+          "outcome": {
+            "text": "You support Iven’s least popular calculation. The surface settlements receive strict portions while an eastern valve remains closed for people none of them can see. The delegates leave calling it prudence, theft, and faith in equal measure.",
+            "add_flags": [
+              "lr_underrail_water_reserved",
+              "lr_callback_region_4"
+            ]
+          }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_water_taken"
+          ],
+          "text": "Three cistern carts form a triangle on the glass, each guarded by people carrying the same blue valve mark. Iven stands in the center while settlement delegates accuse one another of taking more than their recorded share, and one delegate has a description ready of a stranger who filled two bottles at the industrial pipe while the argument was still words and walked out under a raised weapon. He looks at you. Iven says nothing. Beneath them the emergency reservoir ticks as it cools; opening it fully supplies everyone today and leaves the Underrail line uncertain tomorrow."
+        },
+        {
+          "requires_any_flags": [
+            "lr_water_route_known"
+          ],
+          "text": "Three cistern carts form a triangle on the glass, each guarded by people carrying the same blue valve mark. Iven stands in the center with the service marks you traced beneath the industrial yards copied onto the side of a cart; this reservoir is here because you followed the pipe to it, and every delegate knows whose reading brought them. They accuse one another of taking more than their recorded share and look to you. Beneath them the emergency reservoir ticks as it cools. Opening it fully would supply everyone today and leave the Underrail line uncertain tomorrow."
+        }
       ]
     },
     {
-      "id":"lr_valve_below","title":"The Valve Below","body":"The Underrail pipe ends above a settlement of tarps and platform benches. Its valve is dry. Iven has arrived ahead of you with the last technicians, pursued by guards who still claim the blue mark as authority. Families hold empty cups beneath the outlet anyway. The decision made on the glass has reached people who never knew a court existed, and they look to Iven as though he personally withheld the water.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"water_commons","callback_region":5,"narrative_priority":9,
-      "eligibility":{"min_region_index":5,"max_region_index":5,"requires_any_flags":["lr_water_theft_exposed","lr_water_audit_failed","lr_water_released","lr_reservoir_broken","lr_underrail_water_reserved"],"forbids_flags":["lr_callback_region_5"]},
-      "choices":[
-        {"label":"Defend the common valve","approach":"social","check":{"stat":"presence","difficulty":"desperate"},"success":{"text":"You make the guards remove their blue marks before joining the repair line. When water finally strikes the first cup, nobody is permitted a second until every person has one. Iven gives you the tire armor worn by the former valve captain.","items":{"tire_armor":1},"add_flags":["lr_water_common_founded","lr_water_thread_complete","lr_callback_region_5"]},"failure":{"text":"The guards accept shared labor but not shared authority. Water returns beneath their weapons, portioned by names they recognize. Iven remains to contest each measure, already becoming the troublesome conscience of another institution.","add_flags":["lr_water_guarded_state","lr_water_thread_complete","lr_callback_region_5"]}},
-        {"label":"Rebuild the pressure bypass","approach":"technical","check":{"stat":"wits","difficulty":"hard"},"success":{"text":"You route the remaining pressure through parallel maintenance lines, making one guarded valve useless as a throne. Iven laughs once when three outlets begin dripping. He gives you a scavenger rig emptied of the tools he leaves behind.","items":{"scavenger_rig":1},"add_flags":["lr_water_decentralized","lr_water_thread_complete","lr_callback_region_5"]},"failure":{"text":"The bypass wakes a corroded line beneath the settlement. Steam lifts the tarps and drives everyone back. You close it before anyone dies, but the repair consumes the last seals and leaves one valve controlling the future again.","pressures":{"health":-15,"fatigue":8},"add_flags":["lr_water_single_valve","lr_water_thread_complete","lr_callback_region_5"]}},
-        {"label":"Leave them the argument","outcome":{"text":"You place your empty cup beneath the dry outlet, then set it down and continue east. Iven understands the gesture but not the departure. Behind you, the settlement begins deciding who will stay to repair what everyone needs.","add_flags":["lr_water_abandoned","lr_water_thread_complete","lr_callback_region_5"]}}
+      "id": "lr_valve_below",
+      "title": "The Valve Below",
+      "body": "The Underrail pipe ends above a settlement of tarps and platform benches. Its valve is dry. Iven has arrived ahead of you with the last technicians, pursued by guards who still claim the blue mark as authority. Families hold empty cups beneath the outlet anyway. The decision made on the glass has reached people who never knew a court existed, and they look to Iven as though he personally withheld the water.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "water_commons",
+      "callback_region": 5,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 6,
+        "requires_any_flags": [
+          "lr_water_theft_exposed",
+          "lr_water_audit_failed",
+          "lr_water_released",
+          "lr_reservoir_broken",
+          "lr_underrail_water_reserved"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_5"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Defend the common valve",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "desperate"
+          },
+          "success": {
+            "text": "You make the guards remove their blue marks before joining the repair line. When water finally strikes the first cup, nobody is permitted a second until every person has one. Iven gives you the tire armor worn by the former valve captain.",
+            "items": {
+              "tire_armor": 1
+            },
+            "add_flags": [
+              "lr_water_common_founded",
+              "lr_callback_region_5"
+            ]
+          },
+          "failure": {
+            "text": "The guards accept shared labor but not shared authority. Water returns beneath their weapons, portioned by names they recognize. Iven remains to contest each measure, already becoming the troublesome conscience of another institution.",
+            "add_flags": [
+              "lr_water_guarded_state",
+              "lr_callback_region_5"
+            ]
+          }
+        },
+        {
+          "label": "Rebuild the pressure bypass",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You route the remaining pressure through parallel maintenance lines, making one guarded valve useless as a throne. Iven laughs once when three outlets begin dripping. He gives you a scavenger rig emptied of the tools he leaves behind.",
+            "items": {
+              "scavenger_rig": 1
+            },
+            "add_flags": [
+              "lr_water_decentralized",
+              "lr_callback_region_5"
+            ]
+          },
+          "failure": {
+            "text": "The bypass wakes a corroded line beneath the settlement. Steam lifts the tarps and drives everyone back. You close it before anyone dies, but the repair consumes the last seals and leaves one valve controlling the future again.",
+            "pressures": {
+              "health": -15,
+              "fatigue": 8
+            },
+            "add_flags": [
+              "lr_water_single_valve",
+              "lr_callback_region_5"
+            ]
+          }
+        },
+        {
+          "label": "Leave them the argument",
+          "outcome": {
+            "text": "You place your empty cup beneath the dry outlet, then set it down and continue east. Iven understands the gesture but not the departure. Behind you, the settlement begins deciding who will stay to repair what everyone needs.",
+            "add_flags": [
+              "lr_water_abandoned",
+              "lr_callback_region_5"
+            ]
+          }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_underrail_water_reserved"
+          ],
+          "text": "The Underrail pipe ends above a settlement of tarps and platform benches, and its valve is dry. The water you reserved on the glass is behind it. Iven has carried the reservoir gauge down with him and it reads pressure on the far side of the closed valve, the eastern portion nobody could see, held now by guards who still claim the blue mark as authority. The first thing the reservation ever reached is a valve somebody else is holding shut. Families hold empty cups beneath the outlet, and they look to Iven as though he withheld the water."
+        },
+        {
+          "requires_any_flags": [
+            "fixed_platform_pump"
+          ],
+          "text": "The Underrail pipe ends above a settlement of tarps and platform benches, and its valve is dry, but nobody here is thirsty tonight. The platform taps along the far wall are running from the pump you repaired for the council, and Iven has already traced the flow back to your work and says so. Guards still claim the blue mark as authority over the main valve. The argument has changed shape: not whether anyone drinks, but who owns the outlet when the platform pump fails, and people look to Iven as though he could decide it."
+        },
+        {
+          "requires_any_flags": [
+            "lr_filter_repaired"
+          ],
+          "text": "The Underrail pipe ends above a settlement of tarps and platform benches. Its valve is dry, but the pipe above it ticks with pressure, the line you restarted at the marsh filter reaching this far east through every region between. The valve is shut by hand, not by drought. Iven has arrived ahead of you with the last technicians, pursued by guards who still claim the blue mark as authority, and families hold empty cups beneath the outlet while water they can hear presses against the closed gate. They look to Iven as though he personally withheld it."
+        }
       ]
     },
-
     {
-      "id":"lr_embers_in_rain","title":"Embers in Rain","body":"A covered cooking fire glows on a platform above the marsh. The traveler from the Salt Flats sits beside it, now surrounded by six people and one empty bedroll. She calls herself Noma and remembers exactly where you stood beyond her earlier firelight. Black rain has trapped the group here, while a sick passenger asks to be carried to a clinic that may already be flooded.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"nightfire_caravan","callback_region":2,"narrative_priority":7,
-      "eligibility":{"min_region_index":2,"max_region_index":2,"requires_any_flags":["lr_nightfire_shared","lr_nightfire_robbed","lr_nightfire_passed","lr_nightfire_spooked"],"forbids_flags":["lr_callback_region_2"]},
-      "choices":[
-        {"label":"Carry the sick traveler","approach":"force","check":{"stat":"strength","difficulty":"hard"},"success":{"text":"You and Noma carry the bedroll between two poles, matching steps over drowned pavement. The clinic is ruined, but its upper cabinet still holds tonic. Noma divides the medicine before she divides her thanks.","items":{"bitter_tonic":1},"pressures":{"fatigue":8},"add_flags":["lr_caravan_patient_helped","lr_callback_region_2"]},"failure":{"text":"The rear pole splits above a flooded stair. You catch the traveler before the water does, wrenching your shoulder in the effort. Noma turns the group back and spends the night keeping fever from becoming panic.","pressures":{"health":-10,"fatigue":10},"add_conditions":["sprain"],"add_flags":["lr_caravan_patient_delayed","lr_callback_region_2"]}},
-        {"label":"Search for medicine alone","approach":"medical","check":{"stat":"wits","difficulty":"risky"},"success":{"text":"You enter through the clinic roof and find tablets sealed inside a specimen drawer. The patient’s breathing eases before dawn. Noma adds your name to the caravan’s spoken list of people entitled to a fire.","items":{"painkillers":1},"add_flags":["lr_caravan_debt_owed","lr_callback_region_2"]},"failure":{"text":"The labels have bled into colored ghosts. You return with nothing safe to administer, and the patient worsens while waiting for your certainty. Noma does not blame you, which makes the silence harder to carry.","add_conditions":["shaken"],"add_flags":["lr_caravan_patient_worse","lr_callback_region_2"]}},
-        {"label":"Decline the empty bedroll","outcome":{"text":"You remain only long enough for the rain to soften. Noma offers no food and asks no favor. When you leave, someone folds the unused bedroll into the group’s baggage, preserving a place you chose not to occupy.","pressures":{"fatigue":-4},"add_flags":["lr_caravan_distance_kept","lr_callback_region_2"]}}
+      "id": "lr_embers_in_rain",
+      "title": "Embers in Rain",
+      "body": "A covered cooking fire glows on a platform above the marsh, inside a wheel rim, the way it was laid on the salt. The woman beside it is Noma. The last time you were near her fire, a crust broke under your boot and both of you went into the dark and stayed there, two shapes who had each decided the other might be a problem, and she says so now, without heat, as a fact about the road.\n\nSix people share the platform with her. One bedroll lies empty on the far side of the fire, unrolled, and has been since the flats. Black rain has trapped the group here, and under a tarp at the platform's edge a sick passenger asks, between breaths, to be carried to a clinic across the water that may already be flooded. Noma keeps a spoken list of who is entitled to her fire. She says your name is not on it, and that this is not a judgment, only an inventory.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "nightfire_caravan",
+      "callback_region": 2,
+      "narrative_priority": 7,
+      "eligibility": {
+        "min_region_index": 2,
+        "max_region_index": 3,
+        "requires_any_flags": [
+          "lr_nightfire_shared",
+          "lr_nightfire_robbed",
+          "lr_nightfire_passed",
+          "lr_nightfire_spooked"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_2"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Carry the sick traveler",
+          "approach": "force",
+          "check": {
+            "stat": "strength",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You and Noma carry the bedroll between two poles, matching steps over drowned pavement with the patient's weight swinging between you, and the rain finds every gap in your coat. The clinic is ruined, its ground floor a black pool, but the upper cabinet still holds bitter tonic in sealed brown bottles.\n\nNoma divides the medicine before she divides her thanks: one bottle to the patient, one into your hand, the rest into the caravan's tin. Your shoulders will remember the poles for a day. The patient's breathing is easier by the time you get back to the fire, and Noma says your name into the list.",
+            "items": {
+              "bitter_tonic": 1
+            },
+            "pressures": {
+              "fatigue": 8
+            },
+            "add_flags": [
+              "lr_caravan_patient_helped",
+              "lr_callback_region_2"
+            ]
+          },
+          "failure": {
+            "text": "The rear pole splits above a flooded stair. You catch the traveler before the water does and your shoulder takes the whole weight at the wrong angle, and something in it gives with a sound you feel in your teeth.\n\nNoma gets the patient back onto the bedroll on the landing and turns the group around. The clinic stays where it is, unreached, and the night goes into keeping a fever from becoming a panic, with your arm strapped across your chest and Noma taking your turn at the watch as well as her own. She does not call it a debt. She counts it.",
+            "pressures": {
+              "health": -10,
+              "fatigue": 10
+            },
+            "add_conditions": [
+              "sprain"
+            ],
+            "add_flags": [
+              "lr_caravan_patient_delayed",
+              "lr_callback_region_2"
+            ]
+          }
+        },
+        {
+          "label": "Search for medicine alone",
+          "approach": "medical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You go in alone, through the clinic roof, and find the specimen drawers dry above the flood line. A cracked orange bottle of tablets, the label still legible. You bring them back and the patient's breathing eases before dawn.\n\nNoma adds your name to the caravan's spoken list of people entitled to a fire, out loud, in front of the others, so it is a thing witnessed and not offered. The bedroll is yours tonight. The bottle with the remaining tablets goes into your pack, and she says, as an inventory and not a warning, that the list is something the caravan remembers when it counts its own.",
+            "items": {
+              "painkillers": 1
+            },
+            "add_flags": [
+              "lr_caravan_debt_owed",
+              "lr_callback_region_2"
+            ]
+          },
+          "failure": {
+            "text": "The labels have bled into colored ghosts. You read them by firelight for an hour and every name on them could be a cure or a poison, and you come back with nothing safe to administer.\n\nThe patient worsens while waiting for your certainty. Noma does not blame you. She sits with the patient through the worst of it and lets you sit with the failure, and in the morning she gives you water and says nothing about medicine at all, which makes the silence harder to carry than blame would have been. The bedroll is still empty when you leave.",
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_caravan_patient_worse",
+              "lr_callback_region_2"
+            ]
+          }
+        },
+        {
+          "label": "Decline the empty bedroll",
+          "outcome": {
+            "text": "You stay only long enough for the rain to soften. You sit at the edge of the light with your back to a post and sleep for two hours, the first dry sleep in days, and Noma offers you no food and asks no favor, because you are not on her list and she keeps to it.\n\nWhen you leave, someone folds the unused bedroll into the group's baggage, preserving a place you chose not to occupy. Noma nods to you across the fire. Behind you the sick passenger asks again, and you hear her answer that they will find another way to carry him.",
+            "pressures": {
+              "fatigue": -4
+            },
+            "add_flags": [
+              "lr_caravan_distance_kept",
+              "lr_callback_region_2"
+            ],
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "lr_nightfire_shared"
+                ],
+                "text": "You stay only long enough for the rain to soften. Noma sets a plate by your knee without asking and you eat it, because refusing her twice would be an insult, and then you sit with your back to a post and sleep for two hours, the first dry sleep in days. She asks nothing for it. Your name is on her list, and she keeps to it.\n\nWhen you leave, someone folds the empty bedroll into the group's baggage, preserving a place you chose not to occupy. Behind you the sick passenger asks again, and you hear her answer that they will find another way to carry him."
+              }
+            ]
+          }
+        },
+        {
+          "label": "Ask about the missing can",
+          "approach": "social",
+          "requires": {
+            "flags": [
+              "lr_nightfire_robbed"
+            ],
+            "reason": "Nothing left your pack at her fire",
+            "hidden_when_locked": true
+          },
+          "outcome": {
+            "text": "You ask her about the can. Noma answers as if she had been waiting for the question: she went through your pack that night for what would keep, and a can is what she takes when there is one, because a can is what the caravan runs on when the road gives nothing. She does not apologize. She takes a can from the group's tin and puts it in your pack herself, and buckles the strap.\n\nWhatever your pack held that night, this is the price she sets on it. Then she says your name into the list of people entitled to the fire, and the debt has changed direction.",
+            "items": {
+              "canned_meat": 1
+            },
+            "add_flags": [
+              "lr_caravan_debt_owed",
+              "lr_callback_region_2"
+            ]
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_nightfire_shared"
+          ],
+          "text": "A covered cooking fire glows on a platform above the marsh, inside a wheel rim, the way it was laid on the salt. Noma is beside it, and she says your name before you reach the light, because it is on the list she keeps of people who are entitled to this fire. She walked east beside you for miles after that night. She still has the second cup.\n\nSix people share the platform with her now, and one bedroll lies empty on the far side of the fire, which she says is yours by her count. Black rain has trapped the group here. Under a tarp at the platform's edge a sick passenger asks, between breaths, to be carried to a clinic across the water that may already be flooded. Noma does not ask you to help. She tells you what is needed, the way she told you which wells were answering, and lets you decide."
+        },
+        {
+          "requires_any_flags": [
+            "lr_nightfire_robbed"
+          ],
+          "text": "A covered cooking fire glows on a platform above the marsh, inside a wheel rim, the way it was laid on the salt. Noma is beside it with both hands open on her knees, which is a thing she does on purpose. The last time you saw that, you woke beside banked coals with your pack a hand's width from where you left it and the strap rebuckled by somebody in no hurry. Whatever left your pack that night, she does not pretend it walked off by itself.\n\nSix people share the platform with her. One bedroll lies empty on the far side of the fire. Black rain has trapped the group here, and under a tarp at the platform's edge a sick passenger asks, between breaths, to be carried to a clinic across the water that may already be flooded. Noma says there is room at the fire, and does not say it as an apology."
+        },
+        {
+          "requires_any_flags": [
+            "lr_nightfire_passed"
+          ],
+          "text": "A covered cooking fire glows on a platform above the marsh, inside a wheel rim, the way it was laid on the salt. Noma is beside it. She saw you go wide of her fire on the flats, walking on broken crust downwind, and she says the bedroll stayed out that night until the dark closed over it, neither taken nor withdrawn. It is here, unrolled on the far side of the fire, still empty.\n\nSix people share the platform with her now. Black rain has trapped the group, and under a tarp at the platform's edge a sick passenger asks, between breaths, to be carried to a clinic across the water that may already be flooded. Noma keeps a spoken list of who is entitled to her fire. You are not on it, and she says the list is not closed, and then says nothing more, because the offer has been made once already."
+        }
       ]
     },
     {
-      "id":"lr_names_on_smoke","title":"Names Written in Smoke","body":"Noma’s caravan occupies a factory canteen whose exhaust hood still draws. Each evening they feed scraps of paper into the stove and speak the names of people lost since the last fire. A salvage crew offers safe passage through the yards if Noma surrenders a teenage mechanic accused of stealing a battery. The mechanic claims she took it to keep the sick traveler’s heater alive.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"nightfire_caravan","callback_region":3,"narrative_priority":9,
-      "eligibility":{"min_region_index":3,"max_region_index":3,"requires_any_flags":["lr_caravan_patient_helped","lr_caravan_patient_delayed","lr_caravan_debt_owed","lr_caravan_patient_worse","lr_caravan_distance_kept"],"forbids_flags":["lr_callback_region_3"]},
-      "choices":[
-        {"label":"Prove where the charge went","approach":"technical","check":{"stat":"wits","difficulty":"hard"},"success":{"text":"The heater’s improvised regulator bears the mechanic’s solder and the salvage crew’s serial mark. Noma offers repayment from the caravan’s tools. The crew accepts because evidence gives them a dignified path away from punishment.","items":{"scrap_parts":1},"add_flags":["lr_caravan_mechanic_cleared","lr_callback_region_3"]},"failure":{"text":"The wiring has been rebuilt too many times to prove ownership. Your inspection damages the only working contact. The crew takes the dead battery, and the caravan burns extra fuel to keep the patient warm.","pressures":{"fatigue":6},"add_flags":["lr_caravan_heat_lost","lr_callback_region_3"]}},
-        {"label":"Offer yourself as guarantor","approach":"social","check":{"stat":"presence","difficulty":"desperate"},"success":{"text":"You promise to answer the theft if the mechanic disappears before the next checkpoint. The salvage leader accepts because your gear makes the pledge costly. Noma dislikes the ownership implied but accepts the life it protects.","add_flags":["lr_caravan_guaranteed","lr_callback_region_3"]},"failure":{"text":"The salvage leader asks what authority makes your promise collectible. You have no answer that does not become a threat. The crew takes half the caravan’s food instead, calling it a settlement rather than tribute.","items":{"canned_meat":-1},"add_flags":["lr_caravan_paid_debt","lr_callback_region_3"]}},
-        {"label":"Let the crew take her","outcome":{"text":"Noma asks the mechanic once whether she will go to spare the others. The girl says yes before fear can alter her voice. That night, her name is not burned because nobody agrees whether she has been lost.","add_flags":["lr_caravan_mechanic_surrendered","lr_callback_region_3"]}}
+      "id": "lr_names_on_smoke",
+      "title": "Names Written in Smoke",
+      "body": "Noma's caravan occupies a factory canteen whose exhaust hood still draws. Each evening they feed scraps of paper into the stove and speak the names of people lost since the last fire. A salvage crew at the door offers safe passage through the yards if Noma surrenders a teenage mechanic accused of stealing a battery. Their leader states the other price plainly: a guarantor will do instead of the girl, and a guarantee is paid in food, from the guarantor's own pack, if the girl runs. The mechanic says she took the battery to keep the sick traveler's heater alive.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "nightfire_caravan",
+      "callback_region": 3,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 3,
+        "max_region_index": 4,
+        "requires_any_flags": [
+          "lr_caravan_patient_helped",
+          "lr_caravan_patient_delayed",
+          "lr_caravan_debt_owed",
+          "lr_caravan_patient_worse",
+          "lr_caravan_distance_kept"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_3"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Prove where the charge went",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "The heater’s improvised regulator bears the mechanic’s solder and the salvage crew’s serial mark. Noma offers repayment from the caravan’s tools. The crew accepts because evidence gives them a dignified path away from punishment.",
+            "items": {
+              "scrap_parts": 1
+            },
+            "add_flags": [
+              "lr_caravan_mechanic_cleared",
+              "lr_callback_region_3"
+            ]
+          },
+          "failure": {
+            "text": "The wiring has been rebuilt too many times to prove ownership. Your inspection damages the only working contact. The crew takes the dead battery, and the caravan burns extra fuel to keep the patient warm.",
+            "pressures": {
+              "fatigue": 6
+            },
+            "add_flags": [
+              "lr_caravan_heat_lost",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Offer yourself as guarantor",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "desperate"
+          },
+          "success": {
+            "text": "You promise to answer the theft yourself if the mechanic disappears before the next checkpoint. The salvage leader accepts because your gear makes the pledge costly to break. Noma dislikes the ownership implied and accepts the life it protects, and she pays the guarantor from the caravan's stores as her rule requires: two ration bars, pressed into your hand before any thanks.",
+            "add_flags": [
+              "lr_caravan_guaranteed",
+              "lr_callback_region_3"
+            ],
+            "items": {
+              "ration_bar": 2
+            }
+          },
+          "failure": {
+            "text": "The salvage leader asks what authority makes your promise collectible. You have no answer that does not become a threat. So the crew collects early: two of them open your pack for the can the pledge was written against and take whatever in it will keep, if anything will, and call it a settlement rather than tribute. Noma watches, and the girl stays.",
+            "items": {
+              "canned_meat": -1
+            },
+            "add_flags": [
+              "lr_caravan_paid_debt",
+              "lr_callback_region_3"
+            ]
+          }
+        },
+        {
+          "label": "Let the crew take her",
+          "outcome": {
+            "text": "Noma asks the mechanic once whether she will go to spare the others. The girl says yes before fear can alter her voice. That night, her name is not burned because nobody agrees whether she has been lost.",
+            "add_flags": [
+              "lr_caravan_mechanic_surrendered",
+              "lr_callback_region_3"
+            ]
+          }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_caravan_distance_kept"
+          ],
+          "text": "Noma's caravan occupies a factory canteen whose exhaust hood still draws. The bedroll you declined on the marsh platform is folded on the baggage pile. Each evening they burn the names of the lost. A salvage crew waits at the door: safe passage if Noma surrenders a teenage mechanic accused of stealing a battery, or a guarantor instead of the girl, the guarantee payable in food from the guarantor's own pack if she runs. The crew's leader asks what you are to this caravan. Nobody answers him. The mechanic says the battery kept the sick traveler's heater alive."
+        },
+        {
+          "requires_any_flags": [
+            "lr_caravan_debt_owed"
+          ],
+          "text": "Noma's caravan occupies a factory canteen whose exhaust hood still draws. Each evening they feed scraps of paper into the stove and speak the names of the lost, and before that the list of the living entitled to it, with your name in it. The salvage crew hears it. Their leader offers safe passage if Noma surrenders a teenage mechanic accused of stealing a battery, or a guarantor from the fire's people, the guarantee payable in food from the guarantor's pack if she runs. He looks at you. The mechanic says the battery kept the sick traveler's heater alive."
+        }
       ]
     },
     {
-      "id":"lr_warm_windows","title":"Warm Windows Again","body":"A train waits in the Underrail with blankets covering its windows and a cooking fire shielded inside a steel drum. Noma’s caravan has grown large enough that hospitality now requires rules. The doors are barred against another group carrying an injured child. Fuel can heat one carriage through the night, not two. Noma asks you to decide because everyone remembers that you once approached—or avoided—a much smaller fire.","weight":3,"unique":true,"global":true,"living_road_callback":true,"callback_thread":"nightfire_caravan","callback_region":5,"narrative_priority":9,
-      "eligibility":{"min_region_index":5,"max_region_index":5,"requires_any_flags":["lr_caravan_mechanic_cleared","lr_caravan_heat_lost","lr_caravan_guaranteed","lr_caravan_paid_debt","lr_caravan_mechanic_surrendered"],"forbids_flags":["lr_callback_region_5"]},
-      "choices":[
-        {"label":"Open the warm carriage","approach":"social","check":{"stat":"presence","difficulty":"hard"},"success":{"text":"You make every passenger name one possession that can burn before refusing another body. Pride becomes kindling. Both groups fit badly around the shared drum, and Noma gives you a rusted hatchet used to break the final crate.","items":{"rusted_hatchet":1},"add_flags":["lr_caravan_fire_shared","lr_caravan_thread_complete","lr_callback_region_5"]},"failure":{"text":"The doors open, but accusations enter first. Someone strikes the drum and scatters coals beneath the seats. The fire is saved; the trust around it is not, and both groups spend the night awake with weapons visible.","add_conditions":["shaken"],"add_flags":["lr_caravan_divided","lr_caravan_thread_complete","lr_callback_region_5"]}},
-        {"label":"Restore the second heater","approach":"technical","check":{"stat":"wits","difficulty":"desperate"},"success":{"text":"You rebuild the heater around a security baton’s failing cell. Cold air finally turns warm above the second carriage floor. Noma gives you the discharged baton; the teenage mechanic shows how to wake its remaining charge.","items":{"stun_baton":1},"add_flags":["lr_caravan_two_fires","lr_caravan_thread_complete","lr_callback_region_5"]},"failure":{"text":"Fuel reaches the burner before the igniter is seated. The flash takes your eyebrows and fills the carriage with bitter smoke. Nobody freezes, but the damaged heater must be watched by hand until morning.","pressures":{"health":-15,"fatigue":10},"add_conditions":["burned"],"add_flags":["lr_caravan_fire_damaged","lr_caravan_thread_complete","lr_callback_region_5"]}},
-        {"label":"Keep the doors barred","outcome":{"text":"Noma obeys the rule her caravan made before the injured child arrived. The other group settles against the train’s warm exterior, close enough to hear bowls being passed inside. At dawn, one small handprint remains on the window cloth.","add_flags":["lr_caravan_closed","lr_caravan_thread_complete","lr_callback_region_5"]}}
+      "id": "lr_warm_windows",
+      "title": "Warm Windows Again",
+      "body": "A train waits in the Underrail with blankets covering its windows and a cooking fire shielded inside a steel drum. Noma's caravan has grown large enough that hospitality now requires rules. The doors are barred against another group carrying an injured child. Fuel can heat one carriage through the night, not two; the second carriage's heater sits dead, a security baton wired into its cell where somebody tried to make it run on a charge that will not come. Noma asks you to decide, because you are not caravan, and the rule needs a hand from outside it.",
+      "weight": 3,
+      "unique": true,
+      "global": true,
+      "living_road_callback": true,
+      "callback_thread": "nightfire_caravan",
+      "callback_region": 5,
+      "narrative_priority": 9,
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 6,
+        "requires_any_flags": [
+          "lr_caravan_mechanic_cleared",
+          "lr_caravan_heat_lost",
+          "lr_caravan_guaranteed",
+          "lr_caravan_paid_debt",
+          "lr_caravan_mechanic_surrendered"
+        ],
+        "forbids_flags": [
+          "lr_callback_region_5"
+        ]
+      },
+      "choices": [
+        {
+          "label": "Open the warm carriage",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "hard"
+          },
+          "success": {
+            "text": "You make every passenger name one possession that can burn before refusing another body. Pride becomes kindling. Both groups fit badly around the shared drum, and Noma gives you a rusted hatchet used to break the final crate.",
+            "items": {
+              "rusted_hatchet": 1
+            },
+            "add_flags": [
+              "lr_caravan_fire_shared",
+              "lr_callback_region_5"
+            ]
+          },
+          "failure": {
+            "text": "The doors open, but accusations enter first. Someone strikes the drum and scatters coals beneath the seats. The fire is saved; the trust around it is not, and both groups spend the night awake with weapons visible.",
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "lr_caravan_divided",
+              "lr_callback_region_5"
+            ]
+          }
+        },
+        {
+          "label": "Restore the second heater",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "desperate"
+          },
+          "success": {
+            "text": "You rebuild the heater around a security baton’s failing cell. Cold air finally turns warm above the second carriage floor. Noma gives you the discharged baton; the teenage mechanic shows how to wake its remaining charge.",
+            "items": {
+              "stun_baton": 1
+            },
+            "add_flags": [
+              "lr_caravan_two_fires",
+              "lr_callback_region_5"
+            ],
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "lr_caravan_mechanic_surrendered"
+                ],
+                "text": "You rebuild the heater around the security baton's failing cell. Cold air finally turns warm above the second carriage floor. Noma gives you the discharged baton and wakes its remaining charge herself, the way the mechanic showed her before the crew took the girl away, and says the girl's name once over the drum, not burned, only said."
+              }
+            ]
+          },
+          "failure": {
+            "text": "Fuel reaches the burner before the igniter is seated. The flash takes your eyebrows and fills the carriage with bitter smoke. Nobody freezes, but the damaged heater must be watched by hand until morning.",
+            "pressures": {
+              "health": -15,
+              "fatigue": 10
+            },
+            "add_conditions": [
+              "burned"
+            ],
+            "add_flags": [
+              "lr_caravan_fire_damaged",
+              "lr_callback_region_5"
+            ]
+          }
+        },
+        {
+          "label": "Keep the doors barred",
+          "outcome": {
+            "text": "Noma obeys the rule her caravan made before the injured child arrived. The other group settles against the train’s warm exterior, close enough to hear bowls being passed inside. At dawn, one small handprint remains on the window cloth.",
+            "add_flags": [
+              "lr_caravan_closed",
+              "lr_callback_region_5"
+            ]
+          }
+        },
+        {
+          "label": "Tune the heater to the Kilnback's cycle",
+          "approach": "technical",
+          "requires": {
+            "flags": [
+              "kilnback_rhythm_known"
+            ],
+            "reason": "You never learned the heat rhythm",
+            "hidden_when_locked": true
+          },
+          "outcome": {
+            "text": "You set the burner to the rhythm you learned in the cooling jackets, heat and pressure and the pause between them, and the dead heater takes it on the first cycle without a flash. Warm air rises above the second carriage floor. Noma unbars the doors herself and gives you the discharged security baton, saying a heater that keeps time does not need it.",
+            "items": {
+              "stun_baton": 1
+            },
+            "add_flags": [
+              "lr_caravan_two_fires",
+              "lr_callback_region_5"
+            ]
+          }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "lr_caravan_mechanic_surrendered"
+          ],
+          "text": "A train waits in the Underrail with blankets covering its windows and a cooking fire shielded inside a steel drum. The doors are barred against another group carrying an injured child. Fuel can heat one carriage, not two. The second carriage's heater is the one the mechanic kept alive on a stolen battery; it went dead the week she walked out with the salvage crew, and sits now with a security baton wired into its cell by hands that were not hers. Her name has still not been burned. Noma asks you to decide, because you are not caravan."
+        },
+        {
+          "requires_any_flags": [
+            "lr_nightfire_passed"
+          ],
+          "text": "A train waits in the Underrail with blankets covering its windows and a cooking fire shielded inside a steel drum. The doors are barred against another group carrying an injured child. Fuel can heat one carriage through the night, not two; the second carriage's heater sits dead with a security baton wired into its cell. Noma says you walked wide of a fire on the flats once and the bedroll stayed out until dark, and now you are being asked who a fire is for. She asks you to decide because you are not caravan."
+        }
       ]
     }
   ]

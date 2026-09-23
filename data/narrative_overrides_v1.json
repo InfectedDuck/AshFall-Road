@@ -2,34 +2,34 @@
   "events": [
     {
       "id": "outskirts_bandits",
-      "body": "Rain has dissolved the pharmacy sign until only the green cross remains. Three figures emerge through its broken window in a practiced spread: a woman with a hunting bow, a limping man guarding the alley, and a boy trying to make his knife look steady. They watch your pack rather than your face. Empty medicine cartons tumble between you, each printed with cures nobody can manufacture now.",
+      "body": "Rain has dissolved the pharmacy sign until only the green cross is left of it, and the runoff from the awning has cut a clean channel through the dust in the doorway.\n\nThree people come out through the broken window in a spread they have obviously practiced. The woman takes the left with a hunting bow already strung, and she is looking for somewhere to rest the limb; the window ledge is the nearest thing. The man behind her limps, and he does not come forward at all. He stands in the mouth of the alley, which tells you where the way out is. The boy is the third. He holds his knife at the wrong angle and keeps checking the woman for what to do with his face.\n\nEmpty cure cartons blow around your boots, printed with the names of illnesses nobody can treat now. All three are watching your pack. None of them has looked at your face.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "victory": "You close the distance before the archer can settle her aim. When she falls, the boy runs and the limping man follows. Their canned meat is stamped for a hospital ward; you pack it beside the metal pieces they used as arrowheads.",
-            "critical_victory": "You catch the bow limb, turn it aside, and wrench the leader’s pistol free before she can bring it up. The other two abandon the doorway. Four cartridges remain in the crude weapon, along with fingerprints in pharmacy dust and the sudden possibility of pursuit."
+            "victory": "You are inside the arrow’s arc before the bow limb reaches the ledge. The shot goes into the shopfront behind you, and after that it is close work, and short.\n\nThe limping man does not try. He takes the boy by the collar and hauls him into the alley, and the boy keeps his head turned the whole way, so whatever account of this reaches anyone will be in his words. Their canned meat is stamped for a hospital ward. You pack it beside the shaped metal they had been filing into arrowheads, still bright along the cut edges. A chain wrench hangs among their tools, and you take it.",
+            "critical_victory": "You catch the limb on its way up and turn it across her, and the pistol is out of her belt and into your hand before she has finished deciding which weapon this is. She lets go of both and steps back under the green cross with her palms open, like she practiced.\n\nThe other two go down the alley without waiting for her. Four cartridges sit in the pipe frame beside a string of filed dog teeth, and the pharmacy dust on the grip holds a whole print of the hand that carried it. She is alive behind you when you leave, and she watches you take both."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You shoulder through a warped service door and cross the stockroom while the gang circles outside. Glass snaps beneath your boots, but no arrow finds the opening. You emerge two streets away breathing hard, the pharmacy roof hiding your escape.",
-            "failure": "The alley narrows at a fallen refrigerator. An arrow cuts across your ribs while you climb it, and the effort drains what strength the wound leaves. You escape through a laundry yard with blood warming your shirt and pursuit fading behind locked gates."
+            "success": "You go straight at the limping man rather than around him, on the side he cannot turn quickly, and you are past his reach before the bow comes up behind you. A warped service door takes your shoulder and gives.\n\nThe stockroom is dark and full of tipped shelving. You cross it on broken glass and out through the delivery bay, and you do not stop for two streets. Nobody died at the pharmacy. The gang keeps the corner and their account of a stranger who would not stay to argue, and the sprint stays in your legs for the rest of the afternoon.",
+            "failure": "The alley narrows where a refrigerator went over on its side, and going over it puts your back to the window for as long as that takes. The arrow crosses your ribs on the way down the other side. It arrives as heat rather than pain; the pain waits until the laundry yard.\n\nYou get out. You get out slowly, with your shirt bunched against yourself and one hand holding it there, listening to them not follow, because they do not have to. Everything from here is going to cost more than it did this morning."
           }
         },
         {
           "index": 2,
           "outcomes": {
-            "success": "You cough into your sleeve and name symptoms remembered from old quarantine posters. The boy recoils first; the others follow his fear despite themselves. They clear a path wide enough for plague, watching until wind and ruined houses place distance between you.",
-            "failure": "The archer notices your clear eyes and calls the performance before fear can spread. She takes a can from your pack as payment for wasting her time. You leave hungry and humiliated, hearing the boy repeat your false symptoms as a joke."
+            "success": "You cough into the crook of your sleeve and go on coughing, then name the symptoms off the old quarantine posters in the order the posters used them, the way somebody would who had read them while waiting in a corridor.\n\nThe boy goes first. He steps back into the man behind him, and the fear travels through the three of them faster than any argument could have. The bow comes down last. They open a gap wide enough for a plague and hold it there while you walk through, and not one of them puts out a hand to test whether you are lying.",
+            "failure": "She lets you finish. Then she tells you your eyes are clear and your hands are steady, and asks the boy which of those a sick traveler gets to keep.\n\nNobody hits you. The limping man holds your pack open while she goes through it and takes her price for the time you wasted out of whatever is in there, and you stand still for it, because the bow has not moved once. All the way up the street behind you the boy is repeating your symptoms to the others as a joke, and getting the order right."
           }
         }
       ]
     },
     {
       "id": "outskirts_bus",
-      "body": "An evacuation bus rests across two lanes, its tires melted into shallow black pools. Someone wired the rear doors together from inside and pressed strips of family photographs into the rubber seal. The windows are opaque with soot except for one circle wiped clean at a child’s height. No movement answers when you knock. Beneath the chassis, rainwater carries the smell of rust and sealed food.",
+      "body": "An evacuation bus rests across two lanes, its tires melted into shallow black pools. Someone wired the rear doors together from inside and pressed strips of family photographs into the rubber seal. Soot blinds every window except one circle rubbed clear at a child’s height. Through it you can count what is stacked under the driver’s seat: two flat ration wrappers and the shoulder of a sealed bottle. The doors will only open by force. Through the same circle, torn paneling has exposed the emergency release cable, and a first-aid bracket hangs beside it, clips still shut.",
       "choices": [
         {
           "index": 0,
@@ -49,342 +49,372 @@
     },
     {
       "id": "outskirts_dogs",
-      "body": "Six dogs move between abandoned cars without barking. Their coats have thinned to scarred skin around the shoulders, and lengths of blue leash still trail from two collars. The largest steps onto a concrete divider to test your scent while the others spread behind it. A nest of dragged blankets blocks the eastern lane. Whatever they once learned from people has become a hunting formation.",
+      "body": "Six dogs hunt between abandoned cars without barking, scarred shoulders bare beneath trailing blue leashes. The largest tests your scent from a concrete divider while the rest spread wide. Their blanket nest blocks the eastern lane.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "victory": "The pack breaks when its largest animal can no longer hold the divider. The survivors retrieve their wounded and vanish through the cars, leaving teeth marks in your gear. A length of shaped metal beneath their blankets is clean enough to salvage."
+            "victory": "The pack breaks. You finish the largest on the divider and strip its nest: a brush machete and shaped metal worth carrying."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "outcome": "You open the can and throw it beneath the divider. Hunger collapses the pack’s discipline into snapping bodies and lowered heads. You pass close enough to see old names stamped on their collars, spending food so neither side must test the other further."
+            "outcome": "You throw the can beneath the divider. Hunger collapses their discipline into snapping bodies, and you pass reading old names stamped on their collars."
           }
         },
         {
           "index": 2,
           "outcomes": {
-            "success": "Your hands find the divider’s rough upper edge before the pack closes. You vault onto the opposite lane and keep moving along the concrete, beyond the reach of teeth. The dogs follow below until wreckage forces them to abandon the chase.",
-            "failure": "Your trailing boot strikes the divider and turns beneath you. You land badly on the far side, ankle flashing with pain, but the barrier keeps the dogs away. Every hurried step afterward grinds the joint and consumes strength you meant to save."
+            "success": "Your hands find the divider’s edge before the pack closes. You vault to the far lane and keep moving, beyond the reach of teeth.",
+            "failure": "Your boot turns on the divider and drops you badly. The barrier holds the dogs off while your ankle swells against every step after."
           }
         }
       ]
     },
     {
       "id": "outskirts_market",
-      "body": "Faded advertising tarps turn a supermarket forecourt into a market of red and yellow shadow. Twelve traders display batteries, roots, medicine, and objects valuable only because somebody carried them this far. Nobody calls prices aloud. A woman stitching a gas mask listens while a boy weighs scrap on a kitchen scale, both measuring what you know as carefully as what you own.",
+      "body": "Advertising tarps are strung from the supermarket’s fallen sign to the trolley bays, and everything under them takes their color: red at one end of the forecourt, yellow at the other. Twelve traders have laid out batteries, roots, boiled cloth, and things that are worth anything here only because somebody carried them this far.\n\nNobody calls a price aloud. A woman stitching a filter into a gas mask keeps her eyes on the seam and her attention on the road you came in by, because part of the rate is what you know. Two tables along, a boy weighs scrap on a kitchen scale. Behind him a salvage table of cracked dolls and plastic tools carries one indicator light, pulsing at an interval too even for a fault.\n\nThere is an unsplit woodpile behind her stall and a water queue behind his, and both of them look at you as though an afternoon of labor is also a currency.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "Your warning about the eastern underpass matches blood on another traveler’s coat. The mask-maker pays for confirmation with boiled bandages and radiation tablets. Around you, merchants quietly move their best stock farther from the road you described.",
-            "failure": "Your account contains no detail the market has not heard twice already. A vendor accepts one piece of scrap for a bottle filled from the communal filter. The exchange keeps you moving but establishes how little an untested story is worth here."
+            "success": "You give her what the road behind you actually gave you: a collapsed lane, standing water in the gutter, and a delivery truck that blocks the next bend from view. She stops stitching in the middle of the third detail and makes you say the truck again.\n\nThen she pays without haggling, in boiled bandages rolled tight and a strip of tablets still in their foil, which is better than anything she has offered this morning. All down the row, traders begin moving their best stock off the tables nearest the road you just described.",
+            "failure": "You are the third traveler this week to arrive from the same side of the city, and she has already heard two versions of a road report nobody could check. She hears you out because it costs her nothing, then goes back to the seam.\n\nA vendor further along either takes pity or takes the opportunity, and fills a bottle from the communal filter for whatever scrap your pockets can spare. You leave the row with water you can drink and an exact price on a story that did not buy much."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "Beneath cracked dolls and plastic tools, a field scanner repeats the same clean diagnostic pulse. The seller mistakes it for a noisy toy. You complete the exchange before demonstrating what the screen can still distinguish beneath dust and concrete.",
-            "failure": "The device’s bright indicator comes from a leaking capacitor, not a working sensor. It collapses into brittle flakes when you open the casing. The seller has already folded your scrap into another bargain and no longer recognizes your purchase."
+            "success": "The pulse is too even to be a fault. You handle worse things first, a doll with a split face, a plastic wrench, and you set the scanner down twice before you buy it, so the price stays where it is.\n\nOutside the tarps you turn it over and hold the screen flat to the concrete. It finds a seam, then the space under the seam, then the reinforcement running through both. The seller listened to it click for a season and filed it with the toys, and you are not going back in to explain that.",
+            "failure": "The indicator is bright because a capacitor behind it is leaking, and you learn that with the casing already open across your knees. The board comes apart in flakes at the first touch, dry as stove ash.\n\nBy the time you look up, the seller has closed on another bargain two tables down and cannot pick you out of the afternoon’s strangers. Nobody at the tables says anything about it. Being wrong in public here is treated as a private matter, and that is the whole of the kindness available."
           }
         },
         {
           "index": 2,
           "outcomes": {
-            "outcome": "You split firewood for the mask-maker until the afternoon is gone and both shoulders complain. She pays in the tool you used: a hatchet with a rusted head and an honest handle. The scrap you meant to trade stays unsold."
+            "outcome": "You split the mask-maker’s woodpile with the hatchet she keeps for it, and it takes what is left of the afternoon. The head sits loose on the handle, so you learn to swing around the wobble. She brings you water twice without being asked.\n\nWhen the pile is stacked she puts the hatchet into your hands instead of coins: rust across the head, a handle worn into the shape of somebody else’s grip. Your scrap is still in your pocket, unsold, and the row has folded up around you while you worked."
           }
         },
         {
           "index": 3,
           "outcomes": {
-            "outcome": "You haul water and stack crates for the boy with the kitchen scale until the tarps go orange with evening. He hands over a bat studded with roofing nails, kept behind his stall for a night nobody wants. Your own bargaining hour is gone."
+            "outcome": "The boy with the kitchen scale wants water hauled from the standpipe and his crates moved before the tarps come down, and he counts the trips out loud, which is how you learn he has done this arithmetic with adults before.\n\nAt dusk he pays out of the space behind his stall: a bat with roofing nails driven through the meat of it and the heads filed off flush. He had been keeping it for a night nobody wants to be ready for. You spent the whole evening with his stock in your arms and never once got to bargain over any of it."
           }
         }
       ]
     },
     {
       "id": "outskirts_overpass",
-      "body": "The overpass ends above a rail cutting, its missing span exposing reinforcement bars polished by years of wind. A school bus hangs nose-down from the far edge, slowly shedding flakes of yellow paint. Below, a drainage channel curves east through darkness and the smell of stagnant runoff. Crossing above saves hours; crawling below trades height for whatever has collected where the city once sent its rain.",
+      "body": "The overpass ends mid-air above a rail cutting, two reinforcement bars bridging the gap with wind-polished faces. A school bus hangs nose-down from the far edge. A drainage channel curves east below, low and foul.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You cross sideways, placing each boot where concrete still grips the steel. The suspended bus shifts once and settles. On the far side, you step onto intact roadway with hours of daylight preserved and the empty rail cutting safely behind you.",
-            "failure": "A reinforcement bar rolls beneath your sole. You catch another with both hands and strike the broken edge hard enough to numb one leg. Pulling yourself up leaves the ankle swollen, your palms torn, and the quick route paid for in pain."
+            "success": "You cross sideways, boots where concrete still grips steel. The bus shifts once and settles. Intact roadway receives you with daylight to spare.",
+            "failure": "A bar rolls under your sole and slams you against the broken edge. You haul up with a swollen ankle, torn palms, and the quick route paid in pain."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "The drainage channel stays shallow, though oily water reaches your knees and the ceiling forces your pack sideways. You emerge beyond the rail cutting exhausted and hungrier, carrying the sewer’s smell but none of the overpass’s falling weight.",
-            "failure": "A collapsed grate sends you crawling through a pipe barely wider than your shoulders. Runoff soaks your food wrappings while each movement becomes a struggle against concrete. Daylight returns only after fatigue has turned the safe detour into its own hazard."
+            "success": "The channel stays shallow, though oily water reaches your knees and the ceiling shoves your pack sideways. You emerge smelling of sewer, tired and hungrier.",
+            "failure": "A collapsed grate forces you crawling through a shoulder-wide pipe. Runoff soaks your wrappings while concrete fights every movement. Daylight returns late."
           }
         }
       ]
     },
     {
       "id": "outskirts_apartment",
-      "body": "A white curtain breathes from the third floor of a burned apartment block. Every neighboring window is open to weather, but this one still holds glass along its lower edge. Fresh chalk marks beside the entrance warn against the stairs. Somewhere above, a cupboard door taps twice, pauses, then taps again. The pattern could be wind, a signal, or a room settling around supplies nobody returned to claim.",
+      "body": "A white curtain moves in and out of a third-floor window on a burned apartment block. Every other window on that face is open to the weather. This one still holds glass along its lower edge, which is what gives the curtain something to breathe against.\n\nFresh chalk on the entrance frame says NOT THE STAIRS, in a hand steady enough to have taken its time over the letters. The ground-floor hall smells of wet plaster, and the street behind you is still perfectly audible, which is the last comfortable thing about this building.\n\nAbove, a cupboard door taps twice, pauses, then taps again. You take one step toward the stairwell and the rhythm changes. On the first landing, drifted against the wall, lie dozens of shed plates the size of a spread hand, dry and slightly curved, stacked the way broken roofing slate stacks. Somebody has written SHUTTER SKITTERS beside them. The treads above are soft with damp, and the tapping starts again inside the wall at your shoulder.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "The curtain is tied to a cracked window latch, moving whenever pressure crosses the room. Its owner has been gone for months. Behind folded towels, a medicine kit and canned meat remain wrapped against smoke, intimate provisions from a household that expected to return.",
-            "failure": "The stair appears solid until your full weight reaches its center. Rotten wood drops you onto the landing below, where your head strikes a radiator. You crawl outside through a narrowing field of light, skull pounding and balance refusing simple instructions."
+            "success": "The stair holds if you keep to the wall side and put your weight on the outer end of each tread. The curtain is tied to a cracked latch and pulls whenever air crosses the room; it has been doing that for months, and nobody has lived here since the fire.\n\nThe provisions are in a cupboard with towels packed around them, each one wrapped twice in oilcloth, against smoke or against something smaller than smoke. A sealed medicine kit. A can. You go down faster than you came up, and the tapping keeps pace with you inside the wall as far as the door.",
+            "failure": "The tread you trust is the one that has been holding water. It gives at the center without any sound of warning and drops you onto the landing below, where your head finds the radiator on the way past.\n\nYou come around with plaster in your mouth and the light doing something wrong at its edges. Getting out means crawling, and choosing a direction to crawl in takes several attempts, because the street keeps arriving from a side it should not be on. The cupboard is still tapping when you reach the door, on a rhythm that has changed again."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "outcome": "You accept the chalk warning as the work of someone who understood the building better than you do. The curtain continues its patient signal above. You leave the cabinet, the tapping, and the unanswered possibility to whoever owns them—or whatever waits beneath the stairs."
+            "outcome": "You read the chalk a second time and decide it was written by somebody who knew this building better than an afternoon could teach you. The plates in the drift are dry, and there are a great many of them, and every part of the third floor is a guess made from the hall.\n\nYou leave the curtain to its patient work above the street. Whatever is wrapped in that cupboard stays wrapped, the warning stays on the frame for the next traveler, and the tapping goes on behind you for as long as the block is in earshot."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "victory": "You keep the light on the landing and drive the colony away from the stair in bursts, never letting it close into the armored sheet it wants to become. Plates skitter through the broken door and vanish into the colder hall below.\n\nThe cupboard is still there when the tapping stops. Its towels have done their work: a sealed medicine kit and a can are dry inside their oilcloth. You leave the chalk warning where it was. The street sounds close and ordinary again when you step out."
           }
         }
       ]
     },
     {
       "id": "outskirts_siren",
-      "body": "A civil-defense siren begins rotating above the municipal garage, coughing out half a warning with every turn. Pigeons burst from surrounding roofs. Farther down the avenue, doors open and close where no wind reaches them. The tower ladder is exposed but intact; faded instructions at its base identify the motor cutoff. Each unfinished cry travels across the district, telling every hungry listener exactly where movement has returned.",
+      "body": "The siren on the municipal garage roof begins to turn without anything having asked it to. What comes out is half a note, over and over, cut short each time the rotor swings away from you. Pigeons come off the roofs in sheets. The sound goes down the avenue and keeps going, out past blocks you cannot see into.\n\nDown there, doors are opening. Not swinging in a draft: opening, one and then another, in still air, on a street where nothing else is moving.\n\nThe service ladder is bolted up the garage wall in full view of all of it, and it is intact. At its foot a stencil reads TOWER SIX, and a maintenance card gone gray behind cracked plastic names the motor cutoff and the panel it sits in. Whoever kept this machine alive wrote down how to stop it. Every unfinished cry tells the district that something out here has started moving again.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You climb between the siren’s broken cries and pull the fused cutoff by hand. The rotor slows into silence while shapes are still several streets away. Its charge pack comes free with two useful lengths of wire and the smell of scorched insulation.",
-            "failure": "Your tool bridges the motor housing as the rotor turns. Current punches through your hands and leaves you clinging to the ladder while the siren screams overhead. You reach the street burned, exhausted, and unable to stop hearing the warning inside quieter sounds."
+            "success": "You climb between cries with your hands closed around the outside of the rails, because the ladder rings through every pass of the rotor. The cutoff is where the card says it is, fused half open. You pull it by hand.\n\nThe rotor keeps turning a while longer, slower, quieter, and then the whole district is holding still. The shapes on the avenue are three streets off with nothing left to walk toward. You come down carrying the charge pack and two useful lengths of wire, and the smell of scorched insulation stays on your hands for hours.",
+            "failure": "Your tool bridges the housing while the rotor is still coming round, and the current goes up through both hands and lets go of you again on its own schedule. You keep hold of the ladder without having decided to. The siren goes on screaming a hand’s width above your head.\n\nYou get down. It takes a long time and you do not remember much of it afterward. Your palms have gone shiny across the pads, and for the rest of the day every quiet sound has that half note starting underneath it."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You keep a measured pace rather than answering the machine’s panic. Two blocks become four; the gathering shapes choose the tower instead of your trail. When the siren finally fades, your legs carry the honest fatigue of distance rather than pursuit.",
-            "failure": "You leave the tower behind, but every returning note seems closer than the last. You waste strength checking alleys and doubling back from harmless echoes. Long after distance kills the sound, your thoughts continue rotating with it."
+            "success": "You decline to answer the machine’s panic with any of your own. You choose a pace you can hold and you hold it, east, past the garage and the dead traffic lights and out of the avenue.\n\nTwo blocks, then four. The tower goes on calling behind you, and the shapes coming into the district have a fixed thing to walk toward that is not you. The note thins and finally goes out. What is in your legs by then is the honest weight of distance, and the tower is still working, still telling anyone else out here where to look.",
+            "failure": "You leave, and the sound comes with you around every corner, and each returning note reads as nearer than the one before it. You start checking alleys. You double back twice, on a loose gutter and on a dog.\n\nBy the time distance finally takes the siren, you have spent more of the afternoon on it than the ladder would have cost, and almost none of that ground was covered in a straight line. Long after there is nothing left to hear, your attention keeps swinging back on the same slow interval."
           }
         }
       ]
     },
     {
       "id": "outskirts_cache",
-      "body": "A yellow emergency locker is bolted beneath the courthouse stairs, protected from rain by a slab of fallen stone. Instructions cover the door in four languages, though soot has erased different lines from each version. The lock is thick enough to resist thieves and old enough to break unpredictably. Through its vent comes the dry paper smell of sealed civil-defense supplies rather than rot or chemical leakage.",
+      "body": "A yellow civil-defense locker crouches under the courthouse stairs behind fallen stone. Four-language instructions cover its door, soot-burned line by line. The lock looks both thief-proof and breakable. A road-sign buckler hangs on the hook beside it.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "The lock tears away with half its bracket, leaving the door scarred but open. Two bottles and two ration bars sit behind evacuation forms dated for a disaster that arrived differently. Their seals remain clean beneath a layer of courthouse dust.",
-            "failure": "The bracket splits into a hooked edge and opens your palm before the lock moves. Blood dots the multilingual instructions as you pull away. The locker remains sealed, and the cut continues working open whenever you grip your pack strap."
+            "success": "The lock tears away with half its bracket. Two bottles and two ration bars wait behind evacuation forms, seals clean under courthouse dust.",
+            "failure": "The bracket splits hooked and opens your palm before the lock moves. Blood dots the instructions as you pull back. The cut keeps working open."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "Missing words from one language survive in another. You reconstruct the sequence and turn the lock through three reluctant positions. Radiation tablets and a folded bandage wait inside, arranged for a clerk who never reached the courthouse shelter.",
-            "failure": "The final turn drives an internal bolt across the mechanism. A hard click announces that the locker has become a box without an entrance. Whatever medicine remains inside will outlast your need and perhaps the courthouse itself."
+            "success": "Missing words survive across languages. You rebuild the sequence and turn the lock through three reluctant positions. Tablets and a folded bandage wait inside.",
+            "failure": "The final turn drives a bolt across the mechanism. One hard click turns the locker into a box without an entrance. You leave blind to its contents."
           }
         },
         {
           "index": 2,
           "outcomes": {
-            "outcome": "You lift a buckler from its outside hook, leaving the locker sealed. Someone has hammered a handgrip into a road sign. The strap fits; its battered rim offers protection, though you leave the medicines and food for another traveler."
+            "outcome": "You lift the buckler off its hook and leave the locker sealed. Hammered road sign, fitted strap, battered rim. Whatever waits behind the door stays unknown."
           }
         }
       ]
     },
     {
       "id": "outskirts_child_radio",
-      "body": "A handheld radio hangs from a traffic-light cable, repeating a child’s voice over Channel Nine. The message gives coordinates, asks for a person named Talia, and restarts whenever wind turns the set. Between repetitions, faint breathing occupies the carrier. Rooftops and power lines offer several possible origins. Answering may guide a family toward safety—or tell every receiver nearby that someone useful is listening.",
+      "body": "A handheld radio hangs by its strap from a traffic-light cable at head height, and it is talking. A child’s voice, recorded, reads out a set of coordinates, then asks whether Talia can hear this, then runs out and starts again. It has been saying it long enough for the words to have worn smooth.\n\nBetween repetitions the channel does not go dead. It hisses, and under the hiss somebody is breathing with a handset open, near enough to the microphone that you can hear them swallow. They are listening to the loop as well.\n\nThe rooftops around you carry a district’s worth of aerials and sagging line, and the signal could be coming off any of four of them. Answering tells whoever is breathing that a stranger with a working set is standing on this corner. Finding them says nothing to anybody.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "A woman answers before your second instruction. Behind her voice, two children argue over a blanket. You guide Talia Vale toward the tarp market using landmarks she can confirm, and her relief steadies your own purpose after the frequency goes quiet.",
-            "failure": "The recorded child completes the message and begins again. No living speaker acknowledges your directions. You repeat them until uncertainty becomes embarrassment, then lower the radio with the voice still asking strangers to answer."
+            "success": "A woman comes onto the channel before you finish the second landmark. She gives you the water tower and waits for you to place it, and only when you place it correctly does she say Talia Vale. Behind her, two children are arguing over a blanket, close to the handset, unworried about being heard.\n\nYou hand her the tarp market in things she can confirm from where she stands. She reads it back in the wrong order on purpose and lets you correct her. The channel stays open longer than it needs to, then closes, and you go east hearing how your own voice sounds when somebody is listening.",
+            "failure": "You give the directions clearly and completely, then give them again more slowly, in case the first pass was stepped on. Nothing acknowledges any of it. The recorded child asks whether Talia can hear this, runs out, and begins asking again.\n\nThe breathing under the hiss never changes once while you speak, which is when it occurs to you that it may not be a person, or may be a person who has decided what strangers are. You lower the handset with the loop still running, and for the rest of the afternoon you catch yourself listening to open air the same way."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You compare signal strength beneath three power lines and locate the transmitter’s relay kit inside a maintenance cabinet. The family is elsewhere, but the compass and salvageable components reveal how their message traveled—and which bearing it was meant to follow.",
-            "failure": "Reflections from concrete and hanging cable make every bearing seem conclusive for a few minutes. You cross the same intersection twice before admitting the signal cannot be isolated here. The wasted hour leaves Channel Nine no clearer and your concentration frayed."
+            "success": "You take readings under three separate runs of line and walk the differences until the needle stops arguing with itself. The transmitter is in a maintenance cabinet on the fourth roof: a relay kit wired to a car battery, with a directional antenna clamped to the parapet and aimed.\n\nNobody is there, and nobody has been for a while. The kit gives up its compass and a fistful of components, and the antenna is still pointing exactly where somebody set it, which is the corridor the message was cut to travel down. You have their bearing in your hand and you have never spoken to them.",
+            "failure": "Concrete and hanging cable throw the signal back at you from every direction. Each bearing looks conclusive for as long as it takes to walk it, and then the strength climbs behind you instead of ahead.\n\nYou cross the same intersection three times before accepting that the corner itself is the problem and no amount of patience will solve it from here. The hour is gone and your concentration with it. The loop is still running when you come back to the cable, asking whether Talia can hear this, and it will go on asking whoever stands here next."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "outcome": "You leave the handset where it hangs, its loop carrying on for whoever reaches this corner next. The child asks for Talia again as you move out of range. You do not know whether anyone beneath the hiss heard your footsteps, and you do not test it. The traffic light sways once on its cable, then settles. You have given no answer and learned no bearing."
           }
         }
       ]
     },
     {
       "id": "outskirts_sinkhole",
-      "body": "An entire intersection has folded into the utility tunnels below. Traffic lights lean over the opening, changing colors on power stored from some forgotten circuit. A maintenance shelf remains visible beneath layers of broken pipe and pavement. The eastern road continues across a narrow lip; a bolted ladder offers a slower descent. Pebbles keep falling into darkness without producing a final sound.",
+      "body": "The intersection has folded into utility tunnels, traffic lights still changing color over the hole. The eastern road crosses a two-stride lip of root-held asphalt. Below sits a maintenance shelf, its ladder ending mid-air. Coughing rises from underneath.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You choose a section where roots still bind the asphalt and clear the gap in one committed step. Both boots strike sound pavement. Behind you, loose gravel follows into the hole, emphasizing how little surface supported the crossing.",
-            "failure": "The edge breaks during takeoff and turns the leap into a fall against the opposite wall. You catch a cable and climb out, but one ankle twists under the impact. The street is crossed; walking it now demands pain from every step."
+            "success": "You take the lip where roots hold the asphalt whole and cross in one committed step. Gravel spills behind you. The hour a slow climb would have cost stays yours.",
+            "failure": "The edge breaks at takeoff and throws you against the far wall. You catch a cable and climb out, ankle twisted, every step ahead demanding pain."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "The rope takes your weight after the ladder’s lowest bolts fail. On the maintenance shelf, you recover clean water and compact tools from a sealed box. The ascent is slow, but nothing below learns more than the rhythm of your breathing.",
-            "failure": "The shelf pulls free as soon as you touch it. Your rope catches the fall and swings you against a pipe, scattering the tools into black water below. You climb back exhausted, saved by preparation but carrying none of the hoped-for salvage."
+            "success": "The rope holds after the ladder bolts fail. On the shelf you recover clean water and compact tools from a sealed box. Nothing below learns more than your breathing.",
+            "failure": "The shelf pulls free at your touch. Your rope catches the fall and swings you into a pipe, scattering tools into black water. You climb back exhausted and empty-handed."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "victory": "The last coughing dog drops on the concrete. Its nest holds a sealed poultice and workable scrap. Your pulse stays high and eager for the next two miles."
           }
         }
       ]
     },
     {
       "id": "flats_toll",
-      "body": "A barricade of truck doors crosses the only raised track above the salt. Its collectors wear pieces of matching transit uniforms, faded differently by sun. One keeps a revolver beneath a striped umbrella while another records each traveler in a school ledger. They claim the road east is maintained by their toll. Beyond them, wheel ruts continue into glare without a single repaired marker.",
+      "body": "The barricade is truck doors wired end to end across the only raised track above the salt, and the people behind it have had you in sight for an hour. Five collectors wear pieces of one transit uniform faded five different colors. The oldest sits under a striped umbrella with a revolver flat across his thighs and does not stand when you arrive, which is a statement he has clearly made before.\n\nThe clerk is younger than the rest and keeps a school exercise book braced on her forearm. She writes a line for every traveler: what they carried, which way they went, what they paid. Their toll maintains the road east, she says, reading it off the page.\n\nBehind the barricade the wheel ruts run on into glare past marker posts nobody has straightened in years. On both flanks the pan lies open to the horizon with no wreck and no rise on it.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "victory": "The collectors lose their formation when the umbrella falls and the revolver changes hands twice. Survivors flee across the salt, abandoning three heavy cartridges and pieces cut for another barricade. Their ledger remains open to a page describing you."
+            "victory": "The umbrella goes down first. After that the barricade is five people who never planned for anyone to walk straight at it, and they come apart along their own seams: the two youngest run north across open pan, the man in the chair drops the revolver rather than reload it, and the rest follow whoever moved first.\n\nYou take the dropped revolver and three heavy cartridges from the tin beside the chair, a bracket cut for salvage, and one can of their evening meat. A brass precinct star rides in the chair's crease, pinned where only its wearer knew. The exercise book stays open at your page."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You reduce their demand to one ration by asking which stretch of road their payment repaired. The clerk cannot answer in front of the others. Before raising the barrier, she warns you that the crater route killed two collectors yesterday.",
-            "failure": "They hear negotiation as proof that you can afford delay. One takes food while another removes your cleanest water, each calling the theft a separate fee. The barrier rises only after your pack feels visibly lighter."
+            "success": "You ask the clerk which stretch of road her book says the toll repaired. She turns two pages looking for it while the others watch her do it, and the silence that follows is the whole of the negotiation. The man under the umbrella tells her to settle it and be finished.\n\nShe prices you at one ration and takes what your pack will give up toward it, entering the figure in a careful hand. Then she keeps her voice under the wind. The crater route killed two collectors yesterday, she says. Both of them are written in this book, and nobody has crossed the lines out yet.",
+            "failure": "They hear a negotiation as proof that you can afford to stand here and have one. Two of them work your pack while the clerk holds the page flat against the wind, and every item lifted out is announced as a separate fee: inspection, weighing, the trouble of writing you down.\n\nThey stop when the pack stops yielding, sooner than they expected, which does nothing for their mood. The barrier goes up. Behind you the clerk finishes her line, and you understand within ten steps that the book, not the road, is what the toll is actually for."
           }
         },
         {
           "index": 2,
           "outcomes": {
-            "success": "You walk far into the white glare until the barricade becomes a dark pin behind you. Salt haze hides the turn back toward the road. The detour costs strength, but no clerk records your face or opens your pack.",
-            "failure": "The barricade remains visible far longer than distance should allow, forcing the loop wider. Heat collects beneath your clothes and every step consumes water you cannot replace. You regain the eastern track with hunger sharpened and daylight badly spent."
+            "success": "You go wide, far enough into the glare that the barricade shrinks to a dark pin and the umbrella stops being a color. There is no cover out here and no need for any. At that distance on open salt a walking person is indistinguishable from rising heat.\n\nThe loop costs most of the afternoon and a bad hour finding the track again through haze that erases the difference between ground and sky. Nobody opens your pack. Nobody asks your name, and the exercise book closes on the day without a line in it for you.",
+            "failure": "The barricade stays visible far longer than distance says it should, so you push the loop wider, then wider again, correcting against a horizon that offers nothing to correct against. Heat gathers under your clothes. The salt takes water out of every breath you spend on it.\n\nYou regain the eastern track late with your legs gone stupid and your last meal too far behind to argue with. From the raised road the umbrella is a small striped shape you could have walked past in twenty minutes, and it has not moved all day."
+          }
+        },
+        {
+          "index": 3,
+          "outcomes": {
+            "outcome": "You tell the collectors what the eastern road actually holds: the crater route that killed two of theirs, the quiet water, the places where travelers died for nothing. The clerk writes it all down in her exercise book while the old man listens without blinking. When you finish, he waves you through and keeps your account instead of your rations. Walking on costs nothing, and the road feels briefly like something people share."
           }
         }
       ]
     },
     {
       "id": "flats_mirage",
-      "body": "A blue line trembles where the salt meets the sky. It widens when you look away and retreats whenever you face it directly. Broken stakes nearby carry strips of damp cloth, though the air is too dry to preserve them. Your map shows neither water nor shelter in that direction. Heat has removed every reliable measure except the angle of the sun and the tracks already fading behind you.",
+      "body": "A blue line trembles where the salt meets the sky. It widens when you look away and slides against your own movement instead of with it. At its far end a low dark ridge stands above the crust like a reef, and the ridge is walking. Nothing else out here is that size; colossus is the only word your mouth finds for it. Broken stakes nearby carry cloth strips still damp in air that should have dried them hours ago. The crust ahead is split into long parallel fractures, too straight for wind. Your map shows no water this way.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "The false horizon draws you toward a real depression hidden by glare. An old rain trap sits beneath corrugated metal with one sealed bottle in its catch box. You take it only after confirming the cap has never been lifted.",
-            "failure": "The blue line stays one hill of salt ahead until your own footprints begin crossing the route. You stop in a circle of identical glare, exhausted and hungry, with the imagined water still trembling at exactly the same distance."
+            "success": "You give up the blue line and take the walking ridge's bearing instead, keeping well off its ground. Where it rested through the worst heat, the salt lies dark for forty strides, and water has gathered under corrugated metal at its low center: a rain trap with one bottle still sealed in the catch box. The afternoon is gone. The cap has never been lifted.",
+            "failure": "The blue line keeps exactly one swell of salt between itself and you, hour after hour, and the dark ridge sits farther off at dusk than it did at noon. You stop where your own crossing footprints come back to meet you. Legs finished, nothing eaten since morning, and the water still trembling at the distance it started from."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You turn your back on the blue horizon and align the road by sun, wind, and the freshest edge of your tracks. The mirage slides sideways as you walk, revealing its dishonesty without taking another hour from you.",
-            "failure": "Sunlight reflects from salt and cloud with equal force, defeating the shadows you meant to trust. You choose a bearing, correct it, then correct the correction. The route survives, but your legs pay for every uncertain reference."
+            "success": "You put your back to the horizon and read the ground instead. The fractures run in long parallel sets, too straight for weather, and they lead back to the shape that opened them. You hold the road on the unbroken side. The blue line slides away sideways as you walk, and the afternoon stays yours.",
+            "failure": "Salt and cloud throw the light back with equal force, and the fracture lines run out under glare before you can follow them into a bearing. You choose east, correct it, then correct the correction. The road survives the arithmetic. Your legs pay for every reference you could not trust."
           }
         }
       ]
     },
     {
       "id": "flats_tanker",
-      "body": "A fuel tanker rests axle-deep in salt, its cab peeled open by heat and weather. The rear cargo locker remains sealed beneath a crust of white mineral. Red warning diamonds have faded to pale ghosts, yet a petroleum smell gathers whenever wind crosses the hinges. Something heavy shifts inside when the metal expands. The locker may contain road equipment, trapped pressure, or both in the same dark compartment.",
+      "body": "A fuel tanker rests axle-deep in salt, cab peeled open by heat. The rear cargo locker stays sealed under white mineral crust, warning diamonds faded to ghosts. Petroleum gathers at the hinges. Something heavy shifts inside.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "Your cut follows the weakest seam without reaching the tank behind it. The locker opens on road flares, useful metal, and a framed hiking pack protected inside an oilskin sack. Nothing moves except salt sliding from the door.",
-            "failure": "The cutting edge throws one bright spark into vapor trapped beneath the seal. Flame punches through the opening and rolls over your arms before open air starves it. You retreat burned, leaving the locker warped shut around whatever remains."
+            "success": "Your cut follows the weakest seam. The locker opens on road flares, good metal, and a framed pack in oilskin. One flare casing is hand-repacked: a smoke charge.",
+            "failure": "Your edge throws one bright spark into trapped vapor. Flame punches out and rolls over your arms before open air starves it. You retreat burned, the locker warped shut."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You loosen the lower hinge and wait while invisible fumes spill across the salt. Only when the petroleum smell thins do you open the compartment. A scrap shotgun and two dry shells lie wrapped beneath an old driver’s coat.",
-            "failure": "The gauge reads clean because heat has ruined its sensor. Your first breath inside the opening fills your lungs with bitter fuel vapor. You escape before it ignites, coughing hard enough to make every rib and step ache."
+            "success": "You loosen the lower hinge and wait out the fumes. When the smell thins, you open up: a scrap shotgun and two dry shells under a driver’s coat.",
+            "failure": "The gauge reads clean because heat killed its sensor. Your first breath inside fills your lungs with bitter vapor. You escape coughing, ribs and steps aching."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "outcome": "You walk the fume line slowly, breathing shallow through your sleeve, and come out the far side steady. Your body learns to hold pain aside."
           }
         }
       ]
     },
     {
       "id": "flats_dustwall",
-      "body": "The northern sky disappears behind a brown wall reaching from salt to cloud. Wrecks vanish one by one as the front advances. Static lifts the hair along your arms, and loose buckles begin striking your pack. A chained truck frame offers low shelter nearby; farther east, a drainage culvert opens above the salt. The storm is close enough that choosing between them may matter more than reaching either perfectly.",
+      "body": "A brown dust wall climbs from salt to cloud in the north, swallowing wrecks one by one. Static lifts your hair; buckles strike your pack. A chained truck frame offers low shelter. A culvert opens farther east.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You crawl beneath the truck frame and wrap its chain across your pack. Dust turns daylight black and makes the steel buck above you, but the anchor holds. When the air clears, fatigue remains and every seam contains salt.",
-            "failure": "The chain slips after the first impact. Dust drives through cloth, eyes, and throat while you fight the frame for shelter. You emerge coughing and depleted, lungs laboring against grit that makes the next miles feel steeper than open ground."
+            "success": "You crawl under the truck frame and wrap its chain across your pack. Dust blacks out daylight and bucks the steel above, but the anchor holds. Salt fills every seam.",
+            "failure": "The chain slips at the first impact. Dust drives through cloth, eyes, and throat while you wrestle the frame. You emerge coughing, lungs full of grit."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You reach the culvert as the front swallows the last wreck behind you. Momentum carries you down the concrete slope, where darkness and old water receive the storm’s roar. Dust passes overhead without finding your lungs.",
-            "failure": "The wall catches you several strides from the opening. Wind throws you across exposed salt and fills every breath with earth. You reach the culvert bruised, winded, and shaken by how quickly the horizon became a physical force."
+            "success": "You reach the culvert as the front swallows the last wreck. Momentum carries you down the concrete slope into dark and old water. Dust passes overhead, missing your lungs.",
+            "failure": "The wall catches you strides from the opening. Wind hurls you across open salt, filling every breath with earth. You reach the culvert bruised, winded, and shaken."
           }
         }
       ]
     },
     {
       "id": "flats_bones",
-      "body": "Human bones form a careful circle around one fresh boot print. Their joints have been wired together so wind cannot disturb the arrangement. Inside the ring, salt is smoother and slightly darker than the surrounding crust. A pair of intact boots waits beside the skull, toes pointing away. Whoever built this warning expected travelers to understand either the pattern, the footwear, or the cost of confusing one for an invitation.",
+      "body": "Human bones ring a single fresh boot print, wired so wind cannot move them. Inside, the salt lies darker and smoother, the way the pan closes over brine. Intact boots wait by the skull, toes pointing away.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "The circle marks where thin crust covers a chemical pit; the lone boot print shows the last safe step backward. You copy the warning into memory and follow the bones’ open side, leaving every wired joint undisturbed.",
-            "failure": "You recognize the arrangement only when the dark crust opens beneath your weight. One leg sinks into hot chemical slurry before you drag it free. Radiation and pain climb together while the wired bones remain fixed around your mistake."
+            "success": "The circle marks thin crust over a pit; the lone print is a last backward step. Dark salt is a wake with nothing beneath. You leave by the open side.",
+            "failure": "You read the pattern only as dark crust opens under your weight. One leg sinks into hot slurry before you drag free. Radiation and pain climb together."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You approach along the print’s exact line and lift the boots without crossing the circle. Their leather can be cut for repairs, and three pistol rounds are hidden beneath one insole. The warning surrenders nothing else.",
-            "failure": "The salt collapses beneath your reaching leg. You wrench free before the pit takes your knee, but chemical heat enters through the boot and burns upward. The intact pair remains beside the skull, no longer worth another attempt."
+            "success": "You walk the print’s exact line and lift the boots clear of the circle. Their leather will cut into repairs, and three pistol rounds hide beneath one insole.",
+            "failure": "The salt collapses under your reaching leg. You wrench free before the pit takes your knee, but chemical heat burns upward through the boot. The pair stays put."
           }
         }
       ]
     },
     {
       "id": "flats_convoy",
-      "body": "Three armored carts approach in single file, their mirrors flashing sequences across the white distance. Each vehicle has been plated with road signs and fitted with narrow firing slots. The lead cart stops beyond easy speaking range. A square mirror rises from its roof and repeats four deliberate bursts. Wrecks nearby offer concealment, but their metal has been heating since dawn and their shadows are thinner than your body.",
+      "body": "Three carts come on in single file, plated with road signs cut and overlapped like scales, every plate polished until the line of them throws light you can feel on your face. Narrow slots break the plating at chest height. Nothing shows through them.\n\nThe lead cart stops well beyond speaking range. A square mirror rises on a mast from its roof and gives you four deliberate bursts, waits, and gives them again. Above the roof behind it a folding awning frame stands stripped to its ribs, the fabric torn away along its seams, and the two people working under that frame are working in full sun.\n\nThe wrecks off the track could hide you. Their metal has been taking sun since dawn and their shadows are already thinner than your body. Whatever these people are, they cross salt that carries no road on any map you own, and they are still alive to signal about it.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You answer with the old peaceful sequence and leave your hands visible. The lead cart opens a side hatch just wide enough to exchange road news for water and ammunition. Its crew never removes their mirrored masks.",
-            "failure": "Your final flash turns a greeting into the convoy’s warning for armed pursuit. Shots strike salt on either side rather than your body, driving you flat while the carts pass. Their restraint leaves bruises, fear, and no chance to correct the message."
+            "success": "You give back the old peaceful sequence, slow enough to be read as courtesy rather than as an answer, and you stand with your hands open and well away from your pack while the mirror decides.\n\nA side hatch opens the width of a forearm. The trade is conducted through it: what the road behind you is doing, which wrecks still hold shade, where the crust has gone soft. Two bottles and four cartridges come back out. The masks stay on, mirrored and blank, and the voice behind them is young and careful and says nothing that is not about road.",
+            "failure": "Your last flash lands a beat wrong and turns a greeting into the convoy's own signal for armed pursuit. You learn this only from what happens next.\n\nThe shots go into the salt on either side of you, close enough to throw grit into your teeth, and you go down onto crust that opens both forearms while three carts grind past at walking speed. Nobody fires twice. Nobody stops. The restraint is worse than anger would have been, because it means they read you correctly the second time and did not need to shoot."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You flatten yourself beneath a delivery chassis and cover bright gear with salt cloth. The carts pass close enough for axle heat to touch your face. None slows, and their mirrors keep speaking to an empty horizon.",
-            "failure": "The convoy stops beside your wreck and waits without searching. Hot metal presses through your clothes as minutes become an hour. They eventually move on, leaving you dehydrated, hungry, and uncertain whether they knew your hiding place all along."
+            "success": "You get under a delivery chassis before the mirror comes around and pull salt cloth over everything on you that shines. The metal above holds the whole morning's heat against your back.\n\nThe carts pass near enough that axle heat crosses your face and you can hear a hand working a signal lamp's shutter, unhurried. None of them slows. The mirrors keep talking to the horizon behind you, four bursts and a wait, four bursts and a wait, until distance takes the light out of them.",
+            "failure": "The lead cart stops beside your wreck. It does not search. It sits there with its slots facing the salt while the sun climbs, and you learn that waiting is a weapon anybody can afford.\n\nHot metal presses through your clothes. Minutes become an hour. When they finally roll east you come out with your mouth gummed shut and your hands unsteady, and you do not stop to eat, because sitting down feels like a decision you might not reverse. You will never know whether they knew."
           }
         },
         {
           "index": 2,
           "outcomes": {
-            "success": "You rebuild the lead cart’s sun awning from mirror stock and salvaged rod, working the whole time beneath a firing slot that never quite looks away. The crew tests the shade, then trades a layered dust cloak for your standing hour.",
-            "failure": "Your frame holds until the first gust, then folds across the cart roof while the firing slots watch. The crew waves you back before you can brace it again. You leave carrying only the hour, the effort, and their politeness."
+            "success": "You rebuild the awning from mirror stock, salvaged rod, and the torn fabric's own hems, working the whole hour under a firing slot that never quite looks away from your hands.\n\nWhen it is done the crew run the frame out and back twice, then leave it standing and put two of their own people in the shade under it. The trade arrives without discussion: a layered dust cloak, waxed and heavy, pushed through the hatch by a gloved hand. Nobody thanks you. The shade is the thanks, and they know you can see it.",
+            "failure": "Your frame takes shape and holds until the first real gust, and then it folds along the joint you were least sure of, slowly, across the cart roof, while the slots watch.\n\nThe crew wave you back before you can get under it again. One of them begins stripping your rod out of the folded frame with the flat patience of somebody who has repaired this awning before and expects to repair it again. You leave carrying the hour, the effort, and their politeness, which is the least useful of the three."
           }
         },
         {
           "index": 3,
           "outcomes": {
-            "success": "You describe the toll barricade east of here in detail their mirrors cannot reach: how many collectors work it, and which hours they leave it thin. A gloved hand passes back a weighted die. Telling them costs you the advantage of knowing alone.",
-            "failure": "They already carry that stretch of road in their logs, and your account adds nothing their scouts have not written twice. The hatch closes on a courteous refusal. You spend the rest of the hour explaining yourself to sealed steel."
+            "success": "You trade the only thing you own that they cannot read from a cart: the road behind you. Which wrecks hold shade past noon and which have gone to rust powder. Where the crust turns soft enough to take a wheel to the axle. The stretch where wind has erased the ruts entirely and the ground stops helping anyone.\n\nThey set it against their own logs and find two things they did not have. A gloved hand passes back a bone die, rounded, its six almost worn away. What it costs you is that the road behind you is no longer yours alone to know.",
+            "failure": "They already carry that stretch in their logs, corrected twice by scouts who went and looked. You hear it in the pause before the mirror answers: not contempt, only the small silence of people handed something they filed last season.\n\nThe hatch does not open. A voice through the plate thanks you for stopping and suggests the wrecks for shade, which is either courtesy or an instruction. You spend the rest of the hour explaining yourself to sealed steel, and you walk away from it in stages."
           }
         }
       ]
     },
     {
       "id": "flats_solar",
-      "body": "Rows of cracked solar panels turn toward the sun with slow insect precision. Their motors click across the empty field in sequence, creating a wave of movement without wind. A central controller cabinet still shows a green charge light. Beneath several panels lies a blade of reliable shade, but following it means trusting machinery that has already begun adjusting toward the afternoon angle.",
+      "body": "Cracked solar panels turn sunward with slow insect clicks, wave after wave without wind. A controller cabinet still shows green. Reliable shade lies beneath several panels — if you trust machinery already adjusting for afternoon.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You isolate the controller before opening its cabinet, keeping the wider grid asleep. Charge components and a sealed stimulant fit into your pack. Behind you, one row stops following the sun and casts a fixed, unnatural shadow.",
-            "failure": "Stored current crosses your tool and contracts every muscle at once. You wake on hot salt with the controller locked and your thoughts arriving out of order. The panels continue turning above, indifferent to the body they briefly powered."
+            "success": "You isolate the controller before opening its cabinet, keeping the grid asleep. Charge parts and a sealed stimulant fit your pack. Behind you one row freezes mid-turn.",
+            "failure": "Stored current crosses your tool and knots every muscle at once. You wake on hot salt, thoughts arriving out of order. The panels keep turning above, indifferent."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You choose a panel whose drive belt has already split. Its shadow stays still while the others creep across the ground. Ten quiet minutes lower your breathing and return strength without placing you beneath moving steel.",
-            "failure": "The panel wakes while you rest and turns its black surface away. Full sun reaches you before sleep has become recovery. You leave the field more tired than when you entered, tracked by the clicking rows."
+            "success": "You pick a panel whose belt already split. Its shadow holds still while the others creep. Ten quiet minutes slow your breathing and return strength.",
+            "failure": "The panel wakes mid-rest and turns its black face away. Full sun finds you before sleep becomes recovery. You leave wearier, tracked by clicking rows."
           }
         }
       ]
@@ -430,40 +460,40 @@
     },
     {
       "id": "flats_nightfire",
-      "body": "After sunset, a cooking fire burns inside the wheel rim of an overturned truck. A lone woman sits beyond its smoke with both hands open on her knees. One blanket, two cups, and a covered pot are arranged within reach; a second bedroll remains empty. The cold is already hardening spilled water on the salt. She calls herself Noma and asks no question until you decide whether to enter the light.",
+      "body": "The fire is small and burning inside the steel rim of an overturned truck wheel, which is how you know it was laid by somebody who intends to leave no mark on the salt. You see it from a long way out. After sunset out here there is nothing else to see.\n\nA woman sits beyond the smoke with both hands open on her knees, which is a thing people do on purpose. One blanket. Two cups, both set out. A covered pot near enough to the coals to be keeping rather than cooking. A second bedroll lies unrolled on the far side of the fire with nobody in it.\n\nShe does not search the dark for you. She says, loud enough to carry and no louder, that her name is Noma, that there is water and enough of the pot for two, and that the bedroll has been empty since the flats before this one. Then she stops talking and lets you decide. Spilled water is already hardening into a pale scab beside her boot.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "Noma presses two ration bars into your pack and trades warnings while you sleep in turns. She never asks what you carry beyond the fire. Dawn finds your muscles rested and a second set of footprints continuing east beside yours for several miles.",
-            "failure": "Warmth and exhaustion defeat your caution together. You wake before sunrise to an empty fire ring and one missing can. Noma has left the blanket folded and enough embers to soften the theft into something more complicated than simple malice."
+            "success": "You come in and sit where she can see your hands, and she pours without comment.\n\nHer talk is a list, which is how she keeps track: who is walking the north pan and how many, which wells are answering, a man by the tanker wrecks who trades fair and a woman past him who does not, three names she says once and does not explain. You sleep in turns. She takes first watch unasked and wakes you when she said she would.\n\nAt dawn she pushes two ration bars into your pack past your objection and walks east beside you for miles before her road bends off yours.",
+            "failure": "Warmth and four days of walking beat your caution between them. You go down hard and sleep like something switched off.\n\nYou wake to a folded blanket, coals banked so they would still be alive for you, two cups scoured with sand and set upside down, and your pack a hand's width from where you left it with the strap rebuckled by somebody who was in no hurry at all. Whatever was in it worth carrying out is not in it now.\n\nHer tracks go east. She left you the fire, which is not what a thief does, and she took what she took anyway."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You circle downwind and keep wreckage between your movement and the flame. Noma never turns from the pot. The empty bedroll remains visible until darkness closes over it, an offered place neither accepted nor withdrawn.",
-            "failure": "Your boot breaks a salt crust loud enough to resemble a shot. Noma rolls away from the fire as you reach for cover, and both of you retreat from the misunderstanding. The abandoned flame burns between separate lines of fear."
+            "success": "You go downwind and keep wreck iron between yourself and the light, walking on crust that is already broken so nothing new has to break under you.\n\nShe does not turn around. She stirs the pot, sets the lid back, and says the thing about the water and the pot once more into the dark, in case the dark had not finished thinking about it. Then she stops offering and eats.\n\nThe second bedroll stays where it is, flat and visible, until distance and darkness close over it together. Neither accepted nor withdrawn. You walk east with the road to yourself, which is what you asked for.",
+            "failure": "Your boot goes through a salt crust with a crack that carries like a shot across flat ground.\n\nNoma is off the bedroll and out of the firelight before the sound has finished. You are down behind a wheel hub with your pulse in your ears, and now there is nothing either of you can do except be two shapes in the dark who have each decided the other might be a problem. She calls out once. You do not answer, because answering would place you.\n\nYou leave in a wide arc. Behind you the fire burns between two people who both retreated from it."
           }
         }
       ]
     },
     {
       "id": "global_trader",
-      "body": "A trader approaches behind a one-wheeled cart balanced with impossible care. Tin cups chime beneath its canvas, announcing movement long before either of you can see a face. The trader stops beyond grabbing distance and places a stone on the road to mark neutral ground. Their stock is modest but real: food, dressings, rumors, and the practiced patience to discover which one you need most.",
+      "body": "A trader stops a long stride beyond grabbing distance, lowers the handles of a one-wheeled cart, and sets a stone on the road between you to mark the line neither of you will cross. Tin cups chime under the canvas until the wheel finishes settling.\n\nThe stock is modest and real: canned meat, dressings boiled pale, a jar of fasteners sorted by thread. A hand scale hangs from the frame with its lead counterweight already resting in the pan, and they tap it twice so you can watch it swing true before anything of yours goes near it.\n\nThe price arrives before you ask for it. One bundle of clean salvage per trade, weighed on that scale, and nothing on credit. What they have seen of the road costs only your patience, since a trader who walks the same three stretches over and over has more of that than they can sell. Then they wait, to learn which of the two you came for.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You notice that the trader weighs clean fasteners separately from rusted scrap and bargain on their own terms. One bundle of parts becomes canned meat and boiled bandages. The trader smiles only after both packs have closed.",
-            "failure": "You trade before asking what the scale’s counterweight contains. The parts purchase one ration bar instead of the meal you expected. It is not theft; the trader recites every measure while you learn how little impatience buys."
+            "success": "You sort the bundle before it reaches the pan, clean fasteners in one palm and rusted stock in the other, and you let them watch you do it. That changes the weight, and the weight changes the conversation. The counterweight comes off once and goes back on lighter, which is the entire negotiation.\n\nAcross the stone comes a tin of meat and a roll of dressings that still smells of the pot it was boiled in. They lift the cart handles, then stand a moment longer than the trade required, working out which way you will turn.",
+            "failure": "You put the bundle up before you look at what sits under the counterweight, and they let you. There is a second lead disc bolted beneath the first. It is not a cheat, only a weight neither of you named aloud, and naming weights was your half of the work.\n\nThe bundle buys one ration bar. They recite each measure while handing it over, the number and then the name for the number, so that nothing here can be called theft afterward. You have paid good fasteners for an afternoon's lesson in the cost of hurry."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "The trader describes birds lifting from an eastern culvert seconds before armed travelers arrive. The detail, rather than the warning itself, sharpens your attention. You part without exchanging property, carrying a pattern that may matter more than another object.",
-            "failure": "Their directions use landmarks that burned years ago and a bridge now lying in the river. Each correction contradicts the previous one. You leave with no useful bearing and several wasted minutes spent pretending the account might eventually align."
+            "success": "They do not tell you the road ahead is dangerous, which is what a useless account sounds like. They tell you that the birds along an eastern culvert lift about four breaths before armed travelers come round the bend, every time, and that the birds are the part worth trusting.\n\nYou test it against what you already know and it holds. Nothing changes hands. You walk on carrying a rule instead of an object, and for the rest of the day your attention keeps going to the tops of things: wires, gutter lines, wall ridges, anywhere a bird would choose to sit.",
+            "failure": "The account opens confidently and spends the rest of itself correcting. A grain tower that burned years ago is the first landmark; when you say so, they move it, then move a bridge that is lying in its own river to make room, then put the tower back where it started.\n\nYou stay through three versions because the fourth might agree with itself. It does not. You leave with no bearing you would follow after dark, and with the particular tiredness that comes of listening hard to nothing at all."
           }
         }
       ]
@@ -504,12 +534,18 @@
           "outcomes": {
             "outcome": "You give the display a wide edge and never turn your back to the drainage pipe. The pack remains upright behind you, complete with whatever supplies or violence made it so carefully visible. Nothing follows before the next bend."
           }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "outcome": "The wire lifts on your second fingertip without a click. Pistol rounds roll out of the side pocket into your palm, brass warm from the sun. The work leaves your hands awake and quick for whatever the road asks next."
+          }
         }
       ]
     },
     {
       "id": "global_stranger",
-      "body": "A stranger sits against a kilometer stone with both hands pressed around a wound beneath the ribs. Their coat has been cut open rather than torn, and a trail of dark cloth markers leads back along the road. A stamped route token hangs from their neck. They keep glancing toward the markers, listening for companions, attackers, or the person they expect to return and finish the work.",
+      "body": "A stranger sits against a kilometer stone with both hands pressed around a wound beneath the ribs. Their coat has been cut open rather than torn, and a trail of dark cloth markers leads back along the road. A stamped route token hangs from their neck. They keep glancing toward the markers, listening for companions, attackers, or the person they expect to return and finish the work. Your own coat is lined with cloth that would fold into a pad, though holding a wound closed by hand is slow work with no clean end.",
       "choices": [
         {
           "index": 0,
@@ -522,6 +558,13 @@
           "index": 1,
           "outcomes": {
             "outcome": "You hold the bottle while the stranger drinks, then stop before generosity becomes treatment you cannot provide. They point out a trail hidden behind the marker stone. It shortens your route; it does not answer what happens after you leave."
+          }
+        },
+        {
+          "index": 2,
+          "outcomes": {
+            "success": "You cut the lining from your own coat, fold it into a pad, and lean on the wound with your whole weight. The bleeding slows. By the time the people behind the markers answer your shouting, the stranger is awake enough to argue with them, and your arms will not stop shaking.",
+            "failure": "You press until your hands go numb, but the wound fills faster than cloth can hold it. The stranger stops trying to speak partway through. When the markers finally bring someone back along the road, you are still kneeling there with a ruined coat and nothing to hand over."
           }
         }
       ]
@@ -586,59 +629,59 @@
     },
     {
       "id": "global_drop",
-      "body": "A white parachute hangs from power lines above a supply pod embedded nose-first in the roadside. Its fabric is still moving, and the casing ticks as internal systems count down an unknown interval. Fresh arrival means intact supplies and nearby claimants. The pod can be opened where it fell or dragged beneath a concrete awning, trading time and strength for cover from whoever follows its recovery signal.",
+      "body": "A white parachute hangs from power lines over a pod nosed into the roadside, fabric still moving. A lit keypad glows beside a scoured code panel; the shell ticks at something unexplained. Nothing has weathered. Open it here, or drag it under the awning unseen.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You enter the faded service code before the pod announces its location again. The latch releases medicine, radiation tablets, and one emergency ration. You clear the road while the parachute still tells distant watchers where to look.",
-            "failure": "The third wrong entry wakes a recovery alarm loud enough to cross the surrounding ruins. You abandon the sealed pod and move fast, every answering echo suggesting footsteps or machinery already turning toward it."
+            "success": "You enter the faded code before the pod repeats its signal. The latch gives medicine, tablets, one ration. A fast-draw holster rides the straps. You clear out fast.",
+            "failure": "The third wrong entry wakes a recovery alarm that crosses the ruins. You abandon the sealed pod and run, every echo suggesting footsteps or machines already turning."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "You use the parachute lines to drag the pod behind concrete before opening it. Nobody sees the hatch release. Two bottles and canned meat wait inside, and the cut line coils into your pack as ten meters of usable rope.",
-            "failure": "The pod’s buried nose refuses to move until your leg braces at the wrong angle. Something tears beneath the effort. The casing remains visible, ticking and sealed, while your injured joint makes leaving it slower than arrival."
+            "success": "You haul the pod behind concrete on its parachute lines and open it unseen. Two bottles and canned meat wait inside; the cut line coils into ten meters of rope.",
+            "failure": "The buried nose won’t budge till your leg braces wrong. Something tears under the effort. The casing sits ticking and visible while your joint slows the leaving."
           }
         }
       ]
     },
     {
       "id": "global_bike",
-      "body": "A courier bicycle leans against a route marker, its chain snapped and rear wheel lifted from the ground. The rider is absent, but the locked cargo box bears fresh scratches around its keyway. A faded manifest lists medical deliveries along roads that no longer connect. With wire and patience, the bicycle might carry you briefly. The box might contain the reason somebody abandoned transport before abandoning its cargo.",
+      "body": "A courier bicycle leans against a route marker, chain snapped, rear wheel lifted clear of the ground. The rider is gone and took the sidearm with them: the holster stitched to the crossbar is empty, its flap still buttoned back. What they did not take is the locked cargo box, and someone since has scratched the keyway raw trying it without a key. A faded manifest names medical deliveries along roads that no longer connect. Wire and enough patience to lace it through might make the chain turn again.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
             "success": "You lace the broken links with wire and keep your weight forward. The bicycle carries you over several clean kilometers before the repair unwinds. You leave it beneath another marker with distance gained and strength restored.",
-            "failure": "Wire disappears into the chain without holding two consecutive turns. By the time you accept the failure, fingers ache and useful scrap has become twisted fragments. Pushing the bicycle offers nothing, so it remains exactly where patience found it."
+            "failure": "Wire goes into the chain and will not hold two turns together. You splice it three times; the third splice takes a strip of skin off your knuckle before it parts like the others did. Whatever you fed into the repair comes back out twisted past use. You leave the bicycle against the marker exactly as you found it."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "success": "The cargo latch yields to pressure placed beside, rather than inside, the damaged keyway. Three cartridges and a ration bar sit beneath undelivered manifests. You take what can still reach a living recipient.",
-            "failure": "Your improvised pick snaps below the pins and blocks the keyway completely. The tool’s metal is lost inside the lock. Whatever the courier protected remains secure against you and anyone lacking time to drill the box."
+            "success": "You set the pry beside the keyway rather than in it and let the lid's own hinge give first. The medical run the manifest promises went out long ago; what remains under the paperwork is the ration the courier was saving and a strip of cartridges for the sidearm they walked away with. You take both.",
+            "failure": "Your pick snaps below the pins and the broken half seats itself where a key should go. Whatever you shaped it from is inside the lock now and will not come out. The box holds against you and against everyone after you, short of a drill and an hour nobody on this road has."
           }
         }
       ]
     },
     {
       "id": "global_crows",
-      "body": "Hairless crows line a guardrail in order of size. Their exposed throats pulse before they repeat scraps of human speech: half a name, a request for water, laughter ending too sharply. One bird says TURN LEFT in three different voices. Another carries cloth from a bandage around its leg. The flock watches to see whether stolen language can move you as effectively as hunger moves them.",
+      "body": "Hairless crows line a guardrail in order of size, their exposed throats pulsing before each borrowed sound: half a name, a request for water, laughter that stops too sharply. One says TURN LEFT in three different voices. Another wears bandage cloth wound twice around its leg. Below the rail, where they drop what they cannot eat, wire and small fittings have gathered into a seam of shine along the concrete. The flock watches to see whether stolen language moves you the way hunger moves them.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
             "success": "You follow the repeated phrase only after identifying which bird learned it most recently. The words lead to an abandoned camp where canned meat and clean bandages remain under canvas. The flock waits overhead for whatever you expose.",
-            "failure": "The voices draw you into a low basin where lichen glows beneath the stones. By the time the scanner warns you, the crows have lifted beyond range. Their borrowed laughter follows while radiation settles invisibly into your body."
+            "failure": "The voices take you down into a basin where lichen glows under the stones and the air tastes of hot coins. By the time you understand what the glow is telling you, you are standing in the middle of it and the flock has lifted beyond reach, laughing in a stranger's laugh."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "victory": "The flock descends in ragged waves until enough bodies strike the road that the survivors reconsider. Their human phrases scatter with them, growing fainter over the ruins. No useful loot remains, only silence purchased at close range."
+            "victory": "They come in ragged waves until enough of them strike the road that the rest reconsider and lift away, still talking in other people's voices. What they had been guarding is wedged under the rail: bandage cloth, wire, fittings, sorted by nothing except shine. You take the cloth and the metal and leave the rest of the hoard where it lies."
           }
         }
       ]
@@ -677,7 +720,7 @@
           "index": 1,
           "outcomes": {
             "success": "You mark both anchor points and step beyond their likely reach. Nothing tightens around boot or pack. The wire remains armed behind you, preserving your safety at the possible expense of the next less observant traveler.",
-            "failure": "A second line catches the side of your pack where the obvious snare taught you not to look. The jerk tears a bottle free and spills clean water into dust before you can cut loose and recover balance."
+            "failure": "A second line waits exactly where the first one taught you to step, and it takes the pack instead of the ankle. The side pocket opens along its seam while you are still turning. Whatever it was carrying goes into the dust, and you spend a while cutting free of a wire meant for something smaller than you."
           }
         }
       ]

@@ -7,14 +7,25 @@
       "narrative_priority": 11,
       "weight": 11,
       "unique": true,
-      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_any_flags": ["b41_mara_helped", "b41_mara_abandoned", "b41_recording", "b41_contact"]},
-      "body": "The rail speaker wakes after midnight with a wet click, though the tunnel has no power and no wind. Salt clings to its grille like frost. Mara Venn's voice comes through beneath a storm of static, dictating coordinates and pausing between each one as if waiting for somebody to write them down. When the message ends, the speaker gives a small pencil-scratch sound. Then Mara whispers, very softly, \"Do not trust the water when it knows your name.\"",
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 5,
+        "requires_any_flags": [
+          "b41_mara_helped",
+          "b41_mara_abandoned",
+          "b41_recording",
+          "b41_contact"
+        ]
+      },
+      "body": "The rail speaker wakes after midnight with a wet click, though the tunnel has no power and no wind. Salt clings to its grille like frost. A woman's voice comes through beneath the static, dictating coordinates and pausing between each one as if waiting for a pencil. When the message ends, the speaker gives a small pencil-scratch sound. The voice signs off with a name, Mara Venn, offered the way a signature is offered, without waiting to learn whether it means anything to you. Then she whispers, \"Do not trust the water when it knows your name.\"",
       "choices": [
         {
           "label": "Follow the coordinates",
           "outcome": {
             "text": "You leave the familiar tracks and follow the numbers through a service tunnel smelling of wet iron. The route ends where drowned platforms begin, beneath a wall of black water. Someone has recently tied a green thread around the nearest signal post.",
-            "add_flags": ["rustsea_green_line"],
+            "add_flags": [
+              "rustsea_green_line"
+            ],
             "next_event": "rustsea_quay_names"
           }
         },
@@ -22,7 +33,9 @@
           "label": "Trace the signal first",
           "outcome": {
             "text": "You open the signal box and find its wire leading nowhere, then splitting beneath the salt into older cable. Mara's message repeats from a direction the map calls impassable. The ground ahead carries a slow vibration, almost too regular to notice.",
-            "add_flags": ["rustsea_green_line"],
+            "add_flags": [
+              "rustsea_green_line"
+            ],
             "next_event": "rustsea_false_coordinates"
           }
         },
@@ -30,8 +43,24 @@
           "label": "Silence the speaker",
           "outcome": {
             "text": "You cut the speaker loose and leave it hissing beside the track. By morning, a green line has appeared across your paper map in pencil you do not remember using. It ends at a mark shaped like a drowned tower.",
-            "add_flags": ["rustsea_map_self_marked"]
+            "add_flags": [
+              "rustsea_map_self_marked"
+            ]
           }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "b41_mara_helped"
+          ],
+          "text": "The rail speaker wakes after midnight with a wet click, though the tunnel has no power and no wind. The voice under the static is Mara Venn's, and you know it before the numbers start: the woman who told you when the bunker floor warmed, who ate from your can with both hands and asked you to carry her name if she could not get out. So she is out, or her voice is. She dictates coordinates, pausing after each one for a pencil, then whispers, \"Do not trust the water when it knows your name.\""
+        },
+        {
+          "requires_any_flags": [
+            "b41_mara_abandoned"
+          ],
+          "text": "The rail speaker wakes after midnight with a wet click, though the tunnel has no power and no wind. You know the voice before the static clears, because it has followed you east: Mara Venn, flat and exact, whose sheets you lifted off the nails while she sat on the floor with one boot. For days the maintenance band has carried your callsign and the word thief in that voice. Tonight it does not say thief. It dictates coordinates, pausing after each one for a pencil, then whispers, \"Do not trust the water when it knows your name.\""
         }
       ]
     },
@@ -41,29 +70,41 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["rustsea_green_line"]},
-      "body": "The terminus has sunk to its roofline. Water fills the concourse, black and still beneath cracked skylights. A tiled wall rises from it like a grave marker, covered in names scratched through soot and old paint. Some cuts are deep enough to show broken nails were used. Others are fresh charcoal. Several family names belonged to people supposedly admitted to East Citadel. The water taps beneath those names with patient little waves, as if trying to rub them away.",
+      "eligibility": {
+        "requires_any_flags": [
+          "rustsea_green_line",
+          "rustsea_map_self_marked"
+        ]
+      },
+      "body": "The terminus has sunk to its roofline. Water fills the concourse, black and still beneath cracked skylights. A tiled wall rises from it like a grave marker, covered in names scratched through soot and old paint. Some cuts are deep enough to have cost fingernails. Others are fresh charcoal. Several family names belonged to people supposedly admitted to East Citadel. Across the water, someone with a shuttered lantern is copying the wall onto banner cloth in charcoal, skipping names as they go. On the pillar beside them, a lantern crossed by three strokes is still drying.",
       "choices": [
         {
           "label": "Search for Mara's name",
           "outcome": {
             "text": "Mara's name appears beneath a layer of soot, followed by an arrow and a time: green light, noon. Behind a loose tile, you find a station key and a note that says she was wrong about the route east.",
-            "add_flags": ["rustsea_mara_trace"],
+            "add_flags": [
+              "rustsea_mara_trace"
+            ],
             "next_event": "rustsea_station_arrivals"
           }
         },
         {
           "label": "Copy every name",
           "outcome": {
-            "text": "You copy until your hand cramps and the ink begins to run in the damp. The list includes children, workers, and whole families whose records should have ended at the Citadel gate. One margin note reads: living people below.",
-            "add_flags": ["rustsea_names_copied", "rustsea_children_clue"]
+            "text": "You copy until your hand cramps and the ink begins to run in the damp, keeping pace with the charcoal across the water and taking down every name it skips. The list includes children, workers, and whole families whose records should have ended at the Citadel gate. One margin note reads: living people below.",
+            "add_flags": [
+              "rustsea_names_copied",
+              "rustsea_children_clue"
+            ]
           }
         },
         {
           "label": "Deface the wall",
           "outcome": {
-            "text": "You smear the names beneath mud and salt before any faction can make a banner of them. When you turn away, a fresh ash symbol appears on a pillar across the water: a lantern crossed by three dark strokes.",
-            "add_flags": ["rustsea_ash_marks_damaged"]
+            "text": "You smear the names under mud and salt faster than the charcoal across the water can take them down, and drag your sleeve through the drying lantern mark on the way out. The copier rolls up half a wall and leaves. Before you reach the tunnel mouth, a fresh lantern has been chalked on the pillar behind you, crossed by three strokes.",
+            "add_flags": [
+              "rustsea_ash_marks_damaged"
+            ]
           }
         }
       ]
@@ -74,14 +115,20 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["rustsea_green_line"]},
-      "body": "The signal leads into a white channel between salt ridges. The ground looks firm until the wind stops. Then a soft vibration travels through the crust and into your boots. Ahead, an overturned truck lies half-swallowed by salt. Its steel frame has been folded inward in long smooth bends, as if a hand enormous enough to close around it became impatient. The radio keeps repeating Mara's voice, but the words are wrong now: come closer, I cannot see you.",
+      "eligibility": {
+        "requires_flags": [
+          "rustsea_green_line"
+        ]
+      },
+      "body": "The signal leads into a white channel between salt ridges. The ground looks firm until the wind stops. Then a soft vibration travels through the crust and into your boots. Ahead, an overturned truck lies half-swallowed by salt. Its steel frame has been folded inward in long smooth bends, as if a hand enormous enough to close around it became impatient. The radio keeps repeating Mara's voice, but the words are wrong now: come closer, I cannot see you. The embankment is still a dozen shallow steps behind you, and the vibration has not reached it.",
       "choices": [
         {
           "label": "Retreat to the embankment",
           "outcome": {
             "text": "You back away without running, keeping your steps shallow and slow. The vibration follows for several breaths, then fades beneath the salt. A raised service line takes you toward an old station that seems to have been waiting for you.",
-            "add_flags": ["rustsea_salt_warning"],
+            "add_flags": [
+              "rustsea_salt_warning"
+            ],
             "next_event": "rustsea_station_arrivals"
           }
         },
@@ -89,14 +136,16 @@
           "label": "Cross before it rises",
           "outcome": {
             "text": "You sprint over the channel as the salt breaks behind you in widening rings. Something pale moves beneath the crust without surfacing. On the far side, an old caravan lies arranged around a warm hollow in the ground.",
-            "add_flags": ["rustsea_salt_warning"],
+            "add_flags": [
+              "rustsea_salt_warning"
+            ],
             "next_event": "rustsea_salt_crown_wake"
           }
         },
         {
           "label": "Enter the hollow below",
           "outcome": {
-            "text": "You climb down through salt warm as skin and hear a jaw closing somewhere larger than the tunnel. The false voice stops. The real thing below has already found the rhythm of your breathing, and the white ground seals over you.",
+            "text": "You climb down through salt warm as skin, and the voice stops in the middle of a word, as if it no longer needs to call. Under you the vibration finds the rhythm of your breathing and settles into it. The heat rises. The white ground closes over the hollow without a sound, and the salt keeps no shape of you.",
             "lethal": true
           }
         }
@@ -108,14 +157,21 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_any_flags": ["rustsea_mara_trace", "rustsea_salt_warning"]},
+      "eligibility": {
+        "requires_any_flags": [
+          "rustsea_mara_trace",
+          "rustsea_salt_warning"
+        ]
+      },
       "body": "This station has no platform edge. It ends in open water, where rail lines vanish beneath drowned streets. Mara's old shelter waits behind a collapsed ticket office: string maps, empty medicine tins, and a broken compass whose needle points east without trembling. Her notes describe routes through the Rust-Sea, but each has been crossed out by a different hand. One reads, lantern men ask for names. Another says, do not let the child speak first. The newest note says only: I was wrong.",
       "choices": [
         {
           "label": "Take Mara's newest route",
           "outcome": {
             "text": "You follow the newest line across the wall, through every correction and hesitation Mara left behind. It ends at a signal hut on stilts above rust-colored water. Someone has lit a lamp there, though no boat is tied nearby.",
-            "add_flags": ["rustsea_mara_route"],
+            "add_flags": [
+              "rustsea_mara_route"
+            ],
             "next_event": "rustsea_cartographers_debt"
           }
         },
@@ -123,7 +179,9 @@
           "label": "Leave Mara a message",
           "outcome": {
             "text": "You write your answer beneath Mara's last note and wedge it behind the compass. The paper map rustles though the room is still. New pencil marks appear along its margin, joining voices to places you have never visited.",
-            "add_flags": ["rustsea_message_left"],
+            "add_flags": [
+              "rustsea_message_left"
+            ],
             "next_event": "rustsea_voice_map"
           }
         },
@@ -131,7 +189,9 @@
           "label": "Burn the maps",
           "outcome": {
             "text": "The maps burn quickly, their string lines curling into black threads. Smoke climbs through the broken roof and carries east. Before you leave, you notice lantern reflections moving across the water where no boats were visible before.",
-            "add_flags": ["rustsea_maps_burned"]
+            "add_flags": [
+              "rustsea_maps_burned"
+            ]
           }
         }
       ]
@@ -142,29 +202,57 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["rustsea_salt_warning"]},
-      "body": "The caravan did not crash. It was placed here. Wagons, pack animals, and people lie in a circular depression under a thin skin of salt, arranged around a hole that breathes warm mineral air. The dead have no obvious wounds; their mouths are open and packed with crystals. A survivor knocks faintly beneath a collapsed canvas roof. Far below, something gives a slow scrape against stone. A wagon door bears three words written in brown salt: do not make noise.",
+      "eligibility": {
+        "requires_flags": [
+          "rustsea_salt_warning"
+        ]
+      },
+      "body": "The caravan did not crash. It was placed here. Wagons, pack animals, and people lie in a circular depression under a thin skin of salt, arranged around a hole that breathes warm mineral air. The dead have no obvious wounds; their mouths are open and packed with crystals. A survivor knocks faintly beneath a collapsed canvas roof. Far below, something gives a slow scrape against stone. A wagon door bears three words written in brown salt: do not make noise. The raised line you crossed on is still behind you. The nearest wagon's packs have never been opened.",
       "choices": [
         {
           "label": "Free the trapped survivor",
           "outcome": {
             "text": "You cut the canvas loose one careful thread at a time. The survivor crawls free without speaking, then presses a folded map into your hand. Mara passed through yesterday, they mouth, and followed the voices toward the drowned tower.",
-            "add_flags": ["rustsea_survivor_saved", "rustsea_mara_trace"],
+            "add_flags": [
+              "rustsea_survivor_saved",
+              "rustsea_mara_trace"
+            ],
             "next_event": "rustsea_voice_map"
           }
         },
         {
           "label": "Take supplies and leave",
-          "outcome": {
-            "text": "You lift each pack in turn and find every tin split by salt, nothing worth the noise of carrying it. You walk away from the knocking beneath the canvas empty-handed. The warm breath continues behind you. A narrow line of Mara's map leads toward a lamp on stilts.",
-            "add_flags": ["rustsea_caravan_taken", "rustsea_mara_route"],
+          "approach": "salvage",
+          "check": {
+            "stat": "agility",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You lift each pack by its straps and set it on cloth, never on crust. Most tins are split. Two are not: a can of meat and a stoppered bottle of water, into your pack without a sound. The knocking keeps its count as you leave. Under the warning on the wagon door, a pinned strip of map leads toward a lamp on stilts.",
+            "items": {
+              "canned_meat": 1,
+              "clean_water": 1
+            },
+            "add_flags": [
+              "rustsea_mara_route"
+            ],
+            "next_event": "rustsea_cartographers_debt"
+          },
+          "failure": {
+            "text": "You lift the packs one by one and find every tin split by salt, nothing worth the noise of carrying. The careful lifting costs more than the tins were worth; your arms shake by the last one. You walk away from the knocking with nothing. Under the warning on the wagon door, a pinned strip of map leads toward a lamp on stilts.",
+            "pressures": {
+              "fatigue": 6
+            },
+            "add_flags": [
+              "rustsea_mara_route"
+            ],
             "next_event": "rustsea_cartographers_debt"
           }
         },
         {
           "label": "Climb into the hollow",
           "outcome": {
-            "text": "You descend toward the warm scrape beneath the caravan and the salt folds around your boots like a closing hand. The trapped survivor stops knocking. A crown of pale limbs rises without sound, and there is nowhere left to run.",
+            "text": "You lower yourself toward the warm scrape, and the salt folds around your boots like a closing hand. Under the canvas, the knocking stops. The breath from the hole changes rhythm, catching on your own, and the heat comes up through the crust faster than you can climb. The circle of salt smooths over as if nothing was ever arranged here.",
             "lethal": true
           }
         }
@@ -176,32 +264,93 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["rustsea_mara_route"]},
-      "body": "Mara waits in a signal hut built on stilts above rust-colored water. She has found a second boot, though it does not match the first. Her maps cover the walls, ceiling, and inside of her coat. She knows whether you fed her beneath Bunker Forty-One. She knows whether you left her with the predator. She does not begin with accusation. Instead, she spreads a route to the Sunken Spire across the table and says it only works if two people carry it: one remembers the road, one remembers why.",
+      "eligibility": {
+        "requires_flags": [
+          "rustsea_mara_route"
+        ]
+      },
+      "body": "The signal hut stands on stilts above rust-colored water, one lamp lit and no boat tied beneath it. Inside, maps cover the walls, the ceiling, and the lining of a coat hung on a nail. Mara Venn sits at the table in two boots that do not match, a pencil behind one ear and another in her hand, and she looks at you the way she looks at a line somebody else drew: checking it before she trusts it.\n\nShe does not ask who you are. You wrote her numbers down, she says, and you arrived, and that is the first half of the work. She spreads a route across the table, from the drowned station to a place she calls the Sunken Spire, and explains that it only works if two people carry it: one remembers the road, one remembers why. She has carried both halves alone since Bunker Forty-One, she says, and her newest correction, written across the way east, says she was wrong.",
       "choices": [
         {
           "label": "Help Mara reach the Spire",
           "outcome": {
-            "text": "Mara folds the route into two halves and gives one to you. Her relief is cautious, almost embarrassed. Before dawn, both maps point toward the same impossible place on the Rust-Sea horizon: a drowned tower waiting for noon.",
-            "add_flags": ["rustsea_mara_allied", "rustsea_spire_route"],
+            "text": "Mara folds the route down its center and gives you the half with the road on it. Hers keeps the reasons: the margin notes, the corrections, the crossed-out ways east. Her relief is cautious, almost embarrassed, and she covers it by holding your half up to the lamp to check for a smudge. Before dawn both halves point at the same place on the Rust-Sea horizon, a drowned tower that will only be there at noon, and you will not have to be the one who remembers why.",
+            "add_flags": [
+              "rustsea_mara_allied",
+              "rustsea_spire_route"
+            ],
             "next_event": "rustsea_last_coordinate"
           }
         },
         {
           "label": "Keep the map and leave her",
           "outcome": {
-            "text": "Mara lets you take the map because arguing would make the old wound too familiar. She watches from the hut as you leave. Later, a rail speaker repeats your callsign and the word thief with growing certainty.",
-            "add_flags": ["rustsea_mara_betrayed", "rustsea_spire_route"],
+            "text": "You take the whole route off the table and roll it, and Mara lets you, because she cannot fight and both of you know it. She does not follow you to the ladder. She watches from the hut door as you go, one lamp behind her, and says nothing until you are on the water. Then the rail speakers along the drowned shore begin, one after another, in her voice: your callsign, the word thief, your callsign, each pass arriving from a speaker nearer than the last. The route in your pack points at noon. Nobody is left to tell you why.",
+            "add_flags": [
+              "rustsea_mara_betrayed",
+              "rustsea_spire_route"
+            ],
             "next_event": "rustsea_last_coordinate"
           }
         },
         {
           "label": "Give Mara the Mercy Key",
-          "requires": {"flags": ["b41_mercy_key"]},
+          "requires": {
+            "flags": [
+              "b41_mercy_key"
+            ],
+            "forbids_flags": [
+              "b41_key_surrendered"
+            ]
+          },
           "outcome": {
-            "text": "Mara holds the black relay core as if it might bite. Green light gathers under her fingers, and the water below the hut begins answering with distant lamps. She says the Key has shown her a city under the sea.",
-            "add_flags": ["rustsea_key_with_mara", "rustsea_spire_route"]
+            "text": "You take the black relay core and set it on her map, and Mara picks it up as if it might bite. It is warm. She turns it once, the way she checks a bearing, and green light gathers under her fingers and stays when she takes them away. Below the hut, on the water, lamps begin to answer: one, then a line of them, going out toward the horizon in an order that looks like a route. She says the Key has shown her a city under the sea. She says it the way she reports a correction, and you have no way to check it.",
+            "add_flags": [
+              "rustsea_key_with_mara",
+              "rustsea_spire_route"
+            ],
+            "next_event": "rustsea_last_coordinate"
           }
+        },
+        {
+          "label": "Return what you took",
+          "approach": "social",
+          "requires": {
+            "flags": [
+              "b41_mara_abandoned"
+            ],
+            "reason": "You took nothing of hers",
+            "hidden_when_locked": true
+          },
+          "outcome": {
+            "text": "You unroll her sheets on the table, the ones you carried out of Bunker Forty-One with your hand near the knife, and you say what you did in plain words. Mara does not thank you. She holds each sheet up to the lamp for damage, finds the nail holes still clean, and hangs them back where the tin lids were. Then she folds the Spire route down the middle and gives you the half with the road on it, as if the rest had already been agreed. Before dawn both halves point at the same place on the horizon, and the speaker in the corner stays off.",
+            "add_flags": [
+              "rustsea_mara_allied",
+              "rustsea_spire_route"
+            ],
+            "next_event": "rustsea_last_coordinate"
+          }
+        }
+      ],
+      "scene_role": "substantial",
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "b41_mara_helped"
+          ],
+          "text": "The signal hut stands on stilts above rust-colored water, one lamp lit and no boat tied beneath it. Inside, maps cover the walls, the ceiling, and the lining of a coat hung on a nail. On the shelf above the table, washed out and holding pencils, is the can you opened for her under Bunker Forty-One.\n\nMara Venn looks up from two boots that do not match and knows you before you speak. The can, she says, and tips her head at the shelf. She kept you in a margin, she says, the way she asked you to keep her name, and she has already drawn your half. It lies folded beside the whole: a route from the drowned station to a place she calls the Sunken Spire, which she says only works if two people carry it, one remembering the road and one remembering why. She was wrong about the way east once and wrote so across the sheet. She would rather be wrong beside somebody this time."
+        },
+        {
+          "requires_any_flags": [
+            "b41_mara_abandoned"
+          ],
+          "text": "The signal hut stands on stilts above rust-colored water, one lamp lit and no boat tied beneath it. Inside, the walls are covered with maps drawn on tin lids, ration wrappers, and the lining of a coat, because the sheets that used to hang on her nails are the ones you carried out of Bunker Forty-One under your arm. A rail speaker in the corner is repeating your callsign and the word thief, in her voice, on a loop. Mara Venn reaches over and switches it off.\n\nThat was me, she says. She does not say sorry and she does not ask for anything back. She spreads a route across the table, drawn since, from the drowned station to a place she calls the Sunken Spire, and says it only works if two people carry it: one remembers the road, one remembers why. She has nobody else to ask. She would like that to be clear before you decide."
+        },
+        {
+          "requires_any_flags": [
+            "rustsea_maps_burned"
+          ],
+          "text": "The signal hut stands on stilts above rust-colored water, one lamp lit and no boat tied beneath it. Inside, the walls hold fewer maps than the nails were driven for; Mara Venn has pinned blank sheets over the gaps and drawn nothing on them yet. She sits in two boots that do not match, and the first thing she asks about is the smoke. She watched it come east over the water, she says, from the direction of the terminus, and she has been waiting to learn whether the routes went up with it. You do not have to answer. She reads it in where you look.\n\nThen she spreads the only route she has left, drawn from memory, to a place she calls the Sunken Spire, and says it only works if two people carry it: one remembers the road, one remembers why. With the station gone, she says, that is no longer a saying. It is the only copy."
         }
       ]
     },
@@ -211,30 +360,59 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_any_flags": ["rustsea_message_left", "rustsea_survivor_saved"]},
-      "body": "The map speaks when unfolded. Not loudly. A name rises from one rail line, another from a water-stained margin, each voice clipped and distant as if calling from rooms separated by decades. Mara has marked these voices as routes, not people. Some guide you around flooded tunnels. Others beg to be found. One child says she is still waiting for the evacuation bus. Another voice insists the Citadel gate opened for him, though his name is carved on the drowned wall.",
+      "eligibility": {
+        "requires_any_flags": [
+          "rustsea_message_left",
+          "rustsea_survivor_saved"
+        ]
+      },
+      "body": "The map speaks when unfolded. Not loudly. A receiver no bigger than a matchbox has been sewn into the fold, its wire stitched along the drawn rail line, and the names rise from it clipped and distant, as if calling from rooms separated by decades. Mara has marked these voices as routes, not people. Some guide you around flooded tunnels. Others beg to be found. One child says she is still waiting for the evacuation bus. Another insists the Citadel gate opened for him, and spells his name as if for a wall.",
       "choices": [
         {
           "label": "Trust the shared route",
           "outcome": {
             "text": "You follow the one route every voice agrees upon. It avoids the drowned tunnels and climbs toward a shore of broken signal towers. The voices quiet as the green light appears, leaving only a final instruction: reach it before noon.",
-            "add_flags": ["rustsea_voice_trusted", "rustsea_spire_route"],
+            "add_flags": [
+              "rustsea_voice_trusted",
+              "rustsea_spire_route"
+            ],
             "next_event": "rustsea_last_coordinate"
           }
         },
         {
           "label": "Silence the receiver",
           "outcome": {
-            "text": "You close the map and wrap the receiver in cloth until the voices fade. The paper remains useful, but something human has been left behind in the dark. A later signal will carry the names you chose not to hear.",
-            "add_flags": ["rustsea_voices_silenced"]
+            "text": "You close the map and wrap the receiver in cloth, turn by turn, until the voices thin to a rustle and stop. The paper is still useful; the routes are still drawn. But the fold is warm where the receiver sits, and the child was mid-sentence when the cloth went over her.",
+            "add_flags": []
           }
         },
         {
           "label": "Name the dead aloud",
           "outcome": {
             "text": "You speak each voice's name into the empty station until the echoes become a kind of attendance. The map grows still. In its lower corner, a new line appears toward the Sunken Spire beside two words: bring witnesses.",
-            "add_flags": ["rustsea_named_dead", "rustsea_spire_route", "b41_witness"]
+            "add_flags": [
+              "rustsea_named_dead",
+              "rustsea_spire_route",
+              "b41_witness"
+            ],
+            "variants": [
+              {
+                "requires_any_flags": [
+                  "rustsea_names_copied"
+                ],
+                "text": "You speak each name into the empty station, and this time you have the whole list: the wall you copied at the quay, read in order, so every voice on the map is answered by its family. The echoes become an attendance and the map grows still. In its lower corner a new line appears toward the Sunken Spire, beside two words: bring witnesses."
+              }
+            ],
+            "next_event": "rustsea_last_coordinate"
           }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "rustsea_children_clue"
+          ],
+          "text": "The map speaks when unfolded. Not loudly. A receiver no bigger than a matchbox is sewn into the fold, and the names rise from it clipped and distant. You know some of them from the list you copied off the drowned wall: the same names, in the same order, under the same margin note, living people below. Mara has marked these voices as routes, not people. One child says she is still waiting for the evacuation bus; her family name is third on your page. Another insists the Citadel gate opened for him. You copied his too."
         }
       ]
     },
@@ -244,29 +422,74 @@
       "global": true,
       "weight": 1,
       "unique": true,
-      "eligibility": {"requires_flags": ["rustsea_spire_route"]},
+      "eligibility": {
+        "requires_flags": [
+          "rustsea_spire_route"
+        ]
+      },
       "body": "The last coordinate is not a place on the map. It is a time: noon, on the day the green light returns. When that hour comes, the flooded horizon opens between wrecked towers and the Sunken Spire rises from the Rust-Sea like a black needle driven through the world. Its upper windows burn green behind sheets of rain. At its base, small boats drift without rowers. Each holds a lantern. Each lantern holds a paper name. The water whispers with borrowed voices.",
       "choices": [
         {
           "label": "Take Mara's mapped route",
           "outcome": {
-            "text": "You step onto the marked shallows while Mara's route trembles in your hand. The water does not rise above your knees, but it feels deep enough to contain a city. The Spire's green windows answer your approach one by one.",
-            "add_flags": ["rustsea_spire_reached", "rustsea_mapped_entry"]
+            "text": "You step onto the marked shallows with the route held flat. The water stays below your knees exactly as far as the line goes, and the line ends at the ring of boats, where Mara drew it to end. You lift one paper name from the nearest lantern, take the Spire's noon bearing, and walk the raised rail east before the light fails.",
+            "add_flags": [
+              "rustsea_spire_reached",
+              "rustsea_mapped_entry"
+            ]
           }
         },
         {
           "label": "Wait for the signal to change",
           "outcome": {
-            "text": "You watch the green light until it blinks out and returns colder than before. In the darkness between pulses, shapes move around the Spire's base. When the light returns, one boat has drifted close enough to board.",
-            "add_flags": ["rustsea_spire_reached", "rustsea_late_entry"]
+            "text": "You watch the green light blink out and return colder than before, and by then the tide has closed the shallows and the marked line with them. One boat drifts close enough to board; no boat here has ever been rowed. You read its paper name at the shore in the dark, and turn east with the Spire behind you, seen and not approached.",
+            "add_flags": [
+              "rustsea_spire_reached",
+              "rustsea_late_entry"
+            ]
           }
         },
         {
           "label": "Leave proof for another traveler",
           "outcome": {
             "text": "You tie a copy of the route beneath a lantern and set it afloat toward the old rail road. Then you turn east carrying the original. Somewhere behind you, another survivor may find the road you refused to keep secret.",
-            "add_flags": ["rustsea_spire_reached", "rustsea_route_shared"]
+            "add_flags": [
+              "rustsea_spire_reached",
+              "rustsea_route_shared"
+            ]
           }
+        }
+      ],
+      "body_variants": [
+        {
+          "requires_any_flags": [
+            "rustsea_key_with_mara"
+          ],
+          "text": "Noon comes, and the flooded horizon opens between wrecked towers. The Sunken Spire rises from the Rust-Sea, its upper windows green behind sheets of rain. Mara stands at the waterline with the relay core in both hands. As the light returns, the lamps in the drifting boats come on one after another, nearest first, in a line that leads to her, and she does not move toward them. Each boat holds a lantern and a paper name. The route is yours to walk. Whatever the lamps are answering, it is in her hands, not yours."
+        },
+        {
+          "requires_any_flags": [
+            "rustsea_mara_allied"
+          ],
+          "text": "Noon comes, and the flooded horizon opens between wrecked towers. The Sunken Spire rises from the Rust-Sea, its upper windows green behind sheets of rain, and Mara is beside you on the shore with her half of the route held flat against the wind. She lays it against yours on the salt. The lines meet without a gap. At the Spire's base, small boats drift without rowers, each holding a lantern and a paper name, and she counts the pulse of the light under her breath. Whatever you do, she says, do it before the light changes."
+        },
+        {
+          "requires_any_flags": [
+            "rustsea_mara_betrayed"
+          ],
+          "text": "Noon comes, and the flooded horizon opens between wrecked towers. The Sunken Spire rises from the Rust-Sea, its upper windows green behind sheets of rain. Along the drowned shore the rail speakers have found you again: your callsign, the word thief, your callsign, in Mara's flat voice, from one speaker after another, so that the boats drifting at the Spire's base seem to turn toward the sound. Each holds a lantern and a paper name. The whole route is in your hands alone. The water whispers with borrowed voices, and one of them is saying your callsign too."
+        },
+        {
+          "requires_any_flags": [
+            "rustsea_named_dead"
+          ],
+          "text": "Noon comes, and the flooded horizon opens between wrecked towers. The Sunken Spire rises from the Rust-Sea, its upper windows green behind sheets of rain. At its base small boats drift without rowers, each holding a lantern and a paper name, and the nearest drifts close enough to read. You know the name. You spoke it into the empty station with the others, and the next boat carries the name you spoke after it, and the one behind that. The water repeats them in the order you read them."
+        },
+        {
+          "requires_any_flags": [
+            "rustsea_voice_trusted"
+          ],
+          "text": "Noon comes, and the flooded horizon opens between wrecked towers. The Sunken Spire rises from the Rust-Sea, its upper windows green behind sheets of rain. The voices that agreed on this route went quiet the moment the green light appeared, all at once, as if the shore of broken signal towers was the last place they had directions for. At the Spire's base, small boats drift without rowers, each holding a lantern and a paper name. The map in your hand has nothing more to say. Only the water is still talking, in the voices you followed here."
         }
       ]
     }

@@ -7,27 +7,18 @@
       "xp_reward": 24,
       "description": "Hungry people with weapons and a practiced formation.",
       "portrait_id": "enemy_bandits",
-      "loot": [
-        "pistol_rounds",
-        "canned_meat",
-        "scrap_parts"
-      ],
+      "loot": ["pistol_rounds", "canned_meat", "scrap_parts"],
       "combat": {
-        "max_health": 180,
-        "damage_min": 35,
-        "damage_max": 55,
+        "max_health": 200,
+        "damage_min": 44,
+        "damage_max": 66,
         "weapon_name": "Hunting bows and blades",
         "critical_condition": "bleeding",
         "flee_difficulty": "favorable"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "strike",
-          "brace",
-          "heavy",
-          "recover"
-        ],
+        "sequence": ["strike", "brace", "heavy", "recover"],
         "tells": {
           "strike": "A bandit raises his blade and approaches without looking away.",
           "brace": "The leader shelters behind a road sign, keeping his knife ready for a short reply.",
@@ -43,24 +34,18 @@
       "xp_reward": 22,
       "description": "A scarred pack defending a wide hunting ground.",
       "portrait_id": "enemy_dogs",
-      "loot": [
-        "canned_meat"
-      ],
+      "loot": ["canned_meat"],
       "combat": {
-        "max_health": 120,
-        "damage_min": 22,
-        "damage_max": 36,
+        "max_health": 150,
+        "damage_min": 38,
+        "damage_max": 58,
         "weapon_name": "Teeth and claws",
         "critical_condition": "bleeding",
         "flee_difficulty": "favorable"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "strike",
-          "heavy",
-          "recover"
-        ],
+        "sequence": ["strike", "heavy", "recover"],
         "tells": {
           "strike": "The lead dog comes low, watching your weapon hand.",
           "heavy": "The largest dog sinks onto its haunches. Its whole body gathers for a lunge that would crush a weak guard.",
@@ -75,25 +60,18 @@
       "xp_reward": 36,
       "description": "A pale predator that hunts by vibration and copied sound.",
       "portrait_id": "enemy_stalker",
-      "loot": [
-        "glow_moss"
-      ],
+      "loot": ["glow_moss"],
       "combat": {
-        "max_health": 220,
-        "damage_min": 45,
-        "damage_max": 70,
+        "max_health": 240,
+        "damage_min": 52,
+        "damage_max": 80,
         "weapon_name": "Hooked claws",
         "critical_condition": "bleeding",
         "flee_difficulty": "risky"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "strike",
-          "heavy",
-          "sweep",
-          "recover"
-        ],
+        "sequence": ["strike", "heavy", "sweep", "recover"],
         "tells": {
           "strike": "The Stalker tilts its head toward your breathing. One hooked forelimb reaches forward.",
           "heavy": "Its claws stop scraping. The hind legs fold under a gathering mass that no casual guard will hold.",
@@ -109,26 +87,18 @@
       "xp_reward": 30,
       "description": "Extortionists who mistake uniforms for legitimacy.",
       "portrait_id": "enemy_toll",
-      "loot": [
-        "revolver_rounds",
-        "scrap_parts"
-      ],
+      "loot": ["revolver_rounds", "scrap_parts"],
       "combat": {
-        "max_health": 220,
-        "damage_min": 40,
-        "damage_max": 60,
+        "max_health": 240,
+        "damage_min": 48,
+        "damage_max": 72,
         "weapon_name": "Clubs and revolvers",
         "critical_condition": "shaken",
         "flee_difficulty": "risky"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "brace",
-          "strike",
-          "heavy",
-          "recover"
-        ],
+        "sequence": ["brace", "strike", "heavy", "recover"],
         "tells": {
           "brace": "The collectors close ranks behind their barricade, clubs held for short defensive blows.",
           "strike": "A collector steps past the barrier, revolver tracking you.",
@@ -144,24 +114,18 @@
       "xp_reward": 24,
       "description": "Hand-long parasites disturbed by warm water.",
       "portrait_id": "enemy_leeches",
-      "loot": [
-        "bitter_tonic"
-      ],
+      "loot": ["bitter_tonic"],
       "combat": {
-        "max_health": 90,
-        "damage_min": 12,
-        "damage_max": 24,
+        "max_health": 120,
+        "damage_min": 32,
+        "damage_max": 48,
         "weapon_name": "Feeding swarm",
         "critical_condition": "bleeding",
         "flee_difficulty": "favorable"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "sweep",
-          "strike",
-          "recover"
-        ],
+        "sequence": ["sweep", "strike", "recover"],
         "tells": {
           "sweep": "The water wrinkles all around you. Small bodies spread across every place you could step.",
           "strike": "The nearest parasites rear toward the warmth of your legs.",
@@ -176,25 +140,18 @@
       "xp_reward": 44,
       "description": "Masked skiff riders who know every dry patch.",
       "portrait_id": "enemy_raiders",
-      "loot": [
-        "shotgun_shells",
-        "clean_water"
-      ],
+      "loot": ["shotgun_shells", "clean_water"],
       "combat": {
-        "max_health": 250,
-        "damage_min": 50,
-        "damage_max": 75,
+        "max_health": 270,
+        "damage_min": 54,
+        "damage_max": 80,
         "weapon_name": "Patched shotguns",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "strike",
-          "sweep",
-          "brace"
-        ],
+        "sequence": ["strike", "sweep", "brace"],
         "tells": {
           "strike": "The nearest raider shoulders a patched gun and sights along the barrel.",
           "sweep": "The skiff turns broadside. Several barrels fan across the narrow bank together.",
@@ -209,26 +166,18 @@
       "xp_reward": 48,
       "description": "Failing machines still obey an evacuation order.",
       "portrait_id": "enemy_drones",
-      "loot": [
-        "scrap_parts",
-        "field_scanner"
-      ],
+      "loot": ["scrap_parts", "field_scanner"],
       "combat": {
-        "max_health": 260,
-        "damage_min": 50,
-        "damage_max": 80,
+        "max_health": 280,
+        "damage_min": 56,
+        "damage_max": 88,
         "weapon_name": "Security emitters",
         "critical_condition": "burned",
         "flee_difficulty": "hard"
       },
       "narrative_combat": {
         "organic": false,
-        "sequence": [
-          "strike",
-          "charge",
-          "heavy",
-          "recover"
-        ],
+        "sequence": ["strike", "charge", "heavy", "recover"],
         "tells": {
           "strike": "Red targeting lights steady on your chest as the drones drift apart.",
           "charge": "Emitter coils rise in pitch. A much stronger discharge is building.",
@@ -244,26 +193,18 @@
       "xp_reward": 46,
       "description": "A disciplined crew protecting its claim.",
       "portrait_id": "enemy_scavs",
-      "loot": [
-        "rifle_rounds",
-        "medkit"
-      ],
+      "loot": ["rifle_rounds", "medkit"],
       "combat": {
-        "max_health": 280,
-        "damage_min": 55,
-        "damage_max": 80,
+        "max_health": 300,
+        "damage_min": 58,
+        "damage_max": 85,
         "weapon_name": "Rifles and work axes",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "brace",
-          "strike",
-          "heavy",
-          "recover"
-        ],
+        "sequence": ["brace", "strike", "heavy", "recover"],
         "tells": {
           "brace": "The crew closes behind a slab of salvage. An axe waits over its edge.",
           "strike": "A rifle comes over the slab and follows your movement.",
@@ -279,26 +220,18 @@
       "xp_reward": 62,
       "description": "Pilgrims who treat radiation burns as revelation.",
       "portrait_id": "enemy_cult",
-      "loot": [
-        "rad_tabs",
-        "purifier_ampoule"
-      ],
+      "loot": ["rad_tabs", "purifier_ampoule"],
       "combat": {
-        "max_health": 320,
-        "damage_min": 60,
-        "damage_max": 90,
+        "max_health": 340,
+        "damage_min": 64,
+        "damage_max": 96,
         "weapon_name": "Glass blades",
         "critical_condition": "bleeding",
         "flee_difficulty": "desperate"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "strike",
-          "sweep",
-          "heavy",
-          "recover"
-        ],
+        "sequence": ["strike", "sweep", "heavy", "recover"],
         "tells": {
           "strike": "A pilgrim draws a glass edge across the light and advances.",
           "sweep": "The pilgrims spread their blades into a glittering arc, narrowing the ground you can dodge into.",
@@ -314,25 +247,18 @@
       "xp_reward": 52,
       "description": "Silent raiders using darkness as armor.",
       "portrait_id": "enemy_hunters",
-      "loot": [
-        "smoke_bomb",
-        "pistol_rounds"
-      ],
+      "loot": ["smoke_bomb", "pistol_rounds"],
       "combat": {
-        "max_health": 300,
-        "damage_min": 65,
-        "damage_max": 95,
+        "max_health": 320,
+        "damage_min": 68,
+        "damage_max": 100,
         "weapon_name": "Hidden knives",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "strike",
-          "heavy",
-          "brace"
-        ],
+        "sequence": ["strike", "heavy", "brace"],
         "tells": {
           "strike": "A knife catches the tunnel light. Its owner is already moving toward you.",
           "heavy": "A hunter springs from the wall with both knives forward. The leap has power but little room to turn.",
@@ -347,27 +273,18 @@
       "xp_reward": 75,
       "description": "Well-fed soldiers defending the last clean walls.",
       "portrait_id": "enemy_guard",
-      "loot": [
-        "riot_padding",
-        "rifle_rounds"
-      ],
+      "loot": ["riot_padding", "rifle_rounds"],
       "combat": {
-        "max_health": 400,
-        "damage_min": 80,
-        "damage_max": 120,
+        "max_health": 430,
+        "damage_min": 85,
+        "damage_max": 128,
         "weapon_name": "Service rifles",
         "critical_condition": "shaken",
         "flee_difficulty": "desperate"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "brace",
-          "strike",
-          "charge",
-          "heavy",
-          "recover"
-        ],
+        "sequence": ["brace", "strike", "charge", "heavy", "recover"],
         "tells": {
           "brace": "The guards close their shields, rifle muzzles resting in the gaps.",
           "strike": "A rifle swings into a clean firing line.",
@@ -384,25 +301,18 @@
       "xp_reward": 100,
       "description": "An armored checkpoint intelligence with no surrender protocol.",
       "portrait_id": "enemy_warden",
-      "loot": [
-        "signal_compass"
-      ],
+      "loot": ["signal_compass"],
       "combat": {
-        "max_health": 550,
-        "damage_min": 100,
-        "damage_max": 150,
+        "max_health": 600,
+        "damage_min": 105,
+        "damage_max": 158,
         "weapon_name": "Rotary cannon",
         "critical_condition": "burned",
         "flee_difficulty": "desperate"
       },
       "narrative_combat": {
         "organic": false,
-        "sequence": [
-          "charge",
-          "heavy",
-          "recover",
-          "sweep"
-        ],
+        "sequence": ["charge", "heavy", "recover", "sweep"],
         "tells": {
           "charge": "The Warden's rotary cannon accelerates. Warning lights trace the narrow lane it is preparing to erase.",
           "heavy": "The cannon locks onto your position. Standing behind a weak guard will not stop the concentrated burst.",
@@ -420,26 +330,244 @@
       "portrait_id": "enemy_crows",
       "loot": [],
       "combat": {
-        "max_health": 70,
-        "damage_min": 7,
-        "damage_max": 10,
+        "max_health": 110,
+        "damage_min": 36,
+        "damage_max": 54,
         "weapon_name": "Beaks and talons",
         "critical_condition": "shaken",
         "flee_difficulty": "easy"
       },
       "narrative_combat": {
         "organic": true,
-        "sequence": [
-          "strike",
-          "sweep",
-          "recover"
-        ],
+        "sequence": ["strike", "sweep", "strike", "recover"],
         "tells": {
           "strike": "The nearest crows pitch forward, beaks pointing at your hands.",
           "sweep": "The flock spreads across your path, wings closing off either side.",
           "recover": "The birds circle beyond reach, struggling to regroup."
         }
       }
+    },
+    {
+      "id": "reed_widow",
+      "name": "Reed Widow",
+      "threat": 13,
+      "xp_reward": 30,
+      "description": "A predator under a raft of living reeds, waiting for weight.",
+      "portrait_id": "enemy_widow",
+      "combat": {
+        "max_health": 160,
+        "damage_min": 36,
+        "damage_max": 56,
+        "weapon_name": "Grasping limbs and undertow",
+        "critical_condition": "sprain",
+        "flee_difficulty": "risky"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["brace", "strike", "heavy", "recover"],
+        "tells": {
+          "brace": "The raft settles lower and the lights go out under it, and packed reed will take half of whatever you land on it.",
+          "strike": "Reeds part where nothing showed a moment ago, opening on the foot you have your weight on.",
+          "heavy": "It takes hold and pulls toward deep water, tilting the whole raft behind a commitment no guard will hold but a sidestep can leave behind.",
+          "recover": "It surfaces to breathe, eggs exposed along its back and nothing covering the length of it."
+        }
+      },
+      "field_note": "Reed raft over water; pale eggs in sequence; one laced boot."
+    },
+    {
+      "id": "kilnback",
+      "name": "Kilnback",
+      "threat": 16,
+      "xp_reward": 50,
+      "description": "A heat-seeking mass that breathes on the tank's pressure cycle.",
+      "portrait_id": "enemy_kilnback",
+      "combat": {
+        "max_health": 300,
+        "damage_min": 62,
+        "damage_max": 88,
+        "weapon_name": "Scorched plate edges",
+        "critical_condition": "burned",
+        "flee_difficulty": "favorable"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["brace", "heavy", "strike", "recover"],
+        "tells": {
+          "brace": "It draws the plates in until nothing shows but scorched metal, and the stack will take half of whatever you land on it.",
+          "heavy": "The whole mass rocks back against the tank wall, gathering weight no guard will hold behind a line you can still step out of.",
+          "strike": "One plate edge comes out at knee height, moving faster than the mass behind it.",
+          "recover": "It sags, plates loosening and heat pouring off it, with nothing holding the gaps closed."
+        }
+      },
+      "field_note": "Stacked plates around a heat; scorch-rings on the tank; three knocks and a pause."
+    },
+    {
+      "id": "shutter_skitters",
+      "name": "Shutter Skitters",
+      "threat": 10,
+      "xp_reward": 16,
+      "description": "Flat plated animals that shelter together inside warm apartment walls.",
+      "portrait_id": "enemy_skitters",
+      "loot": ["medkit", "canned_meat"],
+      "combat": {
+        "max_health": 115,
+        "damage_min": 28,
+        "damage_max": 44,
+        "weapon_name": "Biting plates and clustered bodies",
+        "critical_condition": "infection",
+        "flee_difficulty": "easy"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["sweep", "strike", "brace", "recover"],
+        "tells": {
+          "sweep": "Plates fan out across the landing, closing off the stair on both sides.",
+          "strike": "The nearest bodies rear toward the warmth of your shins.",
+          "brace": "The colony locks together into one armored sheet, taking half of whatever you land on it.",
+          "recover": "The sheet comes apart into scattered bodies looking for the wall."
+        }
+      },
+      "field_note": "Plated colony; roof-slate bodies; the tapping in the wall."
+    },
+    {
+      "id": "cable_eater",
+      "name": "Cable Eater",
+      "threat": 15,
+      "xp_reward": 44,
+      "description": "A segmented organism that bridges severed power lines to feed on their current.",
+      "portrait_id": "enemy_cable_eater",
+      "loot": ["scrap_parts"],
+      "combat": {
+        "max_health": 250,
+        "damage_min": 54,
+        "damage_max": 80,
+        "weapon_name": "Live segments and electrical discharge",
+        "critical_condition": "burned",
+        "flee_difficulty": "risky"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["charge", "strike", "sweep", "brace", "recover"],
+        "tells": {
+          "charge": "The lights along the run brighten all at once; it is drawing the load.",
+          "strike": "A segment snaps out of the tray toward your hands.",
+          "sweep": "It lashes the length of the tray at knee height.",
+          "brace": "It coils around the live cable and goes still, taking half of whatever you land on it.",
+          "recover": "It uncoils to find the next span, segments dragging."
+        }
+      },
+      "field_note": "Segmented body in the cable tray; shed insulation on the water; the lights dimming in sequence."
+    },
+    {
+      "id": "pox_dogs",
+      "name": "Pox Dogs",
+      "threat": 11,
+      "xp_reward": 22,
+      "description": "Feral dogs swollen with pale cysts that burst into spore clouds.",
+      "portrait_id": "enemy_pox_dogs",
+      "loot": ["purifier_poultice", "scrap_parts"],
+      "combat": {
+        "max_health": 130,
+        "damage_min": 34,
+        "damage_max": 50,
+        "weapon_name": "Cysted teeth and claws",
+        "critical_condition": "spore_cough",
+        "flee_difficulty": "favorable"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["strike", "sweep", "recover"],
+        "tells": {
+          "strike": "The lead pox dog lowers its swollen head, cysts pulsing along its neck.",
+          "sweep": "The pack fans across the ground, weeping flanks turned toward every escape.",
+          "recover": "The dogs fall back to snap at their own sores, tongues working the burst skin."
+        }
+      },
+      "field_note": "Swollen flanks; pale cysts; a cough like wet paper tearing."
+    },
+    {
+      "id": "bile_spewer",
+      "name": "Bile Spewer",
+      "threat": 14,
+      "xp_reward": 38,
+      "description": "A bloated marsh floater that vomits gut-dissolving bile at warm bodies.",
+      "portrait_id": "enemy_bile_spewer",
+      "loot": ["mutant_serum", "clean_water"],
+      "combat": {
+        "max_health": 220,
+        "damage_min": 48,
+        "damage_max": 70,
+        "weapon_name": "Bile jets and grasping gut-tendrils",
+        "critical_condition": "gutrot",
+        "flee_difficulty": "risky"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["strike", "heavy", "brace", "recover"],
+        "tells": {
+          "strike": "The spewer's throat swells and its mouth opens on black bile.",
+          "heavy": "Its whole gut contracts at once, gathering a flood no guard will hold but a sidestep can leave behind.",
+          "brace": "It sinks low and seals its folds, taking half of whatever you land on it.",
+          "recover": "It sags emptied, tendrils trailing, with nothing covering its raw mouth."
+        }
+      },
+      "field_note": "Bloated floater; black bile stains; the smell reaches you first."
+    },
+    {
+      "id": "cinder_mauler",
+      "name": "Cinder Mauler",
+      "threat": 16,
+      "xp_reward": 58,
+      "description": "A furnace-scarred brute plated in half-melted scrap, still smoking.",
+      "portrait_id": "enemy_cinder_mauler",
+      "loot": ["kiln_plates", "scrap_parts"],
+      "combat": {
+        "max_health": 340,
+        "damage_min": 70,
+        "damage_max": 100,
+        "weapon_name": "Superheated plate fists",
+        "critical_condition": "burned",
+        "flee_difficulty": "hard"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["strike", "heavy", "brace", "recover"],
+        "tells": {
+          "strike": "The mauler drags one smoking fist forward, heat rippling off the plates.",
+          "heavy": "It draws both fists high together, gathering furnace weight no guard will hold behind a line you can still step out of.",
+          "brace": "It locks its plates edge to edge, taking half of whatever you land on it.",
+          "recover": "Steam bursts from its seams as it cools, plates gaping open around the joints."
+        }
+      },
+      "field_note": "Half-melted plates; smoking seams; footprints of cooling slag."
+    },
+    {
+      "id": "salt_colossus",
+      "name": "Salt Colossus",
+      "threat": 19,
+      "xp_reward": 90,
+      "description": "A towering mutant fused with crawler armor, worshipped and feared by the wastes.",
+      "portrait_id": "enemy_salt_colossus",
+      "loot": ["choir_incense", "rifle_rounds"],
+      "combat": {
+        "max_health": 450,
+        "damage_min": 85,
+        "damage_max": 125,
+        "weapon_name": "Crawler-plated avalanche fists",
+        "critical_condition": "gutrot",
+        "flee_difficulty": "desperate"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["charge", "heavy", "sweep", "recover"],
+        "tells": {
+          "charge": "The colossus plants both feet and draws a breath that moves the dust. Something enormous is gathering.",
+          "heavy": "Both avalanche fists rise together against the sky. The coming blow will erase whatever ground you stand on.",
+          "sweep": "It turns sideways and swings one plated arm across the whole approach, closing every sideways route.",
+          "recover": "It kneels in its own crater, armor fallen open, breathing through exposed red gaps."
+        }
+      },
+      "field_note": "Crawler armor fused to flesh; crater footsteps; pilgrim offerings at its trail."
     }
   ]
 }
