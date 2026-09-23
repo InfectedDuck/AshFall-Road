@@ -140,6 +140,7 @@
       "xp_reward": 44,
       "description": "Masked skiff riders who know every dry patch.",
       "portrait_id": "enemy_raiders",
+      "field_note": "Two riders back to back; heron mask and one red eye; pole-hook and patched shotgun.",
       "loot": ["shotgun_shells", "clean_water"],
       "combat": {
         "max_health": 270,
@@ -193,6 +194,7 @@
       "xp_reward": 46,
       "description": "A disciplined crew protecting its claim.",
       "portrait_id": "enemy_scavs",
+      "field_note": "Four claimants at rest; charcoal crop and silver forelock; weapons down, eyes up.",
       "loot": ["rifle_rounds", "medkit"],
       "combat": {
         "max_health": 300,
@@ -220,6 +222,7 @@
       "xp_reward": 62,
       "description": "Pilgrims who treat radiation burns as revelation.",
       "portrait_id": "enemy_cult",
+      "field_note": "Five pilgrims in road cloth; veiled leader, tired eyes; burns worn as rank.",
       "loot": ["rad_tabs", "purifier_ampoule"],
       "combat": {
         "max_health": 340,
@@ -247,6 +250,7 @@
       "xp_reward": 52,
       "description": "Silent raiders using darkness as armor.",
       "portrait_id": "enemy_hunters",
+      "field_note": "Bound locs and wrapped braid; green-stained jaws; wrapped dark that listens.",
       "loot": ["smoke_bomb", "pistol_rounds"],
       "combat": {
         "max_health": 320,
@@ -273,6 +277,7 @@
       "xp_reward": 75,
       "description": "Well-fed soldiers defending the last clean walls.",
       "portrait_id": "enemy_guard",
+      "field_note": "Blunt bob and mustache; maintained kit, clean walls; rifles at rest, eyes forward.",
       "loot": ["riot_padding", "rifle_rounds"],
       "combat": {
         "max_health": 430,
