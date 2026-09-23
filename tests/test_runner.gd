@@ -89,6 +89,7 @@ func _run_all() -> void:
 	_test_checkpoint_trading(content)
 	_test_soak_policy_paths()
 	_test_receipt_item_icons(content)
+	_test_stat_status_lines(content)
 	_test_returning_stories(content, ContentRepository.new(true))
 	preload("res://tests/narrative_combat_tests.gd").new().run(content, _check)
 	preload("res://tests/action_transaction_tests.gd").new().run(content, _check)
@@ -2598,6 +2599,43 @@ func _test_receipt_item_icons(content: ContentRepository) -> void:
 	ui.game.run_state["last_result"] = {"event_id": "global_map", "outcome_text": "The stranger binds the wound.", "changes": ["Canned Meat -1"], "xp_awards": [], "resolution": {}}
 	ui._show_result()
 	_check(ui.page.find_children("ReceiptItemRow_*", "", true, false).is_empty(), "A result without entries renders its text receipt with no icon rows")
+	ui.queue_free()
+
+
+## Opening stats shows the statuses moving each ability, not just gear: hover
+## tooltips already knew, but touch screens never see hover text.
+func _test_stat_status_lines(content: ContentRepository) -> void:
+	var ui = MainUI.new()
+	ui.bootstrap_on_ready = false
+	root.add_child(ui)
+	ui.content = content
+	ui.saves = SaveService.new("ashfall_stat_status_")
+	ui.profile = ui.saves.default_profile()
+	ui.entitlements = ui.saves.load_entitlements()
+	ui.game = GameEngine.new(content)
+	ui.game.start_run(ui.game.create_candidates(9901)[0], 9901)
+	ui.ads = AdService.new()
+	ui.ads.configure(ui.entitlements)
+	ui.billing = BillingService.new()
+	ui.billing.configure(ui.entitlements)
+	ui._build_shell()
+	var plain := ui._condition_stat_adjustment("wits")
+	_check(str(plain.get("text", "")) == "", "A healthy survivor shows no status line on any ability")
+	ui.game.run_state["survivor"]["conditions"] = ["shaken", "focused"]
+	var wits := ui._condition_stat_adjustment("wits")
+	_check(str(wits.get("text", "")) == "STATUS: Shaken -1, Focused +2" and bool(wits.get("penalty", false)), "The wits row names every status moving it and flags the penalty")
+	var presence := ui._condition_stat_adjustment("presence")
+	_check(str(presence.get("text", "")) == "STATUS: Shaken -1" and bool(presence.get("penalty", false)), "The presence row names only its own statuses")
+	ui._show_stat_details()
+	var status_text := ""
+	for node: Node in ui.stat_details_popup.find_children("*", "Label", true, false):
+		var row := node as Label
+		if row != null and str(row.text).begins_with("STATUS:"):
+			status_text += str(row.text) + "\n"
+	_check("Shaken -1" in status_text and "Focused +2" in status_text, "Opening stats shows the statuses affecting each ability")
+	ui.game.run_state["survivor"]["conditions"] = ["focused"]
+	var clear := ui._condition_stat_adjustment("wits")
+	_check(str(clear.get("text", "")) == "STATUS: Focused +2" and not bool(clear.get("penalty", false)), "A helpful status reads as a boon, not a warning")
 	ui.queue_free()
 
 
