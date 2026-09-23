@@ -26,6 +26,14 @@ var failures := 0
 var assertions := 0
 
 
+## Minimal save boundary for transaction tests: every commit lands in memory.
+class _TradeStore extends RefCounted:
+	var saved: Dictionary = {}
+	func save_run(state: Dictionary) -> bool:
+		saved = state.duplicate(true)
+		return true
+
+
 func _init() -> void:
 	call_deferred("_run_all")
 
@@ -78,6 +86,7 @@ func _run_all() -> void:
 	_test_legal_actions_and_item_reach(content)
 	_test_talents(content)
 	_test_choice_revisions(content)
+	_test_checkpoint_trading(content)
 	_test_returning_stories(content, ContentRepository.new(true))
 	preload("res://tests/narrative_combat_tests.gd").new().run(content, _check)
 	preload("res://tests/action_transaction_tests.gd").new().run(content, _check)
@@ -2451,6 +2460,65 @@ func _test_choice_revisions(content: ContentRepository) -> void:
 		if "gate_refused" in variant.get("requires_flags", []) or "gate_refused" in variant.get("requires_any_flags", []):
 			refusal_variants += 1
 	_check(refusal_variants == 1, "The Chronicle tells the road away apart from entry")
+
+
+## Latest_plan Week 2: checkpoint trading. Three saved offers per checkpoint,
+## browsed free and bought once instead of resting or pressing on, with stock
+## that reopening or restarting cannot refresh.
+func _test_checkpoint_trading(content: ContentRepository) -> void:
+	_check(not content.get_trade_catalog().is_empty() and content.get_trade_catalog().get("equipment", []).size() >= 20, "The trade catalog lists a regional equipment ladder with set prices")
+	var game := _new_game(content, 9501)
+	game.run_state["survivor"]["inventory"]["scrap_parts"] = 12
+	game.run_state["survivor"]["inventory"]["clean_water"] = 4
+	game.run_state["phase"] = "result"
+	game.run_state["events_in_region"] = 4
+	game.continue_after_result()
+	_check(str(game.run_state.get("phase", "")) == "checkpoint", "The fifth regional event opens a checkpoint")
+	var offers: Array = game.run_state.get("checkpoint_offers", [])
+	_check(offers.size() == 3, "Entering a checkpoint saves exactly three trade offers")
+	var kinds: Dictionary = {}
+	for offer: Dictionary in offers:
+		kinds[str(offer.get("kind", ""))] = true
+	_check(kinds.has("equipment") and kinds.has("food") and (kinds.has("ammunition") or kinds.has("medical")), "Offers cover gear, sustenance, and ammunition or medicine")
+	var regenerated: Array = game.generate_checkpoint_offers()
+	_check(regenerated == offers, "Offer generation is deterministic: restarts cannot refresh stock")
+	var untouched: Dictionary = game.run_state.duplicate(true)
+	var preview_rng := int(game.run_state["rng_state"])
+	for index in range(3):
+		game.trade_preview(index)
+		game.list_talent_options()
+	_check(int(game.run_state["rng_state"]) == preview_rng and game.run_state == untouched, "Browsing offers and talents mutates nothing and consumes no roll")
+	# Ranged builds are offered ammunition; melee builds medicine.
+	var ranged := _new_game(content, 9502)
+	ranged.run_state["phase"] = "checkpoint"
+	ranged.run_state["region_index"] = 0
+	ranged.run_state["survivor"]["equipment"]["weapon"] = "pipe_pistol"
+	ranged.run_state["survivor"]["inventory"]["pipe_pistol"] = 1
+	ranged.generate_checkpoint_offers()
+	_check(str(ranged.run_state["checkpoint_offers"][1].get("item_id", "")) == "pistol_rounds", "A ranged build is offered ammunition")
+	var melee := _new_game(content, 9503)
+	melee.run_state["phase"] = "checkpoint"
+	melee.run_state["region_index"] = 0
+	melee.run_state["survivor"]["equipment"]["weapon"] = "salvage_cleaver"
+	melee.run_state["survivor"]["inventory"]["salvage_cleaver"] = 1
+	melee.generate_checkpoint_offers()
+	_check(str(melee.run_state["checkpoint_offers"][1].get("item_id", "")) == "cloth_bandage", "A melee build is offered medicine instead")
+	# Purchasing commits the checkpoint activity through the transaction.
+	var store := _TradeStore.new()
+	var deal := preload("res://scripts/services/combat_transaction.gd").new().execute(game, store, {}, "trade", [2])
+	_check(bool(deal.get("success", false)) and str(game.run_state.get("checkpoint_action", "")) == "barter", "Buying an offer commits Barter as the checkpoint activity")
+	_check(bool(store.saved.get("checkpoint_offers", [])[2].get("sold", false)), "The committed stock persists with the purchase marked sold")
+	_check(game.get_item_quantity("clean_water") == 2, "The food price leaves the pack on purchase")
+	_check(not bool(game.accept_trade(0).get("success", false)), "One activity per checkpoint: a second purchase is refused")
+	_check(not bool(game.rest_at_checkpoint().get("success", false)), "Barter forecloses Rest like any other commitment")
+	_check(game.get_item_quantity("canned_meat") == 4, "The food purchase actually arrives")
+	game.leave_checkpoint()
+	_check(str(game.run_state.get("phase", "")) == "event" and game.run_state.get("checkpoint_offers", []).is_empty(), "Leaving clears the old stock for the next checkpoint")
+	# Old saves without offers receive them once, then keep them.
+	var legacy := _new_game(content, 9504)
+	legacy.run_state["phase"] = "checkpoint"
+	legacy.run_state["checkpoint_offers"] = []
+	_check(legacy.checkpoint_offers().size() == 3 and legacy.run_state["checkpoint_offers"].size() == 3, "A checkpoint without saved stock generates it on first view")
 
 
 func _descendants(node: Node) -> Array[Node]:
