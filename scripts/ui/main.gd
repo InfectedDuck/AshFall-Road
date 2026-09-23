@@ -1804,6 +1804,8 @@ func _show_checkpoint() -> void:
 	# Allocation belongs beside the level it changes; only the departures pin.
 	checkpoint_column.add_child(_button("ALLOCATE STAT POINTS", _show_level_allocation, int(game.run_state.get("unspent_stat_points", 0)) <= 0))
 	checkpoint_column.add_child(HSeparator.new())
+	_show_checkpoint_talents(checkpoint_column)
+	checkpoint_column.add_child(HSeparator.new())
 	checkpoint_column.add_child(_eyebrow("2 — How do you leave?"))
 	var checkpoint_action := str(game.run_state.get("checkpoint_action", ""))
 	if checkpoint_action == "rest":
@@ -1813,11 +1815,17 @@ func _show_checkpoint() -> void:
 		var continue_after_rest := _button("CONTINUE JOURNEY AFTER REST", _leave_checkpoint)
 		_add_button_atlas_icon(continue_after_rest, "navigation")
 		body.add_child(_checkpoint_departure(continue_after_rest))
+	elif checkpoint_action == "barter":
+		checkpoint_column.add_child(_role_label("BARTER COMPLETE • One purchase made • the trader packs up and the stock is gone", "flavour", _c("success")))
+		var continue_after_barter := _button("CONTINUE JOURNEY AFTER BARTER", _leave_checkpoint)
+		_add_button_atlas_icon(continue_after_barter, "navigation")
+		body.add_child(_checkpoint_departure(continue_after_barter))
 	else:
 		checkpoint_column.add_child(_role_label("REST • Consume one food, restore its satiety, set Fatigue to 0, and recover 25 HP.", "flavour", _c("icon_ink")))
 		var rest_button := _button("CHOOSE FOOD & REST", _show_rest_food, game.available_food_items().is_empty())
 		_add_button_atlas_icon(rest_button, "rest")
 		body.add_child(_checkpoint_departure(rest_button))
+		_show_checkpoint_barter(checkpoint_column)
 		checkpoint_column.add_child(_role_label("PRESS ON • Keep your food and gain Momentum: +1 to every stat for the next checked choice. Normal travel adds 5 Fatigue.", "flavour", _c("icon_ink")))
 		var press_on_button := _button("CONTINUE JOURNEY — GAIN MOMENTUM", _press_on_checkpoint)
 		_add_button_atlas_icon(press_on_button, "press_on")
@@ -1874,6 +1882,57 @@ func _after_rest(result: Dictionary) -> void:
 			sound.play_effect("rest")
 		if is_instance_valid(action_popup):
 			action_popup.hide()
+		_show_checkpoint()
+	_show_toast(str(result.get("text", "")))
+
+
+## Run-only talents at the checkpoint: one choice after the first region and
+## another after the third, from the remaining talents, with no respecs.
+## Owned talents read back with their effects; the choice commits through the
+## save-aware transaction like every other checkpoint decision.
+func _show_checkpoint_talents(checkpoint_column: Control) -> void:
+	checkpoint_column.add_child(_eyebrow("Talents"))
+	var owned: Array = game.run_state.get("talents", [])
+	if owned.is_empty():
+		checkpoint_column.add_child(_role_label("No talents yet — the road provides a choice after the first region.", "flavour", _c("icon_ink")))
+	else:
+		for talent_id: Variant in owned:
+			var learned: Dictionary = game.content.get_talent(str(talent_id))
+			checkpoint_column.add_child(_role_label("• %s — %s" % [str(learned.get("name", talent_id)), str(learned.get("effect", ""))], "flavour", _c("success")))
+	if game.talent_choice_available():
+		checkpoint_column.add_child(_role_label("Choose one talent. Browsing is free; learning commits immediately and cannot be undone.", "flavour", _c("icon_ink")))
+		for option: Dictionary in game.list_talent_options():
+			checkpoint_column.add_child(_role_label("%s — %s %s" % [str(option.get("name", "")), str(option.get("requirement", "")), str(option.get("effect", ""))], "prose"))
+			checkpoint_column.add_child(_button("LEARN " + str(option.get("name", "")).to_upper(), _choose_talent.bind(str(option.get("id", ""))), false))
+
+
+func _choose_talent(talent_id: String) -> void:
+	_run_gameplay_action("select_talent", [talent_id], _after_checkpoint_choice)
+
+
+## Checkpoint trading: one of three saved offers may be purchased instead of
+## resting or pressing on. Prices show before commitment; buying packs the
+## trader up. Reopening this screen cannot refresh the stock.
+func _show_checkpoint_barter(checkpoint_column: Control) -> void:
+	var offers: Array = game.checkpoint_offers()
+	if offers.is_empty():
+		return
+	checkpoint_column.add_child(_role_label("BARTER • Buy one of three offers instead of resting or gaining Momentum. Prices show in full before you commit.", "flavour", _c("icon_ink")))
+	for index in range(offers.size()):
+		var preview: Dictionary = game.trade_preview(index)
+		checkpoint_column.add_child(_role_label(str(preview.get("summary", "No offer.")), "prose"))
+		if not bool(preview.get("available", false)):
+			checkpoint_column.add_child(_role_label(str(preview.get("reason", "")), "flavour", _c("icon_ink")))
+			continue
+		checkpoint_column.add_child(_button("BUY — " + str(preview.get("summary", "offer")), _buy_offer.bind(index), false))
+
+
+func _buy_offer(index: int) -> void:
+	_run_gameplay_action("trade", [index], _after_checkpoint_choice)
+
+
+func _after_checkpoint_choice(result: Dictionary) -> void:
+	if bool(result.get("success", false)):
 		_show_checkpoint()
 	_show_toast(str(result.get("text", "")))
 
