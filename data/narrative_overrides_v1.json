@@ -699,7 +699,7 @@
         {
           "index": 1,
           "outcomes": {
-            "success": "You compare both ridges, the road’s bend, and a distant column of smoke before haze returns. One route avoids the movement entirely. The brief survey organizes the next hours into choices rather than surprises.",
+            "success": "You compare both ridges, the road’s bend, and a distant column of smoke before haze returns. One route avoids the movement entirely. Along the safe line, a dropped salvage bundle waits where its carrier left it. The brief survey organizes the next hours into choices rather than surprises.",
             "failure": "A glint on the northern ridge keeps changing shape, holding your attention after every useful landmark has been recorded. When clouds return, you have spent the clear interval watching something that may never have moved."
           }
         }

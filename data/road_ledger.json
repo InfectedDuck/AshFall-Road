@@ -766,7 +766,18 @@
       "title": "One Person Through",
       "hint": "The East Citadel still decides at its final door.",
       "body": "The survivor crossed the final boundary through force, knowledge, or authority and reached the clean air that justified every earlier mile without absolving it.",
-      "characters": []
+      "characters": [],
+      "variants": [
+        {
+          "id": "refused",
+          "requires_flags": [
+            "gate_refused"
+          ],
+          "title": "The Road Away",
+          "body": "The survivor reached the final seam with life and leverage intact and chose the road away over the clean air. The Citadel sealed behind them; survival outside its walls was recorded as a fact, not a failure or an apology.",
+          "character_state": "The survivor walks east with the Citadel unentered and the road still theirs to answer."
+        }
+      ]
     },
     {
       "id": "ledger_ending_witness",

@@ -121,7 +121,7 @@
         {
           "label": "Name Vex's price aloud",
           "approach": "social",
-          "check": {"stat": "presence", "difficulty": "hard"},
+          "check": {"stat": "presence", "difficulty": "risky"},
           "success": {
             "text": "You speak before the clubs rise, loud enough for the back rank: the medicine, the two regions, the description sold. The collectors hesitate because deals conducted in daylight need witnesses, and Vex's face does something complicated. They let you walk it off for a toll, one tin of meat, and the long education of watching her not meet your eyes. The betrayal stands. So do you, which is the part she failed to price.",
             "items": {"canned_meat": -1},
@@ -392,7 +392,8 @@
           "requires": {"items": {"scrap_parts": 2}, "reason": "You carry no salvage to pay with"},
           "costs": {"items": {"scrap_parts": 2}},
           "outcome": {
-            "text": "You lay two salvage bundles on the scarred counter and watch him mark the page paid in full. Ink, pencil, initial: the whole liturgy of clean. Your name owes nothing now, in the only place it was ever written.",
+            "text": "You lay two salvage bundles on the scarred counter and watch him mark the page paid in full. Ink, pencil, initial: the whole liturgy of clean. Your name owes nothing now, in the only place it was ever written. Slate slides a sealed tonic across the counter with the stamped receipt, prompt payment acknowledged in marsh herbs.",
+            "items": {"bitter_tonic": 1},
             "add_flags": ["slate_closed"]
           }
         },

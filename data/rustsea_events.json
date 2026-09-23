@@ -326,7 +326,8 @@
             "text": "You unroll her sheets on the table, the ones you carried out of Bunker Forty-One with your hand near the knife, and you say what you did in plain words. Mara does not thank you. She holds each sheet up to the lamp for damage, finds the nail holes still clean, and hangs them back where the tin lids were. Then she folds the Spire route down the middle and gives you the half with the road on it, as if the rest had already been agreed. Before dawn both halves point at the same place on the horizon, and the speaker in the corner stays off.",
             "add_flags": [
               "rustsea_mara_allied",
-              "rustsea_spire_route"
+              "rustsea_spire_route",
+              "rustsea_debt_settled"
             ],
             "next_event": "rustsea_last_coordinate"
           }

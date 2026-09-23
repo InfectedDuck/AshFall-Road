@@ -332,6 +332,9 @@
             ],
             "items": {
               "canned_meat": 1
+            },
+            "pressures": {
+              "fatigue": 4
             }
           }
         }

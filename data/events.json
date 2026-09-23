@@ -4480,6 +4480,9 @@
           },
           "success": {
             "text": "You identify the safest line ahead. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
+            "items": {
+              "scrap_parts": 1
+            },
             "add_conditions": [
               "focused"
             ]
@@ -4935,6 +4938,9 @@
                         "label": "Step back from the seam",
                         "outcome": {
                             "text": "You step clear before the drive gives out. The gate seals, and the guard behind the glass lets it seal; no rifle follows you into the outer court. You keep breathing in poisoned air and turn from the wall with your life, the road behind you still yours to answer.\n\nThe warning lamps run through their last count while the mechanism closes as slowly as a breathing chest. You do not learn whether the guard wanted it shut; their silhouette stays at the glass with one hand on no switch. The Warden's recovery noise dwindles under your footsteps. Beyond the floodlights, you inventory water, pain, and distance, then choose the road away. The Citadel remains shelter another person may reach. Your own life remains a fact, not a failure or an apology.",
+                            "add_flags": [
+                              "gate_refused"
+                            ],
                             "victory": true
                         }
                     }
