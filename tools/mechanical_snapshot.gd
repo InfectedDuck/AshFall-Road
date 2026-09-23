@@ -247,16 +247,45 @@ func _capture(content) -> Dictionary:
 	}
 
 
-## The same definition the test runner uses: the event with every authored
-## passage removed, so a prose edit never moves a mechanical hash.
+## The event with every authored passage removed, so a prose edit never moves a
+## mechanical hash. A conditional passage is prose too and is stripped with the
+## text it stands in for, while the gating that decides which passage a survivor
+## reads -- including requires.forbids_flags -- stays in the hash as mechanics.
+##
+## An outcome variant that carries its own next_event is not prose: it routes the
+## survivor to a different scene than the plain outcome does, so it is kept with
+## the flags that select it and only its text removed. A variant that routes
+## nowhere is prose entire and leaves the signature completely, which is what
+## keeps a purely conditional passage out of the mechanical hash.
 func _mechanical_signature(event: Dictionary) -> Dictionary:
 	var signature := event.duplicate(true)
 	signature.erase("body")
+	signature.erase("body_variants")
 	for choice: Dictionary in signature.get("choices", []):
 		for outcome_key: String in OUTCOME_KEYS:
 			if choice.has(outcome_key):
 				choice[outcome_key].erase("text")
+				var routing := _routing_variants(choice[outcome_key].get("variants", []))
+				if routing.is_empty():
+					choice[outcome_key].erase("variants")
+				else:
+					choice[outcome_key]["variants"] = routing
 	return signature
+
+
+## The routing half of an outcome's variants: every variant that names a
+## follow-up, with its prose taken out and the flags that select it left in.
+func _routing_variants(variants: Variant) -> Array:
+	var routing: Array = []
+	if typeof(variants) != TYPE_ARRAY:
+		return routing
+	for variant: Variant in variants:
+		if typeof(variant) != TYPE_DICTIONARY or not (variant as Dictionary).has("next_event"):
+			continue
+		var kept: Dictionary = (variant as Dictionary).duplicate(true)
+		kept.erase("text")
+		routing.append(kept)
+	return routing
 
 
 func _hash_index(index: Dictionary) -> Dictionary:

@@ -25,25 +25,25 @@ func _init() -> void:
 
 
 func _run() -> void:
-	var launch := ContentRepositoryScript.new(false)
-	var expansion := ContentRepositoryScript.new(true)
+	var compatibility := ContentRepositoryScript.new(false)
+	var release := ContentRepositoryScript.new()
 	print("Ashfall Road integrated data-package audit")
-	print("Launch events: %d | Expansion events: %d" % [launch.events.size(), expansion.events.size()])
-	_check_polished_prose_loaded(launch)
-	_check_repeated_sentences(launch)
-	_check_item_routes(launch)
-	_check_added_choices(launch)
-	_check_original_choices(launch)
-	_check_callbacks_disabled(launch)
-	_check_discoveries_reachable(launch, expansion)
-	_check_unknown_references(launch)
-	_check_every_event_resolvable(launch)
+	print("Compatibility events: %d | Default release events: %d" % [compatibility.events.size(), release.events.size()])
+	_check_polished_prose_loaded(release)
+	_check_repeated_sentences(release)
+	_check_item_routes(release)
+	_check_added_choices(release)
+	_check_original_choices(compatibility)
+	_check_callbacks_enabled(release, compatibility)
+	_check_discoveries_reachable(release, compatibility)
+	_check_unknown_references(release)
+	_check_every_event_resolvable(release)
 	print("")
 	print("Checks: %d | Passed: %d | Discrepancies: %d" % [checks, passed, findings.size()])
 	for finding: String in findings:
 		print("DISCREPANCY: %s" % finding)
 	if findings.is_empty():
-		print("The integrated data package matches the launch configuration.")
+		print("The integrated data package matches the default release configuration.")
 	quit(1 if not findings.is_empty() else 0)
 
 
@@ -88,7 +88,7 @@ func _check_polished_prose_loaded(launch) -> void:
 						problems.append("%s choice %d %s is not the reviewed text" % [event_id, index, outcome_key])
 	if covered.size() != 76:
 		problems.append("expected 76 polished baseline events, found %d" % covered.size())
-	_record("Polished prose loaded in the launch configuration", problems)
+	_record("Polished prose loaded in the default release", problems)
 
 
 ## 2. No prohibited filler and no reused long sentence anywhere the player reads.
@@ -128,9 +128,9 @@ func _check_item_routes(launch) -> void:
 	for item_id: String in launch.items:
 		if not obtainable.has(item_id):
 			problems.append("%s has no starting or authored acquisition route" % item_id)
-	if launch.items.size() != 50:
-		problems.append("expected 50 defined items, found %d" % launch.items.size())
-	_record("All fifty items have acquisition routes", problems)
+	if launch.items.size() != 72:
+		problems.append("expected 72 defined items, found %d" % launch.items.size())
+	_record("All seventy-two items have acquisition routes", problems)
 
 
 ## 4. Appended choices are legal content and no event grew past four.
@@ -190,40 +190,42 @@ func _check_original_choices(launch) -> void:
 	_record("Original choice indices and unrelated mechanics unchanged", problems)
 
 
-## 6. The expansion stays out of the launch package entirely.
-func _check_callbacks_disabled(launch) -> void:
+## 6. The expanded release is the default while legacy compatibility stays explicit.
+func _check_callbacks_enabled(release, compatibility) -> void:
 	var problems: Array = []
-	if bool(ProjectSettings.get_setting("ashfall/release/living_road_enabled", false)):
-		problems.append("ashfall/release/living_road_enabled is true in project settings")
-	if launch.living_road_enabled:
-		problems.append("the default content repository reports the expansion as enabled")
-	for event_id: String in launch.events:
-		if event_id.begins_with("lr_") or bool(launch.events[event_id].get("living_road_callback", false)):
-			problems.append("callback event %s is loaded" % event_id)
-	for entry_id: String in launch.get_discovery_entries():
-		if str(launch.get_discovery_entries()[entry_id].get("event_id", "")).begins_with("lr_"):
-			problems.append("callback chapter %s is listed" % entry_id)
-	if launch.events.size() != 97:
-		problems.append("expected the 97-event launch boundary, found %d" % launch.events.size())
-	_record("Callback events remain disabled", problems)
+	if not bool(ProjectSettings.get_setting("ashfall/release/living_road_enabled", false)):
+		problems.append("ashfall/release/living_road_enabled is false in project settings")
+	if not release.living_road_enabled:
+		problems.append("the default content repository reports the expansion as disabled")
+	var callback_events := 0
+	for event_id: String in release.events:
+		if event_id.begins_with("lr_") or bool(release.events[event_id].get("living_road_callback", false)):
+			callback_events += 1
+	if callback_events != 15:
+		problems.append("expected 15 default callback events, found %d" % callback_events)
+	if release.events.size() != 124:
+		problems.append("expected the 124-event default release, found %d" % release.events.size())
+	if compatibility.living_road_enabled or compatibility.events.size() != 97 or compatibility.get_discovery_entries().size() != 11:
+		problems.append("ContentRepository.new(false) no longer provides the 97-event, 11-chapter compatibility configuration")
+	_record("Living Road callbacks load by default and compatibility stays explicit", problems)
 
 
 ## 7. Every listed chapter can actually be reached in the build that lists it.
-func _check_discoveries_reachable(launch, expansion) -> void:
+func _check_discoveries_reachable(release, compatibility) -> void:
 	var problems: Array = []
-	var entries: Dictionary = launch.get_discovery_entries()
-	if entries.size() != 10:
-		problems.append("expected 10 reachable launch chapters, found %d" % entries.size())
+	var entries: Dictionary = release.get_discovery_entries()
+	if entries.size() != 29:
+		problems.append("expected 29 reachable default-release chapters, found %d" % entries.size())
 	var produced: Dictionary = {}
-	for event_id: String in launch.events:
-		for choice: Dictionary in launch.events[event_id].get("choices", []):
+	for event_id: String in release.events:
+		for choice: Dictionary in release.events[event_id].get("choices", []):
 			for outcome_key: String in OUTCOME_KEYS:
 				for flag: Variant in choice.get(outcome_key, {}).get("add_flags", []):
 					produced[str(flag)] = true
 	for entry_id: String in entries:
 		var entry: Dictionary = entries[entry_id]
 		var event_id := str(entry.get("event_id", ""))
-		if event_id != "" and not launch.events.has(event_id):
+		if event_id != "" and not release.events.has(event_id):
 			problems.append("%s needs missing event %s" % [entry_id, event_id])
 		for flag: Variant in entry.get("requires_flags", []):
 			if not produced.has(str(flag)):
@@ -235,9 +237,9 @@ func _check_discoveries_reachable(launch, expansion) -> void:
 				reachable = reachable or produced.has(str(flag))
 			if not reachable:
 				problems.append("%s needs one of several unreachable flags" % entry_id)
-	if expansion.get_discovery_entries().size() != 25:
-		problems.append("expansion should restore 25 chapters, found %d" % expansion.get_discovery_entries().size())
-	_record("Existing-lore discoveries are reachable", problems)
+	if compatibility.get_discovery_entries().size() != 11:
+		problems.append("compatibility should retain 11 chapters, found %d" % compatibility.get_discovery_entries().size())
+	_record("Default-release discoveries are reachable", problems)
 
 
 ## 8. Nothing points at an id the package does not define.
@@ -305,12 +307,21 @@ func _check_every_event_resolvable(launch) -> void:
 	_record("Every event is resolvable without a specific item", problems)
 
 
+## Conditional passages are prose the player reads, so the repeated-sentence scan
+## reads them too. Its namespace is already per event, which is what lets the
+## variants of one scene share an establishing sentence.
 func _passages(event: Dictionary) -> Array:
 	var passages: Array = [str(event.get("body", ""))]
+	for variant: Variant in event.get("body_variants", []):
+		if typeof(variant) == TYPE_DICTIONARY:
+			passages.append(str(variant.get("text", "")))
 	for choice: Dictionary in event.get("choices", []):
 		for outcome_key: String in OUTCOME_KEYS:
 			if choice.has(outcome_key):
 				passages.append(str(choice[outcome_key].get("text", "")))
+				for variant: Variant in choice[outcome_key].get("variants", []):
+					if typeof(variant) == TYPE_DICTIONARY:
+						passages.append(str(variant.get("text", "")))
 	return passages
 
 

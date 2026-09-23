@@ -26,11 +26,13 @@ func run(repository: ContentRepository, assertion: Callable) -> void:
 	check = assertion
 	_faces_and_modifiers()
 	_defenses_and_moves()
+	_difficulty_pressure()
 	_armor_order_and_windows()
 	_signatures_and_equipment()
 	_items_opportunities_and_transactions()
 	_narration_and_migration()
 	_content_snapshot()
+	_benchmark_roster()
 	_disk_recovery()
 
 
@@ -44,6 +46,17 @@ func _content_snapshot() -> void:
 		check.call(current["combat"] == expected["combat"] and current["signature"] == expected["signature"] and current["two_handed"] == expected["two_handed"], "Locked weapon combat contract: " + str(expected["id"]))
 	for expected: Dictionary in snapshot["shields"]:
 		check.call(content.items[expected["id"]] == expected, "Deliberately added shield contract: " + str(expected["id"]))
+
+
+## The encounter benchmark names its adversaries in a hardcoded list, so the
+## list can fall behind the package without any suite noticing. Loading the
+## constant at runtime keeps the tool free to preload this file.
+func _benchmark_roster() -> void:
+	var roster: Array = load("res://tools/combat_balance.gd").get_script_constant_map()["BENCHMARK_ENEMIES"]
+	for adversary_id: String in content.adversaries:
+		check.call(adversary_id in roster, "Encounter benchmark measures adversary: " + adversary_id)
+	for benchmark_id: Variant in roster:
+		check.call(content.adversaries.has(str(benchmark_id)), "Benchmark roster names a defined adversary: " + str(benchmark_id))
 
 
 func fixture(enemy: String = "feral_dogs", weapon: String = "salvage_cleaver", armor: String = "", seed_value: int = 812) -> GameEngine:
@@ -171,7 +184,78 @@ func _defenses_and_moves() -> void:
 	check.call(game.run_state["survivor"]["vitals"]["health"] == hp and game.run_state["combat_state"]["committed_move"]["id"] == "heavy", "Charge deals no damage and commits Heavy next")
 	game = fixture("road_bandits", "", "plated_coat")
 	for index in range(3): round_for(game, "dodge", 20, 1)
-	check.call(game.run_state["survivor"]["pressures"]["fatigue"] == 2, "Three complete exchanges add exactly two Fatigue")
+	check.call(game.run_state["survivor"]["pressures"]["fatigue"] == 9, "Three ongoing exchanges add nine Fatigue, including successful defenses")
+
+
+func _difficulty_pressure() -> void:
+	# Ordinary armor must not turn the introductory flock into harmless chip
+	# damage. Check fresh targets so a final hit's remaining-HP cap cannot hide it.
+	var sequence: Array = content.adversaries["mutant_crows"]["narrative_combat"]["sequence"]
+	for move_id: String in sequence:
+		if float(content.combat_data["moves"][move_id]["damage"]) <= 0.0:
+			continue
+		var target := fixture("mutant_crows", "salvage_cleaver", "scrap_vest")
+		move_to(target, move_id)
+		var response := round_for(target, "attack", 1, 10)
+		check.call(int(response["enemy_damage"]) >= 10, "Undefended crow %s costs meaningful HP through starter armor" % move_id)
+	var game := fixture("mutant_crows", "salvage_cleaver", "scrap_vest")
+	game.run_state["survivor"]["stats"]["grit"] = 3
+	game.run_state["survivor"]["vitals"].merge({"health": 300, "max_health": 300, "max_hearts": 6}, true)
+	var exchanges := 0
+	while str(game.run_state["phase"]) == "combat" and exchanges < 30:
+		round_for(game, "attack", 1, 10)
+		exchanges += 1
+	check.call(str(game.run_state["phase"]) == "death", "Crows kill a 300-HP armored survivor who wastes 30 attacks")
+
+	# Successful defense buys a turn, but nine such turns reach a real strain
+	# penalty. Compare the same enemy move to isolate fatigue from tell bonuses.
+	game = fixture("mutant_crows", "", "scrap_vest")
+	# Use a starter Agility value that crosses a displayed 5% probability step.
+	game.run_state["survivor"]["stats"]["agility"] = 3
+	move_to(game, "strike")
+	var initial_chance := int(game.combat_action_preview("dodge")["chance"])
+	var initial_hp := int(game.run_state["survivor"]["vitals"]["health"])
+	for index in range(9):
+		round_for(game, "dodge", 20, 20)
+	move_to(game, "strike")
+	check.call(int(game.run_state["survivor"]["pressures"]["fatigue"]) == 27 and int(game.run_state["survivor"]["vitals"]["health"]) == initial_hp, "Nine successful defenses avoid damage while adding 27 Fatigue")
+	check.call(int(game.combat_action_preview("dodge")["chance"]) < initial_chance, "Prolonged defense reduces the displayed chance against the same crow strike")
+	move_to(game, "recover")
+	var recovery := round_for(game, "attack", 1, 20)
+	check.call(int(recovery["enemy_damage"]) == 0 and int(game.run_state["survivor"]["vitals"]["health"]) == initial_hp, "Enemy recovery stays safe even when the survivor critically misses")
+
+	# Use actual generated candidates and their starting gear, not the fixture's
+	# all-five stats. Runtime loading avoids the benchmark's fixture preload cycle.
+	var benchmark: GDScript = load("res://tools/combat_balance.gd")
+	var outcomes: Dictionary = {}
+	for strategy: String in ["random_actions", "read_tells"]:
+		var totals := {"wins": 0, "deaths": 0, "hp_spent": 0, "stalls": 0, "invalid_actions": 0}
+		for seed_value in range(1, 101):
+			game = fixture("mutant_crows", "", "", seed_value)
+			game.run_state["survivor"] = game.create_candidates(seed_value)[seed_value % 3]
+			var starting_hp := int(game.run_state["survivor"]["vitals"]["health"])
+			var policy_rng := RandomNumberGenerator.new()
+			policy_rng.seed = seed_value + 7000
+			exchanges = 0
+			while str(game.run_state["phase"]) == "combat" and exchanges < 60:
+				var action := str(benchmark.choose_action(game, strategy, policy_rng))
+				if action not in ["attack", "block", "dodge", "opportunity"] or game.prepare_combat_action(action).has("error"):
+					totals["invalid_actions"] += 1
+					break
+				game.resolve_prepared_combat_round()
+				exchanges += 1
+			var phase := str(game.run_state["phase"])
+			totals["wins"] += int(phase in ["result", "victory"])
+			totals["deaths"] += int(phase == "death")
+			totals["stalls"] += int(phase == "combat" and exchanges >= 60)
+			totals["hp_spent"] += starting_hp - int(game.run_state["survivor"]["vitals"]["health"])
+		outcomes[strategy] = totals
+		check.call(int(totals["invalid_actions"]) == 0 and int(totals["stalls"]) == 0 and int(totals["wins"]) + int(totals["deaths"]) == 100, "Generated crow encounters resolve using legal %s actions without healing or fleeing" % strategy)
+	var random_results: Dictionary = outcomes["random_actions"]
+	var informed_results: Dictionary = outcomes["read_tells"]
+	check.call(int(random_results["deaths"]) > 0, "Random actions can kill fresh generated starters against crows (%d/100 deaths)" % int(random_results["deaths"]))
+	check.call(int(informed_results["wins"]) > 90, "Reading tells keeps over 90%% of fresh starters alive against crows (%d/100 wins)" % int(informed_results["wins"]))
+	check.call(float(random_results["hp_spent"]) > float(informed_results["hp_spent"]) * 1.25, "Random actions cost at least 25%% more HP than reading tells (means %.1f vs %.1f)" % [float(random_results["hp_spent"]) / 100.0, float(informed_results["hp_spent"]) / 100.0])
 
 
 func _armor_order_and_windows() -> void:

@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:"InterLocal";src:url("../../assets/fonts/Inter.ttf")}
+@font-face{font-family:"LiterataLocal";src:url("../../assets/fonts/Literata.ttf")}
+html,body{margin:0;padding:0;width:1024px;height:500px;overflow:hidden;background:#111d1e}
+.stage{position:relative;width:1024px;height:500px;overflow:hidden;background:#111d1e}
+.bg{position:absolute;inset:0;width:1024px;height:500px;object-fit:cover;object-position:50% 43%}
+.scrim{position:absolute;inset:0;background:
+  linear-gradient(90deg, rgba(17,29,30,.92) 0%, rgba(17,29,30,.78) 34%, rgba(17,29,30,.28) 62%, rgba(17,29,30,.05) 100%),
+  linear-gradient(180deg, rgba(17,29,30,.35) 0%, rgba(17,29,30,0) 30%, rgba(17,29,30,0) 70%, rgba(17,29,30,.55) 100%)}
+.rule{position:absolute;left:72px;top:150px;width:56px;height:2px;background:#d9a458}
+.eyebrow{position:absolute;left:72px;top:112px;font:500 13px/1 "InterLocal",Inter,Arial,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#d9a458}
+.mark{position:absolute;left:72px;top:176px;font:700 58px/1 "InterLocal",Inter,Arial,sans-serif;letter-spacing:.30em;text-transform:uppercase;color:#f4ebdd;white-space:nowrap}
+.tag{position:absolute;left:74px;top:262px;font:400 26px/1.3 "LiterataLocal",Literata,Georgia,serif;color:#f4ebdd;opacity:.94}
+.sub{position:absolute;left:74px;top:322px;font:400 15px/1.6 "InterLocal",Inter,Arial,sans-serif;letter-spacing:.06em;color:#e7dcc6;opacity:.82;max-width:600px;white-space:nowrap}
+.die{position:absolute;right:72px;bottom:56px;width:88px;height:88px}
+</style></head><body>
+<div class="stage">
+  <img class="bg" src="../../assets/backgrounds/region_1_outskirts.png">
+  <div class="scrim"></div>
+  <div class="eyebrow">Offline survival roguelike</div>
+  <div class="rule"></div>
+  <div class="mark">Ashfall Road</div>
+  <div class="tag">Walk until the road ends.</div>
+  <div class="sub">Six regions. One concealed D20. Every death is permanent.</div>
+  <svg class="die" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="256" cy="256" r="178" fill="#202d2f" fill-opacity=".85" stroke="#d39a4a" stroke-width="18"/>
+    <path d="M256 104 382 330H130Z" fill="#b85c38" stroke="#f1c16e" stroke-width="12" stroke-linejoin="round"/>
+    <circle cx="256" cy="263" r="61" fill="#11191b" stroke="#f1c16e" stroke-width="10"/>
+    <text x="256" y="289" text-anchor="middle" font-family="InterLocal, Arial, sans-serif" font-size="82" font-weight="700" fill="#f3e7cf">20</text>
+  </svg>
+</div>
+</body></html>

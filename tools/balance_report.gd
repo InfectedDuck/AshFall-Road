@@ -19,7 +19,7 @@ func _run() -> void:
 		return
 	print("# Ashfall Road balance report")
 	print("Generated from the current data definitions. Values are deterministic design diagnostics, not player telemetry.\n")
-	print("Static damage tables exclude rules-2 misses, enemy sequences, signatures and Opportunities. Use tools/combat_balance.gd for encounter balance.\n")
+	print("Static damage tables exclude rules-2 misses, signatures and Opportunities. The adversary pressure table also measures enemy sequences, including recovery and charge exchanges. Use tools/combat_balance.gd for encounter balance.\n")
 	_print_probability_table()
 	_print_weapon_table(content)
 	_print_armor_table(content)
@@ -82,8 +82,10 @@ func _print_armor_table(content) -> void:
 
 func _print_adversary_table(content) -> void:
 	print("## Adversary pressure")
-	print("| Adversary | HP | Raw damage | Mean raw | Mean vs armor 3 | Flee |")
-	print("|---|---:|---:|---:|---:|---|")
+	print("Strike columns show the base attack. Sequence damage averages every d20 face across the full move cycle, including exchanges without an attack.")
+	print("Nominal unanswered exchanges = 300 HP / mean sequence damage after armor 3; excludes active defenses, healing, weapon effects and player killing blows. This is a pressure diagnostic, not a predicted fight duration.\n")
+	print("| Adversary | HP | Raw strike | Mean raw strike | Mean strike vs armor 3 | Mean/exchange vs armor 3 | Unanswered exchanges / 300 HP | Flee |")
+	print("|---|---:|---:|---:|---:|---:|---:|---|")
 	var adversaries: Array = content.adversaries.values()
 	adversaries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.get("threat", 0)) < int(b.get("threat", 0)))
 	for adversary: Dictionary in adversaries:
@@ -94,8 +96,30 @@ func _print_adversary_table(content) -> void:
 			var raw: int = CombatRules.damage_for_roll(roll, int(combat.get("damage_min", 1)), int(combat.get("damage_max", 1)))
 			raw_total += raw
 			armored_total += int(CombatRules.mitigate_damage(raw, 3)["final"])
-		print("| %s | %d | %d-%d | %.1f | %.1f | %s |" % [adversary.get("name", adversary.get("id", "Enemy")), int(combat.get("max_health", 0)), int(combat.get("damage_min", 0)), int(combat.get("damage_max", 0)), float(raw_total) / 20.0, float(armored_total) / 20.0, str(combat.get("flee_difficulty", "risky")).capitalize()])
+		var sequence_mean := _sequence_damage_per_exchange(content, adversary, 3)
+		var unanswered := "%.1f" % (300.0 / sequence_mean) if sequence_mean > 0.0 else "Never"
+		print("| %s | %d | %d-%d | %.1f | %.1f | %.1f | %s | %s |" % [adversary.get("name", adversary.get("id", "Enemy")), int(combat.get("max_health", 0)), int(combat.get("damage_min", 0)), int(combat.get("damage_max", 0)), float(raw_total) / 20.0, float(armored_total) / 20.0, sequence_mean, unanswered, str(combat.get("flee_difficulty", "risky")).capitalize()])
 	print("")
+
+
+func _sequence_damage_per_exchange(content, adversary: Dictionary, armor_rating: int) -> float:
+	var combat: Dictionary = adversary.get("combat", {})
+	var sequence: Array = adversary.get("narrative_combat", {}).get("sequence", [])
+	if sequence.is_empty():
+		return 0.0
+	var total := 0
+	for move_id: String in sequence:
+		var multiplier := float(content.combat_data["moves"][move_id]["damage"])
+		if multiplier <= 0.0:
+			continue
+		# Match NarrativeCombat.resolve_enemy: scale and round the endpoints
+		# before interpolating the roll, then apply armor to the rolled damage.
+		var minimum := maxi(1, roundi(float(combat["damage_min"]) * multiplier))
+		var maximum := maxi(minimum, roundi(float(combat["damage_max"]) * multiplier))
+		for roll in range(1, 21):
+			var raw: int = CombatRules.damage_for_roll(roll, minimum, maximum)
+			total += int(CombatRules.mitigate_damage(raw, armor_rating)["final"])
+	return float(total) / (20.0 * float(sequence.size()))
 
 
 func _print_experience_table(content) -> void:

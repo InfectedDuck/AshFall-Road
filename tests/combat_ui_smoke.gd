@@ -16,6 +16,11 @@ func _init() -> void:
 
 func _run() -> void:
 	var factory := Fixtures.new()
+	var display_fixture := {"enemy_damage": 18, "player_damage": 30, "armor_blocked": 7, "exposure_damage": 4, "hit": true, "action": "attack"}
+	var presentation_script = preload("res://scripts/ui/combat_presentation.gd")
+	verify("Lost 18 HP" in presentation_script.portrait_feedback(display_fixture, true) and "Armor blocked 7" in presentation_script.portrait_feedback(display_fixture, true), "Player portrait distinguishes health lost from protection")
+	verify("Lost 30 HP" in presentation_script.portrait_feedback(display_fixture, false), "Enemy portrait shows damage to the enemy")
+	verify("RAW" not in presentation_script.readable_log({"actor": "enemy", "text": "It strikes.\nROLL 12 RAW 40 ARMOR 7", "amount": 18}), "Log omits calculation while preserving committed damage")
 	factory.content = ContentRepository.new()
 	for dimensions: Vector2i in [Vector2i(360,640), Vector2i(393,852), Vector2i(540,1200)]:
 		for scale_value: float in [0.9, 1.0, 1.2]:
@@ -30,6 +35,7 @@ func _run() -> void:
 				ui.game = factory.fixture("warden_machine", "wrecking_bar", "plated_coat")
 				ui.game.run_state["combat_state"]["riposte"] = true
 				ui.game._apply_condition("shaken")
+				ui.game.run_state["combat_state"]["last_round"] = {"presentation": display_fixture.duplicate(true)}
 				ui.profile = SaveService.new().default_profile()
 				ui.profile["font_scale"] = scale_value
 				ui.profile["selected_theme"] = "default" if dimensions.x == 360 else "rust" if dimensions.y == 960 else "night"

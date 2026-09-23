@@ -101,11 +101,36 @@ func _verify_replay_determinism(record_path: String) -> Dictionary:
 	}
 
 
-## `started_at` is a wall clock reading, not gameplay. Everything else must match.
+## `started_at` is a wall clock reading, not gameplay, and `run_id` is stamped
+## from the clock too (game_engine.gd:130) and then embedded in every XP award id
+## and combat encounter id by `_event_xp_source_id`. A record and its replay that
+## straddle a second boundary therefore differ in identity while being identical
+## play. Normalize the identity rather than erasing the fields, so the comparison
+## still proves the same awards happened in the same order.
 func _comparable_state(state: Dictionary) -> Dictionary:
-	var copy := state.duplicate(true)
+	var copy: Dictionary = _normalize_run_id(state.duplicate(true), str(state.get("run_id", "")))
 	copy.erase("started_at")
+	copy["run_id"] = "RUN"
 	return copy
+
+
+static func _normalize_run_id(value: Variant, run_id: String) -> Variant:
+	if run_id == "":
+		return value
+	match typeof(value):
+		TYPE_STRING:
+			return str(value).replace(run_id, "RUN")
+		TYPE_ARRAY:
+			var list: Array = []
+			for entry: Variant in value:
+				list.append(_normalize_run_id(entry, run_id))
+			return list
+		TYPE_DICTIONARY:
+			var mapped: Dictionary = {}
+			for key: Variant in value:
+				mapped[_normalize_run_id(key, run_id)] = _normalize_run_id(value[key], run_id)
+			return mapped
+	return value
 
 
 func _soak(count: int) -> Dictionary:

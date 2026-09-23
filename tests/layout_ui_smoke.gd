@@ -8,6 +8,7 @@ extends SceneTree
 
 const Main = preload("res://scripts/ui/main.gd")
 const ActionTests = preload("res://tests/action_transaction_tests.gd")
+const ResponsiveRules = preload("res://scripts/ui/responsive_rules.gd")
 
 var failures := 0
 var assertions := 0
@@ -86,13 +87,15 @@ func _verify_pinned(control: Control, sheet_height: float, context: String) -> v
 
 
 func _run() -> void:
+	_verify_safe_area_rules()
 	var fixtures := ActionTests.new()
 	fixtures.content = ContentRepository.new()
-	for dimensions: Vector2i in [Vector2i(360, 640), Vector2i(393, 852), Vector2i(540, 1200)]:
+	for dimensions: Vector2i in [Vector2i(320, 568), Vector2i(360, 640), Vector2i(393, 852), Vector2i(540, 1200)]:
 		for scale_value: float in [1.0, 1.2]:
 			var context := "%s scale %.1f" % [dimensions, scale_value]
 			var viewport := SubViewport.new()
 			viewport.size = dimensions
+			viewport.gui_embed_subwindows = true
 			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 			root.add_child(viewport)
 			var ui := Main.new()
@@ -106,6 +109,8 @@ func _run() -> void:
 			ui.profile["reduced_motion"] = true
 			ui.ads = AdService.new()
 			ui.ads.configure({})
+			ui.billing = BillingService.new()
+			ui.billing.configure({})
 			viewport.add_child(ui)
 			ui._build_shell()
 			ui._show_event()
@@ -113,6 +118,7 @@ func _run() -> void:
 				ui.game.run_state["survivor"]["inventory"][item_id] = 2
 			await _settle()
 
+			await _verify_phone_pages(ui, context)
 			await _verify_item_sheet(ui, context)
 			await _verify_inventory_memory(ui, context)
 			await _verify_allocation(ui, context)
@@ -128,13 +134,119 @@ func _run() -> void:
 	quit(1 if failures > 0 else 0)
 
 
+func _verify_safe_area_rules() -> void:
+	var viewport := Vector2(393, 852)
+	var safe := ResponsiveRules.logical_safe_rect(viewport, Vector2(1179, 2556), Rect2(30, 120, 1119, 2316))
+	verify(safe.is_equal_approx(Rect2(18, 48, 357, 756)), "Physical cutout insets convert to logical pixels with an eight-pixel gap")
+	verify(ResponsiveRules.logical_safe_rect(viewport, Vector2.ZERO, Rect2()).is_equal_approx(Rect2(Vector2.ZERO, viewport)), "An unavailable safe-area report keeps the usable viewport")
+	for bottom: bool in [false, true]:
+		var sheet := Rect2(ResponsiveRules.overlay_rect(safe, 0.98, 0.98, bottom))
+		verify(safe.encloses(sheet), "Large centered and bottom sheets stay inside asymmetric device cutouts")
+	var short_safe := Rect2(8, 40, 304, 250)
+	verify(short_safe.encloses(Rect2(ResponsiveRules.overlay_rect(short_safe))), "Minimum sheet height cannot outrun a reduced safe area")
+
+
 func _settle() -> void:
 	for frame in range(4):
 		await process_frame
 
 
+func _capture(ui, screen_name: String) -> void:
+	if "--screenshots" not in OS.get_cmdline_user_args():
+		return
+	await RenderingServer.frame_post_draw
+	var dimensions: Vector2 = ui.get_viewport_rect().size
+	ui.get_viewport().get_texture().get_image().save_png("res://builds/phone-%dx%d-%.1f-%s.png" % [dimensions.x, dimensions.y, ui.profile["font_scale"], screen_name])
+
+
+func _verify_page_bounds(ui, context: String) -> void:
+	var rect: Rect2 = ui.page.get_global_rect()
+	var dimensions: Vector2 = ui.get_viewport_rect().size
+	verify(rect.position.x >= 0 and rect.end.x <= dimensions.x + 1, "Page fits phone width " + context + " " + str(rect))
+	verify(rect.end.y <= dimensions.y + 1, "Page fits phone height " + context + " " + str(rect))
+
+
+func _verify_phone_pages(ui, context: String) -> void:
+	ui._show_main_menu()
+	await _settle()
+	_verify_page_bounds(ui, "main menu " + context)
+	verify(not ui.tip_banner.visible, "Journey tips do not take space from the main menu " + context)
+	await _capture(ui, "menu")
+	ui.candidates = ui.game.create_candidates(4401)
+	ui._show_candidates()
+	await _settle()
+	_verify_page_bounds(ui, "survivor selection " + context)
+	verify(not ui.tip_banner.visible, "Journey tips do not take space from survivor selection " + context)
+	await _capture(ui, "candidates")
+	ui._show_event()
+	await _settle()
+	_verify_page_bounds(ui, "event " + context)
+	await _capture(ui, "event")
+	ui.game.run_state["phase"] = "checkpoint"
+	ui.game.run_state["checkpoint_action"] = "rest"
+	ui.game.run_state["unspent_stat_points"] = 0
+	ui._show_checkpoint()
+	await _settle()
+	var rest_departure := ui.page.find_child("CheckpointDeparture", true, false) as Button
+	_verify_pinned(rest_departure, ui.get_viewport_rect().size.y, "leave after resting " + context)
+	if rest_departure != null:
+		var departure_rect := rest_departure.get_global_rect()
+		verify(departure_rect.position.x >= 0 and departure_rect.end.x <= ui.get_viewport_rect().size.x + 1, "Rest departure fits phone width " + context + " " + str(departure_rect))
+	await _capture(ui, "checkpoint-rested")
+	ui.game.run_state["phase"] = "event"
+	ui.game.run_state["checkpoint_action"] = ""
+	ui.game.run_state["survivor"]["conditions"] = ["shaken"]
+	ui._show_stat_details()
+	await _settle()
+	var stat_sheet: PopupPanel = ui.stat_details_popup
+	verify(stat_sheet != null and stat_sheet.visible, "Stat reference opens " + context)
+	if stat_sheet != null:
+		var stat_copy := "\n".join(_label_texts(stat_sheet))
+		verify(stat_sheet.find_child("StatDetailsScroll", true, false) != null, "Stat reference scrolls its five abilities " + context)
+		verify("STRENGTH" in stat_copy and "EQUIPPED:" in stat_copy, "Stat reference names practical abilities and equipped bonuses " + context)
+		verify("ACTIVE CONDITIONS" not in stat_copy and "SHAKEN" not in stat_copy, "Stat reference keeps conditions out of the stat sheet " + context)
+		_verify_pinned(_button_with(stat_sheet, "×"), stat_sheet.size.y, "close stat reference " + context)
+	await _capture(ui, "stats")
+	ui._close_stat_details()
+	await _settle()
+	ui.game.run_state["survivor"]["conditions"] = []
+	ui._show_settings()
+	await _settle()
+	verify(ui.settings_popup.size.x <= ui.get_viewport_rect().size.x, "Settings fit phone width " + context)
+	verify(ui.settings_popup.size.y <= ui.get_viewport_rect().size.y, "Settings fit phone height " + context)
+	_verify_pinned(_button_with(ui.settings_popup, "×"), ui.settings_popup.size.y, "close settings " + context)
+	await _capture(ui, "settings")
+	for section: String in ["Reading", "Sound", "Display", "Help"]:
+		ui._select_settings_section(section)
+		await _settle()
+		var settings_sheet: PopupPanel = ui.settings_popup
+		_verify_pinned(_button_with(settings_sheet, "DONE"), settings_sheet.size.y, "finish settings " + section + " " + context)
+		var categories := settings_sheet.find_child("SettingsCategories", true, false)
+		verify(categories != null and not _inside_scroll(categories), "Settings categories stay reachable " + context)
+		for control: Button in _buttons(settings_sheet):
+			verify(control.get_global_rect().end.x <= settings_sheet.size.x + 1, "Settings control fits sheet: " + control.text + " " + context)
+		await _capture(ui, "settings-" + section.to_lower())
+	ui._select_settings_section("Reading")
+	await _settle()
+	var speed := ui.settings_popup.find_child("Setting_story_text_speed", true, false) as OptionButton
+	verify(speed != null, "Story speed offers explicit choices " + context)
+	if speed != null:
+		speed.select(3)
+		speed.item_selected.emit(3)
+		verify(ui.profile.get("story_text_speed") == "instant" and ui.saves.load_profile().get("story_text_speed") == "instant", "Selecting Instant persists directly " + context)
+	ui._close_settings()
+	await _settle()
+
+
 func _verify_item_sheet(ui, context: String) -> void:
 	ui._show_inventory()
+	await _settle()
+	var viewport_rect := Rect2(Vector2.ZERO, ui.get_viewport_rect().size)
+	verify(viewport_rect.encloses(Rect2(ui.inventory_popup.position, ui.inventory_popup.size)), "Inventory sheet fits the phone " + context + " " + str(ui.inventory_popup.size))
+	var weight := ui.inventory_popup.find_child("InventoryWeightFooter", true, false) as Control
+	verify(weight != null and float(ui.inventory_popup.position.y) + weight.get_global_rect().end.y <= viewport_rect.end.y, "Inventory weight stays visible below its scrolling list " + context)
+	_verify_no_force_broken_labels(ui.inventory_popup, "in the inventory " + context)
+	await _capture(ui, "inventory")
 	ui._show_item_detail("wrecking_bar")
 	await _settle()
 	var sheet: PopupPanel = ui.item_detail_popup
@@ -147,10 +259,27 @@ func _verify_item_sheet(ui, context: String) -> void:
 	verify(description != null and _inside_scroll(description), "Item description scrolls " + context)
 	var comparison := _label_with(sheet, "Neutral values")
 	verify(comparison != null and _inside_scroll(comparison), "Detailed modifiers scroll " + context)
+	_verify_no_force_broken_labels(sheet, "in the item sheet " + context)
 	for button: Button in _buttons(sheet):
 		_verify_pinned(button, sheet.size.y, "%s in the item sheet %s" % [button.text.replace("\n", " "), context])
+	await _capture(ui, "item")
 	ui._close_item_detail()
 	await process_frame
+
+
+## Wrapped text must break at word boundaries, never mid-word: a wrapping label
+## showing more visible lines than words is rendering one letter per line
+## inside a container that offers it no width.
+func _verify_no_force_broken_labels(node: Node, context: String) -> void:
+	for candidate: Node in _descendants(node):
+		if candidate is Label and (candidate as Label).visible:
+			var label := candidate as Label
+			if label.autowrap_mode == TextServer.AUTOWRAP_OFF:
+				continue
+			var words := str(label.text).strip_edges().split(" ", false).size()
+			if words < 2:
+				continue
+			verify(label.get_visible_line_count() <= words, "Text wraps at word boundaries %s '%s'" % [context, str(label.text).substr(0, 60)])
 
 
 func _verify_inventory_memory(ui, context: String) -> void:
@@ -168,6 +297,7 @@ func _verify_inventory_memory(ui, context: String) -> void:
 	var remembered := scroll.scroll_vertical
 	ui._show_item_detail("runner_jacket")
 	await _settle()
+	_verify_no_force_broken_labels(ui.item_detail_popup, "in the armor sheet " + context)
 	ui._close_item_detail()
 	ui._show_inventory(false)
 	await _settle()
@@ -199,6 +329,9 @@ func _verify_event_roll(ui, context: String) -> void:
 	ui._show_event_roll()
 	await _settle()
 	verify(_label_with(ui.page, "ROLL 9+") != null, "The event roll names its target as ROLL N+ " + context)
+	_verify_page_bounds(ui, "event roll " + context)
+	verify(ui.page.find_child("EventRollScroll", true, false) != null, "The event roll scrolls its description and die " + context)
+	_verify_pinned(_button_with(ui.page, "ROLL D20"), float(ui.get_viewport_rect().size.y), "roll the event die " + context)
 	ui.game.run_state["phase"] = "event"
 
 
@@ -222,6 +355,7 @@ func _verify_reveal_screen(ui, context: String) -> void:
 	var consequence := _label_with(ui.page, "Ration Bar +2")
 	verify(consequence != null and _inside_scroll(consequence), "Consequences scroll with the reading " + context)
 	_verify_pinned(_button_with(ui.page, "continue"), float(ui.get_viewport_rect().size.y), "leave the reveal " + context)
+	await _capture(ui, "result")
 	ui.game.run_state["phase"] = phase_before
 
 
@@ -339,9 +473,9 @@ func _verify_road_chronicle(ui, context: String) -> void:
 	await _settle()
 	var discoveries_copy := "
 ".join(_label_texts(ui.page))
-	verify("1 / 10 chapters" in discoveries_copy, "Discovery progress counts only chapters this build can reach " + context)
+	verify("1 / 29 chapters" in discoveries_copy, "Discovery progress counts every chapter the default build can reach " + context)
 	verify("1 recorded account" in discoveries_copy, "Accounts are counted apart from chapters " + context)
-	verify("BUNKER FORTY-ONE" in discoveries_copy and "Family on Channel Nine".to_upper() not in discoveries_copy, "Disabled callback chapters are not advertised " + context)
+	verify("BUNKER FORTY-ONE" in discoveries_copy and "Family on Channel Nine".to_upper() in discoveries_copy, "The default Chronicle advertises its Living Road chapters with spoiler-safe hints " + context)
 	verify(ui.page.find_child("ChronicleDiscoveriesScroll", true, false) != null, "The discovery list scrolls " + context)
 	_verify_pinned(_button_with(ui.page, "BACK"), float(ui.get_viewport_rect().size.y), "leave the discoveries tab " + context)
 
