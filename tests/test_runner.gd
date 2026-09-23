@@ -77,6 +77,7 @@ func _run_all() -> void:
 	_test_key_possession_and_endings(content)
 	_test_legal_actions_and_item_reach(content)
 	_test_talents(content)
+	_test_choice_revisions(content)
 	_test_returning_stories(content, ContentRepository.new(true))
 	preload("res://tests/narrative_combat_tests.gd").new().run(content, _check)
 	preload("res://tests/action_transaction_tests.gd").new().run(content, _check)
@@ -2129,7 +2130,7 @@ func _test_road_chronicle(content: ContentRepository) -> void:
 			ledger_contract_holds = ledger_contract_holds and not variant_id.is_empty() and not variant_ids.has(variant_id)
 			variant_ids[variant_id] = true
 			ledger_variant_count += 1
-	_check(ledger_contract_holds and ledger_variant_count == 57, "All twenty-nine Chronicle definitions have a loaded trigger, spoiler-safe hint, and locally unique variants")
+	_check(ledger_contract_holds and ledger_variant_count == 58, "All twenty-nine Chronicle definitions have a loaded trigger, spoiler-safe hint, and locally unique variants")
 
 	# A chapter is recorded from an authoritative resolution, and only once.
 	var game := _new_game(content, 7301)
@@ -2422,6 +2423,34 @@ func _talent_resolve(game: GameEngine, action: String, face: int, enemy_face: in
 	game.run_state["pending_combat_round"]["player_roll"] = face if action != "use_item" else 0
 	game.run_state["pending_combat_round"]["enemy_roll"] = enemy_face
 	return game.resolve_prepared_combat_round()
+
+
+## Latest_plan Week 1: targeted choice revisions from the fresh choice audit.
+## Each revised option keeps a distinct purpose with visible costs, depleted
+## players keep a legal choice, and major commitments reach a callback or
+## ending. Scenes left intact (cartographer sacrifice, build-gate payoffs,
+## earned-code finale) stay so deliberately; flags are their differentiation.
+func _test_choice_revisions(content: ContentRepository) -> void:
+	# Betrayal and Rust-Sea scenes load only in the expanded configuration.
+	var expanded := ContentRepository.new(true)
+	var slate: Dictionary = expanded.get_event("betrayal_slate_settlement")["choices"][1]["outcome"]
+	_check(int(slate.get("items", {}).get("bitter_tonic", 0)) == 1 and "slate_closed" in slate.get("add_flags", []), "Buying the debt out pays a tonic receipt, so paying differs from walking away")
+	var robbery: Dictionary = content.get_event("bunker41_ash_procession")["choices"][2]["outcome"]
+	_check(int(robbery.get("pressures", {}).get("fatigue", 0)) == 4 and int(robbery.get("items", {}).get("canned_meat", 0)) == 1, "Robbing the procession costs the flight it describes")
+	var naming: Dictionary = expanded.get_event("betrayal_vex_ambush")["choices"][1]
+	_check(str(naming.get("check", {}).get("difficulty", "")) == "risky", "Naming Vex's price is risky daylight speech, not a hard check")
+	var scouting: Dictionary = content.get_event("global_clear")["choices"][1]["success"]
+	_check(int(scouting.get("items", {}).get("scrap_parts", 0)) == 1 and "focused" in scouting.get("add_conditions", []), "Scouting the clear sky finds salvage along the safe line")
+	var atonement: Dictionary = expanded.get_event("rustsea_cartographers_debt")["choices"][3]["outcome"]
+	_check("rustsea_debt_settled" in atonement.get("add_flags", []) and "rustsea_mara_allied" in atonement.get("add_flags", []), "Returning Mara's sheets settles the debt apart from plain help")
+	var refusal: Dictionary = content.get_event("final_gate_3")["choices"][3]["outcome"]
+	_check("gate_refused" in refusal.get("add_flags", []) and bool(refusal.get("victory", false)), "Stepping back survives but records the refused gate")
+	var refusal_entry: Dictionary = content.get_discovery_entries().get("ledger_ending_citadel", {})
+	var refusal_variants := 0
+	for variant: Dictionary in refusal_entry.get("variants", []):
+		if "gate_refused" in variant.get("requires_flags", []) or "gate_refused" in variant.get("requires_any_flags", []):
+			refusal_variants += 1
+	_check(refusal_variants == 1, "The Chronicle tells the road away apart from entry")
 
 
 func _descendants(node: Node) -> Array[Node]:
