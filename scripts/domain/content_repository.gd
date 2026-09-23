@@ -24,6 +24,7 @@ var items: Dictionary = {}
 var conditions: Dictionary = {}
 var adversaries: Dictionary = {}
 var talents: Dictionary = {}
+var trade_catalog: Dictionary = {}
 var combat_data: Dictionary = {}
 var legacy_v2_checks: Dictionary = {}
 var discovery_entries: Dictionary = {}
@@ -61,6 +62,7 @@ func reload() -> void:
 	conditions = _load_index("res://data/conditions.json", "conditions")
 	adversaries = _load_index("res://data/adversaries.json", "adversaries")
 	talents = _load_index("res://data/talents.json", "talents")
+	trade_catalog = _load_map("res://data/checkpoint_offers.json", "catalog")
 	combat_data = _load_map("res://data/combat_content.json", "combat")
 	legacy_v2_checks = _load_map("res://data/legacy_v2_checks.json", "legacy_checks")
 	_load_discovery_entries()
@@ -310,12 +312,49 @@ func validate_all() -> PackedStringArray:
 			errors.append("Talent '%s' needs a requirement and effect" % talent_id)
 	if talents.size() != 6:
 		errors.append("Talent catalog must define exactly six run-only talents (found %d)" % talents.size())
+	_validate_trade_catalog(errors)
 	_validate_polished_prose(errors)
 	_validate_narrative_combat(errors)
 	_validate_item_acquisition(errors)
 	if living_road_enabled:
 		_validate_living_road(errors)
 	return errors
+
+
+## Checkpoint trade offers reference real items with payable costs, so a
+## purchase always resolves and its reward is always available.
+func _validate_trade_catalog(errors: PackedStringArray) -> void:
+	if trade_catalog.is_empty():
+		errors.append("Missing checkpoint trade catalog")
+		return
+	var seen: Dictionary = {}
+	for entry: Variant in trade_catalog.get("equipment", []):
+		if typeof(entry) != TYPE_DICTIONARY or not items.has(str(entry.get("id", ""))):
+			errors.append("Trade catalog offers missing equipment '%s'" % str(entry.get("id", "")))
+			continue
+		if str(items[str(entry.get("id", ""))].get("equipment_slot", "")).is_empty():
+			errors.append("Trade catalog equipment '%s' cannot be equipped" % str(entry.get("id", "")))
+		if seen.has(str(entry.get("id", ""))):
+			errors.append("Trade catalog offers duplicate equipment '%s'" % str(entry.get("id", "")))
+		seen[str(entry.get("id", ""))] = true
+		_validate_trade_cost(entry.get("cost", {}), str(entry.get("id", "")), errors)
+	for key: String in ["ammunition", "medical", "food"]:
+		var offer: Dictionary = trade_catalog.get(key, {})
+		if int(offer.get("quantity", 0)) <= 0:
+			errors.append("Trade catalog '%s' needs a positive quantity" % key)
+		_validate_trade_cost(offer.get("cost", {}), key, errors)
+	if not items.has(str(trade_catalog.get("medical", {}).get("item_id", ""))):
+		errors.append("Trade catalog medical offer references a missing item")
+	if not items.has(str(trade_catalog.get("food", {}).get("item_id", ""))):
+		errors.append("Trade catalog food offer references a missing item")
+
+
+func _validate_trade_cost(cost: Dictionary, label: String, errors: PackedStringArray) -> void:
+	if cost.is_empty():
+		errors.append("Trade catalog '%s' needs an explicit cost" % label)
+	for item_id: Variant in cost:
+		if not items.has(str(item_id)) or int(cost[item_id]) <= 0:
+			errors.append("Trade catalog '%s' has an unpayable cost" % label)
 
 
 func _validate_narrative_combat(errors: PackedStringArray) -> void:
@@ -474,6 +513,10 @@ func _validate_item_acquisition(errors: PackedStringArray) -> void:
 				for item_id: Variant in choice[outcome_key].get("items", {}).keys():
 					if int(choice[outcome_key]["items"][item_id]) > 0:
 						obtainable[str(item_id)] = true
+	for entry: Variant in trade_catalog.get("equipment", []):
+		obtainable[str(entry.get("id", ""))] = true
+	for key: String in ["medical", "food"]:
+		obtainable[str(trade_catalog.get(key, {}).get("item_id", ""))] = true
 	for item_id: String in items:
 		if not obtainable.has(item_id):
 			errors.append("Item '%s' has no starting or authored acquisition route" % item_id)
@@ -697,6 +740,10 @@ func get_adversary(adversary_id: String) -> Dictionary:
 
 func get_talent(talent_id: String) -> Dictionary:
 	return talents.get(talent_id, {})
+
+
+func get_trade_catalog() -> Dictionary:
+	return trade_catalog
 
 
 func list_talents() -> Array:

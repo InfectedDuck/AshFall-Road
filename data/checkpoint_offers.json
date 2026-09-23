@@ -1,0 +1,35 @@
+{
+	"catalog": {
+		"equipment": [
+			{"id": "nail_bat", "min_region": 0, "cost": {"scrap_parts": 3}},
+			{"id": "chain_wrench", "min_region": 0, "cost": {"scrap_parts": 3}},
+			{"id": "flare_gun", "min_region": 0, "cost": {"scrap_parts": 3}},
+			{"id": "stun_baton", "min_region": 0, "cost": {"scrap_parts": 4}},
+			{"id": "canvas_pack", "min_region": 0, "cost": {"scrap_parts": 2}},
+			{"id": "rebar_spear", "min_region": 1, "cost": {"scrap_parts": 4}},
+			{"id": "nail_smg", "min_region": 1, "cost": {"scrap_parts": 5}},
+			{"id": "officer_revolver", "min_region": 1, "cost": {"scrap_parts": 5}},
+			{"id": "tire_armor", "min_region": 1, "cost": {"scrap_parts": 5}},
+			{"id": "road_shield", "min_region": 1, "cost": {"scrap_parts": 4}},
+			{"id": "frame_pack", "min_region": 1, "cost": {"scrap_parts": 4}},
+			{"id": "bone_cleaver", "min_region": 2, "cost": {"scrap_parts": 6}},
+			{"id": "scrap_shotgun", "min_region": 2, "cost": {"scrap_parts": 6}},
+			{"id": "mutant_hide_vest", "min_region": 2, "cost": {"scrap_parts": 5}},
+			{"id": "mechanic_gloves", "min_region": 2, "cost": {"scrap_parts": 4}},
+			{"id": "fan_guard", "min_region": 2, "cost": {"scrap_parts": 4}},
+			{"id": "kiln_sword", "min_region": 3, "cost": {"scrap_parts": 8}},
+			{"id": "rail_spike_rifle", "min_region": 3, "cost": {"scrap_parts": 8}},
+			{"id": "wire_rifle", "min_region": 3, "cost": {"scrap_parts": 7}},
+			{"id": "slag_maul", "min_region": 3, "cost": {"scrap_parts": 7}},
+			{"id": "riot_padding", "min_region": 3, "cost": {"scrap_parts": 7}},
+			{"id": "kiln_plates", "min_region": 3, "cost": {"scrap_parts": 8}},
+			{"id": "sniper_scope", "min_region": 3, "cost": {"scrap_parts": 5}},
+			{"id": "hunting_rifle", "min_region": 4, "cost": {"scrap_parts": 8}},
+			{"id": "medic_satchel", "min_region": 4, "cost": {"scrap_parts": 5}},
+			{"id": "scavenger_rig", "min_region": 4, "cost": {"scrap_parts": 5}}
+		],
+		"ammunition": {"quantity": 4, "cost": {"scrap_parts": 3}},
+		"medical": {"item_id": "cloth_bandage", "quantity": 2, "cost": {"scrap_parts": 2}},
+		"food": {"item_id": "canned_meat", "quantity": 2, "cost": {"clean_water": 2}}
+	}
+}
