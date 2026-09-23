@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnhg8mq0p11jl"
-path="res://.godot/imported/enemy_cult.png-ce7521d525869b6e3c4ffc9b85e961c2.ctex"
+uid="uid://catiq6rdeh4ln"
+path="res://.godot/imported/inventory_utilities_v1.png-6bde976c34eb289bcef7760988d58966.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/enemy_cult.png"
-dest_files=["res://.godot/imported/enemy_cult.png-ce7521d525869b6e3c4ffc9b85e961c2.ctex"]
+source_file="res://assets/items/inventory_utilities_v1.png"
+dest_files=["res://.godot/imported/inventory_utilities_v1.png-6bde976c34eb289bcef7760988d58966.ctex"]
 
 [params]
 

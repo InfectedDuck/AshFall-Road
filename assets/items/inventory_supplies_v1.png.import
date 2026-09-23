@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://nt8gmhsxsufm"
-path="res://.godot/imported/enemy_scavs.png-42a405bb9ed4897e762c6d330b032ddf.ctex"
+uid="uid://bpj7s7nfwfgj7"
+path="res://.godot/imported/inventory_supplies_v1.png-9a5fd26d7252969648c6a6e0a45d8604.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/enemy_scavs.png"
-dest_files=["res://.godot/imported/enemy_scavs.png-42a405bb9ed4897e762c6d330b032ddf.ctex"]
+source_file="res://assets/items/inventory_supplies_v1.png"
+dest_files=["res://.godot/imported/inventory_supplies_v1.png-9a5fd26d7252969648c6a6e0a45d8604.ctex"]
 
 [params]
 

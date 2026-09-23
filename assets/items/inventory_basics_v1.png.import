@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dilgduipvt52s"
-path="res://.godot/imported/enemy_warden.png-d24d92a4de27fd65d51d738dd20f88ab.ctex"
+uid="uid://bq6dsevw224mc"
+path="res://.godot/imported/inventory_basics_v1.png-474854db271bcbda059ec9bf8aa5eab9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/enemy_warden.png"
-dest_files=["res://.godot/imported/enemy_warden.png-d24d92a4de27fd65d51d738dd20f88ab.ctex"]
+source_file="res://assets/items/inventory_basics_v1.png"
+dest_files=["res://.godot/imported/inventory_basics_v1.png-474854db271bcbda059ec9bf8aa5eab9.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fr1j1fi8s4qu"
-path="res://.godot/imported/enemy_guard.png-4df37eabf7e6a7db42d908c52df2fff6.ctex"
+uid="uid://dgncw7rd16pkg"
+path="res://.godot/imported/inventory_weapons_v1.png-63a03b0ca35e4b5b6f13d7c24d75c06b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/enemy_guard.png"
-dest_files=["res://.godot/imported/enemy_guard.png-4df37eabf7e6a7db42d908c52df2fff6.ctex"]
+source_file="res://assets/items/inventory_weapons_v1.png"
+dest_files=["res://.godot/imported/inventory_weapons_v1.png-63a03b0ca35e4b5b6f13d7c24d75c06b.ctex"]
 
 [params]
 

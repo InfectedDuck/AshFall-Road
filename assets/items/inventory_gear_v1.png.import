@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1ls5qv603phj"
-path="res://.godot/imported/enemy_bandits.png-a12c2dde5bf9731302f99e892ce6fc6c.ctex"
+uid="uid://dgvv6rv77p3w0"
+path="res://.godot/imported/inventory_gear_v1.png-557b22dda5c09dcdf2fd1fe6616338ee.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/enemy_bandits.png"
-dest_files=["res://.godot/imported/enemy_bandits.png-a12c2dde5bf9731302f99e892ce6fc6c.ctex"]
+source_file="res://assets/items/inventory_gear_v1.png"
+dest_files=["res://.godot/imported/inventory_gear_v1.png-557b22dda5c09dcdf2fd1fe6616338ee.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvtvpd6avdcej"
-path="res://.godot/imported/enemy_crows.png-b99b94e977abf93e1a94993e6783e900.ctex"
+uid="uid://bq1xtgekp323a"
+path="res://.godot/imported/ui_symbols_v1.png-bef7fcbe1baef7b5c46c5f96a5878526.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/enemy_crows.png"
-dest_files=["res://.godot/imported/enemy_crows.png-b99b94e977abf93e1a94993e6783e900.ctex"]
+source_file="res://assets/ui/ui_symbols_v1.png"
+dest_files=["res://.godot/imported/ui_symbols_v1.png-bef7fcbe1baef7b5c46c5f96a5878526.ctex"]
 
 [params]
 
