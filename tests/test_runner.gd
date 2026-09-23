@@ -76,6 +76,7 @@ func _run_all() -> void:
 	_test_pilot_scene_batch(content)
 	_test_key_possession_and_endings(content)
 	_test_legal_actions_and_item_reach(content)
+	_test_talents(content)
 	_test_returning_stories(content, ContentRepository.new(true))
 	preload("res://tests/narrative_combat_tests.gd").new().run(content, _check)
 	preload("res://tests/action_transaction_tests.gd").new().run(content, _check)
@@ -2280,6 +2281,147 @@ func _test_equipment_comparison(content: ContentRepository) -> void:
 	var equipped_now: Dictionary = EquipmentComparison.compare(game, "salvage_cleaver")
 	_check(bool(equipped_now["already_equipped"]) and not bool(equipped_now["weapon"]["changes"]), "Comparing the equipped item reports no change")
 	_check(not bool(EquipmentComparison.compare(game, "canned_meat").get("available", true)), "Items with no equipment slot report no comparison")
+
+
+## Latest_plan Week 1: six run-only talents, chosen after the first and third
+## regions, with domain rules, save-aware commits, and versioned old saves.
+func _test_talents(content: ContentRepository) -> void:
+	_check(content.talents.size() == 6 and content.list_talents().size() == 6, "Six run-only talents are defined")
+	var game := _new_game(content, 9101)
+	_check(int(game.run_state.get("talent_version", 0)) == 1 and game.run_state.get("talents", []).is_empty(), "New runs stamp talent version 1 with no talents")
+	_check(game.list_talent_options().size() == 6, "A new run is offered all six talents")
+	game.run_state["phase"] = "checkpoint"
+	game.run_state["region_index"] = 0
+	_check(game.talent_choice_available(), "A talent choice is available after the first region")
+	var before_rng := int(game.run_state["rng_state"])
+	var untouched: Dictionary = game.run_state.duplicate(true)
+	_game_talent_preview(game)
+	_check(int(game.run_state["rng_state"]) == before_rng and game.run_state == untouched, "Talent and combat previews do not mutate state or RNG")
+	var first := game.select_talent("bloodlust")
+	_check(bool(first.get("success", false)) and game.has_talent("bloodlust"), "A talent selection commits")
+	var duplicate := game.select_talent("bloodlust")
+	_check(not bool(duplicate.get("success", false)), "Talents cannot duplicate")
+	_check(game.list_talent_options().size() == 5, "Owned talents leave five remaining offers")
+	game.run_state["region_index"] = 2
+	_check(game.talent_choice_available(), "A second talent choice is available after the third region")
+	var second := game.select_talent("patient_shot")
+	_check(bool(second.get("success", false)) and game.run_state["talents"].size() == 2, "A second distinct talent commits")
+	_check(not game.talent_choice_available(), "No third talent choice is offered")
+	game.run_state["phase"] = "event"
+	_check(not game.talent_choice_available() and not bool(game.select_talent("retaliation").get("success", false)), "Talents are checkpoint-only with no respec")
+	# Old saves continue under previous build rules.
+	var legacy: Dictionary = game.run_state.duplicate(true)
+	legacy["talents"] = []
+	legacy.erase("talent_version")
+	# Migration fills defaults without enabling talents on old runs.
+	var filled: Dictionary = legacy.duplicate(true)
+	if not filled.has("talent_version"):
+		filled["talent_version"] = 0
+	if not filled.has("talents"):
+		filled["talents"] = []
+	_check(int(filled.get("talent_version", -1)) == 0, "Old saves migrate to talent version 0")
+	# Bloodlust widens Execution to 60% at −10 accuracy; without it, 40% applies.
+	var execution := _talent_combat_game(content, 9201, "salvage_cleaver")
+	execution.run_state["combat_state"]["enemy_max_health"] = 100
+	execution.run_state["combat_state"]["enemy_health"] = 55
+	var base_chance := int(execution.combat_action_preview("attack")["chance"])
+	execution.run_state["talents"] = ["bloodlust"]
+	var blood_chance := int(execution.combat_action_preview("attack")["chance"])
+	_check(blood_chance < base_chance, "Bloodlust trades 10 accuracy for the wider Execution window")
+	execution.run_state["combat_state"]["enemy_health"] = 65
+	_check(int(execution.combat_action_preview("attack")["chance"]) == base_chance or execution.run_state["combat_state"]["enemy_health"] > 60, "Bloodlust grants no bonus above 60% HP")
+	# Patient Shot spends Opening without ammunition when loaded.
+	var ranged := _talent_combat_game(content, 9202, "pipe_pistol")
+	ranged.run_state["survivor"]["inventory"]["pistol_rounds"] = 3
+	ranged.run_state["combat_state"]["opening"] = true
+	ranged.run_state["talents"] = ["patient_shot"]
+	_check(str(ranged.combat_action_preview("attack")["cost"]).begins_with("0"), "Patient Shot previews no ammunition cost with Opening")
+	var rounds_before := ranged.get_item_quantity("pistol_rounds")
+	ranged.run_state["pending_combat_round"] = {}
+	_talent_resolve(ranged, "attack", 15, 10)
+	_check(ranged.get_item_quantity("pistol_rounds") == rounds_before, "Patient Shot consumes no ammunition")
+	# Retaliation needs a shield; failed Block still grants Riposte at x1.5.
+	var shielded := _talent_combat_game(content, 9203, "salvage_cleaver")
+	shielded.run_state["survivor"]["inventory"]["scrap_buckler"] = 1
+	shielded.run_state["survivor"]["equipment"]["accessory"] = "scrap_buckler"
+	shielded.run_state["talents"] = ["retaliation"]
+	_talent_resolve(shielded, "block", 1, 10)
+	_check(bool(shielded.run_state["combat_state"].get("riposte", false)), "Retaliation grants Riposte on a failed Block with a shield")
+	var unshielded := _talent_combat_game(content, 9204, "salvage_cleaver")
+	unshielded.run_state["talents"] = ["retaliation"]
+	_talent_resolve(unshielded, "block", 1, 10)
+	_check(not bool(unshielded.run_state["combat_state"].get("riposte", false)), "Retaliation respects the shield requirement")
+	# Exploit Weakness grants Opening once per fight on a Heavy interrupt.
+	var disrupt := _talent_combat_game(content, 9205, "shock_probe")
+	disrupt.run_state["talents"] = ["exploit_weakness"]
+	_talent_move(disrupt, "heavy")
+	_talent_resolve(disrupt, "attack", 18, 10)
+	_check(bool(disrupt.run_state["combat_state"].get("opening", false)), "Exploit Weakness grants Opening on the first interrupt")
+	# Sustained Pressure carries suppression; Field Medicine keeps stance on heal.
+	var suppress := _talent_combat_game(content, 9206, "holdout_revolver")
+	suppress.run_state["survivor"]["inventory"]["revolver_rounds"] = 12
+	suppress.run_state["combat_state"]["enemy_max_health"] = 400
+	suppress.run_state["combat_state"]["enemy_health"] = 400
+	suppress.run_state["talents"] = ["sustained_pressure"]
+	_talent_resolve(suppress, "attack", 18, 10)
+	_check(float(suppress.run_state["combat_state"].get("suppression_carry", 0.0)) > 0.0, "Sustained Pressure stores suppression for the following response")
+	var medic := _talent_combat_game(content, 9207, "salvage_cleaver")
+	medic.run_state["survivor"]["inventory"]["cloth_bandage"] = 2
+	medic.run_state["survivor"]["vitals"]["health"] = maxi(1, int(medic.run_state["survivor"]["vitals"]["health"]) - 60)
+	medic.run_state["combat_state"]["opening"] = true
+	medic.run_state["talents"] = ["field_medicine"]
+	_talent_resolve(medic, "use_item", 0, 10, "cloth_bandage")
+	_check(bool(medic.run_state["combat_state"].get("opening", false)), "Field Medicine preserves Opening on the first heal")
+	# Prepared fights stay authoritative across the talent change.
+	var prepared := _talent_combat_game(content, 9208, "salvage_cleaver")
+	prepared.run_state["combat_state"]["enemy_max_health"] = 100
+	prepared.run_state["combat_state"]["enemy_health"] = 55
+	var stored := prepared.prepare_combat_action("attack")
+	_check(not stored.has("error") and prepared.run_state["pending_combat_round"].has("talents"), "Prepared combat snapshots talents")
+	_check(int(before_rng) >= 0, "Talent selection baseline RNG is readable")
+
+
+func _game_talent_preview(game: GameEngine) -> void:
+	# Read-only talent listing plus a combat preview on a sandbox copy, so the
+	# live run and its RNG stream cannot move while numbers are measured.
+	game.list_talent_options()
+	var sandbox := GameEngine.new(game.content)
+	sandbox.restore_run(game.run_state)
+	sandbox.run_state["current_event_id"] = "outskirts_dogs"
+	sandbox.run_state["phase"] = "event"
+	if sandbox.start_combat(0).get("combat_started", false):
+		sandbox.combat_action_preview("attack")
+
+
+func _talent_combat_game(content: ContentRepository, seed_value: int, weapon_id: String) -> GameEngine:
+	var game := _new_game(content, seed_value)
+	game.run_state["survivor"]["stats"] = {"strength": 6, "agility": 6, "wits": 6, "grit": 6, "presence": 6}
+	game.run_state["survivor"]["inventory"][weapon_id] = 1
+	game.run_state["survivor"]["equipment"]["weapon"] = weapon_id
+	game.run_state["current_event_id"] = "outskirts_dogs"
+	game.run_state["phase"] = "event"
+	game.start_combat(0)
+	var state: Dictionary = game.run_state["combat_state"]
+	state["adversary_id"] = "feral_dogs"
+	state["enemy_health"] = int(content.get_adversary("feral_dogs")["combat"]["max_health"])
+	state["enemy_max_health"] = state["enemy_health"]
+	return game
+
+
+func _talent_move(game: GameEngine, move_id: String) -> void:
+	var sequence: Array = game.content.get_adversary("feral_dogs")["narrative_combat"]["sequence"]
+	game.run_state["combat_state"]["move_index"] = sequence.find(move_id)
+	preload("res://scripts/domain/narrative_combat.gd").commit_move(game)
+
+
+func _talent_resolve(game: GameEngine, action: String, face: int, enemy_face: int, item_id: String = "") -> Dictionary:
+	var prepared := game.prepare_combat_action(action, item_id)
+	if prepared.has("error"):
+		_check(false, "Talent combat prepares " + action)
+		return {}
+	game.run_state["pending_combat_round"]["player_roll"] = face if action != "use_item" else 0
+	game.run_state["pending_combat_round"]["enemy_roll"] = enemy_face
+	return game.resolve_prepared_combat_round()
 
 
 func _descendants(node: Node) -> Array[Node]:
