@@ -4,6 +4,7 @@ extends RefCounted
 
 const Legacy = preload("res://scripts/domain/combat_resolver.gd")
 const XP = preload("res://scripts/domain/experience_rules.gd")
+const TalentRules = preload("res://scripts/domain/talent_rules.gd")
 const VERSION := 2
 ## Every unresolved exchange is exertion, including successful defenses and
 ## waiting through recovery. Long fights must reach the shared strain penalties.
@@ -28,7 +29,7 @@ static func hit_damage(roll: int, chance: int, minimum: int, maximum: int) -> in
 
 static func initialize(game) -> void:
 	var state: Dictionary = game.run_state["combat_state"]
-	state.merge({"combat_rules_version": VERSION, "move_index": 0, "riposte": false, "opening": false, "interrupt_cooldown": 0, "opportunity_ready": false, "opportunity_used": false, "opportunity_chance": 15, "narration_indices": {}}, true)
+	state.merge({"combat_rules_version": VERSION, "move_index": 0, "riposte": false, "opening": false, "interrupt_cooldown": 0, "opportunity_ready": false, "opportunity_used": false, "opportunity_chance": 15, "narration_indices": {}, "exploit_used": false, "field_medicine_used": false, "suppression_carry": 0.0}, true)
 	commit_move(game)
 
 
@@ -107,9 +108,18 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 			if family == "precision":
 				bonus += 0.4 if mastered else 0.3
 			effects.append("Opening: +20 points accuracy; consumed by this action.")
-		if family == "execution" and int(state.get("enemy_health", 1)) * 5 <= int(state.get("enemy_max_health", 1)) * 2:
+		var bloodlust: bool = game.has_method("has_talent") and game.has_talent("bloodlust")
+		if family == "execution" and int(state.get("enemy_health", 1)) * 5 <= int(state.get("enemy_max_health", 1)) * (3 if bloodlust else 2):
 			bonus += 0.45 if mastered else 0.3
-			effects.append("Execution: enemy at or below 40% HP.")
+			if bloodlust:
+				chance -= TalentRules.BLOODLUST_ACCURACY_PENALTY
+				effects.append("Bloodlust: enemy at or below 60% HP; −10 accuracy with this bonus.")
+			else:
+				effects.append("Execution: enemy at or below 40% HP.")
+		if game.has_method("has_talent") and game.has_talent("exploit_weakness") and family == "disruption" and not bool(state.get("exploit_used", false)):
+			effects.append("Exploit Weakness: first successful interrupt grants Opening.")
+		if game.has_method("has_talent") and game.has_talent("sustained_pressure") and family == "suppression":
+			effects.append("Sustained Pressure: suppression carries to the following response.")
 		if action == "opportunity":
 			chance += 20.0
 			bonus += 0.75
@@ -125,7 +135,12 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		if float(move.get("bonus", 0.0)) > 0.0:
 			effects.append("Enemy recovering: +25% damage this exchange.")
 		if str(profile.get("ammo_type", "")) != "":
-			result["cost"] = "%d %s" % [int(profile["ammo_per_attack"]), game.content.get_item(str(profile["ammo_type"])).get("name", "rounds")]
+			var patient: bool = action == "attack" and bool(state.get("opening", false)) and game.has_method("has_talent") and game.has_talent("patient_shot") and str(profile.get("item_id", "")) != ""
+			if patient:
+				result["cost"] = "0 %s (Patient Shot)" % game.content.get_item(str(profile["ammo_type"])).get("name", "rounds")
+				effects.append("Patient Shot: Opening attack spends no ammunition.")
+			else:
+				result["cost"] = "%d %s" % [int(profile["ammo_per_attack"]), game.content.get_item(str(profile["ammo_type"])).get("name", "rounds")]
 	elif action in ["block", "dodge"]:
 		var block := action == "block"
 		var stat_value := float(stats.get("strength" if block else "agility", 0))
@@ -146,7 +161,11 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		result["chance"] = probability(chance, 85)
 		effects.append("Enemy movement: %+d percentage points." % int(move.get(action, 0)))
 		effects.append("Success prevents damage and conditions; %s next turn." % ("Riposte" if block else "Opening"))
-		effects.append("Failure takes %s damage after armor." % ("125%" if block else "normal"))
+		var retaliation: bool = block and game.has_method("has_talent") and game.has_talent("retaliation") and TalentRules.shield_active(game)
+		if retaliation:
+			effects.append("Retaliation: failed Block still grants Riposte; failure takes 150% damage after armor.")
+		else:
+			effects.append("Failure takes %s damage after armor." % ("125%" if block else "normal"))
 		if float(move.get("damage", 0.0)) <= 0.0:
 			effects.append("No attack to defend: no Riposte or Opening can be earned.")
 	elif action == "flee":
@@ -158,6 +177,8 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		if item_id not in game.combat_usable_items():
 			result.merge({"available": false, "reason": "Choose an available combat consumable."}, true)
 		result["cost"] = "One item; enemy resolves its committed move."
+		if game.has_method("has_talent") and game.has_talent("field_medicine") and not bool(state.get("field_medicine_used", false)) and (bool(state.get("opening", false)) or bool(state.get("riposte", false))):
+			effects.append("Field Medicine: first heal preserves Opening/Riposte.")
 	if int(result["chance"]) > 0:
 		result["required_roll"] = D20Resolver.required_roll(int(result["chance"]))
 	return result
@@ -171,6 +192,7 @@ static func prepare(game, action: String, item_id: String = "") -> Dictionary:
 	var enemy: Dictionary = game.content.get_adversary(str(state["adversary_id"]))
 	game.run_state["pending_combat_round"] = {
 		"combat_rules_version": VERSION, "action": action, "item_id": item_id,
+		"talents": game.run_state.get("talents", []).duplicate(true) if game.run_state.has("talents") else [],
 		"preview": action_preview.duplicate(true), "move": state["committed_move"].duplicate(true),
 		"enemy": enemy.duplicate(true), "armor": game._armor_rating(),
 		"enemy_roll": game._random_range(1, 20),
@@ -211,8 +233,16 @@ static func resolve(game) -> Dictionary:
 	var result := {"combat_rules_version": VERSION, "action": action, "player_roll": roll, "enemy_roll": int(pending["enemy_roll"]), "chance": int(action_preview["chance"]), "required_roll": int(action_preview["required_roll"]), "move_id": str(move["id"]), "entries": [], "player_damage": 0, "enemy_damage": 0}
 	game.run_state["phase"] = "combat"
 	state["round"] = int(state["round"]) + 1
+	# Prepared actions stay authoritative: fights prepared before talents use
+	# previous build rules; newer ones use the snapshot taken at prepare time.
+	var active_talents: Array = pending.get("talents", []).duplicate(true) if pending.has("talents") else []
+	var has = func(talent_id: String) -> bool: return talent_id in active_talents
+	var opening_before := bool(state.get("opening", false))
+	var riposte_before := bool(state.get("riposte", false))
+	var carry_before := float(state.get("suppression_carry", 0.0))
 	state["riposte"] = false
 	state["opening"] = false
+	state["suppression_carry"] = 0.0
 	var cooldown_before := int(state.get("interrupt_cooldown", 0))
 	state["interrupt_cooldown"] = maxi(0, cooldown_before - 1)
 	var attack := action in ["attack", "opportunity"]
@@ -220,7 +250,7 @@ static func resolve(game) -> Dictionary:
 	var enemy_attacks := float(move["damage"]) > 0.0
 	var success := roll >= int(action_preview["required_roll"]) and roll != 1
 	var interrupted := false
-	var suppressed := 0.0
+	var suppressed := carry_before
 	var exposure := 1.0
 	if action != "use_item":
 		game._tick_temporary_conditions()
@@ -230,8 +260,13 @@ static func resolve(game) -> Dictionary:
 			state["opportunity_ready"] = false
 		var ammo := str(profile.get("ammo_type", ""))
 		if ammo != "":
-			result["ammo_used"] = int(profile["ammo_per_attack"])
-			game._change_item(ammo, -int(result["ammo_used"]))
+			var patient: bool = has.call("patient_shot") and action == "attack" and opening_before and str(profile.get("item_id", "")) != ""
+			if patient:
+				result["ammo_used"] = 0
+				game._add_combat_entry(result, "success", "PATIENT SHOT • NO AMMUNITION SPENT", 0, "player")
+			else:
+				result["ammo_used"] = int(profile["ammo_per_attack"])
+				game._change_item(ammo, -int(result["ammo_used"]))
 		var damage := hit_damage(roll, int(action_preview["chance"]), int(action_preview["damage_min"]), int(action_preview["damage_max"]))
 		result["rolled_player_damage"] = damage
 		result["player_damage"] = mini(pre_enemy, damage)
@@ -258,15 +293,26 @@ static func resolve(game) -> Dictionary:
 				interrupted = true
 				state["interrupt_cooldown"] = 2
 				game._add_combat_entry(result, "success", "INTERRUPTED • HEAVY CANCELLED • RECHARGE 2 EXCHANGES", 0, "player")
+				if has.call("exploit_weakness") and not bool(state.get("exploit_used", false)):
+					state["exploit_used"] = true
+					state["opening"] = true
+					game._add_combat_entry(result, "success", "EXPLOIT WEAKNESS • OPENING READY", 0, "player")
 			if family == "suppression" and roll >= 15 and enemy_attacks and bool(enemy["narrative_combat"]["organic"]):
-				suppressed = 0.4 if mastered else 0.3
+				suppressed = maxf(suppressed, 0.4 if mastered else 0.3)
 				game._add_combat_entry(result, "success", "SUPPRESSED • RESPONSE −%d%%" % roundi(suppressed * 100.0), 0, "player")
+				if has.call("sustained_pressure"):
+					state["suppression_carry"] = suppressed
 	elif defense:
 		var category := "%s_%s" % [action, "success" if success else "failure"] if enemy_attacks else "idle_defense"
 		if success and enemy_attacks:
 			state["riposte" if action == "block" else "opening"] = true
 		if action == "block" and not success:
-			exposure = 1.25
+			if has.call("retaliation") and TalentRules.shield_active(game) and enemy_attacks:
+				state["riposte"] = true
+				exposure = TalentRules.RETALIATION_EXPOSURE
+				game._add_combat_entry(result, "success", "RETALIATION • RIPOSTE READY • INCOMING x1.5", 0, "player")
+			else:
+				exposure = 1.25
 		var label := action.to_upper() + (" SUCCESS" if success else " FAILURE") if enemy_attacks else "NO ATTACK TO DEFEND"
 		if roll in [1, 20]:
 			label = ("CRITICAL SUCCESS • " if roll == 20 else "CRITICAL FAILURE • ") + label
@@ -281,11 +327,25 @@ static func resolve(game) -> Dictionary:
 		result["player_health_after_item"] = int(game.run_state["survivor"]["vitals"]["health"])
 		result["healing"] = maxi(0, int(result["player_health_after_item"]) - pre_hp)
 		game._add_combat_entry(result, "heal", str(item_result.get("text", "Item used.")), int(result["healing"]), "player")
+		if has.call("field_medicine") and not bool(state.get("field_medicine_used", false)) and int(result["healing"]) > 0 and (opening_before or riposte_before):
+			state["opening"] = opening_before
+			state["riposte"] = riposte_before
+			state["field_medicine_used"] = true
+			game._add_combat_entry(result, "success", "FIELD MEDICINE • STANCE PRESERVED", 0, "player")
 	elif action == "flee":
 		if success:
 			escape(game, result, passage(game, pending, "flee", profile))
 			return finish(game, result, state, pre_hp, pre_enemy)
 		game._add_combat_entry(result, "critical_failure" if roll == 1 else "failure", passage(game, pending, "flee_failure", profile) + ("\nCRITICAL FAILURE • " if roll == 1 else "\n") + "FLEE FAILED • ROLL %d / NEED %d" % [roll, action_preview["required_roll"]], 0, "player")
+	if has.call("sustained_pressure") and carry_before > 0.0 and suppressed >= carry_before and not interrupted and enemy_attacks and int(state["enemy_health"]) > 0:
+		var carried := roundi(carry_before * 100.0)
+		var already_noted := false
+		for entry: Dictionary in result["entries"]:
+			if str(entry.get("text", "")).begins_with("SUPPRESSED"):
+				already_noted = true
+				break
+		if not already_noted:
+			game._add_combat_entry(result, "success", "SUSTAINED PRESSURE • CARRY −%d%%" % carried, 0, "player")
 	result["hit"] = success if attack else false
 	result["defense_success"] = defense and success and enemy_attacks
 	result["enemy_interrupted"] = interrupted

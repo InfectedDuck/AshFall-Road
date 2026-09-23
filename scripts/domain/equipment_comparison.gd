@@ -259,4 +259,38 @@ static func _notes(game, report: Dictionary) -> Array:
 		notes.append("Capacity: this clears the overweight Agility penalty.")
 	elif not bool(carry["over_current"]) and bool(carry["over_proposed"]):
 		notes.append("Capacity: this puts you over capacity for an Agility penalty.")
+	for talent_note: String in _talent_notes(game, report):
+		notes.append(talent_note)
 	return notes
+
+
+## Talent requirements and effects, so the player understands why a
+## combination works. Read-only: previews already include owned talents
+## because the sandbox copies the run, including its talent list.
+static func _talent_notes(game, report: Dictionary) -> Array:
+	var talent_notes: Array = []
+	if game == null or game.run_state.is_empty():
+		return talent_notes
+	var owned: Array = game.run_state.get("talents", [])
+	if owned.is_empty():
+		return talent_notes
+	var proposed_weapon: Dictionary = report["weapon"]["proposed"]
+	var family := str(proposed_weapon.get("family", ""))
+	var has = func(talent_id: String) -> bool: return talent_id in owned
+	if has.call("retaliation"):
+		var defense: Dictionary = report["defense"]["proposed"]
+		if bool(defense.get("shield_active", false)):
+			talent_notes.append("Retaliation: failed Block still grants Riposte; failure takes 150% damage.")
+		else:
+			talent_notes.append("Retaliation: equip a shield with a one-handed weapon to enable it.")
+	if has.call("patient_shot") and str(proposed_weapon.get("ammo_type", "")) != "":
+		talent_notes.append("Patient Shot: Opening attacks with %s cost no ammunition." % str(proposed_weapon.get("name", "ranged weapon")))
+	if has.call("exploit_weakness") and family == "disruption":
+		talent_notes.append("Exploit Weakness: first successful interrupt grants Opening.")
+	if has.call("bloodlust") and family == "execution":
+		talent_notes.append("Bloodlust: Execution below 60% HP; −10 accuracy when the bonus applies.")
+	if has.call("sustained_pressure") and family == "suppression":
+		talent_notes.append("Sustained Pressure: suppression carries to the following response.")
+	if has.call("field_medicine"):
+		talent_notes.append("Field Medicine: first combat heal preserves Opening/Riposte.")
+	return talent_notes
