@@ -356,6 +356,8 @@ func _migrate_run(run: Dictionary) -> Dictionary:
 	if not run.has("talent_version"):
 		# Existing runs continue under previous build rules; new runs stamp v1.
 		run["talent_version"] = 0
+	if not run.has("checkpoint_offers"):
+		run["checkpoint_offers"] = []
 	return run
 
 

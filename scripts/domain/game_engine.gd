@@ -138,7 +138,7 @@ func start_run(candidate: Dictionary, seed_value: int) -> Dictionary:
 		"checkpoint_xp_awards": [], "rewarded_checkpoints": [], "combat_opportunities_seen_in_region": 0,
 		"region_index": 0, "events_in_region": 0, "total_events": 0, "hunger_clock": 0, "supply_seen_in_region": false,
 		"event_history": [], "flags": [], "current_event_id": "", "pending_event_id": "", "pending_resolution": {},
-		"pending_combat_round": {}, "combat_state": {}, "last_result": {}, "condition_uses": {}, "checkpoint_action": "",
+		"pending_combat_round": {}, "combat_state": {}, "last_result": {}, "condition_uses": {}, "checkpoint_action": "", "checkpoint_offers": [],
 		"last_checkpoint_xp": {}, "defeated_adversaries": [],
 		"survivor": candidate.duplicate(true), "started_at": Time.get_unix_time_from_system(),
 	}
@@ -463,6 +463,7 @@ func continue_after_result() -> void:
 		run_state["current_event_id"] = ""
 		run_state["phase"] = "checkpoint"
 		run_state["checkpoint_action"] = ""
+		generate_checkpoint_offers()
 		_award_checkpoint_experience()
 	else:
 		_select_next_event()
@@ -597,6 +598,113 @@ func select_talent(talent_id: String) -> Dictionary:
 	return {"success": true, "talent_id": talent_id, "text": "%s learned." % str(definition.get("name", talent_id))}
 
 
+## Checkpoint trading: Rest, Barter, or Press On, one activity per checkpoint.
+## Three offers are generated once when the checkpoint opens and saved with
+## the run: compatible equipment from the authored regional ladder, ammunition
+## for a ranged build or medical supplies for a melee one, and food. Browsing
+## previews are pure; only a purchase commits the activity, and reopening the
+## screen or restarting cannot refresh the stock.
+func checkpoint_offers() -> Array:
+	if str(run_state.get("phase", "")) != "checkpoint":
+		return []
+	if run_state.get("checkpoint_offers", []).is_empty() and str(run_state.get("checkpoint_action", "")) == "":
+		generate_checkpoint_offers()
+	return run_state.get("checkpoint_offers", [])
+
+
+func generate_checkpoint_offers() -> Array:
+	var region := int(run_state.get("region_index", 0))
+	var catalog: Dictionary = content.get_trade_catalog()
+	var offers: Array = [_gear_offer(catalog, region), _supply_offer(catalog), _food_offer(catalog)]
+	run_state["checkpoint_offers"] = offers
+	return offers
+
+
+func _owns_item(item_id: String) -> bool:
+	if get_item_quantity(item_id) > 0:
+		return true
+	for slot: String in EQUIPMENT_SLOTS:
+		if str(run_state.get("survivor", {}).get("equipment", {}).get(slot, "")) == item_id:
+			return true
+	return false
+
+
+func _gear_offer(catalog: Dictionary, region: int) -> Dictionary:
+	for entry: Variant in catalog.get("equipment", []):
+		var item_id := str(entry.get("id", ""))
+		if int(entry.get("min_region", 0)) > region or item_id == "":
+			continue
+		if _owns_item(item_id):
+			continue
+		if equipment_lock_reason(item_id) != "":
+			continue
+		return {"kind": "equipment", "item_id": item_id, "quantity": 1, "cost": (entry.get("cost", {}) as Dictionary).duplicate(true), "sold": false}
+	return _medical_offer(catalog, true)
+
+
+func _supply_offer(catalog: Dictionary) -> Dictionary:
+	var weapon: Dictionary = content.get_item(str(run_state.get("survivor", {}).get("equipment", {}).get("weapon", "")))
+	var ammo := str(weapon.get("ammo_type", ""))
+	if ammo != "" and int(weapon.get("combat", {}).get("ammo_per_attack", 0)) > 0:
+		var cfg: Dictionary = catalog.get("ammunition", {})
+		return {"kind": "ammunition", "item_id": ammo, "quantity": maxi(1, int(cfg.get("quantity", 4))), "cost": (cfg.get("cost", {}) as Dictionary).duplicate(true), "sold": false}
+	return _medical_offer(catalog)
+
+
+func _medical_offer(catalog: Dictionary, fallback: bool = false) -> Dictionary:
+	var cfg: Dictionary = catalog.get("medical", {})
+	return {"kind": "medical", "item_id": str(cfg.get("item_id", "cloth_bandage")), "quantity": maxi(1, int(cfg.get("quantity", 2))), "cost": (cfg.get("cost", {}) as Dictionary).duplicate(true), "sold": false, "fallback": fallback}
+
+
+func _food_offer(catalog: Dictionary) -> Dictionary:
+	var cfg: Dictionary = catalog.get("food", {})
+	return {"kind": "food", "item_id": str(cfg.get("item_id", "canned_meat")), "quantity": maxi(1, int(cfg.get("quantity", 2))), "cost": (cfg.get("cost", {}) as Dictionary).duplicate(true), "sold": false}
+
+
+func trade_cost_text(cost: Dictionary) -> String:
+	var parts: Array[String] = []
+	for item_id: String in cost:
+		parts.append("%d× %s" % [int(cost[item_id]), str(content.get_item(item_id).get("name", item_id))])
+	return " + ".join(parts)
+
+
+func trade_preview(index: int) -> Dictionary:
+	if str(run_state.get("phase", "")) != "checkpoint":
+		return {"available": false, "reason": "Trading is only possible at a checkpoint."}
+	# Reads the saved stock without generating: previews never mutate state.
+	var offers: Array = run_state.get("checkpoint_offers", [])
+	if index < 0 or index >= offers.size():
+		return {"available": false, "reason": "That offer is not on the counter."}
+	var offer: Dictionary = offers[index]
+	var item_name := str(content.get_item(str(offer.get("item_id", ""))).get("name", offer.get("item_id", "")))
+	var summary := "%s ×%d — price %s" % [item_name, int(offer.get("quantity", 1)), trade_cost_text(offer.get("cost", {}))]
+	if bool(offer.get("sold", false)):
+		return {"available": false, "reason": "Already purchased.", "sold": true, "summary": summary, "offer": offer}
+	if str(run_state.get("checkpoint_action", "")) != "":
+		return {"available": false, "reason": "You already chose how to leave this checkpoint.", "summary": summary, "offer": offer}
+	var cost: Dictionary = offer.get("cost", {})
+	for item_id: String in cost:
+		if get_item_quantity(item_id) < int(cost[item_id]):
+			return {"available": false, "reason": "Needs %s." % trade_cost_text(cost), "summary": summary, "offer": offer}
+	return {"available": true, "reason": "", "summary": summary, "offer": offer}
+
+
+func accept_trade(index: int) -> Dictionary:
+	var preview := trade_preview(index)
+	if not bool(preview.get("available", false)):
+		return {"success": false, "text": str(preview.get("reason", "That trade cannot be completed."))}
+	var offer: Dictionary = preview["offer"]
+	var cost: Dictionary = offer.get("cost", {})
+	var changes: Array = []
+	_apply_costs({"items": cost}, changes)
+	_change_item(str(offer.get("item_id", "")), int(offer.get("quantity", 1)))
+	var stored: Array = run_state["checkpoint_offers"]
+	stored[index]["sold"] = true
+	run_state["checkpoint_action"] = "barter"
+	var item_name := str(content.get_item(str(offer.get("item_id", ""))).get("name", offer.get("item_id", "")))
+	return {"success": true, "text": "Traded %s for %s ×%d." % [trade_cost_text(cost), item_name, int(offer.get("quantity", 1))], "changes": changes}
+
+
 func _award_checkpoint_experience() -> Dictionary:
 	var checkpoint_index := int(run_state.get("region_index", 0))
 	if checkpoint_index < 0 or checkpoint_index >= content.ordered_regions().size():
@@ -626,6 +734,7 @@ func leave_checkpoint() -> void:
 		_change_pressure("fatigue", 5)
 		_select_next_event()
 	run_state["checkpoint_action"] = ""
+	run_state["checkpoint_offers"] = []
 	run_state["phase"] = "event"
 
 
