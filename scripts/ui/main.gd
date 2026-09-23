@@ -1736,9 +1736,32 @@ func _show_result() -> void:
 	footer.visible = false
 	active_story_actions = footer
 	var changes: Array = result.get("changes", [])
+	# Items gained or spent render as icon rows from the structured entries;
+	# their text lines are folded away so the receipt never lists them twice.
+	# Old saves carry no entries, and their text receipt renders untouched.
+	var item_lines: Dictionary = {}
+	var item_rows: Array = []
+	for entry: Variant in result.get("item_changes", []):
+		if typeof(entry) != TYPE_DICTIONARY or str(entry.get("id", "")) == "":
+			continue
+		var row_item: Dictionary = content.get_item(str(entry.get("id", "")))
+		if row_item.is_empty():
+			continue
+		var delta := int(entry.get("delta", 0))
+		if delta == 0:
+			continue
+		item_lines["%s %s%d" % [str(row_item.get("name", "")), "+" if delta >= 0 else "", delta]] = true
+		item_rows.append({"item": row_item, "delta": delta})
+	var text_lines: Array[String] = []
+	for line: Variant in changes:
+		if not item_lines.has(str(line)):
+			text_lines.append(str(line))
 	if not changes.is_empty():
 		footer.add_child(_label("COMMITTED RECEIPT", 13, _c("danger") if not bool(resolution.get("succeeded", true)) else _accent_color()))
-		footer.add_child(_label("\n".join(changes), 14, _accent_color()))
+		if not text_lines.is_empty():
+			footer.add_child(_label("\n".join(text_lines), 14, _accent_color()))
+		for row_data: Dictionary in item_rows:
+			footer.add_child(_receipt_item_row(row_data))
 	else:
 		footer.add_child(_label("COMMITTED RECEIPT", 13, _c("muted")))
 		footer.add_child(_label("No inventory, vital, pressure, or condition change.", 14, _c("muted")))
@@ -1770,6 +1793,29 @@ func _show_result() -> void:
 		_reveal_choices(footer)
 		_reveal_choices(actions)
 	)
+
+
+## One receipt row for an item gained or spent: the item's own icon beside its
+## name and quantity. Gains read in accent, spends in muted, and the text
+## label keeps the row legible to screen readers and large-text sizes.
+func _receipt_item_row(row_data: Dictionary) -> Control:
+	var item: Dictionary = row_data.get("item", {})
+	var delta := int(row_data.get("delta", 0))
+	var row := HBoxContainer.new()
+	row.name = "ReceiptItemRow_%s" % str(item.get("icon_id", item.get("name", "item")))
+	row.add_theme_constant_override("separation", 10)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var icon = ItemIconScript.new()
+	icon.custom_minimum_size = Vector2(30, 30)
+	icon.configure(str(item.get("icon_id", "")), str(item.get("category", "utility")), palette)
+	icon.accessibility_name = str(item.get("name", "item"))
+	row.add_child(icon)
+	var item_label := _label("%s  %s%d" % [str(item.get("name", "item")), "+" if delta >= 0 else "", delta], 14, _accent_color() if delta >= 0 else _c("muted"))
+	item_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	item_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	item_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(item_label)
+	return row
 
 
 func _animate_dice(dice: Control) -> void:
