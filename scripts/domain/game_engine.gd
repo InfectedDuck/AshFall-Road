@@ -374,7 +374,8 @@ func _resolve_choice_internal(choice_index: int, forced_roll: int = -1, prepared
 	if not preview.get("available", false):
 		return {"error": str(preview.get("reason", "Choice unavailable"))}
 	var changes: Array = []
-	_apply_costs(choice.get("costs", {}), changes)
+	var item_changes: Array = []
+	_apply_costs(choice.get("costs", {}), changes, item_changes)
 	var check: Dictionary = choice.get("check", {})
 	var resolution: Dictionary
 	var outcome_key := "outcome"
@@ -402,14 +403,14 @@ func _resolve_choice_internal(choice_index: int, forced_roll: int = -1, prepared
 	var xp_source := _event_xp_source_id("choice")
 	if not check.is_empty():
 		_tick_temporary_conditions()
-	_apply_outcome(outcome, changes, condition_changes)
+	_apply_outcome(outcome, changes, condition_changes, item_changes)
 	var xp_awards := _event_experience_awards(event, check, resolution, outcome, xp_source)
 	_record_event(event)
-	return _finish_event_result(event, choice, resolution, outcome, changes, condition_changes, xp_awards)
+	return _finish_event_result(event, choice, resolution, outcome, changes, condition_changes, xp_awards, item_changes)
 
 
-func _finish_event_result(event: Dictionary, choice: Dictionary, resolution: Dictionary, outcome: Dictionary, changes: Array, condition_changes: Array = [], xp_awards: Array = []) -> Dictionary:
-	var result := {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Choice")), "resolution": resolution, "outcome_text": _resolved_result_text(outcome, "The road moves on."), "changes": changes, "condition_changes": condition_changes, "xp_awards": xp_awards}
+func _finish_event_result(event: Dictionary, choice: Dictionary, resolution: Dictionary, outcome: Dictionary, changes: Array, condition_changes: Array = [], xp_awards: Array = [], item_changes: Array = []) -> Dictionary:
+	var result := {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Choice")), "resolution": resolution, "outcome_text": _resolved_result_text(outcome, "The road moves on."), "changes": changes, "condition_changes": condition_changes, "item_changes": item_changes, "xp_awards": xp_awards}
 	run_state["last_result"] = result
 	_update_death_state()
 	if str(run_state.get("phase", "")) == "death":
@@ -989,9 +990,10 @@ func start_combat(choice_index: int) -> Dictionary:
 	if combat.is_empty() or adversary.is_empty():
 		return {"error": "Combat definition is incomplete"}
 	var entry_cost_changes: Array = []
-	_apply_costs(choice.get("costs", {}), entry_cost_changes)
+	var entry_cost_items: Array = []
+	_apply_costs(choice.get("costs", {}), entry_cost_changes, entry_cost_items)
 	var maximum := int(adversary.get("combat", {}).get("max_health", 1))
-	run_state["combat_state"] = {"event_id": str(event.get("id", "")), "choice_index": choice_index, "adversary_id": adversary_id, "encounter_id": _event_xp_source_id("combat:%s" % adversary_id), "enemy_health": maximum, "enemy_max_health": maximum, "round": 0, "guarded": false, "next_attack_multiplier": 1.0, "exposed": false, "can_flee": bool(combat.get("can_flee", true)), "entry_cost_changes": entry_cost_changes, "log": [{"kind": "system", "text": "%s closes in. Combat begins." % adversary.get("name", "Enemy")}], "last_round": {}}
+	run_state["combat_state"] = {"event_id": str(event.get("id", "")), "choice_index": choice_index, "adversary_id": adversary_id, "encounter_id": _event_xp_source_id("combat:%s" % adversary_id), "enemy_health": maximum, "enemy_max_health": maximum, "round": 0, "guarded": false, "next_attack_multiplier": 1.0, "exposed": false, "can_flee": bool(combat.get("can_flee", true)), "entry_cost_changes": entry_cost_changes, "entry_cost_items": entry_cost_items, "log": [{"kind": "system", "text": "%s closes in. Combat begins." % adversary.get("name", "Enemy")}], "last_round": {}}
 	run_state["phase"] = "combat"
 	NarrativeCombat.initialize(self)
 	return {"combat_started": true}
@@ -1230,7 +1232,7 @@ func _resolve_flee(round_result: Dictionary) -> bool:
 		var flee_changes: Array = run_state["combat_state"].get("entry_cost_changes", []).duplicate()
 		flee_changes.append("Fatigue +5")
 		flee_changes.append("No combat XP")
-		run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": "You escape the fight without spoils.", "changes": flee_changes, "xp_awards": xp_awards}
+		run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": "You escape the fight without spoils.", "changes": flee_changes, "item_changes": run_state["combat_state"].get("entry_cost_items", []).duplicate(), "xp_awards": xp_awards}
 		run_state["combat_state"] = {}
 		run_state["phase"] = "result"
 		round_result["flee_success"] = true
@@ -1247,9 +1249,10 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 	var encounter_id := str(run_state["combat_state"].get("encounter_id", _event_xp_source_id("combat:%s" % adversary_id)))
 	var outcome: Dictionary = choice.get("critical_victory", choice.get("victory", {})) if critical_kill else choice.get("victory", {})
 	var changes: Array = run_state["combat_state"].get("entry_cost_changes", []).duplicate()
+	var item_changes: Array = run_state["combat_state"].get("entry_cost_items", []).duplicate()
 	var condition_changes: Array = []
-	_apply_outcome(outcome, changes, condition_changes)
-	_apply_victory_loot(adversary, changes)
+	_apply_outcome(outcome, changes, condition_changes, item_changes)
+	_apply_victory_loot(adversary, changes, item_changes)
 	var xp_awards: Array = []
 	_append_xp_award(xp_awards, award_experience(int(adversary.get("xp_reward", 0)), "%s defeated" % str(adversary.get("name", "Enemy")), "%s:victory" % encounter_id))
 	for award: Variant in _event_experience_awards(event, {}, {}, outcome, encounter_id):
@@ -1262,7 +1265,7 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 	if int(round_result.get("combat_rules_version", 1)) == NarrativeCombat.VERSION:
 		resolution["success_chance"] = int(round_result["chance"])
 		resolution["required_roll"] = int(round_result["required_roll"])
-	run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": _resolved_result_text(outcome, "The enemy falls."), "changes": changes, "condition_changes": condition_changes, "combat_log": run_state["combat_state"].get("log", []).duplicate(true), "xp_awards": xp_awards}
+	run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": _resolved_result_text(outcome, "The enemy falls."), "changes": changes, "condition_changes": condition_changes, "item_changes": item_changes, "combat_log": run_state["combat_state"].get("log", []).duplicate(true), "xp_awards": xp_awards}
 	run_state["combat_state"] = {}
 	round_result["enemy_defeated"] = true
 	if bool(outcome.get("victory", false)):
@@ -1280,7 +1283,7 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 const VICTORY_LOOT_CHANCE := 40
 
 
-func _apply_victory_loot(adversary: Dictionary, changes: Array) -> void:
+func _apply_victory_loot(adversary: Dictionary, changes: Array, item_changes: Array = []) -> void:
 	var rolled := {}
 	for loot_id: Variant in adversary.get("loot", []):
 		if str(loot_id) == "" or not content.items.has(str(loot_id)):
@@ -1290,7 +1293,7 @@ func _apply_victory_loot(adversary: Dictionary, changes: Array) -> void:
 	if rolled.is_empty():
 		return
 	var resolved_text := _resolved_outcome_text
-	_apply_outcome({"items": rolled}, changes)
+	_apply_outcome({"items": rolled}, changes, [], item_changes)
 	_resolved_outcome_text = resolved_text
 
 
@@ -1682,18 +1685,19 @@ func _pressure_penalty() -> int:
 	return penalty
 
 
-func _apply_costs(costs: Dictionary, changes: Array = []) -> void:
+func _apply_costs(costs: Dictionary, changes: Array = [], item_changes: Array = []) -> void:
 	for item_id: Variant in costs.get("items", {}):
 		var applied := _change_item(str(item_id), -int(costs["items"][item_id]))
 		if applied != 0:
 			changes.append("%s %d" % [content.get_item(str(item_id)).get("name", item_id), applied])
+			item_changes.append({"id": str(item_id), "delta": applied})
 	for pressure: Variant in costs.get("pressures", {}):
 		var description := _apply_legacy_pressure(str(pressure), int(costs["pressures"][pressure]), "")
 		if description != "":
 			changes.append(description)
 
 
-func _apply_outcome(outcome: Dictionary, changes: Array, condition_changes: Array = []) -> void:
+func _apply_outcome(outcome: Dictionary, changes: Array, condition_changes: Array = [], item_changes: Array = []) -> void:
 	# Resolved before anything is applied, so a variant reads the flags the
 	# survivor arrived with rather than the ones this outcome is about to write.
 	# Routing is resolved in the same breath as the text, from the same flags, so
@@ -1723,6 +1727,7 @@ func _apply_outcome(outcome: Dictionary, changes: Array, condition_changes: Arra
 		var applied := _change_item(item_id, int(outcome["items"][item_id]))
 		if applied != 0:
 			changes.append("%s %s%d" % [content.get_item(item_id).get("name", item_id), "+" if applied >= 0 else "", applied])
+			item_changes.append({"id": item_id, "delta": applied})
 	for condition_id: Variant in outcome.get("add_conditions", []):
 		if str(condition_id) not in run_state["survivor"]["conditions"]:
 			_apply_condition(str(condition_id))
