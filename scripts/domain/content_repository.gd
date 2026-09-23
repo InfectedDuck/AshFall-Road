@@ -1,6 +1,23 @@
 class_name ContentRepository
 extends RefCounted
 
+const OUTCOME_KEYS := ["success", "failure", "critical_success", "critical_failure", "outcome", "victory", "critical_victory"]
+
+## Scene-role budget contract from NARRATIVE_REFINEMENT_PLAN section 3. An event
+## without a scene_role is compact, and the compact band is deliberately wider
+## than the old 60-90 / 30-50 rule, so every passage authored under that rule
+## still validates without being touched.
+const DEFAULT_SCENE_ROLE := "compact"
+const SCENE_ROLE_BANDS := {
+	"micro": {"body_min": 35, "body_max": 55, "outcome_min": 15, "outcome_max": 30},
+	"compact": {"body_min": 60, "body_max": 100, "outcome_min": 30, "outcome_max": 65},
+	"substantial": {"body_min": 110, "body_max": 180, "outcome_min": 60, "outcome_max": 110},
+	"chapter": {"body_min": 180, "body_max": 280, "outcome_min": 100, "outcome_max": 180},
+	"finale": {"body_min": 180, "body_max": 280, "outcome_min": 150, "outcome_max": 260},
+}
+
+static var _whitespace_pattern: RegEx = null
+
 var regions: Dictionary = {}
 var events: Dictionary = {}
 var items: Dictionary = {}
@@ -35,6 +52,7 @@ func reload() -> void:
 	if living_road_enabled:
 		_merge_index(events, "res://data/living_road_events.json", "events")
 		_apply_source_flag_patches("res://data/living_road_events.json")
+		_merge_index(events, "res://data/betrayal_events.json", "events")
 		for event_id: String in events:
 			if bool(events[event_id].get("living_road_callback", false)):
 				polished_event_ids[event_id] = true
@@ -183,6 +201,7 @@ func validate_all() -> PackedStringArray:
 		var opening_safe_count := 0
 		var opening_resource_count := 0
 		var opening_equipment_count := 0
+		var opening_hook_count := 0
 		for event_id: Variant in region.get("event_pool", []):
 			if not events.has(str(event_id)):
 				errors.append("Region '%s' references missing event '%s'" % [region_id, event_id])
@@ -198,17 +217,27 @@ func validate_all() -> PackedStringArray:
 					opening_resource_count += 1
 				if "opening_equipment" in event_tags:
 					opening_equipment_count += 1
+				if "opening_hook" in event_tags:
+					opening_hook_count += 1
 		if supply_count < 1:
 			errors.append("Region '%s' needs a supply opportunity" % region_id)
 		if combat_opportunity_count < 1:
 			errors.append("Region '%s' needs a combat opportunity" % region_id)
 		if int(region.get("order", -1)) == 0 and (opening_safe_count < 2 or opening_resource_count < 1 or opening_equipment_count < 1):
 			errors.append("Opening region needs at least two safe events plus resource and equipment teaching roles")
+		if living_road_enabled and int(region.get("order", -1)) == 0 and opening_hook_count != 3:
+			errors.append("Expanded opening region needs exactly three opening_hook events")
+	var produced_flags := _produced_flags()
 	for event_id: String in events:
 		var event: Dictionary = events[event_id]
-		var introduction_words := _word_count(str(event.get("body", "")))
-		if introduction_words < 60 or introduction_words > 90:
-			errors.append("Event '%s' introduction must contain 60-90 words (found %d)" % [event_id, introduction_words])
+		if event.has("scene_role") and not SCENE_ROLE_BANDS.has(str(event["scene_role"])):
+			errors.append("Event '%s' uses unknown scene role '%s'" % [event_id, event["scene_role"]])
+		var role := scene_role(event)
+		var band: Dictionary = scene_role_band(role)
+		var introduction_words := word_count(str(event.get("body", "")))
+		if introduction_words < int(band["body_min"]) or introduction_words > int(band["body_max"]):
+			errors.append("Event '%s' introduction must contain %d-%d words for a %s scene (found %d)" % [event_id, int(band["body_min"]), int(band["body_max"]), role, introduction_words])
+		_validate_passage_variants(event_id, "introduction", event, "body_variants", int(band["body_min"]), int(band["body_max"]), produced_flags, errors)
 		var choices: Array = event.get("choices", [])
 		if choices.size() < 2 or choices.size() > 4:
 			errors.append("Event '%s' must have two to four choices" % event_id)
@@ -217,7 +246,7 @@ func validate_all() -> PackedStringArray:
 		if event.has("adversary_id") and not adversaries.has(str(event["adversary_id"])):
 			errors.append("Event '%s' references missing adversary" % event_id)
 		for choice: Variant in choices:
-			_validate_choice(event_id, choice, errors)
+			_validate_choice(event_id, choice, role, produced_flags, errors)
 	var treatable_conditions: Dictionary = {}
 	for item_id: String in items:
 		var item: Dictionary = items[item_id]
@@ -236,6 +265,8 @@ func validate_all() -> PackedStringArray:
 				errors.append("Weapon '%s' needs a non-negative ammo_per_attack" % item_id)
 			if str(item.get("ammo_type", "")) != "" and int(combat.get("ammo_per_attack", 0)) <= 0:
 				errors.append("Ranged weapon '%s' must consume ammunition" % item_id)
+			if item.has("affinity_min") and (int(item.get("affinity_min", 0)) < 2 or int(item.get("affinity_min", 0)) > 6):
+				errors.append("Weapon '%s' affinity_min must be a base stat from 2 to 6" % item_id)
 		var effects: Dictionary = item.get("effects", {})
 		for condition_id: Variant in effects.get("remove_conditions", []):
 			var removed_id := str(condition_id)
@@ -323,12 +354,13 @@ func _validate_polished_prose(errors: PackedStringArray) -> void:
 	for event_id: String in polished_event_ids:
 		if not events.has(event_id):
 			continue
-		var passages: Array[String] = [str(events[event_id].get("body", ""))]
-		for choice: Dictionary in events[event_id].get("choices", []):
-			for outcome_key: String in ["success", "failure", "critical_success", "critical_failure", "outcome", "victory", "critical_victory"]:
-				if choice.has(outcome_key):
-					passages.append(str(choice[outcome_key].get("text", "")))
-		for passage: String in passages:
+		# Sentences are pooled per event before they are compared. Only one variant
+		# of a passage is ever shown, so four variants of one scene may open on the
+		# same establishing sentence; a sentence shared with a different event is
+		# the repetition this check has always caught. Prohibited filler has no
+		# such exemption and is read in every variant.
+		var event_sentences: Dictionary = {}
+		for passage: String in _event_passages(events[event_id]):
 			var lowered := passage.to_lower()
 			for phrase: String in forbidden:
 				if phrase in lowered:
@@ -337,10 +369,13 @@ func _validate_polished_prose(errors: PackedStringArray) -> void:
 				var normalized := " ".join(match_result.get_string().strip_edges().to_lower().split(" ", false))
 				if normalized.split(" ", false).size() < 6:
 					continue
-				if seen_sentences.has(normalized):
-					errors.append("Polished prose repeats a sentence in '%s' and '%s': %s" % [seen_sentences[normalized], event_id, match_result.get_string().strip_edges()])
-				else:
-					seen_sentences[normalized] = event_id
+				if not event_sentences.has(normalized):
+					event_sentences[normalized] = match_result.get_string().strip_edges()
+		for normalized: String in event_sentences:
+			if seen_sentences.has(normalized):
+				errors.append("Polished prose repeats a sentence in '%s' and '%s': %s" % [seen_sentences[normalized], event_id, event_sentences[normalized]])
+			else:
+				seen_sentences[normalized] = event_id
 
 
 func _validate_living_road(errors: PackedStringArray) -> void:
@@ -361,8 +396,11 @@ func _validate_living_road(errors: PackedStringArray) -> void:
 		var eligibility: Dictionary = event.get("eligibility", {})
 		if not bool(event.get("global", false)) or not bool(event.get("unique", false)):
 			errors.append("Living Road event '%s' must be global and unique" % event_id)
-		if region_index < 1 or int(eligibility.get("min_region_index", -1)) != region_index or int(eligibility.get("max_region_index", -1)) != region_index:
-			errors.append("Living Road event '%s' needs one exact callback region" % event_id)
+		# A chapter opens in its own region and stays open for one more, so a
+		# chapter that could not be scheduled on time still lands instead of taking
+		# the rest of its thread with it (N04 focused scheduling).
+		if region_index < 1 or int(eligibility.get("min_region_index", -1)) != region_index or int(eligibility.get("max_region_index", -1)) != region_index + 1:
+			errors.append("Living Road event '%s' needs its callback region plus exactly one region of slack" % event_id)
 		if consumed_flag not in eligibility.get("forbids_flags", []):
 			errors.append("Living Road event '%s' does not enforce the regional callback limit" % event_id)
 		for choice: Dictionary in event.get("choices", []):
@@ -431,7 +469,7 @@ func _validate_item_acquisition(errors: PackedStringArray) -> void:
 			errors.append("Item '%s' has no starting or authored acquisition route" % item_id)
 
 
-func _validate_choice(event_id: String, choice: Variant, errors: PackedStringArray) -> void:
+func _validate_choice(event_id: String, choice: Variant, role: String, produced_flags: Dictionary, errors: PackedStringArray) -> void:
 	if typeof(choice) != TYPE_DICTIONARY:
 		errors.append("Event '%s' contains a non-object choice" % event_id)
 		return
@@ -448,27 +486,60 @@ func _validate_choice(event_id: String, choice: Variant, errors: PackedStringArr
 			errors.append("Event '%s' combat choice references missing adversary '%s'" % [event_id, adversary_id])
 		if not choice.has("victory"):
 			errors.append("Event '%s' combat choice needs a victory outcome" % event_id)
-	for item_id: Variant in choice.get("requires", {}).get("items", {}).keys():
-		if not items.has(str(item_id)):
-			errors.append("Event '%s' requires missing item '%s'" % [event_id, item_id])
+	_validate_choice_requirements(event_id, choice.get("requires", {}), produced_flags, errors)
 	for item_id: Variant in choice.get("costs", {}).get("items", {}).keys():
 		if not items.has(str(item_id)):
 			errors.append("Event '%s' costs missing item '%s'" % [event_id, item_id])
 	for outcome_key: String in ["success", "failure", "critical_success", "critical_failure", "outcome"]:
 		if choice.has(outcome_key):
-			_validate_outcome(event_id, choice[outcome_key], errors)
+			_validate_outcome(event_id, choice[outcome_key], role, produced_flags, errors)
 	for outcome_key: String in ["victory", "critical_victory"]:
 		if choice.has(outcome_key):
-			_validate_outcome(event_id, choice[outcome_key], errors)
+			_validate_outcome(event_id, choice[outcome_key], role, produced_flags, errors)
 
 
-func _validate_outcome(event_id: String, outcome: Variant, errors: PackedStringArray) -> void:
+## Gating is a mechanical contract, so every part of it is checked: a flag the
+## content never writes, an unknown stat, or a condition that does not exist all
+## produce a choice the player can never legally take.
+func _validate_choice_requirements(event_id: String, requirements: Variant, produced_flags: Dictionary, errors: PackedStringArray) -> void:
+	if typeof(requirements) != TYPE_DICTIONARY:
+		errors.append("Event '%s' contains a non-object choice requirement" % event_id)
+		return
+	for item_id: Variant in requirements.get("items", {}).keys():
+		if not items.has(str(item_id)):
+			errors.append("Event '%s' requires missing item '%s'" % [event_id, item_id])
+	for requirement_key: String in ["flags", "any_flags", "forbids_flags"]:
+		if not requirements.has(requirement_key):
+			continue
+		if typeof(requirements[requirement_key]) != TYPE_ARRAY:
+			errors.append("Event '%s' choice requirement '%s' must be an array" % [event_id, requirement_key])
+			continue
+		for flag: Variant in requirements[requirement_key]:
+			if not produced_flags.has(str(flag)):
+				errors.append("Event '%s' choice requirement '%s' references flag '%s' that no outcome writes" % [event_id, requirement_key, flag])
+	for stat: Variant in requirements.get("stats", {}).keys():
+		if str(stat) not in GameEngine.STATS:
+			errors.append("Event '%s' choice requires unknown stat '%s'" % [event_id, stat])
+		elif int(requirements["stats"][stat]) <= 0:
+			errors.append("Event '%s' choice gates on '%s' at a non-positive value" % [event_id, stat])
+	for condition_id: Variant in requirements.get("forbids_conditions", []):
+		if not conditions.has(str(condition_id)):
+			errors.append("Event '%s' choice forbids missing condition '%s'" % [event_id, condition_id])
+	if requirements.has("reason") and str(requirements["reason"]).strip_edges().is_empty():
+		errors.append("Event '%s' choice supplies an empty lock reason" % event_id)
+	if requirements.has("hidden_when_locked") and typeof(requirements["hidden_when_locked"]) != TYPE_BOOL:
+		errors.append("Event '%s' choice hidden_when_locked must be a boolean" % event_id)
+
+
+func _validate_outcome(event_id: String, outcome: Variant, role: String, produced_flags: Dictionary, errors: PackedStringArray) -> void:
 	if typeof(outcome) != TYPE_DICTIONARY:
 		errors.append("Event '%s' contains an invalid outcome" % event_id)
 		return
-	var outcome_words := _word_count(str(outcome.get("text", "")))
-	if outcome_words < 30 or outcome_words > 50:
-		errors.append("Event '%s' outcome text must contain 30-50 words (found %d)" % [event_id, outcome_words])
+	var band: Dictionary = scene_role_band(role)
+	var outcome_words := word_count(str(outcome.get("text", "")))
+	if outcome_words < int(band["outcome_min"]) or outcome_words > int(band["outcome_max"]):
+		errors.append("Event '%s' outcome text must contain %d-%d words for a %s scene (found %d)" % [event_id, int(band["outcome_min"]), int(band["outcome_max"]), role, outcome_words])
+	_validate_passage_variants(event_id, "outcome", outcome, "variants", int(band["outcome_min"]), int(band["outcome_max"]), produced_flags, errors, true)
 	for item_id: Variant in outcome.get("items", {}).keys():
 		if not items.has(str(item_id)):
 			errors.append("Event '%s' outcome references missing item '%s'" % [event_id, item_id])
@@ -479,6 +550,94 @@ func _validate_outcome(event_id: String, outcome: Variant, errors: PackedStringA
 		errors.append("Event '%s' points to missing follow-up '%s'" % [event_id, outcome["next_event"]])
 	if outcome.has("experience") and (typeof(outcome["experience"]) != TYPE_INT or int(outcome["experience"]) < 0 or int(outcome["experience"]) > 20):
 		errors.append("Event '%s' outcome experience must be an integer from 0 to 20" % event_id)
+
+
+## A conditional passage is prose with a condition attached, so it is held to the
+## same budget as the passage it replaces. The plain body/text is the required
+## fallback, every variant needs at least one flag to key on, and a variant that
+## waits on a flag no outcome ever writes is dead text rather than a variant.
+##
+## An outcome variant may also carry a next_event and route the survivor
+## somewhere the plain outcome does not. That follow-up is held to the same rule
+## as the outcome's own: it must name an event this configuration loads. A
+## variant that routes and says nothing new needs no text of its own, because
+## the outcome's text stands in for it, so the word band applies only to a
+## variant that actually replaces the passage.
+func _validate_passage_variants(event_id: String, label: String, passage: Dictionary, variants_key: String, minimum_words: int, maximum_words: int, produced_flags: Dictionary, errors: PackedStringArray, routing_allowed: bool = false) -> void:
+	if not passage.has(variants_key):
+		return
+	if typeof(passage[variants_key]) != TYPE_ARRAY:
+		errors.append("Event '%s' %s '%s' must be an array" % [event_id, label, variants_key])
+		return
+	for variant: Variant in passage[variants_key]:
+		if typeof(variant) != TYPE_DICTIONARY:
+			errors.append("Event '%s' %s contains a non-object variant" % [event_id, label])
+			continue
+		var required_any: Variant = variant.get("requires_any_flags", [])
+		if typeof(required_any) != TYPE_ARRAY or (required_any as Array).is_empty():
+			errors.append("Event '%s' %s variant needs a non-empty requires_any_flags" % [event_id, label])
+		else:
+			for flag: Variant in required_any:
+				if not produced_flags.has(str(flag)):
+					errors.append("Event '%s' %s variant requires flag '%s' that no outcome writes" % [event_id, label, flag])
+		var declares_route: bool = (variant as Dictionary).has("next_event")
+		if declares_route and not routing_allowed:
+			errors.append("Event '%s' %s variant cannot declare next_event" % [event_id, label])
+		var routes: bool = routing_allowed and declares_route
+		if routes and not events.has(str(variant["next_event"])):
+			errors.append("Event '%s' %s variant points to missing follow-up '%s'" % [event_id, label, variant["next_event"]])
+		if routes and not (variant as Dictionary).has("text"):
+			continue
+		var variant_words := word_count(str(variant.get("text", "")))
+		if variant_words < minimum_words or variant_words > maximum_words:
+			errors.append("Event '%s' %s variant must contain %d-%d words (found %d)" % [event_id, label, minimum_words, maximum_words, variant_words])
+
+
+## Every authored passage of one event: the introduction, its conditional
+## variants, and each outcome with the variants that stand in for it. A variant
+## is prose and is read by every prose check that reads the passage it replaces.
+func _event_passages(event: Dictionary) -> Array[String]:
+	var passages: Array[String] = [str(event.get("body", ""))]
+	for variant: Variant in event.get("body_variants", []):
+		if typeof(variant) == TYPE_DICTIONARY:
+			passages.append(str(variant.get("text", "")))
+	for choice: Variant in event.get("choices", []):
+		if typeof(choice) != TYPE_DICTIONARY:
+			continue
+		for outcome_key: String in OUTCOME_KEYS:
+			if typeof(choice.get(outcome_key, null)) != TYPE_DICTIONARY:
+				continue
+			passages.append(str(choice[outcome_key].get("text", "")))
+			for variant: Variant in choice[outcome_key].get("variants", []):
+				if typeof(variant) == TYPE_DICTIONARY:
+					passages.append(str(variant.get("text", "")))
+	return passages
+
+
+## Every flag the loaded configuration can ever hold. Requirements and passage
+## variants are checked against this set, so a card cannot gate on a flag the
+## build has no way of writing.
+func _produced_flags() -> Dictionary:
+	var produced: Dictionary = {}
+	for event: Dictionary in events.values():
+		for choice: Variant in event.get("choices", []):
+			if typeof(choice) != TYPE_DICTIONARY:
+				continue
+			for outcome_key: String in OUTCOME_KEYS:
+				if typeof(choice.get(outcome_key, null)) != TYPE_DICTIONARY:
+					continue
+				for flag: Variant in choice[outcome_key].get("add_flags", []):
+					produced[str(flag)] = true
+	return produced
+
+
+static func scene_role(event: Dictionary) -> String:
+	var role := str(event.get("scene_role", "")).strip_edges()
+	return role if SCENE_ROLE_BANDS.has(role) else DEFAULT_SCENE_ROLE
+
+
+static func scene_role_band(role: String) -> Dictionary:
+	return SCENE_ROLE_BANDS.get(role, SCENE_ROLE_BANDS[DEFAULT_SCENE_ROLE])
 
 
 func event_has_combat_choice(event: Dictionary) -> bool:
@@ -534,5 +693,10 @@ func get_discovery_entries() -> Dictionary:
 	return discovery_entries
 
 
-func _word_count(value: String) -> int:
-	return value.split(" ", false).size()
+## Words are separated by any whitespace, not only by a single space. Splitting
+## on " " alone merged the words on either side of a \n\n paragraph break
+## into one, so an authored passage measured shorter than it reads.
+static func word_count(value: String) -> int:
+	if _whitespace_pattern == null:
+		_whitespace_pattern = RegEx.create_from_string("\\s+")
+	return _whitespace_pattern.sub(value, " ", true).split(" ", false).size()

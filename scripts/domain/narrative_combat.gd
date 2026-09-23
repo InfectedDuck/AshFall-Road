@@ -5,6 +5,9 @@ extends RefCounted
 const Legacy = preload("res://scripts/domain/combat_resolver.gd")
 const XP = preload("res://scripts/domain/experience_rules.gd")
 const VERSION := 2
+## Every unresolved exchange is exertion, including successful defenses and
+## waiting through recovery. Long fights must reach the shared strain penalties.
+const FATIGUE_PER_EXCHANGE := 3
 const BLOCK_ARMOR := [0, 0, 5, 5, 10, 10]
 const DODGE_ARMOR := [0, 0, 5, 10, 20, 25]
 const ACTIONS := ["attack", "block", "dodge", "use_item", "flee", "opportunity"]
@@ -47,16 +50,19 @@ static func weapon_profile(game) -> Dictionary:
 	var ammo := str(item.get("ammo_type", ""))
 	var needed := int(item.get("combat", {}).get("ammo_per_attack", 0))
 	var loaded: bool = ammo == "" or game.get_item_quantity(ammo) >= needed
-	var result := Legacy.weapon_profile(item, game.combat_effective_stats(), loaded)
+	var base_stats: Dictionary = game.run_state.get("survivor", {}).get("stats", {})
+	var result := Legacy.weapon_profile(item, game.combat_effective_stats(), loaded, base_stats)
 	var armed: bool = loaded and not item.get("combat", {}).is_empty()
 	result["item_id"] = weapon_id if armed else ""
 	result["unloaded"] = not loaded
 	result["equipped_name"] = str(item.get("name", "Unarmed"))
 	result["family"] = str(item.get("signature", "unarmed")) if armed else "unarmed"
-	result["mastered"] = int(game.run_state.get("survivor", {}).get("stats", {}).get(str(result["attack_stat"]), 0)) >= 6
+	result["mastered"] = int(base_stats.get(str(result["attack_stat"]), 0)) >= 6
 	result["opportunity_name"] = str(item.get("opportunity_name", "Desperate Strike")) if armed else "Desperate Strike"
 	var base: Dictionary = item["combat"] if armed else Legacy.UNARMED
 	var multiplier := Legacy.stat_damage_multiplier(int(result["stat_value"]))
+	if armed and bool(result.get("affinity", {}).get("required", false)) and not bool(result["affinity"].get("met", true)):
+		multiplier *= Legacy.AFFINITY_DAMAGE_FACTOR
 	result["unrounded_min"] = float(base["damage_min"]) * multiplier
 	result["unrounded_max"] = float(base["damage_max"]) * multiplier
 	return result
@@ -73,6 +79,7 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 	if action not in ACTIONS:
 		result.merge({"available": false, "reason": "Unknown combat action."}, true)
 	var effects: Array = result["effects"]
+	effects.append("If combat continues: Fatigue +%d (up to 100)." % FATIGUE_PER_EXCHANGE)
 	var tested_stat := "strength" if action == "block" else "agility" if action in ["dodge", "flee"] else str(profile["attack_stat"])
 	result["effective_stat"] = int(stats.get(tested_stat, 0))
 	result["stat"] = tested_stat
@@ -87,6 +94,10 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		var bonus := float(move.get("bonus", 0.0))
 		var family := str(profile["family"])
 		var mastered := bool(profile["mastered"])
+		var affinity: Dictionary = profile.get("affinity", {})
+		if bool(affinity.get("required", false)) and not bool(affinity.get("met", true)):
+			chance -= float(Legacy.AFFINITY_CHANCE_PENALTY)
+			effects.append("Unwieldy: needs base %s %d (you have %d) • −%d accuracy, −25%% damage." % [str(affinity.get("stat", "")).capitalize(), int(affinity.get("minimum", 0)), int(affinity.get("have", 0)), Legacy.AFFINITY_CHANCE_PENALTY])
 		if bool(state.get("riposte", false)):
 			chance += 10.0
 			bonus += (0.65 if mastered else 0.5) if family == "counter" else 0.25
@@ -288,9 +299,11 @@ static func resolve(game) -> Dictionary:
 		elif not enemy_attacks:
 			game._add_combat_entry(result, "system", passage(game, pending, "charge" if str(move["id"]) == "charge" else "recover", profile), 0, "enemy")
 	if str(game.run_state["phase"]) == "combat":
-		if int(state["round"]) % 3 == 0:
-			game._change_pressure("fatigue", 2)
-			game._add_combat_entry(result, "system", "Extended combat • Fatigue +2")
+		var fatigue_before := int(game.run_state["survivor"]["pressures"].get("fatigue", 0))
+		game._change_pressure("fatigue", FATIGUE_PER_EXCHANGE)
+		var fatigue_gained := int(game.run_state["survivor"]["pressures"]["fatigue"]) - fatigue_before
+		if fatigue_gained > 0:
+			game._add_combat_entry(result, "system", "Combat exertion • Fatigue +%d" % fatigue_gained)
 		if not bool(state["opportunity_used"]) and not bool(state["opportunity_ready"]) and (action == "attack" or bool(result["defense_success"])):
 			if int(pending["opportunity_roll"]) <= int(state["opportunity_chance"]):
 				state["opportunity_ready"] = true

@@ -31,9 +31,16 @@ const SURVIVOR_PORTRAIT_IDS := ["survivor_1", "survivor_2", "survivor_3", "survi
 const OPENING_SAFE_TAG := "opening_safe"
 const OPENING_RESOURCE_TAG := "opening_resource"
 const OPENING_EQUIPMENT_TAG := "opening_equipment"
+const OPENING_HOOK_TAG := "opening_hook"
+const EARLY_SOURCE_EVENT_IDS := ["outskirts_child_radio", "outskirts_siren"]
 
 var content
 var run_state: Dictionary = {}
+
+## Prose resolved for the outcome currently being applied. It is derived from the
+## run rather than part of it: the result screen and every save read the finished
+## string out of last_result, so no run-state field changes.
+var _resolved_outcome_text := ""
 
 
 func _init(repository) -> void:
@@ -149,6 +156,53 @@ func current_region() -> Dictionary:
 
 func current_event() -> Dictionary:
 	return content.get_event(str(run_state.get("current_event_id", "")))
+
+
+## An event introduction, with any conditional variant applied. A variant matches
+## when the run holds any of its flags, the first match in authored order wins,
+## and the plain body is the fallback. Resolution reads flags only: it consumes
+## no RNG and mutates nothing, so reopening a passage returns the same words.
+func resolve_body(event: Dictionary) -> String:
+	return _resolve_passage_text(event, "body", "body_variants")
+
+
+## An outcome passage, with any conditional variant applied. Callers resolve this
+## before the outcome writes its own flags, so a variant always describes the
+## situation the survivor arrived in.
+func resolve_outcome_text(outcome: Dictionary) -> String:
+	return _resolve_passage_text(outcome, "text", "variants")
+
+
+## The follow-up an outcome routes to, with any conditional variant applied. A
+## matched variant may carry its own next_event and send the survivor somewhere
+## the plain outcome does not; a matched variant without one, and a run no
+## variant matches, both keep the outcome's own follow-up. An empty string means
+## the outcome routes nowhere and the scheduler picks the next scene.
+## Resolved from flags alone, alongside the text and against the same flags.
+func resolve_outcome_next_event(outcome: Dictionary) -> String:
+	var variant := _matching_variant(outcome, "variants")
+	if variant.has("next_event"):
+		return str(variant["next_event"])
+	return str(outcome.get("next_event", ""))
+
+
+func _resolve_passage_text(passage: Dictionary, default_key: String, variants_key: String) -> String:
+	var default_text := str(passage.get(default_key, ""))
+	return str(_matching_variant(passage, variants_key).get("text", default_text))
+
+
+## The first variant the run already qualifies for, in authored order, or an
+## empty dictionary when none matches. Reading flags is all it does: no RNG, no
+## mutation, so text and routing resolved from it stay in step.
+func _matching_variant(passage: Dictionary, variants_key: String) -> Dictionary:
+	var held: Array = run_state.get("flags", [])
+	for variant: Variant in passage.get(variants_key, []):
+		if typeof(variant) != TYPE_DICTIONARY:
+			continue
+		for flag: Variant in variant.get("requires_any_flags", []):
+			if str(flag) in held:
+				return variant
+	return {}
 
 
 func experience_progress() -> Dictionary:
@@ -317,7 +371,8 @@ func _resolve_choice_internal(choice_index: int, forced_roll: int = -1, prepared
 	var preview := get_choice_preview(choice)
 	if not preview.get("available", false):
 		return {"error": str(preview.get("reason", "Choice unavailable"))}
-	_apply_costs(choice.get("costs", {}))
+	var changes: Array = []
+	_apply_costs(choice.get("costs", {}), changes)
 	var check: Dictionary = choice.get("check", {})
 	var resolution: Dictionary
 	var outcome_key := "outcome"
@@ -341,7 +396,6 @@ func _resolve_choice_internal(choice_index: int, forced_roll: int = -1, prepared
 			resolution = D20Resolver.resolve_percentage(roll, stat_value, effective_stat, difficulty, stored_modifiers, stored_chance)
 		outcome_key = str(resolution["outcome"])
 	var outcome: Dictionary = choice.get(outcome_key, choice.get("success" if resolution.get("succeeded", false) else "failure", {}))
-	var changes: Array = []
 	var condition_changes: Array = []
 	var xp_source := _event_xp_source_id("choice")
 	if not check.is_empty():
@@ -353,7 +407,7 @@ func _resolve_choice_internal(choice_index: int, forced_roll: int = -1, prepared
 
 
 func _finish_event_result(event: Dictionary, choice: Dictionary, resolution: Dictionary, outcome: Dictionary, changes: Array, condition_changes: Array = [], xp_awards: Array = []) -> Dictionary:
-	var result := {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Choice")), "resolution": resolution, "outcome_text": str(outcome.get("text", "The road moves on.")), "changes": changes, "condition_changes": condition_changes, "xp_awards": xp_awards}
+	var result := {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Choice")), "resolution": resolution, "outcome_text": _resolved_result_text(outcome, "The road moves on."), "changes": changes, "condition_changes": condition_changes, "xp_awards": xp_awards}
 	run_state["last_result"] = result
 	_update_death_state()
 	if str(run_state.get("phase", "")) == "death":
@@ -484,8 +538,14 @@ func confirm_stat_allocation(proposed_stats: Dictionary) -> Dictionary:
 	if spent > int(run_state.get("unspent_stat_points", 0)):
 		return {"success": false, "text": "That draft spends more points than are available."}
 	var old_hearts := max_hearts_for_grit(int(current.get("grit", 1)))
+	var mastery_unlocked: Array[String] = []
+	var armed_id := str(run_state.get("survivor", {}).get("equipment", {}).get("weapon", ""))
+	var armed_attack := str(content.get_item(armed_id).get("combat", {}).get("attack_stat", ""))
+	var armed_old := int(current.get(armed_attack, 0)) if armed_attack != "" else 0
 	for stat: String in STATS:
 		current[stat] = int(proposed_stats.get(stat, current.get(stat, 0)))
+	if armed_attack != "" and armed_old < 6 and int(current.get(armed_attack, 0)) >= 6:
+		mastery_unlocked.append(armed_attack)
 	var new_hearts := max_hearts_for_grit(int(current.get("grit", 1)))
 	var gained_hearts := maxi(0, new_hearts - old_hearts)
 	if gained_hearts > 0:
@@ -494,7 +554,7 @@ func confirm_stat_allocation(proposed_stats: Dictionary) -> Dictionary:
 		vitals["max_health"] = new_hearts * HP_PER_HEART
 		vitals["health"] = mini(int(vitals["max_health"]), int(vitals.get("health", 0)) + gained_hearts * HP_PER_HEART)
 	run_state["unspent_stat_points"] = int(run_state.get("unspent_stat_points", 0)) - spent
-	return {"success": true, "spent": spent, "heart_gain": gained_hearts, "text": "%d stat point%s committed." % [spent, "" if spent == 1 else "s"]}
+	return {"success": true, "spent": spent, "heart_gain": gained_hearts, "mastery_unlocked": mastery_unlocked, "text": "%d stat point%s committed." % [spent, "" if spent == 1 else "s"]}
 
 
 func _award_checkpoint_experience() -> Dictionary:
@@ -707,7 +767,7 @@ func get_player_weapon_profile() -> Dictionary:
 	var ammo_type := str(item.get("ammo_type", ""))
 	var ammunition_needed := maxi(0, int(item.get("combat", {}).get("ammo_per_attack", 0)))
 	var loaded := ammo_type == "" or get_item_quantity(ammo_type) >= ammunition_needed
-	return CombatRules.weapon_profile(item, _effective_stats(), loaded)
+	return CombatRules.weapon_profile(item, _effective_stats(), loaded, run_state.get("survivor", {}).get("stats", {}))
 
 
 func summary() -> Dictionary:
@@ -779,9 +839,10 @@ func start_combat(choice_index: int) -> Dictionary:
 	var adversary: Dictionary = content.get_adversary(adversary_id)
 	if combat.is_empty() or adversary.is_empty():
 		return {"error": "Combat definition is incomplete"}
-	_apply_costs(choice.get("costs", {}))
+	var entry_cost_changes: Array = []
+	_apply_costs(choice.get("costs", {}), entry_cost_changes)
 	var maximum := int(adversary.get("combat", {}).get("max_health", 1))
-	run_state["combat_state"] = {"event_id": str(event.get("id", "")), "choice_index": choice_index, "adversary_id": adversary_id, "encounter_id": _event_xp_source_id("combat:%s" % adversary_id), "enemy_health": maximum, "enemy_max_health": maximum, "round": 0, "guarded": false, "next_attack_multiplier": 1.0, "exposed": false, "can_flee": bool(combat.get("can_flee", true)), "log": [{"kind": "system", "text": "%s closes in. Combat begins." % adversary.get("name", "Enemy")}], "last_round": {}}
+	run_state["combat_state"] = {"event_id": str(event.get("id", "")), "choice_index": choice_index, "adversary_id": adversary_id, "encounter_id": _event_xp_source_id("combat:%s" % adversary_id), "enemy_health": maximum, "enemy_max_health": maximum, "round": 0, "guarded": false, "next_attack_multiplier": 1.0, "exposed": false, "can_flee": bool(combat.get("can_flee", true)), "entry_cost_changes": entry_cost_changes, "log": [{"kind": "system", "text": "%s closes in. Combat begins." % adversary.get("name", "Enemy")}], "last_round": {}}
 	run_state["phase"] = "combat"
 	NarrativeCombat.initialize(self)
 	return {"combat_started": true}
@@ -1009,7 +1070,10 @@ func _resolve_flee(round_result: Dictionary) -> bool:
 		if int(run_state.get("region_index", 0)) < content.ordered_regions().size():
 			_append_xp_award(xp_awards, award_experience(ExperienceRules.JOURNEY_XP, "Journey survived", "%s:journey" % encounter_id))
 		_record_event(event)
-		run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": "You escape the fight without spoils.", "changes": ["Fatigue +5", "No combat XP"], "xp_awards": xp_awards}
+		var flee_changes: Array = run_state["combat_state"].get("entry_cost_changes", []).duplicate()
+		flee_changes.append("Fatigue +5")
+		flee_changes.append("No combat XP")
+		run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": "You escape the fight without spoils.", "changes": flee_changes, "xp_awards": xp_awards}
 		run_state["combat_state"] = {}
 		run_state["phase"] = "result"
 		round_result["flee_success"] = true
@@ -1025,9 +1089,10 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 	var adversary: Dictionary = content.get_adversary(adversary_id)
 	var encounter_id := str(run_state["combat_state"].get("encounter_id", _event_xp_source_id("combat:%s" % adversary_id)))
 	var outcome: Dictionary = choice.get("critical_victory", choice.get("victory", {})) if critical_kill else choice.get("victory", {})
-	var changes: Array = []
+	var changes: Array = run_state["combat_state"].get("entry_cost_changes", []).duplicate()
 	var condition_changes: Array = []
 	_apply_outcome(outcome, changes, condition_changes)
+	_apply_victory_loot(adversary, changes)
 	var xp_awards: Array = []
 	_append_xp_award(xp_awards, award_experience(int(adversary.get("xp_reward", 0)), "%s defeated" % str(adversary.get("name", "Enemy")), "%s:victory" % encounter_id))
 	for award: Variant in _event_experience_awards(event, {}, {}, outcome, encounter_id):
@@ -1040,7 +1105,7 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 	if int(round_result.get("combat_rules_version", 1)) == NarrativeCombat.VERSION:
 		resolution["success_chance"] = int(round_result["chance"])
 		resolution["required_roll"] = int(round_result["required_roll"])
-	run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": str(outcome.get("text", "The enemy falls.")), "changes": changes, "condition_changes": condition_changes, "combat_log": run_state["combat_state"].get("log", []).duplicate(true), "xp_awards": xp_awards}
+	run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": _resolved_result_text(outcome, "The enemy falls."), "changes": changes, "condition_changes": condition_changes, "combat_log": run_state["combat_state"].get("log", []).duplicate(true), "xp_awards": xp_awards}
 	run_state["combat_state"] = {}
 	round_result["enemy_defeated"] = true
 	if bool(outcome.get("victory", false)):
@@ -1048,6 +1113,28 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 		run_state["phase"] = "victory"
 	else:
 		run_state["phase"] = "result"
+
+
+## Battlefield salvage: every entry in the defeated adversary's loot table drops
+## on an independent 40% roll through the run RNG, so two identical kills can
+## pay differently. Rolls happen once inside the victory commit, reuse the
+## clamped receipt path, and never touch prose, flags, XP, or routing — the
+## resolved outcome text is preserved across the call.
+const VICTORY_LOOT_CHANCE := 40
+
+
+func _apply_victory_loot(adversary: Dictionary, changes: Array) -> void:
+	var rolled := {}
+	for loot_id: Variant in adversary.get("loot", []):
+		if str(loot_id) == "" or not content.items.has(str(loot_id)):
+			continue
+		if _random_range(1, 100) <= VICTORY_LOOT_CHANCE:
+			rolled[str(loot_id)] = int(rolled.get(str(loot_id), 0)) + 1
+	if rolled.is_empty():
+		return
+	var resolved_text := _resolved_outcome_text
+	_apply_outcome({"items": rolled}, changes)
+	_resolved_outcome_text = resolved_text
 
 
 func _finish_combat_round(round_result: Dictionary) -> Dictionary:
@@ -1138,6 +1225,11 @@ func _select_next_event() -> void:
 		if not supply.is_empty():
 			eligible = supply
 			forced_role = true
+	if not forced_role:
+		var reserved := _reserved_thread_event_id(eligible)
+		if reserved != "":
+			run_state["current_event_id"] = reserved
+			return
 	if not forced_role and not eligible.is_empty():
 		var highest_priority := 0
 		for event: Dictionary in eligible:
@@ -1163,18 +1255,121 @@ func _select_next_event() -> void:
 	run_state["current_event_id"] = str(eligible.back()["id"])
 
 
+## Focused thread scheduling (plan §4, consequence map §5).
+##
+## A story the survivor has actually engaged with must not be lost to a weighted
+## draw. Once one Living Road chapter resolves, that thread is focused for the
+## rest of the run and its next chapter reserves the first ordinary slot in the
+## region where it becomes eligible.
+##
+## Nothing about the focus is stored. It is read back out of `event_history`,
+## which the save already carries, so the run schema stays at 5 and a restored
+## run resumes the same reservation. The reservation replaces the event that
+## would have been drawn; it never adds a travel slot, and it is checked only
+## after the forced-combat and forced-supply slots have had their absolute
+## precedence, so hunger, fatigue, combat density, and XP pacing are untouched.
+
+
+## The focused thread is the `callback_thread` of the earliest Living Road
+## chapter in `event_history`. The first thread whose chapter resolves is the
+## only thread that is ever focused in a run.
+func _focused_callback_thread() -> String:
+	for raw_id: Variant in run_state.get("event_history", []):
+		var event: Dictionary = content.get_event(str(raw_id))
+		if bool(event.get("living_road_callback", false)):
+			return str(event.get("callback_thread", ""))
+	return ""
+
+
+## The due chapter is the focused thread's lowest `callback_region` chapter that
+## has not resolved and whose eligibility flags the run already satisfies. When
+## an outcome writes no flag the next chapter reads, no chapter is due and the
+## thread has ended on its own terms rather than by random selection.
+func _due_callback_event_id() -> String:
+	var thread := _focused_callback_thread()
+	if thread == "":
+		return ""
+	var history: Array = run_state.get("event_history", [])
+	var due_id := ""
+	var due_region := 1 << 30
+	for event_id: String in content.events:
+		var event: Dictionary = content.events[event_id]
+		if not bool(event.get("living_road_callback", false)):
+			continue
+		if str(event.get("callback_thread", "")) != thread:
+			continue
+		if event_id in history:
+			continue
+		var chapter_region := int(event.get("callback_region", 0))
+		if chapter_region >= due_region:
+			continue
+		if not _eligibility_flags_satisfied(event.get("eligibility", {})):
+			continue
+		due_id = event_id
+		due_region = chapter_region
+	return due_id
+
+
+## The flag half of `_event_eligible`, asked without the region window so a
+## chapter still counts as due while it waits for the region it belongs to.
+func _eligibility_flags_satisfied(eligibility: Dictionary) -> bool:
+	var flags: Array = run_state.get("flags", [])
+	for flag: Variant in eligibility.get("requires_flags", []):
+		if str(flag) not in flags:
+			return false
+	var required_any: Array = eligibility.get("requires_any_flags", [])
+	if required_any.is_empty():
+		return true
+	for flag: Variant in required_any:
+		if str(flag) in flags:
+			return true
+	return false
+
+
+## The reservation itself: the due chapter takes this slot only when it is
+## already one of the candidates the ordinary draw would have chosen from.
+func _reserved_thread_event_id(eligible: Array) -> String:
+	var due_id := _due_callback_event_id()
+	if due_id == "":
+		return ""
+	for event: Dictionary in eligible:
+		if str(event.get("id", "")) == due_id:
+			return due_id
+	return ""
+
+
 func _apply_opening_guidance(eligible: Array) -> Array:
 	if int(run_state.get("region_index", 0)) != 0:
 		return eligible
 	var position := int(run_state.get("events_in_region", 0))
+	# The release build retains its original safe-first and complementary-teaching
+	# selection exactly. The engagement opening pool is an expanded-only rule.
+	if not content.living_road_enabled:
+		if position == 0:
+			return _events_with_tag_or_original(eligible, OPENING_SAFE_TAG)
+		if position != 1 or run_state.get("event_history", []).is_empty():
+			return eligible
+		var release_first_id := str(run_state.get("event_history", []).back())
+		var release_first_tags: Array = content.get_event(release_first_id).get("tags", [])
+		var release_missing_role := OPENING_EQUIPMENT_TAG if OPENING_RESOURCE_TAG in release_first_tags else OPENING_RESOURCE_TAG
+		return _events_with_tag_or_original(eligible, release_missing_role)
 	if position == 0:
-		return _events_with_tag_or_original(eligible, OPENING_SAFE_TAG)
-	if position != 1 or run_state.get("event_history", []).is_empty():
-		return eligible
-	var first_event_id := str(run_state.get("event_history", []).back())
-	var first_tags: Array = content.get_event(first_event_id).get("tags", [])
-	var missing_role := OPENING_EQUIPMENT_TAG if OPENING_RESOURCE_TAG in first_tags else OPENING_RESOURCE_TAG
-	return _events_with_tag_or_original(eligible, missing_role)
+		return _events_with_tags_or_original(eligible, [OPENING_SAFE_TAG, OPENING_HOOK_TAG])
+	if position == 1 and not run_state.get("event_history", []).is_empty():
+		var first_event_id := str(run_state.get("event_history", []).back())
+		var first_tags: Array = content.get_event(first_event_id).get("tags", [])
+		var missing_role := OPENING_EQUIPMENT_TAG if OPENING_RESOURCE_TAG in first_tags else OPENING_RESOURCE_TAG
+		return _events_with_tag_or_original(eligible, missing_role)
+	if position == 2 and not _early_source_seen():
+		return _events_with_ids_or_original(eligible, EARLY_SOURCE_EVENT_IDS)
+	return eligible
+
+
+func _early_source_seen() -> bool:
+	for event_id: String in EARLY_SOURCE_EVENT_IDS:
+		if event_id in run_state.get("event_history", []):
+			return true
+	return false
 
 
 func _events_with_tag_or_original(events: Array, required_tag: String) -> Array:
@@ -1185,6 +1380,28 @@ func _events_with_tag_or_original(events: Array, required_tag: String) -> Array:
 	return tagged if not tagged.is_empty() else events
 
 
+func _events_with_tags_or_original(events: Array, required_tags: Array) -> Array:
+	var tagged: Array = []
+	for event: Dictionary in events:
+		var tags: Array = event.get("tags", [])
+		var matches := true
+		for required_tag: String in required_tags:
+			if required_tag not in tags:
+				matches = false
+				break
+		if matches:
+			tagged.append(event)
+	return tagged if not tagged.is_empty() else events
+
+
+func _events_with_ids_or_original(events: Array, event_ids: Array) -> Array:
+	var sources: Array = []
+	for event: Dictionary in events:
+		if str(event.get("id", "")) in event_ids:
+			sources.append(event)
+	return sources if not sources.is_empty() else events
+
+
 func _event_eligible(event: Dictionary) -> bool:
 	var eligibility: Dictionary = event.get("eligibility", {})
 	var region_index := int(run_state.get("region_index", 0))
@@ -1192,18 +1409,8 @@ func _event_eligible(event: Dictionary) -> bool:
 		return false
 	if region_index > int(eligibility.get("max_region_index", 999)):
 		return false
-	for flag: Variant in eligibility.get("requires_flags", []):
-		if str(flag) not in run_state.get("flags", []):
-			return false
-	var required_any: Array = eligibility.get("requires_any_flags", [])
-	if not required_any.is_empty():
-		var found_any := false
-		for flag: Variant in required_any:
-			if str(flag) in run_state.get("flags", []):
-				found_any = true
-				break
-		if not found_any:
-			return false
+	if not _eligibility_flags_satisfied(eligibility):
+		return false
 	for flag: Variant in eligibility.get("forbids_flags", []):
 		if str(flag) in run_state.get("flags", []):
 			return false
@@ -1217,7 +1424,7 @@ func _choice_availability(choice: Dictionary) -> Dictionary:
 	var requirements: Dictionary = choice.get("requires", {})
 	for flag: Variant in requirements.get("flags", []):
 		if str(flag) not in run_state.get("flags", []):
-			return {"available": false, "reason": "Requires the relevant Bunker Forty-One record"}
+			return _locked(requirements, "Requires the relevant Bunker Forty-One record")
 	var required_any: Array = requirements.get("any_flags", [])
 	if not required_any.is_empty():
 		var found_any := false
@@ -1226,20 +1433,36 @@ func _choice_availability(choice: Dictionary) -> Dictionary:
 				found_any = true
 				break
 		if not found_any:
-			return {"available": false, "reason": "Requires Bunker Forty-One testimony or evidence"}
+			return _locked(requirements, "Requires Bunker Forty-One testimony or evidence")
+	for flag: Variant in requirements.get("forbids_flags", []):
+		if str(flag) in run_state.get("flags", []):
+			return _locked(requirements, "Blocked by what already happened")
 	for item_id: Variant in requirements.get("items", {}):
 		if get_item_quantity(str(item_id)) < int(requirements["items"][item_id]):
-			return {"available": false, "reason": "Requires %s" % content.get_item(str(item_id)).get("name", item_id)}
+			return _locked(requirements, "Requires %s" % content.get_item(str(item_id)).get("name", item_id))
 	for stat: Variant in requirements.get("stats", {}):
 		if int(run_state["survivor"]["stats"].get(str(stat), 0)) < int(requirements["stats"][stat]):
-			return {"available": false, "reason": "Requires %s %d" % [STAT_LABELS.get(str(stat), str(stat).capitalize()), requirements["stats"][stat]]}
+			return _locked(requirements, "Requires %s %d" % [STAT_LABELS.get(str(stat), str(stat).capitalize()), requirements["stats"][stat]])
 	for condition_id: Variant in requirements.get("forbids_conditions", []):
 		if str(condition_id) in run_state["survivor"]["conditions"]:
-			return {"available": false, "reason": "Blocked by %s" % content.get_condition(str(condition_id)).get("name", condition_id)}
+			return _locked(requirements, "Blocked by %s" % content.get_condition(str(condition_id)).get("name", condition_id))
 	for item_id: Variant in choice.get("costs", {}).get("items", {}):
 		if get_item_quantity(str(item_id)) < int(choice["costs"]["items"][item_id]):
-			return {"available": false, "reason": "Not enough %s" % content.get_item(str(item_id)).get("name", item_id)}
+			return _locked(requirements, "Not enough %s" % content.get_item(str(item_id)).get("name", item_id))
 	return {"available": true}
+
+
+## One lock, described once. An authored requires.reason replaces the generated
+## label for whichever gate closed the choice, and requires.hidden_when_locked
+## travels with the lock so a caller can leave out a gate the survivor could not
+## know about instead of showing them a disabled row.
+func _locked(requirements: Dictionary, default_reason: String) -> Dictionary:
+	var authored := str(requirements.get("reason", ""))
+	return {
+		"available": false,
+		"reason": authored if authored != "" else default_reason,
+		"hidden": bool(requirements.get("hidden_when_locked", false)),
+	}
 
 
 func _collect_modifiers(stat: String, approach: String, choice_modifier: int) -> Array:
@@ -1302,14 +1525,24 @@ func _pressure_penalty() -> int:
 	return penalty
 
 
-func _apply_costs(costs: Dictionary) -> void:
+func _apply_costs(costs: Dictionary, changes: Array = []) -> void:
 	for item_id: Variant in costs.get("items", {}):
-		_change_item(str(item_id), -int(costs["items"][item_id]))
+		var applied := _change_item(str(item_id), -int(costs["items"][item_id]))
+		if applied != 0:
+			changes.append("%s %d" % [content.get_item(str(item_id)).get("name", item_id), applied])
 	for pressure: Variant in costs.get("pressures", {}):
-		_apply_legacy_pressure(str(pressure), int(costs["pressures"][pressure]), "")
+		var description := _apply_legacy_pressure(str(pressure), int(costs["pressures"][pressure]), "")
+		if description != "":
+			changes.append(description)
 
 
 func _apply_outcome(outcome: Dictionary, changes: Array, condition_changes: Array = []) -> void:
+	# Resolved before anything is applied, so a variant reads the flags the
+	# survivor arrived with rather than the ones this outcome is about to write.
+	# Routing is resolved in the same breath as the text, from the same flags, so
+	# the passage a survivor reads and the scene it sends them to always agree.
+	_resolved_outcome_text = resolve_outcome_text(outcome)
+	var next_event := resolve_outcome_next_event(outcome)
 	if bool(outcome.get("lethal", false)):
 		_change_health(-int(run_state["survivor"]["vitals"]["max_health"]))
 		changes.append("HP reduced to 0")
@@ -1318,17 +1551,21 @@ func _apply_outcome(outcome: Dictionary, changes: Array, condition_changes: Arra
 		var delta := int(outcome["vitals"][vital])
 		if vital == "health":
 			var applied := _apply_health_delta(delta, damage_type)
-			changes.append("HP %s%d" % ["+" if applied >= 0 else "", applied])
+			if applied != 0:
+				changes.append("HP %s%d" % ["+" if applied >= 0 else "", applied])
 		elif vital == "satiety":
-			_change_satiety(delta)
-			changes.append("Satiety %s%d" % ["+" if delta >= 0 else "", delta])
+			var applied := _change_satiety(delta)
+			if applied != 0:
+				changes.append("Satiety %s%d" % ["+" if applied >= 0 else "", applied])
 	for pressure: String in outcome.get("pressures", {}):
 		var description := _apply_legacy_pressure(pressure, int(outcome["pressures"][pressure]), damage_type)
 		if description != "": changes.append(description)
 	for item_id: String in outcome.get("items", {}):
-		var delta := int(outcome["items"][item_id])
-		_change_item(item_id, delta)
-		changes.append("%s %s%d" % [content.get_item(item_id).get("name", item_id), "+" if delta >= 0 else "", delta])
+		# An item the survivor never had cannot be taken from them. Reporting the
+		# authored number regardless printed losses that never happened.
+		var applied := _change_item(item_id, int(outcome["items"][item_id]))
+		if applied != 0:
+			changes.append("%s %s%d" % [content.get_item(item_id).get("name", item_id), "+" if applied >= 0 else "", applied])
 	for condition_id: Variant in outcome.get("add_conditions", []):
 		if str(condition_id) not in run_state["survivor"]["conditions"]:
 			_apply_condition(str(condition_id))
@@ -1341,29 +1578,33 @@ func _apply_outcome(outcome: Dictionary, changes: Array, condition_changes: Arra
 			condition_changes.append({"id": str(condition_id), "change": "removed"})
 	for flag: Variant in outcome.get("add_flags", []):
 		if str(flag) not in run_state["flags"]: run_state["flags"].append(str(flag))
-	if outcome.has("next_event"): run_state["pending_event_id"] = str(outcome["next_event"])
+	if next_event != "": run_state["pending_event_id"] = next_event
+
+
+## The string _apply_outcome resolved a moment ago, so save/restore and the
+## result screen keep reading one finished passage out of last_result.
+func _resolved_result_text(outcome: Dictionary, fallback: String) -> String:
+	return _resolved_outcome_text if _resolved_outcome_text != "" else str(outcome.get("text", fallback))
 
 
 func _apply_legacy_pressure(pressure: String, delta: int, damage_type: String) -> String:
 	if pressure == "health":
 		var scaled := roundi(float(delta) * 2.5 / 5.0) * 5
 		var applied := _apply_health_delta(scaled, damage_type)
-		return "HP %s%d" % ["+" if applied >= 0 else "", applied]
+		return "HP %s%d" % ["+" if applied >= 0 else "", applied] if applied != 0 else ""
 	if pressure == "hunger":
 		var satiety_delta := ceili(absf(float(delta)) / 10.0) if delta < 0 else -1
-		_change_satiety(satiety_delta)
-		return "Satiety %s%d" % ["+" if satiety_delta >= 0 else "", satiety_delta]
-	_change_pressure(pressure, delta)
-	return "%s %s%d" % [pressure.capitalize(), "+" if delta >= 0 else "", delta]
+		var applied := _change_satiety(satiety_delta)
+		return "Satiety %s%d" % ["+" if applied >= 0 else "", applied] if applied != 0 else ""
+	var applied := _change_pressure(pressure, delta)
+	return "%s %s%d" % [pressure.capitalize(), "+" if applied >= 0 else "", applied] if applied != 0 else ""
 
 
 func _apply_health_delta(delta: int, damage_type: String) -> int:
 	if delta >= 0 or damage_type != "physical":
-		_change_health(delta)
-		return delta
+		return _change_health(delta)
 	var mitigated: Dictionary = CombatRules.mitigate_damage(-delta, _armor_rating())
-	_change_health(-int(mitigated["final"]))
-	return -int(mitigated["final"])
+	return _change_health(-int(mitigated["final"]))
 
 
 func _record_event(event: Dictionary) -> void:
@@ -1390,30 +1631,42 @@ func _apply_hunger_tick() -> void:
 		run_state["last_survival_notice"] = "STARVATION — one heart lost (50 HP)."
 
 
-func _change_health(delta: int) -> void:
+func _change_health(delta: int) -> int:
 	var vitals: Dictionary = run_state["survivor"]["vitals"]
-	vitals["health"] = clampi(int(vitals.get("health", 0)) + delta, 0, int(vitals.get("max_health", HP_PER_HEART)))
+	var before := int(vitals.get("health", 0))
+	vitals["health"] = clampi(before + delta, 0, int(vitals.get("max_health", HP_PER_HEART)))
+	return int(vitals["health"]) - before
 
 
-func _change_satiety(delta: int) -> void:
+func _change_satiety(delta: int) -> int:
 	var vitals: Dictionary = run_state["survivor"]["vitals"]
-	vitals["satiety"] = clampi(int(vitals.get("satiety", MAX_SATIETY)) + delta, 0, MAX_SATIETY)
+	var before := int(vitals.get("satiety", MAX_SATIETY))
+	vitals["satiety"] = clampi(before + delta, 0, MAX_SATIETY)
+	return int(vitals["satiety"]) - before
 
 
-func _change_pressure(pressure: String, delta: int) -> void:
-	if pressure not in PRESSURES: return
-	var value := int(run_state["survivor"]["pressures"].get(pressure, 0)) + delta
-	run_state["survivor"]["pressures"][pressure] = clampi(value, 0, 100)
+func _change_pressure(pressure: String, delta: int) -> int:
+	if pressure not in PRESSURES:
+		return 0
+	var before := int(run_state["survivor"]["pressures"].get(pressure, 0))
+	run_state["survivor"]["pressures"][pressure] = clampi(before + delta, 0, 100)
+	return int(run_state["survivor"]["pressures"][pressure]) - before
 
 
-func _change_item(item_id: String, delta: int) -> void:
+## Returns the quantity that actually moved. Removing more than the survivor
+## carries still empties the stack, but the caller learns that only part of the
+## price — or none of it — was ever paid, so it can report the truth.
+func _change_item(item_id: String, delta: int) -> int:
 	var inventory: Dictionary = run_state["survivor"]["inventory"]
-	var quantity := int(inventory.get(item_id, 0)) + delta
+	var held := int(inventory.get(item_id, 0))
+	var applied := delta if delta >= 0 else -mini(held, -delta)
+	var quantity := held + applied
 	if quantity <= 0:
 		inventory.erase(item_id)
 		for slot: String in run_state["survivor"]["equipment"]:
 			if str(run_state["survivor"]["equipment"][slot]) == item_id: run_state["survivor"]["equipment"][slot] = ""
 	else: inventory[item_id] = quantity
+	return applied
 
 
 func _armor_rating() -> int:

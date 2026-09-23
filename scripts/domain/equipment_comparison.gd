@@ -153,6 +153,7 @@ static func _weapon_side(game, sandbox) -> Dictionary:
 		"ammo_per_attack": int(profile.get("ammo_per_attack", 0)),
 		"ammo_available": sandbox.get_item_quantity(ammo_type) if ammo_type != "" else 0,
 		"unloaded": bool(profile.get("unloaded", false)),
+		"affinity": profile.get("affinity", {}),
 	}
 
 
@@ -250,6 +251,9 @@ static func _notes(game, report: Dictionary) -> Array:
 		notes.append("Mastery: base %s of 6 or more unlocks the stronger %s bonus." % [str(proposed_weapon["attack_stat"]).capitalize(), str(proposed_weapon["family"]).capitalize()])
 	elif not bool(proposed_weapon["mastered"]) and str(proposed_weapon["family"]) != "unarmed":
 		notes.append("Not mastered: %s reaches its stronger bonus at base %s 6." % [str(proposed_weapon["family"]).capitalize(), str(proposed_weapon["attack_stat"]).capitalize()])
+	var proposed_affinity: Dictionary = proposed_weapon.get("affinity", {})
+	if bool(proposed_affinity.get("required", false)) and not bool(proposed_affinity.get("met", true)):
+		notes.append("Unwieldy: needs base %s %d (you have %d) • −15 hit, −25%% damage until the stat is raised." % [str(proposed_affinity.get("stat", "")).capitalize(), int(proposed_affinity.get("minimum", 0)), int(proposed_affinity.get("have", 0))])
 	var carry: Dictionary = report["carry"]
 	if bool(carry["over_current"]) and not bool(carry["over_proposed"]):
 		notes.append("Capacity: this clears the overweight Agility penalty.")

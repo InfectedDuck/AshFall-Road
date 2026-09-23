@@ -18,14 +18,41 @@ const ARMOR_PERCENT := {
 	5: 0.35,
 }
 
+## Soft weapon affinity: an optional `affinity_min` on a weapon names the base
+## value its attack stat needs for full power. Below that the weapon stays
+## usable but unwieldy: −15 accuracy and −25% damage. Starting-kit weapons
+## carry no requirement, so no build ever starts weak.
+const AFFINITY_CHANCE_PENALTY := 15
+const AFFINITY_DAMAGE_FACTOR := 0.75
 
-static func weapon_profile(item: Dictionary, stats: Dictionary, loaded: bool = true) -> Dictionary:
+
+## Build identity is base stats, never gear or temporary conditions — the same
+## rule mastery uses. An empty base map means "unknown": report met so old
+## callers keep their exact numbers.
+static func affinity_status(item: Dictionary, base_stats: Dictionary) -> Dictionary:
+	var combat: Dictionary = item.get("combat", {})
+	if combat.is_empty():
+		return {"required": false, "met": true, "stat": "", "minimum": 0, "have": 0}
+	var minimum := int(item.get("affinity_min", 0))
+	if minimum <= 0:
+		return {"required": false, "met": true, "stat": str(combat.get("attack_stat", "strength")), "minimum": 0, "have": 0}
+	var stat := str(combat.get("attack_stat", "strength"))
+	if base_stats.is_empty():
+		return {"required": true, "met": true, "stat": stat, "minimum": minimum, "have": minimum}
+	var have := maxi(0, int(base_stats.get(stat, 0)))
+	return {"required": true, "met": have >= minimum, "stat": stat, "minimum": minimum, "have": have}
+
+
+static func weapon_profile(item: Dictionary, stats: Dictionary, loaded: bool = true, base_stats: Dictionary = {}) -> Dictionary:
 	var combat: Dictionary = item.get("combat", {}) if not item.is_empty() and loaded else UNARMED
 	if combat.is_empty():
 		combat = UNARMED
 	var stat := str(combat.get("attack_stat", "strength"))
 	var stat_value := maxi(0, int(stats.get(stat, 1)))
 	var multiplier := stat_damage_multiplier(stat_value)
+	var affinity := affinity_status(item, base_stats if not base_stats.is_empty() else stats)
+	if combat != UNARMED and bool(affinity.get("required", false)) and not bool(affinity.get("met", true)):
+		multiplier *= AFFINITY_DAMAGE_FACTOR
 	var minimum := maxi(1, roundi(float(combat.get("damage_min", 7)) * multiplier))
 	var maximum := maxi(minimum, roundi(float(combat.get("damage_max", 10)) * multiplier))
 	return {
@@ -36,6 +63,7 @@ static func weapon_profile(item: Dictionary, stats: Dictionary, loaded: bool = t
 		"damage_max": maximum,
 		"ammo_type": str(item.get("ammo_type", "")) if combat != UNARMED else "",
 		"ammo_per_attack": maxi(0, int(combat.get("ammo_per_attack", 0))) if combat != UNARMED else 0,
+		"affinity": affinity,
 	}
 
 

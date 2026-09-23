@@ -6,7 +6,7 @@ const STARTING_LEVEL := 1
 const MAX_LEVEL := 8
 const JOURNEY_XP := 4
 const CHECKPOINT_XP := 10
-const LEVEL_THRESHOLDS := [0, 50, 110, 180, 260, 350, 450, 570]
+const LEVEL_THRESHOLDS := [0, 40, 88, 144, 208, 280, 360, 456]
 const CHECK_BONUSES := {
 	"easy": 0,
 	"favorable": 2,
