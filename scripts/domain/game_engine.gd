@@ -4,6 +4,7 @@ extends RefCounted
 const CombatRules = preload("res://scripts/domain/combat_resolver.gd")
 const NarrativeCombat = preload("res://scripts/domain/narrative_combat.gd")
 const ExperienceRules = preload("res://scripts/domain/experience_rules.gd")
+const TalentRules = preload("res://scripts/domain/talent_rules.gd")
 
 const STATS := ["strength", "agility", "wits", "grit", "presence"]
 const STAT_LABELS := {
@@ -131,7 +132,8 @@ func start_run(candidate: Dictionary, seed_value: int) -> Dictionary:
 	run_state = {
 		"schema_version": 5, "run_id": "%d-%d" % [Time.get_unix_time_from_system(), normalized_seed],
 		"seed": normalized_seed, "rng_state": normalized_seed, "status": "active", "phase": "event",
-		"rules_version": D20Resolver.RULES_VERSION, "level": ExperienceRules.STARTING_LEVEL, "experience": 0,
+		"rules_version": D20Resolver.RULES_VERSION, "talent_version": TalentRules.TALENT_VERSION,
+		"talents": [], "level": ExperienceRules.STARTING_LEVEL, "experience": 0,
 		"xp_curve_version": ExperienceRules.RULES_VERSION, "unspent_stat_points": 0, "xp_award_ids": [],
 		"checkpoint_xp_awards": [], "rewarded_checkpoints": [], "combat_opportunities_seen_in_region": 0,
 		"region_index": 0, "events_in_region": 0, "total_events": 0, "hunger_clock": 0, "supply_seen_in_region": false,
@@ -555,6 +557,44 @@ func confirm_stat_allocation(proposed_stats: Dictionary) -> Dictionary:
 		vitals["health"] = mini(int(vitals["max_health"]), int(vitals.get("health", 0)) + gained_hearts * HP_PER_HEART)
 	run_state["unspent_stat_points"] = int(run_state.get("unspent_stat_points", 0)) - spent
 	return {"success": true, "spent": spent, "heart_gain": gained_hearts, "mastery_unlocked": mastery_unlocked, "text": "%d stat point%s committed." % [spent, "" if spent == 1 else "s"]}
+
+
+## Run-only talents: one choice after the first region, another after the
+## third. No random offers, duplicates, or respecs. Committed through the
+## save-aware transaction like every other checkpoint decision.
+func list_talent_options() -> Array:
+	var options: Array = []
+	for talent_id: String in TalentRules.available_options(run_state):
+		var definition: Dictionary = content.get_talent(talent_id)
+		if definition.is_empty():
+			continue
+		options.append({
+			"id": talent_id,
+			"name": str(definition.get("name", talent_id)),
+			"description": str(definition.get("description", "")),
+			"requirement": str(definition.get("requirement", "")),
+			"effect": str(definition.get("effect", "")),
+		})
+	return options
+
+
+func talent_choice_available() -> bool:
+	return TalentRules.talent_choice_available(self)
+
+
+func has_talent(talent_id: String) -> bool:
+	return TalentRules.has_talent(run_state, talent_id)
+
+
+func select_talent(talent_id: String) -> Dictionary:
+	var reason := TalentRules.validate_selection(self, talent_id)
+	if reason != "":
+		return {"success": false, "text": reason}
+	var owned: Array = run_state.get("talents", []).duplicate(true)
+	owned.append(talent_id)
+	run_state["talents"] = owned
+	var definition: Dictionary = content.get_talent(talent_id)
+	return {"success": true, "talent_id": talent_id, "text": "%s learned." % str(definition.get("name", talent_id))}
 
 
 func _award_checkpoint_experience() -> Dictionary:

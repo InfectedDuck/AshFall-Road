@@ -1,0 +1,46 @@
+{
+	"talents": [
+		{
+			"id": "retaliation",
+			"name": "Retaliation",
+			"description": "With a shield equipped, a failed Block still grants Riposte, but its incoming-damage multiplier rises from 1.25 to 1.5.",
+			"requirement": "Shield equipped in accessory slot with a one-handed weapon.",
+			"effect": "Failed Block grants Riposte; incoming damage x1.5 instead of x1.25."
+		},
+		{
+			"id": "patient_shot",
+			"name": "Patient Shot",
+			"description": "A loaded ranged weapon's Attack that spends Opening consumes no ammunition.",
+			"requirement": "Loaded ranged weapon with enough ammunition for an ordinary attack; Opening active.",
+			"effect": "Opening Attack costs 0 ammunition."
+		},
+		{
+			"id": "exploit_weakness",
+			"name": "Exploit Weakness",
+			"description": "The first successful weapon interrupt in a fight grants Opening for the next action.",
+			"requirement": "Disruption-family weapon vs Heavy move; interrupt cooldown ready.",
+			"effect": "First successful interrupt per fight grants Opening."
+		},
+		{
+			"id": "bloodlust",
+			"name": "Bloodlust",
+			"description": "Execution activates below 60% enemy HP instead of 40%, but attacks receiving that bonus lose 10 percentage points of accuracy.",
+			"requirement": "Execution-family weapon.",
+			"effect": "Execution threshold 60%; -10 accuracy when the bonus applies."
+		},
+		{
+			"id": "sustained_pressure",
+			"name": "Sustained Pressure",
+			"description": "Weapon suppression also applies to the following enemy response. It refreshes rather than stacks.",
+			"requirement": "Suppression-family weapon vs organic enemy.",
+			"effect": "Suppression carries to the next enemy response; refreshed, never stacked."
+		},
+		{
+			"id": "field_medicine",
+			"name": "Field Medicine",
+			"description": "The first healing item used in each fight preserves an existing Opening or Riposte.",
+			"requirement": "Healing consumable used in combat; Opening or Riposte active.",
+			"effect": "First combat heal per fight keeps Opening/Riposte; enemy still responds."
+		}
+	]
+}

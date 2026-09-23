@@ -351,6 +351,11 @@ func _migrate_run(run: Dictionary) -> Dictionary:
 		run["defeated_adversaries"] = []
 	if not run.has("last_checkpoint_xp"):
 		run["last_checkpoint_xp"] = {}
+	if not run.has("talents"):
+		run["talents"] = []
+	if not run.has("talent_version"):
+		# Existing runs continue under previous build rules; new runs stamp v1.
+		run["talent_version"] = 0
 	return run
 
 

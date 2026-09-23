@@ -23,6 +23,7 @@ var events: Dictionary = {}
 var items: Dictionary = {}
 var conditions: Dictionary = {}
 var adversaries: Dictionary = {}
+var talents: Dictionary = {}
 var combat_data: Dictionary = {}
 var legacy_v2_checks: Dictionary = {}
 var discovery_entries: Dictionary = {}
@@ -59,6 +60,7 @@ func reload() -> void:
 	items = _load_index("res://data/items.json", "items")
 	conditions = _load_index("res://data/conditions.json", "conditions")
 	adversaries = _load_index("res://data/adversaries.json", "adversaries")
+	talents = _load_index("res://data/talents.json", "talents")
 	combat_data = _load_map("res://data/combat_content.json", "combat")
 	legacy_v2_checks = _load_map("res://data/legacy_v2_checks.json", "legacy_checks")
 	_load_discovery_entries()
@@ -300,6 +302,14 @@ func validate_all() -> PackedStringArray:
 		var condition_id := str(combat.get("critical_condition", ""))
 		if condition_id != "" and not conditions.has(condition_id):
 			errors.append("Adversary '%s' references missing critical condition '%s'" % [adversary_id, condition_id])
+	for talent_id: String in talents:
+		var talent: Dictionary = talents[talent_id]
+		if str(talent.get("name", "")).is_empty() or str(talent.get("description", "")).is_empty():
+			errors.append("Talent '%s' needs a name and description" % talent_id)
+		if str(talent.get("requirement", "")).is_empty() or str(talent.get("effect", "")).is_empty():
+			errors.append("Talent '%s' needs a requirement and effect" % talent_id)
+	if talents.size() != 6:
+		errors.append("Talent catalog must define exactly six run-only talents (found %d)" % talents.size())
 	_validate_polished_prose(errors)
 	_validate_narrative_combat(errors)
 	_validate_item_acquisition(errors)
@@ -683,6 +693,16 @@ func get_condition(condition_id: String) -> Dictionary:
 
 func get_adversary(adversary_id: String) -> Dictionary:
 	return adversaries.get(adversary_id, {})
+
+
+func get_talent(talent_id: String) -> Dictionary:
+	return talents.get(talent_id, {})
+
+
+func list_talents() -> Array:
+	var ids: Array = talents.keys()
+	ids.sort()
+	return ids
 
 
 func get_legacy_v2_dc(event_id: String, choice_index: int) -> int:

@@ -70,7 +70,7 @@ func _availability(game, operation: String) -> String:
 		"equip", "unequip", "drop", "use_item":
 			if phase not in ["event", "result", "checkpoint"] or not game.run_state.get("combat_state", {}).is_empty():
 				return "Resolve the current roll or combat turn first."
-		"rest", "press_on", "allocate", "leave_checkpoint":
+		"rest", "press_on", "allocate", "select_talent", "leave_checkpoint":
 			if phase != "checkpoint":
 				return "This action requires a checkpoint."
 			if operation == "leave_checkpoint" and str(game.run_state.get("checkpoint_action", "")) != "rest":
@@ -102,6 +102,7 @@ func _resolve_intent(game, store, profile: Dictionary) -> Dictionary:
 			"rest": return game.rest_at_checkpoint(str(args[0]))
 			"press_on": return game.press_on_from_checkpoint()
 			"allocate": return game.confirm_stat_allocation(args[0])
+			"select_talent": return game.select_talent(str(args[0]))
 			"continue":
 				game.continue_after_result()
 				var notice := str(game.run_state.get("last_survival_notice", ""))
@@ -248,7 +249,7 @@ func _locked_error() -> Dictionary:
 
 func _valid_arguments(operation: String, args: Array) -> bool:
 	match operation:
-		"equip", "unequip", "use_item", "rest": return args.size() == 1 and args[0] is String
+		"equip", "unequip", "use_item", "rest", "select_talent": return args.size() == 1 and args[0] is String
 		"allocate": return args.size() == 1 and args[0] is Dictionary
 		"drop": return args.size() == 2 and args[0] is String and typeof(args[1]) in [TYPE_INT, TYPE_FLOAT]
 		"continue", "leave_checkpoint", "press_on": return args.is_empty()
