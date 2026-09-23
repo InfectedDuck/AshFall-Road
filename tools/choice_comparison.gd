@@ -25,17 +25,17 @@ const TOOL_VERSION := 1
 const LEVELS := ["early", "progressed"]
 const STATES := ["healthy", "hungry", "injured", "irradiated", "supplied", "depleted"]
 
-## Four kits, one per starting-inventory branch a single highest stat can reach.
+## Five kits, one per starting-inventory branch a single highest stat can reach.
 ## GameEngine._starting_inventory picks its branch from the highest stat, so the
-## kit is named after that stat. §3 asks for four and groups "Grit/Presence";
-## Grit is the one built, because its branch is the only one that starts with a
-## shield and because _starting_inventory reaches it before Presence on a tie.
-## The Presence branch (holdout_revolver, trader_token) is not covered here.
+## kit is named after that stat. Each kit makes its stat the unique maximum, so
+## the Presence branch (holdout_revolver, trader_token) is covered alongside
+## Strength, Agility, Wits, and Grit.
 const KITS := [
 	{"id": "strength", "stat": "strength", "label": "Strength"},
 	{"id": "agility", "stat": "agility", "label": "Agility"},
 	{"id": "wits", "stat": "wits", "label": "Wits"},
 	{"id": "grit", "stat": "grit", "label": "Grit"},
+	{"id": "presence", "stat": "presence", "label": "Presence"},
 ]
 const KIT_SEED_BASE := 7000
 
@@ -531,8 +531,11 @@ func _record_cell(record: Dictionary, values: Dictionary, kit_id: String, level:
 
 
 ## Temporarily satisfies what a choice asks for so a gated choice still reports
-## its odds. Flags are appended, missing items are added, and both are undone by
-## _restore_gates before the next choice is measured.
+## its odds. Flags are appended, missing items are added, required stats are
+## raised to the gate value, and all three are undone by _restore_gates before
+## the next choice is measured. Stat-gated options are explicitly covered at
+## the gated value and labelled in gated_by, so the audit no longer exits with
+## uncovered-gate diagnostics.
 func _grant_gates(engine: GameEngine, choice: Dictionary) -> Array:
 	var granted: Array = []
 	var requires: Dictionary = choice.get("requires", {})
@@ -562,12 +565,12 @@ func _grant_gates(engine: GameEngine, choice: Dictionary) -> Array:
 			engine.run_state["survivor"]["inventory"][item_id] = engine.get_item_quantity(item_id) + missing
 			granted.append({"kind": "item", "id": item_id, "amount": missing, "label": "item %s x%d" % [item_id, missing]})
 	for stat: Variant in requires.get("stats", {}):
-		if int(engine.run_state["survivor"]["stats"].get(str(stat), 0)) < int(requires["stats"][stat]):
-			var note := "Choice '%s' requires %s %d; a stat gate is not granted because raising it would change the measured odds" % [
-				str(choice.get("label", "")), str(stat), int(requires["stats"][stat]),
-			]
-			if note not in problems:
-				problems.append(note)
+		var stat_id := str(stat)
+		var required := int(requires["stats"][stat])
+		var current := int(engine.run_state["survivor"]["stats"].get(stat_id, 0))
+		if current < required:
+			engine.run_state["survivor"]["stats"][stat_id] = required
+			granted.append({"kind": "stat", "id": stat_id, "amount": required - current, "label": "stat %s %d (raised from %d)" % [stat_id, required, current]})
 	return granted
 
 
@@ -575,6 +578,10 @@ func _restore_gates(engine: GameEngine, granted: Array) -> void:
 	for gate: Dictionary in granted:
 		if str(gate["kind"]) == "flag":
 			engine.run_state["flags"].erase(str(gate["id"]))
+			continue
+		if str(gate["kind"]) == "stat":
+			var stat_id := str(gate["id"])
+			engine.run_state["survivor"]["stats"][stat_id] = maxi(0, int(engine.run_state["survivor"]["stats"].get(stat_id, 0)) - int(gate["amount"]))
 			continue
 		var item_id := str(gate["id"])
 		var remaining := engine.get_item_quantity(item_id) - int(gate["amount"])
