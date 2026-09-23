@@ -386,6 +386,10 @@ func _configure_narrative(snapshot: Dictionary, items_available: bool) -> void:
 				windows.append("Next attack easier")
 			elif status_text.begins_with("INTERRUPT"):
 				windows.append(status_text)
+			elif status_text.begins_with("SUPPRESSION"):
+				windows.append("Suppression carries to next response")
+			elif status_text.begins_with("TALENTS"):
+				continue
 			else:
 				conditions += 1
 		if conditions > 0:

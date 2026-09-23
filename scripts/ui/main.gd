@@ -748,6 +748,33 @@ func _render_current() -> void:
 		"death": _finish_run(false)
 		"victory": _finish_run(true)
 		_: _show_event()
+	_focus_first_action()
+
+
+## Keyboard users land on the first available action of every fresh page, so
+## Enter activates and the canvas focus ring shows where. Mouse and touch are
+## unaffected: tapping any control moves focus there as before. Scrolling with
+## the mouse wheel is native to the scroll containers on desktop.
+func _focus_first_action() -> void:
+	# Touch layouts keep their measured geometry: the focus ring draws outside
+	# the control, so only keyboard-first devices take an initial focus.
+	if page == null or DisplayServer.is_touchscreen_available():
+		return
+	var first := _find_first_action(page)
+	if first != null:
+		(first as Button).grab_focus()
+
+
+func _find_first_action(node: Node) -> Button:
+	if node is Button:
+		var button := node as Button
+		if button.visible and not button.disabled and button.focus_mode != Control.FOCUS_NONE:
+			return button
+	for child: Node in node.get_children():
+		var found := _find_first_action(child)
+		if found != null:
+			return found
+	return null
 
 
 func _set_region_background() -> void:

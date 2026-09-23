@@ -1041,6 +1041,14 @@ func combat_presentation_snapshot() -> Dictionary:
 		status_labels.append("OPENING • NEXT ACTION")
 	if int(state.get("interrupt_cooldown", 0)) > 0:
 		status_labels.append("INTERRUPT RECHARGING • %d" % int(state["interrupt_cooldown"]))
+	if float(state.get("suppression_carry", 0.0)) > 0.0:
+		status_labels.append("SUPPRESSION CARRY • −%d%% NEXT RESPONSE" % roundi(float(state["suppression_carry"]) * 100.0))
+	var owned_talents: Array = TalentRules.owned_talents(run_state)
+	if not owned_talents.is_empty():
+		var talent_names: Array[String] = []
+		for talent_id: Variant in owned_talents:
+			talent_names.append(str(content.get_talent(str(talent_id)).get("name", talent_id)).to_upper())
+		status_labels.append("TALENTS • " + " • ".join(talent_names))
 	var pending: Dictionary = run_state.get("pending_combat_round", {})
 	return {
 		"round": int(state.get("round", 0)) + 1,
