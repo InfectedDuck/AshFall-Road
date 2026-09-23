@@ -1179,15 +1179,18 @@ func _show_minimal_stat_details(body: VBoxContainer) -> void:
 		copy.add_child(header)
 		copy.add_child(_role_label(str(explanations.get(stat, "")), "flavour", _c("text")))
 		copy.add_child(_role_label(_equipment_stat_adjustment_text(stat), "caption", _c("muted")))
+		var status_effect := _condition_stat_adjustment(stat)
+		if str(status_effect.get("text", "")) != "":
+			copy.add_child(_role_label(str(status_effect["text"]), "caption", _c("danger") if bool(status_effect.get("penalty", false)) else _c("success")))
 		row.add_child(copy)
 		list.add_child(row)
 		if index < GameEngine.STATS.size() - 1:
 			list.add_child(HSeparator.new())
-	# Conditions intentionally live in the dedicated Status sheet, never here:
-	# the compact reference keeps abilities readable at phone sizes. Name the
-	# way there so an injured survivor is never left guessing.
+	# Durations and treatments intentionally live in the dedicated Status sheet;
+	# each ability row above already names the statuses moving it. Name the way
+	# there so an injured survivor is never left guessing.
 	list.add_child(HSeparator.new())
-	list.add_child(_role_label("Injuries and boons live under STATUS, with exact penalties and treatments.", "flavour", _c("muted")))
+	list.add_child(_role_label("Full durations and treatments live under STATUS.", "flavour", _c("muted")))
 
 
 ## Hover text for one stat row: base value, what currently modifies it, and
@@ -1224,6 +1227,24 @@ func _equipment_stat_adjustment_text(stat: String) -> String:
 		if value != 0:
 			equipment_parts.append("%s %+.0f" % [str(item.get("name", item_id)), float(value)])
 	return "EQUIPPED: %s" % ", ".join(equipment_parts) if not equipment_parts.is_empty() else "EQUIPPED: no bonus"
+
+
+## Statuses moving one ability, for the stat sheet row itself: hover tooltips
+## already knew this, but touch screens never see hover text. Returns the line
+## plus whether any status penalizes the stat, so penalties read as warnings.
+func _condition_stat_adjustment(stat: String) -> Dictionary:
+	var parts: Array[String] = []
+	var penalty := false
+	var survivor: Dictionary = game.run_state.get("survivor", {})
+	for condition_id: Variant in survivor.get("conditions", []):
+		var condition: Dictionary = content.get_condition(str(condition_id))
+		var value := int(condition.get("modifiers", {}).get(stat, 0))
+		if value != 0:
+			parts.append("%s %+.0f" % [condition.get("name", condition_id), float(value)])
+			penalty = penalty or value < 0
+	if parts.is_empty():
+		return {"text": "", "penalty": false}
+	return {"text": "STATUS: %s" % ", ".join(parts), "penalty": penalty}
 
 
 func _stat_adjustment_text(stat: String) -> String:
