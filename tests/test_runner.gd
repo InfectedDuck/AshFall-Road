@@ -88,6 +88,7 @@ func _run_all() -> void:
 	_test_choice_revisions(content)
 	_test_checkpoint_trading(content)
 	_test_soak_policy_paths()
+	_test_receipt_item_icons(content)
 	_test_returning_stories(content, ContentRepository.new(true))
 	preload("res://tests/narrative_combat_tests.gd").new().run(content, _check)
 	preload("res://tests/action_transaction_tests.gd").new().run(content, _check)
@@ -2550,6 +2551,54 @@ func _test_soak_policy_paths() -> void:
 	var recorded: Dictionary = harness._play(4242, 0, {"mode": "policy", "trace": false, "record": true})
 	var replayed: Dictionary = harness._play(4242, 0, {"mode": "record", "decisions": recorded["decisions"], "trace": false})
 	_check(harness._comparable_state(recorded["final_state"]) == harness._comparable_state(replayed["final_state"]), "A policy run with talents and trades replays to the same run")
+
+
+## Item gains and spends carry structured entries beside their receipt text, so
+## the result screen can show the icon of what changed hands. The text lines
+## keep their exact wording; old saves without entries render text only.
+func _test_receipt_item_icons(content: ContentRepository) -> void:
+	var game := _new_game(content, 9801)
+	var gain_text: Array = []
+	var gain_entries: Array = []
+	game._apply_outcome({"items": {"canned_meat": 2}}, gain_text, [], gain_entries)
+	_check(gain_text == ["Canned Meat +2"] and gain_entries == [{"id": "canned_meat", "delta": 2}], "A granted item records its text line and its structured entry")
+	game.run_state["survivor"]["inventory"]["scrap_parts"] = 5
+	var spend_text: Array = []
+	var spend_entries: Array = []
+	game._apply_costs({"items": {"scrap_parts": 3}}, spend_text, spend_entries)
+	_check(spend_text == ["Scrap Parts -3"] and spend_entries == [{"id": "scrap_parts", "delta": -3}], "A spent item records its text line and its structured entry")
+	var buying := GameEngine.new(ContentRepository.new(true))
+	buying.start_run(buying.create_candidates(9802)[0], 9802)
+	buying.run_state["current_event_id"] = "betrayal_slate_settlement"
+	buying.run_state["phase"] = "event"
+	buying.run_state["survivor"]["inventory"]["scrap_parts"] = 4
+	buying.resolve_choice(1)
+	var receipt: Dictionary = buying.run_state["last_result"]
+	_check("Scrap Parts -2" in receipt.get("changes", []) and "Bitter Tonic +1" in receipt.get("changes", []), "A paid choice keeps its exact receipt wording")
+	_check(receipt.get("item_changes", []) == [{"id": "scrap_parts", "delta": -2}, {"id": "bitter_tonic", "delta": 1}], "A paid choice structures its cost before its reward")
+	var ui = MainUI.new()
+	ui.bootstrap_on_ready = false
+	root.add_child(ui)
+	ui.content = ContentRepository.new(true)
+	ui.saves = SaveService.new("ashfall_receipt_icons_")
+	ui.profile = ui.saves.default_profile()
+	ui.entitlements = ui.saves.load_entitlements()
+	ui.game = buying
+	ui.ads = AdService.new()
+	ui.ads.configure(ui.entitlements)
+	ui.billing = BillingService.new()
+	ui.billing.configure(ui.entitlements)
+	ui._build_shell()
+	ui._show_result()
+	var rows: Array = ui.page.find_children("ReceiptItemRow_*", "", true, false)
+	_check(rows.size() == 2, "Each changed item renders its own icon row on the result screen")
+	var first_row := rows[0] as HBoxContainer
+	var first_icon := first_row.get_child(0)
+	_check(first_icon != null and str((first_row.get_child(1) as Label).text) == "Scrap Parts  -2", "A spent item shows its icon beside its quantity")
+	ui.game.run_state["last_result"] = {"event_id": "global_map", "outcome_text": "The stranger binds the wound.", "changes": ["Canned Meat -1"], "xp_awards": [], "resolution": {}}
+	ui._show_result()
+	_check(ui.page.find_children("ReceiptItemRow_*", "", true, false).is_empty(), "A result without entries renders its text receipt with no icon rows")
+	ui.queue_free()
 
 
 func _descendants(node: Node) -> Array[Node]:
