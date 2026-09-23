@@ -87,6 +87,7 @@ func _run_all() -> void:
 	_test_talents(content)
 	_test_choice_revisions(content)
 	_test_checkpoint_trading(content)
+	_test_soak_policy_paths()
 	_test_returning_stories(content, ContentRepository.new(true))
 	preload("res://tests/narrative_combat_tests.gd").new().run(content, _check)
 	preload("res://tests/action_transaction_tests.gd").new().run(content, _check)
@@ -2525,6 +2526,30 @@ func _test_checkpoint_trading(content: ContentRepository) -> void:
 	legacy.run_state["phase"] = "checkpoint"
 	legacy.run_state["checkpoint_offers"] = []
 	_check(legacy.checkpoint_offers().size() == 3 and legacy.run_state["checkpoint_offers"].size() == 3, "A checkpoint without saved stock generates it on first view")
+
+
+## Latest_plan Week 4: the soak policy walks talent and trade decisions, and a
+## recorded run with them replays byte-identically. A fixed seed batch keeps
+## this fast enough for the suite; the thousand-run evidence lives in
+## RUN_VERIFICATION.md instead of here.
+func _test_soak_policy_paths() -> void:
+	var harness = FullRunHarness.new()
+	harness.content = ContentRepository.new()
+	var talent_runs := 0
+	var trade_runs := 0
+	var run_errors := 0
+	for seed_value in range(9000, 9012):
+		var outcome: Dictionary = harness._play(seed_value, seed_value % 3, {"mode": "policy", "trace": false})
+		run_errors += int(outcome.get("errors", 0))
+		if int(outcome.get("talents_taken", 0)) > 0:
+			talent_runs += 1
+		if int(outcome.get("trades_made", 0)) > 0:
+			trade_runs += 1
+	_check(run_errors == 0, "Policy runs through talent and trade decisions without engine errors")
+	_check(talent_runs > 0 and trade_runs > 0, "The soak policy reaches talent choices and trade purchases")
+	var recorded: Dictionary = harness._play(4242, 0, {"mode": "policy", "trace": false, "record": true})
+	var replayed: Dictionary = harness._play(4242, 0, {"mode": "record", "decisions": recorded["decisions"], "trace": false})
+	_check(harness._comparable_state(recorded["final_state"]) == harness._comparable_state(replayed["final_state"]), "A policy run with talents and trades replays to the same run")
 
 
 func _descendants(node: Node) -> Array[Node]:
