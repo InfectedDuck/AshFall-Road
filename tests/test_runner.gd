@@ -1081,7 +1081,7 @@ func _test_ui_components(content: ContentRepository) -> void:
 	_check(inventory_link.find_child("InventoryIcon", true, false) is UiIconWidget and conditions_link.find_child("StatusIcon", true, false) is UiIconWidget, "Inventory and status controls use their generated pixel-art icons while retaining accessible labels")
 	var hud_portrait_frame := hud.find_child("SurvivorPortraitFrame", true, false)
 	_check(hud_portrait_frame != null and hud_portrait_frame.custom_minimum_size == Vector2(64, 64), "The survivor HUD reserves a readable 64-pixel portrait frame")
-	_check(PortraitArtWidget.expected_ids().size() == 25, "Portrait resolver owns four survivor and twenty-one adversary IDs, including the eight creatures that ship without artwork")
+	_check(PortraitArtWidget.expected_ids().size() == 25, "Portrait resolver owns four survivor and twenty-one adversary IDs, every one shipping with art or a field note")
 	# A creature with no image is described rather than labelled with its own ID.
 	var widow: Dictionary = content.get_adversary("reed_widow")
 	var described := PortraitArtWidget.create_view(str(widow["portrait_id"]), Color.WHITE, 9, str(widow["name"]), str(widow.get("field_note", "")))
@@ -1089,15 +1089,18 @@ func _test_ui_components(content: ContentRepository) -> void:
 	_check(note_label != null and note_label.name == "PortraitFieldNote", "A creature without artwork renders a described frame rather than the ID placeholder")
 	_check(note_label != null and "PORTRAIT" not in note_label.text, "The described frame never shows the raw PORTRAIT placeholder")
 	_check(note_label != null and "REED WIDOW" in note_label.text and "one laced boot" in note_label.text, "The described frame names the creature and shows its field note")
-	for creature_id: String in ["shutter_skitters", "cable_eater", "pox_dogs", "bile_spewer", "cinder_mauler", "salt_colossus"]:
+	for creature_id: String in ["shutter_skitters", "cable_eater", "pox_dogs", "bile_spewer", "cinder_mauler", "salt_colossus", "bog_raiders", "vault_scavs", "glass_cult", "tunnel_hunters", "citadel_guard"]:
 		var creature: Dictionary = content.get_adversary(creature_id)
 		var creature_view := PortraitArtWidget.create_view(str(creature["portrait_id"]), Color.WHITE, 9, str(creature["name"]), str(creature.get("field_note", "")))
 		var creature_note := creature_view.get_child(0) as Label
 		_check(creature_note != null and creature_note.name == "PortraitFieldNote" and creature_note.text.contains(str(creature["name"]).to_upper()) and not creature_note.text.contains("PORTRAIT"), "%s uses the described missing-image presentation" % creature_id)
 		creature_view.queue_free()
-	var plain := PortraitArtWidget.create_view("enemy_bandits", Color.WHITE, 9, "Road Bandits", "")
+	var plain := PortraitArtWidget.create_view("enemy_vagrant", Color.WHITE, 9, "Vagrant", "")
 	var plain_label := plain.get_child(0) as Label
 	_check(plain_label != null and plain_label.name == "PortraitFallback" and plain_label.text.begins_with("PORTRAIT"), "An adversary with no field note keeps the existing placeholder unchanged")
+	var bandits := PortraitArtWidget.create_view("enemy_bandits", Color.WHITE, 9, "Road Bandits", "")
+	_check(bandits.get_child(0).name == "PortraitTexture", "The finished bandit portrait renders art instead of the placeholder")
+	bandits.queue_free()
 	for creature_id: String in ["enemy_skitters", "enemy_widow", "enemy_kilnback", "enemy_cable_eater", "enemy_pox_dogs", "enemy_bile_spewer", "enemy_cinder_mauler", "enemy_salt_colossus"]:
 		_check(creature_id in PortraitArtWidget.ENEMY_IDS, "The roster registers %s" % creature_id)
 	described.queue_free()
@@ -2375,6 +2378,9 @@ func _test_talents(content: ContentRepository) -> void:
 	suppress.run_state["talents"] = ["sustained_pressure"]
 	_talent_resolve(suppress, "attack", 18, 10)
 	_check(float(suppress.run_state["combat_state"].get("suppression_carry", 0.0)) > 0.0, "Sustained Pressure stores suppression for the following response")
+	var carried_labels: Array = suppress.combat_presentation_snapshot().get("status_labels", [])
+	var carried_text := "\n".join(carried_labels)
+	_check("SUPPRESSION CARRY" in carried_text and "SUSTAINED PRESSURE" in carried_text, "Carried suppression and owned talents read on the combat status")
 	var medic := _talent_combat_game(content, 9207, "salvage_cleaver")
 	medic.run_state["survivor"]["inventory"]["cloth_bandage"] = 2
 	medic.run_state["survivor"]["vitals"]["health"] = maxi(1, int(medic.run_state["survivor"]["vitals"]["health"]) - 60)
