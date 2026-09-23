@@ -1,8 +1,25 @@
 # Ashfall Road: Narrative Expansion and Consequence Plan
 
-Updated 8 September 2026. **Planning document only: no content, release flag, or save format is changed by updating this file.** Keep the filename `NARRATIVE_REFINEMENT_PLAN.md` so existing links and handoffs continue to work.
+Updated 14 September 2026. **Planning document only: no content, release flag, or save format is changed by updating this file.** Keep the filename `NARRATIVE_REFINEMENT_PLAN.md` so existing links and handoffs continue to work.
 
 This is the authoritative narrative work package for Claude Code and the owner's chosen coding workflow. It now covers a substantial story expansion: richer reading, compelling choices, satisfying rewards, recurring consequences, creatures, and endings. It supersedes earlier restrictions limiting the work to prose refinement, 97 active events, disabled Living Road callbacks, uniformly short passages, and no new enemies. Unrelated offline, permadeath, save-safety, and monetization boundaries remain.
+
+## Resume here — preserve N00–N05
+
+**N00–N05 are complete. Start with N06a below, then finish the remaining N06–N10 work.** The earlier package descriptions remain as reference contracts, not instructions to repeat their implementation. Retain the completed Channel Nine pilot, ordinary-scene revisions, and N05b Kilnback retune. Reopen a completed scene only for a specific continuity, consequence, or regression defect.
+
+The 14 September review compared this plan with the queue, canon, consequence map, JSON, loader, scheduler, and relevant UI code. It was a document/code inspection, **not a fresh gameplay or regression run**. The queue's completion evidence remains historical. In particular, its “N06 next” handoff is behind some work already present:
+
+| Inspected state | Remaining owner/action |
+| --- | --- |
+| `final_gate_1` already has conditional routes to the standard screening or Bunker finale; the loader supports outcome-variant routing. | N06a verifies the effective routes and existing tests; do not implement the extension again or keep calling these finales unreachable without current evidence. |
+| Consequence map §5b already chooses first-resolved-chapter focus; `_focused_callback_thread()` follows that rule. | N06a retains the decision; N08 checks completion under competition. Do not reopen focus switching as a fresh design exercise. |
+| `pilgrim_disk` already has a Witness passage consumer in `bunker41_door_closes`. | N06c checks availability, first-match masking, and a payoff for holders who take another ending or the standard gate route. A single conditional paragraph does not prove coverage. |
+| `data/adversaries.json` has **15 definitions**: Reed Widow and Kilnback exist; Shutter Skitters and Cable Eater do not. Their host events still have two choices. | N06d explicitly owns the two remaining profiles/fights and connected consequences. Keep the original 17-adversary target; do not mark it delivered from the N04 heading alone. |
+| Reading UI has already changed, including choice-row and accessibility work. | N07 checks the current presentation with real costs and long passages before making further changes. |
+| `release/living_road_enabled=false` remains in `project.godot`. | N10 activates only after N08 evidence. N09 human acceptance remains separately recorded. |
+
+**Priority for the remaining work:** truthful consequences and satisfying resolutions → character development and distinct choices → readable delivery → sentence polish. Added length is useful only when it improves one of those. Section 9 assigns agent roles and models to each remaining refinement; section 10 is the continuation prompt.
 
 ## 1. The experience to build
 
@@ -22,7 +39,9 @@ Recommended central question: **What are you willing to carry into safety, and w
 
 People enjoying the game for its reading and choices is the acceptance goal. Word count, model scores, and automated tests cannot guarantee affection; observe it through reader feedback.
 
-## 2. Starting evidence and revised scope
+## 2. Original baseline and expansion boundaries
+
+The following table records the **8 September starting point**, before N00–N05. It is not the current roster, prose, or test count. Use the resume table above and the latest queue evidence for current work; retain the independent baseline for mechanical comparisons.
 
 | Area | Inspected starting point | Planned destination |
 | --- | --- | --- |
@@ -34,7 +53,7 @@ People enjoying the game for its reading and choices is the acceptance goal. Wor
 | Callback pack | 15 events, five three-chapter threads, 22 source-outcome patches; disabled | Make these playable, memorable, and reliably scheduled when followed |
 | Test evidence | Queue records 2,444 regression assertions | Re-establish current results and deliberately revise changed content contracts |
 
-These are inspected data/loader facts, not a new test run. Loaded does not mean reachable on a new run. Trace actual finale routing and compatibility-only content. The worktree contains substantial ongoing work; `tools/full_run_harness.gd` already exists although the queue lists M11 as next. Inspect and reuse it.
+These were inspected data/loader facts, not a new test run. Loaded does not mean reachable on a new run. Trace actual finale routing and compatibility-only content. The worktree contains substantial ongoing work; reuse `tools/full_run_harness.gd` and its existing evidence instead of restarting M11.
 
 Implementation boundaries:
 
@@ -93,7 +112,7 @@ Check rewards at full health, with already-owned equipment, and at carrying capa
 
 ## 4. Every major commitment returns
 
-Create `docs/NARRATIVE_CONSEQUENCE_MAP.md`. For each choice, record its distinct immediate effect or local resolution. For each major commitment, additionally record:
+Maintain the existing `docs/NARRATIVE_CONSEQUENCE_MAP.md` and its linked event cards. For each choice, record its distinct immediate effect or local resolution. For each major commitment, additionally record:
 
 ```text
 Source event / choice index / resolved outcome:
@@ -130,9 +149,9 @@ The current one-callback-per-region rule permits at most five callback slots acr
 Default scheduling design:
 
 - Focus on one three-chapter Living Road story per run, with smaller echoes from other decisions in existing scenes, checkpoints, or endings.
-- Once the player engages with a returning thread, persist its focus and due continuation. Reserve an eligible ordinary slot ahead of unrelated openings, preserving combat/supply guarantees and valid Bunker/Rust-Sea progression.
+- Keep the implemented rule: focus is derived from the first resolved callback in `event_history`; it does not need another saved field. Reserve an eligible ordinary slot for its due continuation ahead of unrelated openings, preserving combat/supply guarantees and valid Bunker/Rust-Sea progression.
 - Failed help can continue the focused story. Deliberate refusal can resolve or end it coherently; normal progression must not require accepting the obligation.
-- A promised return must not silently expire because random selection chose another scene. Provide a documented later scene/checkpoint fallback when exact timing cannot be retained. Describe only known facts and fulfill guaranteed reward obligations without inventing an offscreen rescue.
+- A promised return must not silently expire because random selection chose another scene. Where a return can actually become unavailable, name and test a reachable later scene/checkpoint fallback. Widened eligibility alone is not proof that a fallback runs. Non-focused threads may remain partial: distinguish a possible reunion from a guaranteed delivery, and settle concrete reward obligations without inventing an offscreen rescue.
 - Death can leave stories unfinished. Missing a source must not create false memories. An NPC does not die just because their callback lost priority.
 - Do not add travel slots by default. Any unavoidable change to hunger, fatigue, combat density, or XP requires separate documented validation.
 
@@ -175,7 +194,9 @@ Introduce names in the actual passage or combat display: event titles are not re
 
 Offer creature-led encounters in every region. Review a rough target of 50–65% creature-led selections among hostile ordinary events across representative runs, counting machines separately and actual combat separately from sightings. Treat this as an editorial target, not a per-seed guarantee or grounds to break pacing. Measure with callbacks enabled; human interaction is not automatically hostility.
 
-## 6. Starting defects to repair
+## 6. Original defects and residual follow-through
+
+This is the original repair inventory. N03–N05 already closed several entries; verify the changed paths and residual consumers under N06a, rather than reapplying the repairs. In particular, a fixed Key-only gate does not prove that every mixed-evidence choice handles transferred ownership correctly.
 
 | Location | Inspected problem | Required repair |
 | --- | --- | --- |
@@ -192,6 +213,8 @@ Offer creature-led encounters in every region. Review a rough target of 50–65%
 The inspected outcome applier supports `add_flags`, not an implemented `remove_flags` contract. Do not invent fields and assume they work. Use supported state or a narrow tested extension.
 
 ## 7. Ordered implementation packages
+
+**N00–N05 below are completed reference packages. N06–N10 are the remaining work.** Apply the resume status above when an older “create” or “implement” instruction describes something already present.
 
 ### N00 — Establish both configurations and the baseline
 
@@ -290,24 +313,74 @@ Outcomes must match tools, resources, conditions, bodies, and history. Repeatabl
 
 ### N06 — Expand returning stories and major arcs
 
-Depends on N01–N04 and affected sources; can run alongside independent N05 work in sequential batches.
+Depends on completed N00–N05. **Some N06 work is present; verify and finish it.** Coverage is 39 records: 15 Living Road, 13 Bunker, 8 Rust-Sea, and 3 base finales. Give each a `keep / targeted revision / redesign` disposition and a separate verification status; this is not a quota to rewrite all 39. N06d also closes the two creature fights left outside that count, in existing ordinary events.
 
-Coverage: all 15 Living Road scenes, 13 Bunker scenes, 8 Rust-Sea scenes, and 3 base finale records. With N05 this covers the initial 112-event target.
+#### N06a — Reconcile the current implementation once
 
-- Make every return a present conflict, not a recap plus roll. Cite a concrete prior action and show what it changes now.
-- Give help, control, distance, failed attempts, and exploitation credible interpretations and the promised distinct opportunities/rewards. Preserve differences at convergence.
-- Give each followed thread a satisfying local resolution. Hopeful, costly, and deliberately unresolved endings can coexist; do not make them all losses.
-- Integrate Mara, Key possession, testimony, and creature consequences into real consumers. A lore flag is not automatically an item or living companion.
-- Audit all nine starting `lethal` outcome records. Preserve concrete escalating warnings and withdrawal; add no instant deaths for dramatic effect.
-- Trace the actual finale and legacy pending routes before removing unused-looking nodes.
-- Make the final commitment select a distinct ending with bounded authored epilogue variants for relevant histories. Avoid requiring a separate ending for every flag combination.
-- Resolve the local Rust-Sea chapter before teasing further Spire waves.
+**Agent:** implementation integrator; Sonnet or GPT-5.6 Terra, medium effort where available. Escalate only a demonstrated routing/save defect.
 
-**Done when:** all five returning stories complete across appropriate runs, earlier choices alter later play, and major arcs/endings agree with recorded history.
+- Read the latest queue handoff and consequence map §5b before older event cards. Check existing effective content and tests for conditional finale routing, first-chapter focus, and the pilgrim consumer. Record `present and verified / present but unverified / missing`, with event IDs and evidence.
+- Retain the current split: `b41_contact` sends the survivor to the Bunker finale; otherwise use `final_gate_2` → `final_gate_3`. Hearing `b41_voice_heard` alone gives recognition, not invented Bunker experience. Verify prepared/pending legacy routes as well as new journeys.
+- Retain first-resolved-chapter focus. Late water/fire threads must still complete across appropriate source histories; their existence does not promise that every run can follow them. Change the scheduler only if a reproducible case violates the chosen rule.
+- Export only the relevant effective scene cards and current validation failures. Keep the original mechanical baseline intact and record deliberate changes against it. Do not regenerate the canon, all cards, or the original audit.
+- Assign every residual to N06b/c/d or N07. In particular, keep the two missing fights visible even though N04 and N05 are complete.
+
+**Deliverable:** a short delta checklist in the queue and the next unfinished story batch. Verification of work already present counts as progress.
+
+#### N06b — Give each returning story a different emotional progression
+
+**Agent:** narrative writer/integrator; Sonnet or GPT-5.6 Terra for each complete arc. Use one bounded Opus or GPT-5.6 Sol consultation when the arc's dilemma or resolution needs substantial redesign, then integrate with the main agent.
+
+Use the existing source and three chapters as a unit. The first return should reveal a consequence, the second should complicate the relationship or force a new decision, and the last should settle the thread's central question. Avoid three repetitions of “pay supplies, roll, receive thanks.” These are editorial directions to realize through supported state, not claims that every proposed beat is already implemented:
+
+| Thread | Story improvement to pursue | Payoff that must be visible |
+| --- | --- | --- |
+| Channel Nine / the Vales | Preserve the completed pilot. Check that Talia's trust distinguishes speaking to her, tracing a signal without contact, and giving bad directions. Let the family make decisions of their own. | A concrete reunion, changed arrangement, or honest separation; never a generic rescue paragraph for every history. Revise only a demonstrated gap. |
+| Quiet Column / Dena and Perrin | Move from controlling warning signals to accepting another person's judgment. Perrin needs an understandable action or preference, not only a rescue objective. Let one chapter offer cooperation instead of another payment. | The final use of the warning system reflects earlier decisions and who accepts responsibility. Protection can succeed without a last-line punishment. |
+| Road Debt / Lio | Build around evidence, grief, and the limits of judgment. Distinguish a truthful confession, corroboration, evasion, and refusal; do not reveal facts no witness could know. | The ledger or final toll changes whose account is accepted or what settlement is possible. Belief need not mean forgiveness, and a fair result can remain emotionally difficult. |
+| Water Commons / Iven | Escalate from a broken pump to disagreement over access. Give people on both sides a practical need; avoid making one spokesperson explain the entire moral. | Repair, salvage, contamination, and failed repair change the workable solutions and who receives water. Preserve exclusive rewards and earned technical competence. |
+| Nightfire / Noma | Test hospitality through an actual shortage and disagreement within the caravan. Make warmth, work, humor, and ordinary companionship part of what the player wants to preserve. | Show which shelter or arrangement survives. An accepted debt, a refused obligation, and useful Kilnback knowledge should produce distinct responses or opportunities. |
+
+For each arc, write a compact card: **opening need → changed relationship → final decision → concrete resolution**, plus the affected flags, exact rewards, and fallback. Use one recurring object or habit whose meaning changes; avoid giving every character the same clipped, cryptic voice. Include action, disagreement, and moments without a check. Keep worthwhile expertise and kindness where they fit the character.
+
+Review every authored outcome together with its choice, including failure, refusal, combat/flee, and conditional text. A failed roll may leave someone distrustful or require a different solution; it must not silently become successful help. A refusal may end an obligation clearly. Characters may disagree with the survivor without the narration assigning a universal moral verdict.
+
+Verify at least a helpful history and a failed/refused/self-interested history for each arc, plus a no-source control for false memories. Record the **later option, behavior, resource, or resolution that differs**, not merely the flag or greeting. In deterministic comparisons, preserve the same seed and unrelated decisions where practical; record intended branch divergence.
+
+**Deliverable:** all five arcs have verified dispositions and satisfying local endings across appropriate runs. A completed pilot is reviewed for continuity, not rewritten for novelty.
+
+#### N06c — Make the major arcs and endings pay off the journey
+
+**Agent:** same writer/integrator. Reserve Opus or GPT-5.6 Sol for one review of conflicting histories, finale requirements, and the most important ending passages; routine integration stays on Sonnet or Terra.
+
+- **Bunker:** structure revelations around what the survivor must do with the evidence. Each major revelation should change the next decision. Keep recorded orders, a spoken account, rescued people, and possession of the Key distinct. Preserve mystery about the Cinder Wives rather than supplying an explanatory monologue.
+- **Mara and Rust-Sea:** distinguish meeting Mara, treating her, refusing her, and receiving information without meeting her. Show her goals and limits through her actions. Resolve the lantern/quay/crossing chapter and the survivor's turn east before the Spire tease. Close the current promise before introducing the next one.
+- **Key ownership:** exercise the Warden's mixed-evidence choice with (1) Key held, (2) transferred Key and no other evidence, (3) transferred Key plus valid testimony, and (4) no Key history. A transfer must remove permission to present the object without erasing a legitimate independent testimony route. Use supported gates or a narrowly tested contract, not a global ban on all evidence and not an invented `remove_flags` field.
+- **Pilgrim and creature promises:** inspect the existing `pilgrim_disk` Witness variant for first-match masking by other evidence. Name a reachable payoff for a disk carrier who receives another ending or the standard screening. Carrying a disk does not itself grant Bunker history or Witness access. Check the real consumers/fallbacks for Kilnback knowledge and the Cinder Giant rescue; recognition alone cannot replace an already-promised useful opportunity.
+- **Ending design:** preserve Silence, Mercy, Witness, Ash, and the standard survival route's distinct meanings. Each successful ending should show the immediate admission action, one concrete result for the survivor, and a bounded reflection of relevant road commitments. Use only outcomes the run establishes. Survival itself can be a satisfying achievement; do not scold a player for taking the available route.
+- **Bound variants:** design a small priority table covering ending route, major evidence/ownership, and the followed thread's resolved or unresolved state. Do not author every flag combination. If first-match text would hide two important payoffs, move one to a guaranteed preceding scene or the existing factual recap/Chronicle, or justify a narrow deterministic composition change. A promise cannot disappear just because another variant matched first.
+- **Death and uncertainty:** use the existing death recap to acknowledge a commitment where useful, without claiming its offscreen resolution. A living ending may honestly leave someone unlocated; an unexplained scheduling omission is not an authored bittersweet ending.
+- Audit the nine original `lethal` records and any current changes to that count. Warnings must describe concrete escalating danger and permit withdrawal before the lethal commitment. Do not add instant death to strengthen a scene's tone.
+
+**Deliverable:** a route/ending matrix with Bunker contact versus no contact; heard-voice-only; Key held/transferred; independent evidence present/absent; disk plus competing evidence; and followed-thread completed/unresolved. Pair ending excerpts with the state that actually supports them.
+
+#### N06d — Close the remaining creature delivery gaps
+
+**Agent:** gameplay/content integrator; Sonnet or GPT-5.6 Terra. Use existing deterministic balance tools; escalate only unresolved regional balance or save compatibility defects.
+
+The inspected roster is 15, not the planned 17. Add **Shutter Skitters at `outskirts_apartment`** and **Cable Eater at `rail_signal`**, appending the combat alternative at index 2 while retaining both original routes and strong N05 prose. Define stable adversary IDs separately from `portrait_id`; verify that neither already exists at implementation time.
+
+Give each creature a practical reason to occupy the place, a readable warning, and a worthwhile fight result compared with searching/leaving or following/cutting power. Anchor threat, HP, damage, and rewards to builds that actually reach its region. Do not copy the obsolete cross-creature HP sketches or inflate XP to compensate for an irrational fight. Preserve the completed Widow/Kilnback work unless evidence requires a targeted correction.
+
+Complete Cable Eater's promised access/knowledge consumer and its ordering fallback: a randomly selected `rail_door` may already have been visited when `rail_signal` occurs. The plan must name a still-reachable gate or other supported payoff for that history. Keep local colony clearance a sufficient Skitters consequence unless an existing card promises more; avoid adding another three-chapter quest.
+
+Verify all six creature scenes, both new combat choices, missing-image presentation, flee/victory outcomes, resource/XP accounting, acquisition routes, and the combat-opportunity cap. Keep the environmental giants outside the combat roster.
+
+**N06 done when:** all 39 arc/finale records have evidence-backed dispositions; all five threads resolve across appropriate histories; promises have functioning consumers/fallbacks; finales reflect knowledge and ownership; and the two residual fights bring the roster to the planned 17 or a separately agreed scope change is recorded. Prose present in JSON is not by itself verification.
 
 ### N07 — Make reading and reward delivery pleasant
 
-Depends on integrated N05/N06 batches.
+Depends on integrated N06 batches; N05 and existing UI improvements are preserved. **Agent:** UI/content integrator, Sonnet or GPT-5.6 Terra. A small model can inventory strings and entries after the expected behavior is specified.
 
 - Support paragraphs, longest validated passages, readable labels, and independent scrolling at compact sizes/Large text. Keep choices/navigation reachable.
 - Preserve instant reveal, skip, reduced motion, and interrupted typewriter position. More words must not force longer waits or replay already-read text.
@@ -318,11 +391,21 @@ Depends on integrated N05/N06 batches.
 - Check species-appropriate shared narration and machine/organic effects. A Cable Eater cannot wield a rifle; victory cannot imply an unwounded fight without evidence.
 - Verify names and descriptions without portraits, raw IDs, or missing-art notices.
 
+Prioritize three observable experiences over a visual redesign:
+
+1. **Before choosing:** the intention, guaranteed item/pressure cost, and lock reason are readable on the current choice row. Show cost information for affordable choices as well as locked ones, including its accessibility text. Keep uncertain outcomes distinct from guaranteed costs.
+2. **While reading:** short paragraphs, dialogue, and occasional quiet passages create rhythm. Test a complete arc at normal and Large text sizes; fix confusing or repetitive paragraphs selectively. Optional recall should identify the person and the last known situation without revealing future branches.
+3. **After choosing:** the result makes the actual gain/loss and immediate story change clear, including capacity/full-health cases. Any factual receipt or recap comes from committed results; opening it grants nothing and rolls nothing.
+
+For the 25 Chronicle definitions, check loaded versus reachable entries under the current finale split, ending denominators, source triggers, overlapping variants, and spoiler-safe hints. Preserve different accounts across runs without importing an earlier survivor's relationships. A restored route may make an old entry reachable; do not remove it because an N00 card called it dead.
+
 **Done when:** reading is navigable, rewards are visible, and memories reflect real decisions without cross-run gameplay advantages.
 
 ### N08 — Verify the expanded story
 
-Check each batch and run final integration after N07. Reuse tools; avoid tests that only assert favorite sentences.
+Check each batch and run final integration after N07. **Agent:** main integrator plus existing scripts; Haiku or GPT-5.6 Luna can extract failures and evidence, while Sonnet/Terra diagnoses ordinary failures. Use one bounded Opus/Sol review for unresolved save/routing/ownership risks. Reuse tools; avoid tests that only assert favorite sentences.
+
+Run narrow checks during each batch and the full applicable suite once the integrated changes are ready. Do not repeat a passing full soak after a punctuation edit. Reuse recent evidence only when the relevant files/contracts are unchanged, and label what was reused. Changes to routing, costs, rewards, scheduling, or transactions require their affected regression checks.
 
 Required evidence:
 
@@ -331,12 +414,14 @@ Required evidence:
 - Independent mechanical comparison permits only listed changes. Update tests assuming disabled callbacks as a documented scope change, not unexplained deletion.
 - Source facts have consumers; overlapping flags select correct variants; possession cannot unlock incompatible rewards.
 - Due chapters, fallback, refusal, failure, and completion work for all five threads with competing hooks and Bunker/Rust-Sea, not only isolated flag fixtures.
-- At least two same-seed/different-choice transcripts show later differences in options, resources, relationships, and appropriate endings. Same-seed/same-decision replay remains deterministic; intentional scheduler changes need not preserve the old version's order.
+- At least one contrasting-history pair per thread demonstrates its consequential return; reuse verified Channel Nine fixtures. Add the N06c ending matrix and the N06d late-consumer ordering case. Include same-seed/different-choice transcripts, and keep same-seed/same-decision replay deterministic; intentional scheduler changes need not preserve the old version's order. Two favorable examples cannot establish all five threads.
 - Rewards/costs/discoveries apply once through critical fallback, reopen, retry, force-close, and terminal cleanup. Old prepared actions, legacy fights, and true permadeath remain safe.
 - Old runs and untouched sources gain no fabricated history. No unintended cross-run relationship/item/XP/access inheritance occurs.
 - Depleted survivors retain legal actions. Supply/combat guarantees, travel/hunger/fatigue, checkpoint progression, and acquisition routes work.
 - Affected combat balance/full-run checks report fight length, resource costs, reward inflation, build utility, encounter mix, and fallback frequency. Longer chains cannot farm XP or loot.
 - Worst-case prose, variants, Large text, scroll/reveal/reopen, and no-portrait combat preserve reachable controls.
+
+Keep one concise evidence index in the queue: task/event IDs, configuration, history or seed, expected difference, command, result, and artifact path. Store full logs/transcripts in artifacts rather than pasting them into every handoff. Separate automated correctness, editorial review, human enjoyment, and real-phone evidence.
 
 Existing PowerShell entry points from the project root:
 
@@ -353,7 +438,9 @@ Use existing action-recovery/combat UI suites for affected contracts and `tools/
 
 ### N09 — Verify reading and investment with people
 
-Reuse the M12 uncoached-playtest program. Test the complete Channel Nine pilot and contrasting complete or naturally ending runs. Include a reader-focused player and a survival/build-focused player.
+**Owner: human players; assistant support: Sonnet/Terra for feedback synthesis, Haiku/Luna for organizing notes.** Reuse the M12 uncoached-playtest program. Prepare the packet once integrated arcs are stable; perform acceptance on the tested N08 candidate. Include at least a reader-focused player and a survival/build-focused player. Two readers are an initial discovery round, not proof that all audiences enjoy the game.
+
+Provide a brief premise and controls, the exact build/configuration, and a simple feedback sheet. Do not teach the intended theme or tell players what emotion a scene should produce. Observe a complete followed thread and contrasting complete or naturally ending runs; include failed help where practical. Keep developer transcripts separate from the uncoached experience. No automatic invitations or messages to other people are part of this package.
 
 Ask or observe:
 
@@ -368,17 +455,21 @@ Ask or observe:
 
 Test short and long scenes in context before stretching all passages. Repair recurring comprehension/payoff failures. Do not infer enjoyment from pauses, text volume, or model self-review.
 
+Record where the problem happened, what the player believed, and what the game actually did. Prioritize confusion about a commitment or a missing payoff, then repeated loss of interest, then isolated wording preferences. Make one focused revision and replay the affected passage/branch; seek a fresh read when the intended understanding has materially changed. Avoid an endless “make it more literary” cycle.
+
 **Done when:** readers understand commitments, value rewards, recognize consequences, and name moments they want to revisit. If unavailable, mark this gate pending.
 
 ### N10 — Activate the expanded default and reconcile documentation
 
-Depends on N08; N09 remains a separate human acceptance gate.
+Depends on N08; N09 remains a separate human acceptance gate. **Agent:** Sonnet/Terra for the runtime/configuration change; Haiku/Luna for factual documentation reconciliation against the verified evidence index.
 
 - Make the tested expanded narrative the intended default. Activation is within this plan; publishing/store submission is not.
+- After changing the default, smoke-test a fresh run through the no-argument loader and confirm a callback is actually reachable. Keep explicit `new(false)` compatibility evidence and test old/prepared saves against the chosen enrollment contract. A passing `new(true)` test alone does not prove the shipping default changed.
 - Update `IMPLEMENTATION_PLAN.md`, `IMPLEMENTATION_QUEUE.md`, `PROJECT_STATUS.md`, `CONTENT_AUTHORING.md`, `TESTING.md`, and release guidance so old disabled-callback/short-prose restrictions cannot return accidentally.
 - Update the Living Road bible and Bunker/Rust-Sea guides to match final passages, rewards, ownership, scheduling, and endings.
 - Record exact content boundaries, migration, completed/partial threads, creature delivery, changes, tests, and remaining human/phone work.
 - Keep further Bunker/Rust-Sea Waves B/C/Convergence and portrait production separate. The existing fifteen Living Road callbacks are no longer deferred.
+- Record automated completion, reader acceptance, and phone acceptance separately. N10 may finish with N09 pending; describe the build as awaiting reader acceptance instead of declaring the story proven enjoyable. If feedback later changes a validated contract, rerun the affected N08 checks.
 
 **Done when:** the implemented expanded configuration and docs describe the same experience, with unfinished acceptance clearly identified.
 
@@ -401,95 +492,78 @@ Do not run `tools/rewrite_literary_content.js` as a bulk polish command. It is a
 
 Use one writer/integrator in the shared checkout unless the owner separately asks for delegation. If parallel writers are requested later, use isolated drafts/checkouts and explicit ownership, especially for shared override arrays.
 
-## 9. Use the coding window for complete stories
+## 9. Agent choices and token discipline
 
-This is larger than a polish pass. A reset window is not a reliable estimate of throughput. Prioritize validated playable stories over a large untested rewrite:
+**Default: one main writer/integrator, working sequentially.** “Agent” below means a role and model recommendation; it does not require creating custom agents or launching a team. Choose the Claude Code **or** Codex column, not both for the same task. These recommendations do not authorize automatic delegation. Use a separate reviewer only for a bounded defect or important completed arc when the owner asks for delegated work; otherwise switch roles/models within the main workflow.
 
-1. Establish both dossiers, concise canon, consequence map, and exact rewards.
-2. Implement minimum text/memory/scheduling support and finish Channel Nine with different histories and a real payoff.
-3. Finish the rest of the pilot, P0 repairs, and six named creature scenes.
-4. Integrate the other four threads, major arcs/endings, regional batches, and four creature fights.
-5. Complete reading UI, expanded-default activation, regression/balance checks, and the reader packet.
+The model assignments are editorial recommendations for this project, not measured rankings of fiction quality. Claude Code documents Sonnet as its economical coding choice, Opus for complex reasoning, and Haiku for simple work; aliases resolve through the account's configuration. [Claude Code cost guidance](https://code.claude.com/docs/en/costs), [model configuration](https://code.claude.com/docs/en/model-config). Codex documents Terra as balanced, Luna as the economical option, and Sol/Astra for more complex work; availability depends on the account/client. [Official Codex model guidance](https://learn.chatgpt.com/docs/models). Guidance checked 14 September 2026; confirm the selected model in the client when starting work.
 
-Do not spend the first session rewriting every opening before proving a complete story returns. If the window ends, save a tested slice and list exact incomplete scenes/contracts and the next task. Draft prose, integrated scenes, functioning callbacks, combat-ready creatures, automated verification, and human acceptance are distinct statuses.
+| Refinement / role | Claude Code | Codex | Scope and escalation |
+| --- | --- | --- | --- |
+| N00–N05 / completed | None | None | Reuse finished work and evidence; assign only a specific newly found defect. |
+| N06a / reconcile existing changes | Sonnet (`sonnet`) | GPT-5.6 Terra (`gpt-5.6-terra`), medium | Check current implementation against the short residual list. Do not commission another full audit. |
+| N06b / write returning arcs | Sonnet | Terra, medium | One arc at a time, all outcomes. Use Opus / Sol, high, for a bounded redesign of a weak dilemma or ending, then return to the main model. |
+| N06c / major arcs and endings | Sonnet, with one Opus (`opus`) review of the ending matrix | Terra, with one GPT-5.6 Sol (`gpt-5.6-sol`), high, review | Spend stronger reasoning on ownership, conflicting histories, and major emotional payoffs. Avoid premium review of every sentence. |
+| N06d / remaining creatures and consumers | Sonnet | Terra, medium | Implement two fights and test their regional utility. Scripts perform simulations; escalate only an unresolved design/compatibility issue. |
+| N07 / reading UI, receipts, Chronicle | Sonnet | Terra, medium | Preserve existing UI work; verify real scenes and state. Haiku/Luna may inventory strings, not decide narrative continuity. |
+| N08 / evidence extraction | Haiku (`haiku`) with existing scripts | GPT-5.6 Luna (`gpt-5.6-luna`), low, with scripts | Extract failures/counts/paths. Main model diagnoses defects; Opus/Sol reviews unresolved state or save risks. A small-model summary is not correctness signoff. |
+| N09 / reader feedback | Human readers; Sonnet synthesizes | Human readers; Terra synthesizes | Haiku/Luna can format notes. No AI model replaces the uncoached playtest. |
+| N10 / activation and documentation | Sonnet for activation; Haiku for factual doc edits | Terra for activation; Luna for factual doc edits | Verify the actual default and old-save behavior. Documentation follows measured results. |
 
-Carry only current canon, consequence map, queue, relevant event cards, and the last handoff into a new context. Use tools to export/count/diff/replay; reserve model attention for choice, character, description, reward, and continuity.
+GPT-6 Astra is an optional escalation for a difficult issue that remains unresolved after a focused reproduction and review; it is not required for every package. If a model is unavailable, use the available model in the same general role and record the substitution. Do not change models repeatedly during a straightforward batch.
 
-## 10. Paste-ready Claude Code handoff
+### Keep the context small and the work complete
 
-Use this when ready to implement:
+- **Start from a task packet, not the whole repository:** the resume block, current package, latest queue handoff, relevant canon entries, and the source/return/ending cards that task touches. Read shared safety/authoring contracts on first use or when they change. Export effective prose after overrides; do not judge obsolete base text as the player's passage.
+- **Work by dependency:** for N06b keep one source plus its three return scenes together. For Bunker/Rust-Sea, use 3–5 connected scenes, with their immediate consumers. Keep a short arc outline across batches so local edits preserve the larger story.
+- **Draft once, review once, fix specific findings.** Retain passages that work. Request a patch and short explanation, not multiple full alternative rewrites. After a failed correction, escalate the isolated cause rather than repeating the same broad instruction.
+- **Use scripts for mechanical work:** counts, JSON paths, effective exports, diffs, replay, and balance. Return failures and artifact paths to the model; retain full logs on disk. Reject unknown patch keys and no-op edits, reflecting the N05 applier findings.
+- **Do not repeat the N05 fourteen-agent pattern by default.** Small contexts and fewer duplicated reviews are the savings mechanism. Delegated parallel work, if later requested, needs exclusive file ownership or isolated patches and a single integrator.
+- **Separate cheaper execution from fewer tokens:** a lower-priced model can still waste tokens through retries or oversized context. Record model, completed unit, input/output/cache usage when available, and rework. Compare cost per verified arc, not just the price of one response. Do not promise a fixed percentage saving or infer subscription quota from API prices.
+- **Keep handoffs short:** aim for 250–400 words plus artifact links: task/scene IDs, what changed, state contracts, checks/results, exact remaining issue, and next action. Do not copy the plan, prose, or entire logs into the queue. This is a reporting target, not a limit on necessary story text or verification.
 
-```text
-Execute docs/NARRATIVE_REFINEMENT_PLAN.md as the updated narrative expansion
-plan for Ashfall Road. This is implementation, not another review.
+Recommended sequence: **N06a once → finish one remaining arc in N06b → address its N06c ending consumers → finish the other arcs/major-arc batches → N06d → N07 → N08 → N10**, with N09 preparation alongside stable content and human acceptance recorded when performed. Keep N06d explicit if story work is spread across sessions. A session limit should leave a tested slice and exact next action, not another broad expansion plan.
 
-The owner wants richer absorbing scenes, understandable dilemmas, worthwhile
-success rewards, strange creatures and giant mutants, and earlier decisions
-that visibly change later play and endings. Every choice needs distinct
-significance. Major commitments need durable implemented consequences.
-Preserve relief and genuinely successful moments as well as hard choices.
+## 10. Paste-ready continuation handoff
 
-This plan supersedes restrictions on 97 active events, disabled Living Road
-callbacks, uniform 60–90/30–50 word passages, and no new enemies. Integrate
-the fifteen callbacks and five returning stories, targeting initially 112
-events and 25 discoveries. Add six creature identities/scenes and four
-combat profiles, targeting 17 adversaries. No portraits are required.
-
-Start from current repository facts and preserve ongoing changes. Read the
-plan, queue, content authoring guide, narrative bible, loader, and save
-transaction contract. Export both explicit content configurations, establish
-tests, and create canon, creature bible, consequence map, and narrative queue.
-Keep before-change mechanical records independent of files being edited.
-
-Work through N00–N10, developing required N04 support alongside N03. First
-deliver the complete Channel Nine source-to-resolution pilot and different
-histories, then the remaining sample scenes. Continue through every target
-scene, outcome/variant, reward, callback, creature, arc, ending, and UI copy.
-Do not stop at documents, names, or rewritten openings when implementation
-can continue within the authorized scope.
-
-Implement budgets and conditional-text contracts before relying on longer
-or state-dependent prose. Give major choices consumers and a scheduling/
-fallback policy. A followed thread must not silently lose its payoff to
-random selection. Do not promise all five complete threads in one run under
-the one-callback-per-region limit.
-
-Specify supported rewards/costs exactly and make success fulfill intention.
-Do not invent JSON fields, fake transfers, invisible benefits, or unused
-flags. Document and test intentional changes to rewards, availability,
-flags, routing, scheduling, and content contracts.
-
-Preserve IDs and choice indices/intentions, prepared actions, old encounters,
-save/RNG safety, offline play, permadeath, item routes, combat rules, supply/
-combat guarantees, and central XP/travel accounting. Keep this survivor's
-relationships separate from cross-run Chronicle knowledge. No new economy,
-items, shops, companion combat system, artwork, monetization, or general
-dialogue framework is required.
-
-Integrate and validate 5–8 complete scenes at a time. Record IDs, branch and
-reward evidence, contract changes, tests, and exact next task in the queue.
-Reuse existing audit/full-run tools; never run the generic rewrite script.
-Work sequentially unless I ask for agents.
-
-After implementation checks, make the expanded configuration the intended
-default and update stale planning/status/authoring/testing docs. Publishing
-is outside scope. Prepare the reader packet; never claim player enjoyment,
-phone acceptance, or unperformed tests as verified.
-
-Resolve routine choices from the plan and canon. Ask only about material
-ambiguity that changes scope, continuing independent work while pending.
-If the session ends, leave a resumable handoff with unfinished branches,
-fights, and acceptance gates explicit.
-```
-
-Continuation prompt:
+Use this when ready to implement the remaining work. Select the model from section 9 in your client; this prompt is not an agent configuration.
 
 ```text
-Continue the next ready task in docs/NARRATIVE_REFINEMENT_QUEUE.md under the
-updated docs/NARRATIVE_REFINEMENT_PLAN.md. Read the current canon, creature
-bible, consequence map, and last handoff if present. Preserve finished work;
-do not restart the audit. Complete and validate the next playable branch or
-batch, then record exact coverage and remaining work.
+Continue Ashfall Road using docs/NARRATIVE_REFINEMENT_PLAN.md, updated
+14 September 2026. N00–N05, including the Channel Nine pilot and N05b
+Kilnback retune, are complete. Preserve them and all ongoing changes.
+
+Read the plan's Resume block, the current remaining package, section 9,
+and the latest queue handoff. Start with N06a only if its reconciliation
+has not been recorded. The queue's old “N06 next” paragraph is behind
+some implementation: conditional finale routing, fixed first-chapter
+focus, and a pilgrim consumer already exist. Verify rather than rebuild.
+
+Complete the next unfinished connected story batch, including choices,
+all outcomes, exact rewards, later consumers, and relevant ending text.
+Improve character development, understandable commitments, meaningful
+returns, warmth, and satisfying resolutions. Longer prose is not a quota.
+Check effective content after overrides and preserve known/unknown facts.
+
+Use relevant canon and consequence cards, including consequence map §5b.
+Keep ownership distinct from historical evidence. Check competing variants
+and missed/earlier consumers. Carry the two remaining Skitters/Cable Eater
+fights as N06d; the inspected roster is 15 and the target remains 17.
+
+Use one main agent and the economical model assigned in section 9.
+Use a stronger model only for a bounded unresolved story/state problem.
+Do not launch subagents unless I explicitly ask. Use scripts for counts,
+diffs, audits, and replay; preserve save/RNG/transaction and pacing contracts.
+
+Validate the affected branch or batch, then record a short evidence-backed
+handoff in docs/NARRATIVE_REFINEMENT_QUEUE.md. Link logs rather than copying
+them. Do not rerun completed packages or rewrite sound scenes wholesale.
+Continue through ready work within the session; at a session boundary leave
+the exact next task and unfinished acceptance gates.
+
+N10 enables the expanded default after N08 and verifies the real default
+loader. N09 requires human readers and remains pending without them.
+Publishing is outside scope. Never claim unperformed tests or enjoyment.
 ```
 
-Implementation is complete when all expanded content has a disposition; all outcomes/variants are reviewed; successful choices deliver their rewards; all five arcs are reachable across appropriate runs; major commitments have consumers/fallbacks; six creature scenes and four fights work without portraits; endings/memories agree with run state; and applicable checks pass. Full narrative acceptance also requires N09 reader evidence. More words and flags alone are not completion criteria.
+Implementation is complete when expanded content has verified dispositions; all outcomes/variants are reviewed; successful choices deliver their rewards; all five arcs are reachable across appropriate runs; major commitments have consumers/fallbacks; six creature scenes and four fights work without portraits; endings/memories agree with run state; and applicable checks pass. Full narrative acceptance also requires N09 reader evidence. More words and flags alone are not completion criteria.

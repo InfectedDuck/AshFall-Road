@@ -1,6 +1,6 @@
 # Ashfall Road implementation queue
 
-Status: M00 through M11 complete; M12 is next. One release blocker was found by M11 and is unfixed by design. The narrative expansion that supersedes the disabled-callback and short-prose boundaries runs from [NARRATIVE_REFINEMENT_QUEUE.md](NARRATIVE_REFINEMENT_QUEUE.md) under [NARRATIVE_REFINEMENT_PLAN.md](NARRATIVE_REFINEMENT_PLAN.md); N00 is complete there.
+Status: M00 through M11 complete; M12 is next. The release blocker M11 found was repaired by N04, so the remaining 7 are all owner or publishing tasks. The narrative expansion that supersedes the disabled-callback and short-prose boundaries runs from [NARRATIVE_REFINEMENT_QUEUE.md](NARRATIVE_REFINEMENT_QUEUE.md) under [NARRATIVE_REFINEMENT_PLAN.md](NARRATIVE_REFINEMENT_PLAN.md); N00 is complete there.
 
 This file is the handoff point for the model-by-model improvement plan in [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md). It records repository facts, not intended future work. No gameplay implementation was performed by M00.
 
@@ -12,7 +12,7 @@ This file is the handoff point for the model-by-model improvement plan in [`IMPL
 | Save-recovery UI | **201 assertions, 0 failures** at compact, design, and tall portrait sizes with Large text | `builds/m07-action-ui.log`, `tests/action_ui_smoke.gd` |
 | Compact-screen layout | **660 assertions, 0 failures** at 360×640, 393×852, and tall 540×1200 in normal and Large text, including contextual guidance and the Road Chronicle | `builds/m09-layout-ui.log`, `tests/layout_ui_smoke.gd` |
 | Combat UI smoke tests | 0 layout/input failures across 360×640, 393×852, 540×1200, font sizes, palettes, and High Contrast | `builds/m07-combat-ui.log`, `docs/NARRATIVE_COMBAT_REPORT.md` |
-| Encounter simulation | **586,000** authoritative seeded encounters across all 13 adversaries, 10 named-stat builds, 4 policies, and 5 road states; fixture version 3 | `builds/combat_balance.json`, `docs/RUN_VERIFICATION.md` |
+| Encounter simulation | **666,000** authoritative seeded encounters across all 15 adversaries (the Reed Widow and Kilnback joined the roster in N05b), 10 named-stat builds, 4 policies, and 5 road states; fixture version 3 | `builds/combat_balance.json`, `docs/RUN_VERIFICATION.md` |
 | Whole-run verification | Recorded decision records replay deterministically; **1,000** seeded legal-action runs with **0** engine errors and **0** recovery mismatches. Robustness evidence only, never a human estimate | `builds/full_run_harness.json`, `docs/RUN_VERIFICATION.md` |
 | Android artifact | API-36 arm64 debug APK exported and signature-verified | `builds/android/ashfall-road-debug.apk` |
 | Physical device | ADB currently reports no attached phone; Samsung acceptance is pending | `docs/PROJECT_STATUS.md`, latest `adb devices` check |

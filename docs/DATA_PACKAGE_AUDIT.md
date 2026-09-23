@@ -8,21 +8,21 @@ Command:
 
 The tool is read-only. It repairs nothing and regenerates no snapshot; it exits 1 if any check fails so it can gate a build.
 
-Result at M10: 8 automated checks, 8 passed, 0 discrepancies. **Current result: 9 checks, 8 passed, 1 discrepancy**, after M11 added check 9 and found a stranding event (see [RUN_VERIFICATION.md](RUN_VERIFICATION.md)). Supporting suites at the same commit: regression **2,444 assertions, 0 failures**; compact-screen layout **624 assertions, 0 failures**; combat UI **0 layout/input failures**; save-recovery UI **201 assertions, 0 failures**.
+Result at M10: 8 automated checks, 8 passed, 0 discrepancies. M11 added check 9 and found a stranding event. **Current result: 9 checks, 9 passed, 0 discrepancies** — N04 gave `global_stranger` an ungated third choice, closing the last one. Supporting suites at the same commit: regression **2,444 assertions, 0 failures**; compact-screen layout **624 assertions, 0 failures**; combat UI **0 layout/input failures**; save-recovery UI **201 assertions, 0 failures**.
 
 ## Checks
 
 | # | Check | Verified | Result |
 |---|---|---|---|
-| 1 | Polished prose is loaded | All 76 baseline events; every override body and outcome string equals the live text in the launch build | Pass |
-| 2 | No prohibited repeated sentences | Prohibited filler and any reused sentence of six or more words, across all 97 launch events rather than only the polished 76 | Pass |
-| 3 | All fifty items have routes | 16 starting IDs plus every positive reward in the launch package; 50 items defined, 0 unreachable | Pass |
+| 1 | Polished prose is loaded | All 76 baseline events; every override body and outcome string equals the live text in the default release | Pass |
+| 2 | No prohibited repeated sentences | Prohibited filler and any reused sentence of six or more words across all 112 default-release events | Pass |
+| 3 | All fifty items have routes | 16 starting IDs plus every positive reward in the default package; 50 items defined, 0 unreachable | Pass |
 | 4 | Added choices are legal | Every event at four choices or fewer; labels present and unique per event; named difficulties only, no numeric target; every choice resolves to an outcome or combat | Pass |
 | 5 | Original indices and mechanics | Live mechanics equal `data/events.json` for every event once prose is stripped, and every choice keeps its authored index and label | Pass |
-| 6 | Callbacks remain disabled | `living_road_enabled=false`; 97 events; no `lr_` event or callback chapter loaded or listed | Pass |
-| 7 | Lore discoveries reachable | 10 launch chapters, each with a loaded event and producible flags; the expansion still restores 25 | Pass |
+| 6 | Default callbacks and explicit compatibility | `living_road_enabled=true`; default repository has 112 events and 15 callbacks; `new(false)` retains 97 events and 11 chapters | Pass |
+| 7 | Lore discoveries reachable | 26 default-release chapters each have a loaded event and producible flags; compatibility retains 11 chapters | Pass |
 | 8 | No unknown references | Item, condition, adversary, follow-up event, and icon IDs across every choice, cost, requirement, and outcome; icons unique per item | Pass |
-| 9 | Every event is resolvable | No event gates all of its choices behind an item, which would strand a run on disabled buttons | **Fail: `global_stranger`** (added by M11) |
+| 9 | Every event is resolvable | No event gates all of its choices behind an item, which would strand a run on disabled buttons | Pass (added by M11, failing until N04 repaired it) |
 | 10 | Documentation matches | Schema numbers, combat terminology, and player-facing naming against the code | 7 discrepancies, all fixed |
 
 ## Discrepancies found and fixed
@@ -50,9 +50,8 @@ These are known, recorded, and not release blockers. They belong to content work
 
 ## Release blockers
 
-`tools/release_readiness.gd` reports **7 blockers**, all owner or publishing tasks. M11 added an eighth, which is a content defect this audit now fails on.
+`tools/release_readiness.gd` reports **7 blockers**, all owner or publishing tasks. M11's eighth, the `global_stranger` stranding defect, was repaired by N04: the scene now offers an ungated third choice, "Press the wound with your own coat", so a survivor carrying neither supply always has a legal action. This audit passes on it.
 
-0. **`global_stranger` gates every choice behind an item**, so a survivor carrying no Cloth Bandage and no Clean Water is stranded on disabled buttons. Reproduced at soak seeds 9103 and 9876; see [RUN_VERIFICATION.md](RUN_VERIFICATION.md). The minimal fix is one ungated choice, which is a mechanical change owned by a content plan.
 1. Choose the permanent reverse-domain package identifier.
 2. Configure the release upload keystore.
 3. Configure the release upload-key alias.

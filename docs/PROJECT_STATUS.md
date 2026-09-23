@@ -6,7 +6,7 @@
 - New `tools/full_run_harness.gd` replays a recorded decision record from its seed to a byte-identical run state and traces regional resources, equipment, XP, encounters, and death. A **1,000-run** seeded legal-action soak produced **0** engine errors and **0** recovery mismatches.
 - Encounter, robustness, and human evidence are kept separate and labelled. Random-policy soak results are never quoted as human completion or retention. Full report: [RUN_VERIFICATION.md](RUN_VERIFICATION.md).
 - **New release blocker**: `global_stranger` gates every choice behind an item, so a survivor carrying no bandage and no clean water is stranded on a screen of disabled buttons. Found at soak seeds 9103 and 9876; deliberately not repaired by a verification milestone. The data-package audit now fails on it.
-- Release readiness is now **8 blockers**: the 7 owner/publishing tasks plus this content defect.
+- Release readiness is now **8 blockers**: the 7 owner/publishing tasks plus this content defect. *(N04 repaired the content defect; the count is back to the 7 owner/publishing tasks.)*
 
 ## M10 data-package audit - 7 September 2026
 

@@ -1,8 +1,10 @@
-# Blender enemy portrait assets
+# Archived Blender enemy portrait experiment
 
-Created 8 September 2026 with Blender 5.2.1 LTS. Thirteen editable, posed 3D portrait scenes are saved in `art_sources/blender/`; their renders are installed in the game's existing `assets/portraits/enemy_*.png` slots. No gameplay IDs, saves, or combat rules were changed.
+**Art direction decision, 8 September 2026:** The user rejected the appearance of these procedural models and prefers the existing image-generated portraits. The Blender runtime installation has been rolled back. Continue portrait production with image generation and a shared approved visual reference; do not treat this experiment as the game's selected art style.
 
-Open `art_sources/blender/index.html` to compare all models and their actual game portraits. Open any `enemy_*.blend` in Blender to edit its geometry, camera, materials, and lights. The Warden is a useful starting point: `art_sources/blender/enemy_warden.blend`.
+Thirteen editable scenes remain archived in `art_sources/blender/`. The original Stalker, Dogs, and Toll runtime portraits were restored byte-for-byte; the ten newly installed Blender runtime portraits were removed, returning those slots to their prior state. All thirteen rollback checks passed and are recorded in `art_sources/blender/rollback.json`. No gameplay IDs, saves, or combat rules were changed. The following production notes describe the archived experiment.
+
+Open `art_sources/blender/index.html` to compare the archived models and experimental portraits. They are no longer used in the game. Open any `enemy_*.blend` in Blender to inspect its geometry, camera, materials, and lights.
 
 ## What these assets are
 
@@ -42,7 +44,7 @@ The six proposed monsters in the narrative plan do not yet have completed portra
 - `art_sources/blender/enemy_*.blend`: compressed editable scene files.
 - `art_sources/blender/renders/`: 256×256 Cycles renders.
 - `art_sources/blender/portraits/`: normalized 64×64 portraits using one shared twenty-color palette.
-- `assets/portraits/enemy_*.png`: installed runtime copies, loaded through the existing `PortraitArt` class.
+- `assets/portraits/enemy_*.png`: restored to the pre-experiment state; Blender copies are no longer installed here.
 - `art_sources/blender/previous_runtime/`: original Stalker, Dogs, and Toll PNGs, retained byte-for-byte.
 - `art_sources/blender/installation.json`: original and installed SHA-256 hashes and whether a previous PNG existed.
 - `art_sources/blender/manifest.json`: scene inventory, subject counts, mesh counts, sources, and signatures.
@@ -51,7 +53,7 @@ The six proposed monsters in the narrative plan do not yet have completed portra
 
 The entire `art_sources` directory is already excluded from Godot import/export through `.gdignore`. Existing high-resolution painted sources and the extra Toll variant were preserved.
 
-## Rebuild or edit
+## Archived rebuild instructions — do not reinstall without new art direction
 
 Run from the project root in PowerShell:
 
@@ -84,4 +86,4 @@ To restore a previous portrait, copy its preserved PNG from `previous_runtime` b
 
 ## Review status
 
-All scenes were built and rendered successfully. The runtime importer and thirteen-portrait technical audit passed; the initial board was also captured through actual `PortraitArt` controls at enlarged, 64-pixel, and 50-pixel sizes. That review prompted the shared-palette correction and clearer drone carrying fork. User art approval remains pending. Desktop control was stopped with Escape before a generated scene was opened interactively in Blender; the saved scenes and renders remain available.
+All scenes were built and rendered. The initial runtime importer and thirteen-portrait technical audit passed, and the initial board was captured through actual `PortraitArt` controls. A later shared-palette audit caught background dithering, which was corrected before the user rejected the visual result. That last palette revision was not re-audited before rollback. Historical validation and review files describe the experiment, not the restored game. User visual review: rejected; retain image-generated portraits. Desktop control was stopped with Escape before a generated scene was opened interactively in Blender.

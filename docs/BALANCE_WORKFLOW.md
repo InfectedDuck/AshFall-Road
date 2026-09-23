@@ -2,6 +2,8 @@
 
 Use four layers in this order: content validation, deterministic mathematical diagnostics, whole-run robustness evidence, then human play. Encounter, robustness, and human results are recorded separately in [RUN_VERIFICATION.md](RUN_VERIFICATION.md) and must never be quoted as one another. Human feedback cannot repair invalid math, and simulation cannot prove that a choice feels understandable.
 
+Current combat tuning and matched random-play measurements: [DIFFICULTY_TUNING.md](DIFFICULTY_TUNING.md). The September 8 encounter tables predate this tuning.
+
 ## Commands
 
 From the project root:
@@ -36,7 +38,7 @@ The report prints:
 - Good supply play can avoid starvation; poor supply play eventually costs hearts.
 - Strong gear defeats weak enemies in roughly two to three attacks.
 - High threats defeat an unarmored four-heart survivor in roughly two to three hits.
-- Intended high-Grit armor and Block attrition remains viable for roughly 20-30 rounds.
+- Armor and well-timed defenses extend survival, but ongoing rules-2 exchanges add 3 Fatigue; aimless defense should accumulate strain and eventually lose. The original 20–30-round Guard target applies to legacy rules-1 fights.
 - Approximately 50-70% of new testers reach Region 2.
 - Target roughly one victory per 20–30 attempts (about 3–5%) for new but system-aware players. Measure this through real complete attempts; do not manufacture it with hidden odds or inaccurate D20 targets.
 - Repeated informed play should improve completion without permanent power upgrades.

@@ -52,7 +52,7 @@ High Contrast is an independent accessibility override, not a fourth cosmetic th
 | `heading` | 28 | Literata | — | The one sentence that ends a run. |
 | `numeric` | 22 | Inter | — | Roll arithmetic on the reveal screen. |
 | `lede` | 20 | Literata | — | The line under a screen's eyebrow. |
-| `prose` | 17 | Literata | — | Event and result narrative, at 1.6 leading. |
+| `prose` | 17 | Literata | — | Event and result narrative, with compact phone leading (4px extra at Normal text). |
 | `title` | 17 | Inter | — | Names: survivors, enemies, items. |
 | `flavour` | 15 | Literata | — | Choices, item flavour, asides. |
 | `action` | 15 | Inter | 0.14em | Full-width button labels, uppercased. |
@@ -100,11 +100,12 @@ Grain is capped at 6% and the suite fails if a mix exceeds it. Firelight is deri
 
 ## Compact-screen layout rules
 
-The design viewport is 393×852 — the canvas artboard — but every screen must stay operable at 360×640 with the Large text setting. That budget is small enough that the following are rules, not preferences.
+The design viewport is 393×852. Page and overlay layout checks also cover 320×568 and 360×640 with Large text; combat is checked from 360×640 upward.
 
 - Long content scrolls; the controls that leave a screen never do. Item descriptions, modifiers, and comparisons scroll inside the item sheet while Close, Equip, Use, and Drop stay pinned outside it. Run summaries scroll while Begin Another Run and Main Menu stay pinned. Stat allocation keeps its apply and return actions above the scrolling stat list.
 - Touch targets keep a 44-pixel minimum height. Reclaim vertical space from padding, wrapped lines, and separators — never from a target.
-- Safe-area padding is responsive. The full canvas spacing (54 top, 34 bottom) applies above 700 logical pixels of height; below that it tightens to 28 and 20 so six combat actions and a guidance strip still fit at 360×640 with Large text. Device insets can still only push these further in, never less.
+- Safe-area padding uses 24 pixels above, 20 below, and 12 on each side. Below 700 logical pixels of height, top and bottom tighten to 12. Device insets can push these further in.
+- Scroll by sliding over prose, cards, items, and settings. All scrolling surfaces share native touch inertia and a 10-pixel deadzone; scrollbars stay hidden. A swipe cancels the pending button press, and settings toggle only on release. Mouse dragging in the desktop preview uses the same behavior.
 - A dice target is always written as `ROLL N+`. A bare `N+` beside other numbers reads as a quantity.
 - The enemy clue, the attack windows it opens, and the latest consequence belong to one exchange and are grouped in one block rather than separated by the dice column.
 - Combat keeps the player left, the enemy right, and a fixed six-action grid at every size.

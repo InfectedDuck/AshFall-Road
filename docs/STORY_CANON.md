@@ -47,6 +47,8 @@ Five ordinary scenes per region, then a checkpoint. Radiation on travel: 0, 1, 1
 
 Mutant Crows are a global encounter and can appear in any region.
 
+Marsh Leeches and Security Drones stay **sighted, never fought**, and that is deliberate rather than an omission (resolved by N02 batch C for the Drones, 8 September 2026). `drone_swarm`'s loot is exactly what `industrial_drones` choice 0 already grants, so a victory branch would be mechanically redundant, and the scene is repeatable at weight 5, which would make a threat-16 fight farmable against the combat-opportunity cap. The Drones are machines and the creature bible reserves its four appended fights for organic creatures.
+
 ## 5. Observation, belief, and mystery
 
 The prose is allowed three registers and must keep them apart.
@@ -65,7 +67,9 @@ Standing mysteries, deliberately kept:
 
 Returning characters cite evidence, never state. A person remembers a phrase over the radio, a burned rotor, an empty bedroll, clear water reaching a cup, a bottle with a callsign on it. Nobody remembers "a choice."
 
-Rule for prior knowledge: **SOTERIA recognizes everyone; the survivor recognizes SOTERIA only after contact.** The Warden always carries the Bunker record because the Citadel runs the same protocol, so it may confront any survivor. But a survivor who never heard the salt-flats signal (`b41_contact` absent) cannot recognize the woman's voice, and the prose must not say they do. This is the fix for the defect table's "entrance histories do not support claims of prior meetings": neutral introduction without contact, recognition with it.
+Rule for prior knowledge: **SOTERIA recognizes everyone; the survivor recognizes SOTERIA only after hearing it.** The Warden always carries the Bunker record because the Citadel runs the same protocol, so it may confront any survivor. But a survivor who never heard the duty voice cannot recognize it later, and the prose must not say they do. This is the fix for the defect table's "entrance histories do not support claims of prior meetings": neutral introduction without it, recognition with it.
+
+The flag for *heard the voice* does not exist yet and must be written, because no loaded flag means it (corrected 8 September 2026, found by N02 batch D). `b41_contact` means **entered the bunker**: it is written by all three `bunker41_rusted_hatch` outcomes and by `bunker41_door_breathes` choice 1, all in region 4. It over-fires for a survivor who skipped the salt flats and touched the hatch, and under-fires for one who heard the signal in region 1 and died before region 4. The obvious substitute set `[b41_recording, b41_answered, b41_unprepared]` also over-fires, because `bunker41_rusted_hatch` choice 2 writes `b41_unprepared` as well. N04 adds **`b41_voice_heard`** to all three `bunker41_static` outcomes — the region-1 salt-flats scene, and the only place the duty voice is heard — and the recognition variants in `bunker41_warden_remembers` and `final_gate_1` consume it.
 
 ## 6. Bunker Forty-One, SOTERIA, and the Citadel
 
@@ -79,7 +83,9 @@ Possession rules, which N02 and N04 must implement rather than assume:
 - *Holding the Key* is possession. It moves. Giving it to Mara (`rustsea_key_with_mara`) or the Choir (`b41_key_surrendered`) means the survivor no longer holds it, and the gate must not accept "Offer the Mercy Key." Today `b41_mercy_key` never clears, so it does; that is defect `rustsea_cartographers_debt` choice 2 in the plan's table. The narrowest supported repair is a transfer flag that gate and Warden consumers forbid; there is no `remove_flags`.
 - Whoever holds it is recognized. Mara with the Key sees a city under the sea and lamps answer her from the water. The Choir with the Key inherits the machinery of the old betrayal. The story follows the Key, not the person.
 
-**Records and testimony** are the second kind of evidence. Records are documents: the founder's confession, the Citadel archive, the Ledger of the Living, the Quay's copied names. Testimony is people: the truth spoken aloud to the Choir, the names read at the gate, survivors released from sealed rooms. Records can be burned; testimony can only be silenced. Burning is a real choice with a real loss (`b41_records_destroyed`, `b41_ledger_burned`, `lr_ledger_burned`), and the survivor who burns arrives at the gate with memory to argue against power and nothing else.
+**Records and testimony** are the second kind of evidence. Records are documents: the founder's confession, the Citadel archive, the Ledger of the Living, the Quay's copied names. Testimony is people: the truth spoken aloud to the Choir, the names read at the gate, survivors released from sealed rooms. Records can be burned; testimony can only be silenced.
+
+**A record becomes testimony when a person reads it aloud where it cannot be unheard.** The chapel car says it plainly: "The record is not a weapon until it is heard." This is why `b41_abandoned_names` — names taken off a monitor and broadcast — already counts toward Witness. It follows that the Quay's copied names could also qualify, since they are names of the refused; N02 batch F correctly declined to route them there on its own authority, because adding a key to an ending is a §8 balance decision. **N06 decides**, and if it does add them, the gate outcome must show the survivor reading, not merely carrying. Burning is a real choice with a real loss (`b41_records_destroyed`, `b41_ledger_burned`, `lr_ledger_burned`), and the survivor who burns arrives at the gate with memory to argue against power and nothing else.
 
 **Rescued people** are the third. Releasing the sealed rooms (`b41_rescued_survivors`) turns the Bunker "from history into an accusation that still breathes." Rescued people are testimony that cannot be filed. They do not become allies, items, or advantages for a later survivor; the Chronicle keeps only that they were found.
 
@@ -109,7 +115,7 @@ Each entry: what they want, what they know, what they cannot do, what they will 
 - **Sounds** like marching instructions that occasionally fracture into guilt. Her kindness is procedural.
 
 ### Lio Marr — the Road Debt
-- **Wants** a truthful account and the ledger showing whom the pharmacy gang robbed, spared, recruited, or killed. He is related to one of them and not loyal to what that person became.
+- **Wants** a truthful account and the ledger showing whom the pharmacy gang robbed, spared, recruited, or killed. He is related to one of them and not loyal to what that person became. N06 narrowed this: the relative is the gang's leader, the woman with the pipe pistol, and Lio knows her hand and says her name the way people say a name they have said all their lives. Her bottle sits on his hood in whichever row the survivor's account puts it.
 - **Knows** how readily strangers convert other strangers into evidence for their own story.
 - **Cannot** forgive; belief means inclusion in the evidence, not absolution. Cannot stop his court from becoming a court.
 - **Trades** a place beside the other accounts, copied pages, a nail bat that served as a barrier's gate, a dead hunter's rifle to whoever proves its history. Preserves refusal as carefully as testimony.
@@ -162,6 +168,8 @@ Each entry: what they want, what they know, what they cannot do, what they will 
 
 The canonical finale is `final_gate_1` → `bunker41_warden_remembers` → `bunker41_door_closes`. Every survivor who reaches the gate meets the Warden; the door then opens a hand's width and closes on whichever story enters. The four approaches are four answers to §1.
 
+**Who gets which finale (N06).** The Warden's record concerns the survivor who touched Bunker Forty-One, so `final_gate_1` routes by `b41_contact`: a survivor who entered or marked the bunker goes to `bunker41_warden_remembers` and the four endings below; a survivor who never did goes to the standard screening, `final_gate_2` → `final_gate_3` ("One Person Through"), and a survival ending: blind the Warden, break it, or cross its arc, then force the gate, complete the override, or order the guard. Hearing the salt-flats voice (`b41_voice_heard`) earns a recognition line at the outer gate and at the screening but not the Bunker finale, because that survivor carries nothing the record could concern. At the last gate, forcing it is the always-available answer; the override needs a Citadel controller the survivor actually read (`gate_code`, `access_core`, or `citadel_signal`), and a guard breaks protocol only for someone standing over a broken Warden (`warden_broken`, written when the screening's fight is won), never for someone it is still reacquiring.
+
 | Ending | Choice | What it requires | What it means |
 |---|---|---|---|
 | **Silence** | Force your way through | Nothing | You survive. The road's voices stay outside the wall; the Citadel's account of itself goes unchallenged. Not cowardice: the only ending always available, and the one every other ending is measured against. |
@@ -173,7 +181,7 @@ Canon corrections the endings need, assigned to N02:
 
 - **Ash must require the record.** Today `b41_choir_joined` alone unlocks it, but joining the procession does not put the founder's confession in the survivor's hands; only `b41_choir_records` does, or a split Choir carrying it. Tighten the requirement or write the joined variant so the Choir plays it.
 - **Mercy must require possession**, per §6.
-- **`final_gate_2` and `final_gate_3` ("One Person Through") are compatibility content.** Nothing routes to them, so their five `victory: true` outcomes and the Chronicle's `ledger_ending_citadel` are unreachable while still counted. N06 decides between retiring them and re-routing them; N07 removes an unreachable ending from the denominator either way.
+- **`final_gate_2` and `final_gate_3` ("One Person Through") were compatibility content until N06.** Nothing routed to them, so their five `victory: true` outcomes and the Chronicle's `ledger_ending_citadel` were unreachable while still counted. N06 re-routed them as the path for a survivor with no Bunker history (above), so the Citadel ending is reachable and N07 counts it.
 
 ## 9. What the Chronicle keeps
 
@@ -183,12 +191,12 @@ The Chronicle is knowledge across runs, never advantage. It records that a chapt
 
 | Where | Contradiction | Owner |
 |---|---|---|
-| `bunker41_warden_remembers`, `final_gate_1` | Prose assumes the survivor recognizes the duty voice and a "recovered gate code" regardless of history | N02 variants per §5 rule; N06 |
+| `bunker41_warden_remembers`, `final_gate_1` | Prose assumes the survivor recognizes the duty voice and a "recovered gate code" regardless of history | Repaired in N06: recognition is a `b41_voice_heard` variant, and the code answer is gated on `gate_code` or `access_core` with a visible reason |
 | `rustsea_cartographers_debt` 2, `bunker41_chapel_car` 0 | Key transfer leaves possession flag set | N02, N04 (§6) |
 | `bunker41_door_closes` 3 | Ash unlocked by affiliation without the record | N02 (§8) |
-| `final_gate_2`, `final_gate_3`, `ledger_ending_citadel` | Unreachable finale still defined and counted | N06, N07 |
-| `bunker41_warden_remembers` 0 | Refusal describes a raised weapon, then proceeds to the door | N06 |
-| `rustsea_last_coordinate` | Entry-like outcomes return to travel; no Spire chapter exists | N06: resolve locally, turn east, keep the Spire a mystery (§5) |
+| `final_gate_2`, `final_gate_3`, `ledger_ending_citadel` | Unreachable finale still defined and counted | Re-routed in N06 (§8); N07 counts the ending |
+| `bunker41_warden_remembers` 0 | Refusal describes a raised weapon, then proceeds to the door | Repaired in N04 (the weapon stays tracked and unfired) |
+| `rustsea_last_coordinate` | Entry-like outcomes return to travel; no Spire chapter exists | Repaired in N06: the three routes resolve at the lanterns, the shore, or a copy set afloat; the Spire is seen and never entered, and the Chronicle's `ledger_rustsea_spire` carries one account per route |
 | `bunker41_cartographer` 0 | Sharing a ration costs nothing | N02 cost contract |
-| `rustsea_salt_crown_wake` 1 | "Take supplies" grants none | N02: honest uncertain search, or deliver |
-| `global_stranger` | Both choices item-gated | N02: one ungated choice |
+| `rustsea_salt_crown_wake` 1 | "Take supplies" grants none | Repaired in N06: an Agility roll whose success pays the two unsplit tins and whose failure costs the careful lifting |
+| `global_stranger` | Both choices item-gated | Repaired in N04: an ungated third choice, "Press the wound with your own coat" |
