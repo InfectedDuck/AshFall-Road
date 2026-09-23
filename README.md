@@ -17,13 +17,13 @@ Ashfall Road is an offline-first, portrait-oriented post-apocalyptic systems rog
 - Reach the final three-stage encounter or lose the active run permanently.
 - Keep only settings, cosmetic entitlements, and run-history summaries after death.
 - Resume interrupted event and combat rolls without duplicating damage, ammunition, loot, or outcomes.
-- Review finished runs and recovered lore in the Road Chronicle, then let the staged v1.1 expansion return ordinary choices as five cross-region human stories with fifteen further chapters.
+- Review finished runs and recovered lore in the Road Chronicle, including five cross-region human stories that return ordinary choices as consequential later chapters.
 
 ## Implemented content
 
-- 6 sequential regions, 60 base region events, 12 base global events, a 13-scene Bunker Forty-One narrative arc, an 8-scene Mara Venn/Rust-Sea expansion, 1 safe fallback, and a Bunker-aware 3-stage finale, with 97 loaded events in v1.
-- Bespoke prose overrides are active for all 76 baseline events in v1. The Road Chronicle exposes the ten reachable lore chapters alongside the latest twenty run summaries. The optional Living Road pack adds 15 callback events, five recurring-human threads, ten mutually exclusive equipment rewards, and fifteen further chapters when its release flag is enabled.
-- 50 items (including two shields), 13 adversary archetypes, and 13 conditions/injuries, including checkpoint Momentum.
+- 6 sequential regions, 60 base region events, 12 base global events, a 13-scene Bunker Forty-One narrative arc, an 8-scene Mara Venn/Rust-Sea expansion, 1 safe fallback, a Bunker-aware 3-stage finale, 15 Living Road callbacks, and a 12-scene betrayal arc (Vex, Slate, Anselm): 124 events in the default release.
+- Bespoke prose overrides are active for all 76 baseline events. The Road Chronicle exposes 29 reachable lore chapters alongside the latest twenty run summaries; the Living Road callbacks provide five recurring-human threads and ten mutually exclusive equipment rewards.
+- 50 items (including two shields), 17 adversary archetypes, and 13 conditions/injuries, including checkpoint Momentum.
 - Layered Dossier survivor HUD with heart/meal vitals, a tappable five-stat symbol capsule, persistent pressure strip, placeholder portraits/item runes, drawn D20, and tactical combat screen.
 - Locally bundled Literata narrative and Inter interface fonts, with their OFL licences, for complete offline presentation.
 - Data-driven weapons and adversaries, armor mitigation, ammunition fallback, critical effects, combat log, and flee rules.
@@ -48,12 +48,14 @@ The launch-v1 game has no network dependency, advertising, or purchases. Deferre
 - [Testing](docs/TESTING.md)
 - [Four-week launch sprint](docs/LAUNCH_SPRINT.md)
 - [Closed-test guide and feedback form](docs/CLOSED_TESTING.md)
+- [Itch.io public-playtest packet](docs/E05_PLAYTEST_PACKET.md)
 - [Release checklist](docs/RELEASE_CHECKLIST.md)
 - [Balance workflow](docs/BALANCE_WORKFLOW.md)
 - [Visual style guide](docs/UI_STYLE_GUIDE.md)
 - [Google Play release roadmap](docs/RELEASE_ROADMAP.md)
 - [Asset provenance](docs/ASSET_PROVENANCE.md)
 - [Bunker Forty-One narrative map](docs/BUNKER41_NARRATIVE.md)
+- [Story map: micro scenes, chains, and loot routes](docs/STORY_MAP.md)
 - [Mega-Chain expansion progress](docs/MEGA_CHAIN_EXPANSION.md)
 - [Living Road narrative bible](docs/LIVING_ROAD_NARRATIVE_BIBLE.md)
 
