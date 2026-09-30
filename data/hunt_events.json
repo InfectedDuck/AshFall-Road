@@ -1,0 +1,276 @@
+{
+  "events": [
+    {
+      "id": "hunt_spark_evidence",
+      "title": "Scorch on the Cable Tray",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 2, "max_region_index": 3},
+      "scene_role": "compact",
+      "body": "A cable tray runs blackened along the marsh road, insulation shed in curls and the metal underneath bright with fresh arcing. Something big feeds here, regularly, and something in the scorch pattern says it nests close. A disruptor pike and proper insulator rigs would pay for themselves against a beast like this, for a hunter willing to work for them.",
+      "choices": [
+        {
+          "label": "Track the draw to its nest",
+          "approach": "survival",
+          "check": {"stat": "wits", "difficulty": "favorable"},
+          "success": {
+            "text": "You read the scorch like a ledger: feeding times, load direction, the heavy span where it sleeps between draws. The trail leads to a maintenance cut worth preparing for. You mark the approach on your map and gather yourself for the work ahead.",
+            "add_flags": ["hunt_spark_tracked"]
+          },
+          "failure": {
+            "text": "The pattern blurs under your attention, but the broad strokes hold: it feeds here and nests near. You mark what you can and resolve to prepare anyway. Partial knowledge beats none, and the tray hums its location plainly enough.",
+            "add_flags": ["hunt_spark_tracked"]
+          }
+        },
+        {
+          "label": "Strip the shed copper",
+          "approach": "force",
+          "outcome": {
+            "text": "You spend the hour harvesting shed copper instead of tracking, filling your pack with bright, valuable weight. The beast can keep its nest. Your pack grows heavier and your curiosity lighter, which is sometimes the smarter trade.",
+            "items": {"scrap_parts": 2},
+            "add_flags": ["hunt_spark_declined"]
+          }
+        },
+        {
+          "label": "Leave the tray alone",
+          "approach": "evade",
+          "outcome": {
+            "text": "You give the humming tray a wide berth and keep your pace east. Whatever feeds here is someone else's problem and someone else's prize. The lights dim behind you in sequence, indifferent to your decision.",
+            "add_flags": ["hunt_spark_declined"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hunt_spark_prep",
+      "title": "Braiding Grounds",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 2, "max_region_index": 3, "requires_flags": ["hunt_spark_tracked"], "forbids_flags": ["hunt_spark_declined"]},
+      "scene_role": "compact",
+      "body": "Before the maintenance cut, you make ready for what feeds there in the dark. Copper braid can be worked into grounding straps that throw a discharge into the dirt, and the load schedule you mapped says exactly when the beast will be heavy with current. Preparation is its own kind of courage, quieter than the fight and just as necessary.",
+      "choices": [
+        {
+          "label": "Braid grounding straps",
+          "approach": "technical",
+          "outcome": {
+            "text": "You braid the copper into straps for wrists and pack frame, testing each joint twice. The work is slow and certain. When the discharge comes, it will find dirt instead of you, and the confrontation ahead feels suddenly, manageably smaller.",
+            "items": {"grounding_straps": 1},
+            "add_flags": ["hunt_spark_ready"]
+          }
+        },
+        {
+          "label": "Study the load schedule",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "favorable"},
+          "success": {
+            "text": "You time three full draw cycles and learn the lull between them to the breath. Striking in the lull will meet it half-charged and sluggish. Knowledge, properly timed, hits harder than any single weapon you carry.",
+            "add_flags": ["hunt_spark_ready"]
+          },
+          "failure": {
+            "text": "The cycles refuse your timing and blur together, but the attempt teaches your hands the tray layout blind. You will fight it on instinct rather than schedule. Instinct, sharpened by the studying, will have to be enough.",
+            "pressures": {"fatigue": 6},
+            "add_flags": ["hunt_spark_ready"]
+          }
+        },
+        {
+          "label": "Think better of it",
+          "approach": "evade",
+          "outcome": {
+            "text": "The tray hums louder as dusk comes on, and prudence wins the argument. You coil your preparations back into the pack and walk east with what you have. The nest keeps its beast. You keep your skin, which was always the point.",
+            "add_flags": ["hunt_spark_declined"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hunt_spark_confront",
+      "title": "The Maintenance Cut",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 2, "max_region_index": 4, "requires_flags": ["hunt_spark_ready"], "forbids_flags": ["hunt_spark_declined"]},
+      "scene_role": "compact",
+      "adversary_id": "cable_eater",
+      "body": "The maintenance cut narrows to a cable bed where the Eater bridges the severed lines, lit from within by its own stolen current. It knows you are here; the lights steady on your chest like a decision. Your preparations hold: straps, schedule, nerve. The only remaining question is the oldest one on the road, asked in copper and answered in blood.",
+      "choices": [
+        {
+          "label": "Fight it on the cable bed",
+          "approach": "combat",
+          "combat": {"adversary_id": "cable_eater", "can_flee": true},
+          "victory": {
+            "text": "You take it apart on its own bed, grounding every surge and answering every lunge until the lights go out one by one. From the wreck you pull a copper-wound pike some dead crew left behind, still true. The tray goes dark and stays dark, and the road east runs quiet.",
+            "items": {"spark_lance": 1},
+            "add_flags": ["hunt_spark_closed"]
+          }
+        },
+        {
+          "label": "Lure it onto your grounds",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "risky"},
+          "success": {
+            "text": "You bait it across your braided grounds with a live shunt, and the discharge meant for you spends itself into the dirt. Drained and confused, it surrenders the cable bed without a final exchange. The abandoned pike among the wreckage is suddenly, peacefully yours.",
+            "items": {"spark_lance": 1},
+            "add_flags": ["hunt_spark_closed"]
+          },
+          "failure": {
+            "text": "The lure works too well and the surge finds you before the grounds do. You weather it badly, teeth aching with current, and retreat with singed gear and a complete education. The pike stays where it lies, and so, for now, does the beast.",
+            "pressures": {"health": -20},
+            "add_conditions": ["burned"],
+            "add_flags": ["hunt_spark_closed"]
+          }
+        },
+        {
+          "label": "Take the copper and go",
+          "approach": "evade",
+          "outcome": {
+            "text": "At the last breath you choose the copper over the kill, stripping the side runs while it watches, sated and incurious. Your pack fills with bright metal. The hunt ends uncompleted but profitable, which the road counts as wisdom as often as not.",
+            "items": {"scrap_parts": 3},
+            "add_flags": ["hunt_spark_closed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hunt_hound_evidence",
+      "title": "Plates in the Dust",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 4, "max_region_index": 5},
+      "scene_role": "compact",
+      "body": "Bone plates lie scattered where something scraped them loose, each one edged with old blood, and the caches nearby are half-eaten in a pattern too deliberate for frenzy. An Ossuary Hound dens close by, big and scarred and patient. Silvered arms and cured bone plate would answer such a beast, for a hunter willing to earn them the hard way.",
+      "choices": [
+        {
+          "label": "Read its trails",
+          "approach": "survival",
+          "check": {"stat": "wits", "difficulty": "favorable"},
+          "success": {
+            "text": "You read the pause-and-sniff pattern of its patrols and find the den approach it favors: downwind, rocky, loud underfoot for anything heavier than you. Knowledge of the ground is half the kill. You mark the trail and ready yourself accordingly.",
+            "add_flags": ["hunt_hound_tracked"]
+          },
+          "failure": {
+            "text": "The trails cross and recross until your head spins, but the den direction holds: toward the glass canyons, always returning. You know enough to find it and enough to fear it properly. Fear, correctly aimed, is only another kind of preparation.",
+            "add_flags": ["hunt_hound_tracked"]
+          }
+        },
+        {
+          "label": "Take the shed plates",
+          "approach": "force",
+          "outcome": {
+            "text": "You gather the shed plates and the best of the leftovers, leaving the den and its owner strictly alone. Bone is valuable and unguarded, right up until it is guarded. You choose the profitable version of this story and walk on heavier.",
+            "items": {"scrap_parts": 2},
+            "add_flags": ["hunt_hound_declined"]
+          }
+        },
+        {
+          "label": "Give the den wide berth",
+          "approach": "evade",
+          "outcome": {
+            "text": "You mark the den on your map as a place to never be, and route yourself accordingly. The Hound keeps its canyon. You keep everything attached, which against this particular beast counts as a victory most hunters never manage.",
+            "add_flags": ["hunt_hound_declined"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hunt_hound_prep",
+      "title": "Pads and Silver",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 4, "max_region_index": 5, "requires_flags": ["hunt_hound_tracked"], "forbids_flags": ["hunt_hound_declined"]},
+      "scene_role": "compact",
+      "body": "Before the canyon, you prepare against its two habits: the love of blood and the speed of its knitting flesh. Clotting pads can hold a wound shut under firm pressure, and anything silvered will keep its seams from closing afterward. The den waits downwind in the cold dusk ahead. Readiness is the only armor that never weighs anything at all.",
+      "choices": [
+        {
+          "label": "Mix clotting pads",
+          "approach": "medical",
+          "outcome": {
+            "text": "You work ash and silk into pads that hold under a thumb's pressure, packing them where your hands can find them blind. Bleeding, should it come, will meet preparation instead of panic. The canyon feels a fraction less like a mouth.",
+            "items": {"clotting_poultice": 1},
+            "add_flags": ["hunt_hound_ready"]
+          }
+        },
+        {
+          "label": "Study how it knits",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "favorable"},
+          "success": {
+            "text": "You watch a smaller scuffle from cover and time its knitting: fast, but it pauses to worry the seam first. A Riposte landed in that pause, especially silvered, should hold it open. The observation feels like finding a loose thread in armor.",
+            "add_flags": ["hunt_hound_ready"]
+          },
+          "failure": {
+            "text": "It catches your scent mid-watch and you spend an hour up a rock being evaluated as food. The evaluation concludes you are not worth the climb. You learn its patience firsthand, which is intelligence of a sort, and prepare accordingly.",
+            "pressures": {"fatigue": 6},
+            "add_flags": ["hunt_hound_ready"]
+          }
+        },
+        {
+          "label": "Think better of it",
+          "approach": "evade",
+          "outcome": {
+            "text": "The canyon breathes cold at dusk and your nerve fails honestly. You pack the preparations away and route around the whole territory. The Hound keeps its bones. You keep your blood, and call the exchange fair.",
+            "add_flags": ["hunt_hound_declined"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hunt_hound_confront",
+      "title": "The Glass Canyon",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 4, "max_region_index": 5, "requires_flags": ["hunt_hound_ready"], "forbids_flags": ["hunt_hound_declined"]},
+      "scene_role": "compact",
+      "adversary_id": "ossuary_hound",
+      "body": "The canyon narrows to a bone-white den where the Hound waits with plates raised, having smelled you coming for the last half mile. It does not posture or waste motion. It simply positions itself between you and the only exit, the way professionals do. Your pads sit ready, your plan holds. The rest is the ancient negotiation of tooth and intention.",
+      "choices": [
+        {
+          "label": "Face it in the den",
+          "approach": "combat",
+          "combat": {"adversary_id": "ossuary_hound", "can_flee": true},
+          "victory": {
+            "text": "You kill it in its own den, answering every lunge and stopping every knitting until the plates lie still. From the carcass you take a silvered cleaver some dead hunter carried in, and plate enough for armor. The canyon keeps the bones. You keep everything else.",
+            "items": {"silvered_cleaver": 1, "ossuary_plates": 1},
+            "add_flags": ["hunt_hound_closed"]
+          }
+        },
+        {
+          "label": "Snare it silvered",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "risky"},
+          "success": {
+            "text": "You rig the den mouth with wire and a silvered edge, and the Hound arrives exactly as your reading promised. The snare holds it long enough for one true blow, and the den is suddenly, permanently quiet. The silvered cleaver in its old cache is practically a bequest.",
+            "items": {"silvered_cleaver": 1},
+            "add_flags": ["hunt_hound_closed"]
+          },
+          "failure": {
+            "text": "The snare trips early and the Hound comes through it furious, taking payment in blood before you break contact. You escape the canyon with your life and a vivid understanding of its patience. The cleaver stays in the den, and so does your appetite for it.",
+            "pressures": {"health": -20},
+            "add_conditions": ["bleeding"],
+            "add_flags": ["hunt_hound_closed"]
+          }
+        },
+        {
+          "label": "Rob the den and run",
+          "approach": "evade",
+          "outcome": {
+            "text": "While it patrols the far ridge you slip in, take the best loose salvage, and get clear before the wind turns. No kill, no glory, but a heavy pack and unbroken skin. The canyon keeps its master. You keep the profit, which spends just as well.",
+            "items": {"scrap_parts": 3},
+            "add_flags": ["hunt_hound_closed"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -4311,7 +4311,9 @@
               "medkit": 1,
               "rad_tabs": 1,
               "ration_bar": 1,
-              "gunslinger_holster": 1
+              "gunslinger_holster": 1,
+              "incendiary_charge": 1,
+              "coolant_canister": 1
             }
           },
           "failure": {

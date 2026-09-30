@@ -916,6 +916,662 @@
           "character_state": "Anselm's voice follows three steps and stops."
         }
       ]
+    },
+    {
+      "id": "ledger_rhea_meeting",
+      "thread": "Rhea Sorn",
+      "order": 10,
+      "event_id": "rhea_meeting",
+      "hint": "A wrench offered before any price is named.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "met",
+          "requires_any_flags": [
+            "rhea_met"
+          ],
+          "title": "Hands on the Pump",
+          "body": "Rhea Sorn fixed a seized way-station pump before asking anything, and the survivor learned the seating of the valve beside her. A companionship started with work rather than words.",
+          "character_state": "Rhea travels within sight of the survivor."
+        },
+        {
+          "id": "declined",
+          "requires_any_flags": [
+            "rhea_declined"
+          ],
+          "title": "Help Refused",
+          "body": "The survivor stripped the pump alone and left the offered wrench untouched. Rhea Sorn walked on without pressing, and the road stayed solitary.",
+          "character_state": "Rhea walks her own road."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_competence",
+      "thread": "Rhea Sorn",
+      "order": 20,
+      "event_id": "rhea_competence",
+      "hint": "A dropped walkway over black water.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "trusted",
+          "requires_any_flags": [
+            "rhea_trust_1"
+          ],
+          "title": "The Walkway Held",
+          "body": "Survivor and Rhea crossed the collapsed walkway by combining strength and judgment, and the shared crossing turned acquaintance into reliance.",
+          "character_state": "Rhea trusts the survivor under pressure."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_quiet",
+      "thread": "Rhea Sorn",
+      "order": 30,
+      "event_id": "rhea_quiet",
+      "hint": "Tea, rain, and half a remembered song.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "quiet",
+          "requires_any_flags": [
+            "rhea_quiet"
+          ],
+          "title": "Tea from a Dented Kettle",
+          "body": "Under a culvert awning Rhea shared real tea and her grandmother's road song. Small kindnesses, freely given, made the companionship personal.",
+          "character_state": "Rhea shares her private comforts."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_disagreement",
+      "thread": "Rhea Sorn",
+      "order": 40,
+      "event_id": "rhea_disagreement",
+      "hint": "A stripped camp and a line that does not move.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "rift",
+          "requires_any_flags": [
+            "rhea_disagreement"
+          ],
+          "title": "What She Will Not Do",
+          "body": "Rhea refused to strip a camp whose owners might return, and the survivor learned where her boundaries lie. The disagreement left the bond sturdier for being tested.",
+          "character_state": "Rhea holds her lines openly."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_vulnerability",
+      "thread": "Rhea Sorn",
+      "order": 50,
+      "event_id": "rhea_vulnerability",
+      "hint": "A locked room she dreams of.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "vulnerable",
+          "requires_any_flags": [
+            "rhea_vulnerable"
+          ],
+          "title": "The Locked Door",
+          "body": "Rhea told the story of the winter storage room and the door she wants to lock from inside. The survivor stood watch or planned latches, and trust deepened past convenience.",
+          "character_state": "Rhea has shown her fear."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_closeness",
+      "thread": "Rhea Sorn",
+      "order": 60,
+      "event_id": "rhea_closeness",
+      "hint": "A quiet camp and an unasked question.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "close",
+          "requires_any_flags": [
+            "rhea_close"
+          ],
+          "title": "More Than the Road",
+          "body": "The survivor asked plainly and Rhea answered in kind. What grew between them was chosen, not rolled or bought, built from every mile already shared.",
+          "character_state": "Rhea and the survivor are lovers."
+        },
+        {
+          "id": "friend",
+          "requires_any_flags": [
+            "rhea_friend"
+          ],
+          "title": "Chosen Kin",
+          "body": "The survivor named the bond friendship and meant it. Rhea clasped forearms with the survivor, sealing a kinship the road rarely grants.",
+          "character_state": "Rhea and the survivor are sworn friends."
+        },
+        {
+          "id": "distant",
+          "requires_any_flags": [
+            "rhea_distant"
+          ],
+          "title": "Left Unnamed",
+          "body": "The evening passed without naming anything, and the companionship cooled by an unspoken degree. The question was shelved but not answered.",
+          "character_state": "Rhea keeps a polite distance."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_promise",
+      "thread": "Rhea Sorn",
+      "order": 70,
+      "event_id": "rhea_promise",
+      "hint": "One promise and three roads forward.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "shelter",
+          "requires_any_flags": [
+            "rhea_route_shelter"
+          ],
+          "title": "The Shelter Road",
+          "body": "They promised to get each other through the shelter road and meet at its inner door, blanket packed and maps marked alike.",
+          "character_state": "Rhea walks the shelter road."
+        },
+        {
+          "id": "smuggler",
+          "requires_any_flags": [
+            "rhea_route_smuggler"
+          ],
+          "title": "The Smuggler Passage",
+          "body": "They promised to talk their way through the smuggler passage side by side, cover stories drilled until the worst lies improved.",
+          "character_state": "Rhea walks the smuggler passage."
+        },
+        {
+          "id": "filtration",
+          "requires_any_flags": [
+            "rhea_route_filtration"
+          ],
+          "title": "The Filtration Station",
+          "body": "They promised to keep each other out of the water through the filtration station, valve order recited twice and drainage wheels marked.",
+          "character_state": "Rhea walks to the filtration station."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_betrayal_shelter",
+      "thread": "Rhea Sorn",
+      "order": 80,
+      "event_id": "rhea_betrayal_shelter",
+      "hint": "Two cups poured from one kettle.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "betrayed",
+          "requires_any_flags": [
+            "rhea_betrayed_shelter"
+          ],
+          "title": "The Shared Cup",
+          "body": "Rhea handed over a poisoned cup bought with a Citadel promise of passage east. The survivor read the taste or paid in medicine and lived to name it.",
+          "character_state": "Rhea chose her escape over the survivor."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_betrayal_smuggler",
+      "thread": "Rhea Sorn",
+      "order": 81,
+      "event_id": "rhea_betrayal_smuggler",
+      "hint": "A lantern swung twice at the barricade.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "betrayed",
+          "requires_any_flags": [
+            "rhea_betrayed_smuggler"
+          ],
+          "title": "The Signal",
+          "body": "Rhea opened the survivor's side and signaled the collectors for her own passage east. The survivor fought, fled, or paid through the line.",
+          "character_state": "Rhea sold the survivor at the barricade."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_betrayal_filtration",
+      "thread": "Rhea Sorn",
+      "order": 82,
+      "event_id": "rhea_betrayal_filtration",
+      "hint": "A chamber door clanging shut above dark water.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "betrayed",
+          "requires_any_flags": [
+            "rhea_betrayed_filtration"
+          ],
+          "title": "The Chamber Door",
+          "body": "Rhea shouldered the survivor into the Maw chamber and shut the door for her passage east. The survivor killed the Maw, worked the wheels, or forced the grate.",
+          "character_state": "Rhea fed the survivor to the Maw."
+        }
+      ]
+    },
+    {
+      "id": "ledger_rhea_aftermath",
+      "thread": "Rhea Sorn",
+      "order": 90,
+      "event_id": "rhea_aftermath",
+      "hint": "A thinner woman waiting at the crossing.",
+      "characters": [
+        "rhea_sorn"
+      ],
+      "variants": [
+        {
+          "id": "answers",
+          "requires_any_flags": [
+            "rhea_answers"
+          ],
+          "title": "The Whole Truth",
+          "body": "The survivor made Rhea speak it all: intermediary, price, and moment of choosing. No forgiveness passed, but understanding did.",
+          "character_state": "Rhea answered for everything."
+        },
+        {
+          "id": "restitution",
+          "requires_any_flags": [
+            "rhea_restitution"
+          ],
+          "title": "Paid in Kind",
+          "body": "The survivor named a price in rations and cartridges, and Rhea paid it all without argument. It did not balance; it acknowledged.",
+          "character_state": "Rhea paid what she could."
+        },
+        {
+          "id": "refused",
+          "requires_any_flags": [
+            "rhea_refused"
+          ],
+          "title": "Walked Past",
+          "body": "The survivor walked past without stopping. Some doors lock from the inside for good reason.",
+          "character_state": "Rhea was refused entirely."
+        },
+        {
+          "id": "accepted",
+          "requires_any_flags": [
+            "rhea_accepted"
+          ],
+          "title": "Heard Without Forgiving",
+          "body": "The survivor listened to the whole of it without forgiving. Rhea was heard as a person who did a cruel thing.",
+          "character_state": "Rhea was heard, not forgiven."
+        }
+      ]
+    },
+    {
+      "id": "ledger_tess_meeting",
+      "thread": "Tess Arlen",
+      "order": 10,
+      "event_id": "tess_meeting",
+      "hint": "A pinned sled and a flat stare.",
+      "characters": [
+        "tess_arlen"
+      ],
+      "variants": [
+        {
+          "id": "met",
+          "requires_any_flags": [
+            "tess_met"
+          ],
+          "title": "The Pinned Sled",
+          "body": "Tess Arlen needed hands for a fallen signpost and the survivor lent them. A grudging respect started there, the way it always does with her: through work.",
+          "character_state": "Tess counts the survivor as useful."
+        },
+        {
+          "id": "declined",
+          "requires_any_flags": [
+            "tess_declined"
+          ],
+          "title": "Walked Past",
+          "body": "The survivor left Tess Arlen to her pinned sled. She managed or she did not; either way the road stayed solitary.",
+          "character_state": "Tess walks alone."
+        }
+      ]
+    },
+    {
+      "id": "ledger_tess_work",
+      "thread": "Tess Arlen",
+      "order": 20,
+      "event_id": "tess_work",
+      "hint": "Copper sorted coil for coil.",
+      "characters": [
+        "tess_arlen"
+      ],
+      "variants": [
+        {
+          "id": "worked",
+          "requires_any_flags": [
+            "tess_worked"
+          ],
+          "title": "Copper by the Coil",
+          "body": "An hour of shared salvage proved the survivor keeps pace and pays exact. Reliability is her whole language, and the survivor started speaking it.",
+          "character_state": "Tess trusts the survivor's hands."
+        }
+      ]
+    },
+    {
+      "id": "ledger_tess_boundary",
+      "thread": "Tess Arlen",
+      "order": 30,
+      "event_id": "tess_boundary",
+      "hint": "A question refused at the fire.",
+      "characters": [
+        "tess_arlen"
+      ],
+      "variants": [
+        {
+          "id": "boundary",
+          "requires_any_flags": [
+            "tess_boundary"
+          ],
+          "title": "No Questions Asked",
+          "body": "Tess set her boundary over histories and the survivor respected it. Given freely later, one small truth landed heavier than anything pried.",
+          "character_state": "Tess guards her past less fiercely."
+        }
+      ]
+    },
+    {
+      "id": "ledger_tess_past",
+      "thread": "Tess Arlen",
+      "order": 40,
+      "event_id": "tess_past",
+      "hint": "Certification papers, burned.",
+      "characters": [
+        "tess_arlen"
+      ],
+      "variants": [
+        {
+          "id": "past",
+          "requires_any_flags": [
+            "tess_past"
+          ],
+          "title": "Burned Papers",
+          "body": "Tess confessed she burned her Citadel salvage papers rather than strip the living. Her secret was shame and pride, never a threat to the survivor.",
+          "character_state": "Tess has shown her past."
+        }
+      ]
+    },
+    {
+      "id": "ledger_tess_crisis",
+      "thread": "Tess Arlen",
+      "order": 50,
+      "event_id": "tess_crisis",
+      "hint": "A registrar crew with stamped writs.",
+      "characters": [
+        "tess_arlen"
+      ],
+      "variants": [
+        {
+          "id": "stood",
+          "requires_any_flags": [
+            "tess_crisis_done"
+          ],
+          "title": "The Registrar Crew",
+          "body": "When the registrars came with muscle, survivor and Tess stood the claim together by force, talk, or escape. She guarded the survivor's flank as promised.",
+          "character_state": "Tess proved reliable under threat."
+        }
+      ]
+    },
+    {
+      "id": "ledger_tess_ending",
+      "thread": "Tess Arlen",
+      "order": 60,
+      "event_id": "tess_ending",
+      "hint": "A claim west and a gate east.",
+      "characters": [
+        "tess_arlen"
+      ],
+      "variants": [
+        {
+          "id": "stayed",
+          "requires_any_flags": [
+            "tess_stayed"
+          ],
+          "title": "Partners East",
+          "body": "Tess walked east as partners on even shares, her stamp and the survivor's road bound together.",
+          "character_state": "Tess travels east."
+        },
+        {
+          "id": "friends",
+          "requires_any_flags": [
+            "tess_friends"
+          ],
+          "title": "A Plan, Not a Loss",
+          "body": "They parted with promises and a stamped coil for earnest. The parting felt like a plan rather than a loss.",
+          "character_state": "Tess walks west to her claim."
+        },
+        {
+          "id": "parted",
+          "requires_any_flags": [
+            "tess_parted"
+          ],
+          "title": "Kind Parting",
+          "body": "They parted kindly at the crossing with no resented promises. The most reliable hands on the road returned to free work.",
+          "character_state": "Tess walks her own road."
+        }
+      ]
+    },
+    {
+      "id": "ledger_mina_meeting",
+      "thread": "Mina Holt",
+      "order": 10,
+      "event_id": "mina_meeting",
+      "hint": "Triage at a wind-scoured crossing.",
+      "characters": [
+        "mina_holt"
+      ],
+      "variants": [
+        {
+          "id": "met",
+          "requires_any_flags": [
+            "mina_met"
+          ],
+          "title": "Triage at the Crossing",
+          "body": "Mina Holt put the survivor to work over wounded haulers without ceremony. Competent hands earned her proper use of a name, which among medics is a vow.",
+          "character_state": "Mina counts the survivor as help."
+        },
+        {
+          "id": "declined",
+          "requires_any_flags": [
+            "mina_declined"
+          ],
+          "title": "Walked Past",
+          "body": "The survivor walked past Mina Holt's triage. Her measured look followed longer than the crossing dust.",
+          "character_state": "Mina works without the survivor."
+        }
+      ]
+    },
+    {
+      "id": "ledger_mina_aid",
+      "thread": "Mina Holt",
+      "order": 20,
+      "event_id": "mina_aid",
+      "hint": "A straggling band around a cookfire.",
+      "characters": [
+        "mina_holt"
+      ],
+      "variants": [
+        {
+          "id": "aided",
+          "requires_any_flags": [
+            "mina_aided"
+          ],
+          "title": "The Crossing Band",
+          "body": "The survivor hauled, organized, or child-watched for Mina's Crossing Band. No one east walks unfed or unwitnessed on her watch, and now the survivor helps keep it so.",
+          "character_state": "Mina trusts the survivor with her people."
+        }
+      ]
+    },
+    {
+      "id": "ledger_mina_vow",
+      "thread": "Mina Holt",
+      "order": 30,
+      "event_id": "mina_vow",
+      "hint": "Terms stated like a dosage.",
+      "characters": [
+        "mina_holt"
+      ],
+      "variants": [
+        {
+          "id": "vowed",
+          "requires_any_flags": [
+            "mina_vowed"
+          ],
+          "title": "What She Asks",
+          "body": "Mina asked one thing: never to be asked to abandon her people. The survivor promised outright or hedged honestly, and the boundary held clearly marked.",
+          "character_state": "Mina's vow is understood."
+        }
+      ]
+    },
+    {
+      "id": "ledger_mina_trial",
+      "thread": "Mina Holt",
+      "order": 40,
+      "event_id": "mina_trial",
+      "hint": "Skiffs cut the trail ahead.",
+      "characters": [
+        "mina_holt"
+      ],
+      "variants": [
+        {
+          "id": "stood",
+          "requires_any_flags": [
+            "mina_stood"
+          ],
+          "title": "Stood With the Band",
+          "body": "When raiders cut the trail, the survivor stood, talked, or paid the Band through. Mina's hands shook afterward for the first time since they met.",
+          "character_state": "Mina stands with the survivor."
+        },
+        {
+          "id": "left",
+          "requires_any_flags": [
+            "mina_left"
+          ],
+          "title": "The Dry Route",
+          "body": "The survivor took the dry route around and Mina stayed with her people as promised. The road east ran faster and considerably emptier.",
+          "character_state": "Mina stayed; the survivor walked on."
+        }
+      ]
+    },
+    {
+      "id": "ledger_mina_vigil",
+      "thread": "Mina Holt",
+      "order": 50,
+      "event_id": "mina_vigil",
+      "hint": "Whatever shape the trail left.",
+      "characters": [
+        "mina_holt"
+      ],
+      "variants": [
+        {
+          "id": "vigil",
+          "requires_any_flags": [
+            "mina_vigil"
+          ],
+          "title": "After the Trail",
+          "body": "What came after was tending, counting, or resting: the next necessary thing, done properly. The road rewards attention slowly and then all at once.",
+          "character_state": "Mina endures."
+        }
+      ]
+    },
+    {
+      "id": "ledger_mina_ending",
+      "thread": "Mina Holt",
+      "order": 60,
+      "event_id": "mina_ending",
+      "hint": "A lamp in a side room.",
+      "characters": [
+        "mina_holt"
+      ],
+      "variants": [
+        {
+          "id": "together",
+          "requires_any_flags": [
+            "mina_together"
+          ],
+          "title": "The Lamp-Lit Room",
+          "body": "The survivor took a place among the Band beside Mina's work. People, kept alive on purpose, proved enough to walk toward.",
+          "character_state": "Mina and the survivor walk together."
+        },
+        {
+          "id": "friends",
+          "requires_any_flags": [
+            "mina_friends"
+          ],
+          "title": "Sworn Friends",
+          "body": "They parted with vows and routes shared, a field dressing pressed into the survivor's hand. Someone east knows the survivor's name and worth.",
+          "character_state": "Mina counts the survivor as kin."
+        },
+        {
+          "id": "parted",
+          "requires_any_flags": [
+            "mina_parted"
+          ],
+          "title": "Left to the Work",
+          "body": "The survivor left the lamp burning behind without ceremony. The Band has its medic; the road has its traveler; both arrangements are honest.",
+          "character_state": "Mina works on."
+        }
+      ]
+    },
+    {
+      "id": "ledger_hunt_spark",
+      "thread": "The Spark Hunt",
+      "order": 20,
+      "event_id": "hunt_spark_confront",
+      "hint": "Scorch on the cable tray.",
+      "characters": [],
+      "variants": [
+        {
+          "id": "closed",
+          "requires_any_flags": [
+            "hunt_spark_closed"
+          ],
+          "title": "The Maintenance Cut",
+          "body": "The survivor tracked, prepared, and faced what fed on the cable tray, and the tray went dark and stayed dark.",
+          "character_state": "The cable run is quiet."
+        }
+      ]
+    },
+    {
+      "id": "ledger_hunt_hound",
+      "thread": "The Hound Hunt",
+      "order": 40,
+      "event_id": "hunt_hound_confront",
+      "hint": "Plates scattered in the dust.",
+      "characters": [],
+      "variants": [
+        {
+          "id": "closed",
+          "requires_any_flags": [
+            "hunt_hound_closed"
+          ],
+          "title": "The Glass Canyon",
+          "body": "The survivor tracked, prepared, and faced the Ossuary Hound in its canyon. The den keeps the bones; the hunter keeps the rest.",
+          "character_state": "The canyon is quiet."
+        }
+      ]
     }
   ]
 }

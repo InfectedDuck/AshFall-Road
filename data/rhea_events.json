@@ -1,0 +1,856 @@
+{
+  "events": [
+    {
+      "id": "rhea_meeting",
+      "title": "Hands on the Jammed Pump",
+      "global": true,
+      "weight": 4,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {
+        "min_region_index": 1,
+        "max_region_index": 2
+      },
+      "scene_role": "compact",
+      "body": "The way-station pump has seized halfway through your fill, handle locked and gasket hissing. You are weighing whether to strip it bare-handed when a woman in a patched oilskin steps out of the wind with a wrench already in her hand. Rhea Sorn, she says, like someone introducing a fact rather than asking for trust. She kneels at the housing without waiting for permission, talks you through holding the line steady, and has water moving again before the dust settles.",
+      "choices": [
+        {
+          "label": "Hold the line and learn the trick",
+          "approach": "technical",
+          "outcome": {
+            "text": "You hold the housing exactly where she shows you while she works the valve free with two deft turns. Water runs cold over both your hands. She grins at the gush like it is a small personal victory, wipes the wrench on her sleeve, and hands it over so you can feel the seating yourself. You part knowing the pump and half-knowing her.",
+            "items": {
+              "clean_water": 1
+            },
+            "add_flags": [
+              "rhea_met"
+            ]
+          }
+        },
+        {
+          "label": "Share a meal while she works",
+          "approach": "social",
+          "requires": {
+            "items": {
+              "canned_meat": 1
+            },
+            "reason": "You have no food to share"
+          },
+          "costs": {
+            "items": {
+              "canned_meat": 1
+            }
+          },
+          "outcome": {
+            "text": "You open a tin without ceremony and split it on the pump housing while she works. She eats one-handed, never stopping, and pays you back in practical coin: which gaskets fail first, which stations run dry by dusk, which road east holds water longest. The meal costs little and buys a companionable hour.",
+            "items": {
+              "clean_water": 1
+            },
+            "add_flags": [
+              "rhea_met"
+            ]
+          }
+        },
+        {
+          "label": "Refuse help and strip it alone",
+          "approach": "force",
+          "outcome": {
+            "text": "You wave her off and wrestle the housing yourself, skinning two knuckles before the valve gives. She watches without pressing, offers the wrench once more, and leaves it on the housing when you shake your head. The pump runs. The road feels exactly as solitary as you insisted on keeping it.",
+            "pressures": {
+              "health": -6
+            },
+            "add_flags": [
+              "rhea_declined"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_competence",
+      "title": "The Collapsed Walkway",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {
+        "min_region_index": 2,
+        "max_region_index": 3,
+        "requires_flags": [
+          "rhea_met"
+        ]
+      },
+      "scene_role": "compact",
+      "body": "A plank walkway over black marsh water has dropped at one end, leaving a gap too wide to step and too unstable to rush. Rhea finds you studying it from the bank. She does not suggest turning back. She points out the sunken piling, the rope still holding on the far side, and the way your weight plus hers could steady the span long enough for one crossing at a time.",
+      "choices": [
+        {
+          "label": "Anchor while she crosses first",
+          "approach": "force",
+          "check": {
+            "stat": "strength",
+            "difficulty": "favorable"
+          },
+          "success": {
+            "text": "You brace the near end into the mud and take her weight on the rope without wavering. She crosses light and quick, secures the far side around the piling, and talks you over plank by plank. Midway the span groans and you both laugh from nerves. You reach the far bank together, muddy and pleased.",
+            "add_flags": [
+              "rhea_trust_1"
+            ]
+          },
+          "failure": {
+            "text": "The near end slips in the mud and the span drops another handspan, dunking you both to the knees in cold water. You haul it back by main force while she swears cheerfully and re-seats the rope. The crossing takes twice as long and leaves you soaked, but you make it side by side.",
+            "pressures": {
+              "fatigue": 8
+            },
+            "add_flags": [
+              "rhea_trust_1"
+            ]
+          }
+        },
+        {
+          "label": "Read the structure and direct her",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "favorable"
+          },
+          "success": {
+            "text": "You spot the cracked stringer before trusting it and reroute across the sound planks in three moves. Rhea follows your calls exactly, adding her own eye for the rope angles. The plan holds. On the far bank she bumps your shoulder with hers and calls it good teamwork.",
+            "add_flags": [
+              "rhea_trust_1"
+            ]
+          },
+          "failure": {
+            "text": "Your first route puts a boot through a rotted plank and you spend an embarrassing minute extracting yourself while Rhea holds the rope and tries not to laugh. Her second suggestion works better. You cross damp and chastened, and she pretends the splash was entirely dignified.",
+            "pressures": {
+              "fatigue": 8
+            },
+            "add_flags": [
+              "rhea_trust_1"
+            ]
+          }
+        },
+        {
+          "label": "Cross separately and quickly",
+          "approach": "evade",
+          "outcome": {
+            "text": "You each take a different line across the wreckage, moving fast and light without relying on the other. It works, barely, and you meet on the far bank breathing hard. Rhea admits your way was faster and hers was safer, and you agree the combination would have beaten either alone.",
+            "add_flags": [
+              "rhea_trust_1"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_quiet",
+      "title": "Tea from a Dented Kettle",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {
+        "min_region_index": 2,
+        "max_region_index": 3,
+        "requires_flags": [
+          "rhea_trust_1"
+        ]
+      },
+      "scene_role": "compact",
+      "body": "Rain pins you both under a culvert awning an hour before dusk. Rhea produces a dented kettle, a twist of real tea, and two tin cups with the solemnity of a ceremony. While the water heats over a twig fire she hums an old road song under her breath, stops when she notices you listening, and then, daring herself, sings the next verse properly.",
+      "choices": [
+        {
+          "label": "Drink and ask about the song",
+          "approach": "social",
+          "outcome": {
+            "text": "The tea is bitter and wonderful. She tells you the song came from her grandmother, who sang it while mending nets, and she only remembers every third verse. You learn the chorus together and sing it badly into the rain. It costs her something to share it, and she seems glad to have paid.",
+            "pressures": {
+              "fatigue": -6
+            },
+            "add_flags": [
+              "rhea_quiet"
+            ]
+          }
+        },
+        {
+          "label": "Show her something absurd you found",
+          "approach": "survival",
+          "outcome": {
+            "text": "You produce the wind-up toy bird from your pack and let it hop across the concrete until it topples. She laughs until tea comes out of her nose, winds it herself, and races it against a bottle cap. The rain drums on. For one hour the road is only weather and company.",
+            "pressures": {
+              "fatigue": -6
+            },
+            "add_flags": [
+              "rhea_quiet"
+            ]
+          }
+        },
+        {
+          "label": "Sit out the rain in silence",
+          "approach": "evade",
+          "outcome": {
+            "text": "You drink your tea and watch the rain stitch the culvert mouth shut, comfortable enough to say nothing. She seems to understand the quiet is not rejection. When the clouds thin she packs the kettle with care, and the unspoken hour sits between you like something kept.",
+            "pressures": {
+              "fatigue": -6
+            },
+            "add_flags": [
+              "rhea_quiet"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_disagreement",
+      "title": "What She Will Not Do",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {
+        "min_region_index": 3,
+        "max_region_index": 4,
+        "requires_flags": [
+          "rhea_quiet"
+        ]
+      },
+      "scene_role": "compact",
+      "body": "At a stripped way-station you suggest cutting through the supplies of a camp whose owners are only a day gone. Rhea goes still in a way you have not seen before. She says she has taken water from the careless and tools from the dead, but she will not strip people who might walk back into an empty camp. Her voice stays even. Her boundary does not move.",
+      "choices": [
+        {
+          "label": "Respect the line and move on",
+          "approach": "social",
+          "outcome": {
+            "text": "You let the camp stand and walk on with her, foraging an hour further for your own dinner. She is quieter than usual at first, then grateful in the practical way she does everything: an extra watch shift taken without announcement. The disagreement settles into something sturdier than agreement.",
+            "add_flags": [
+              "rhea_disagreement"
+            ]
+          }
+        },
+        {
+          "label": "Argue it out on the road",
+          "approach": "force",
+          "check": {
+            "stat": "presence",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You press the case for survival arithmetic and she presses back with the arithmetic of who you become. Neither of you wins cleanly. By dusk you have mapped exactly where your lines differ, and the honesty of the fight leaves an odd warmth. You disagree, and you know each other better.",
+            "add_flags": [
+              "rhea_disagreement"
+            ]
+          },
+          "failure": {
+            "text": "The argument runs hotter than either of you intended and you sleep on opposite sides of the fire. Morning brings cold reason and a shared breakfast eaten in awkward silence. The boundary stands. So, you both realize with surprise, does the companionship.",
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "rhea_disagreement"
+            ]
+          }
+        },
+        {
+          "label": "Change the subject and walk",
+          "approach": "evade",
+          "outcome": {
+            "text": "You drop it and set the pace east, letting the miles do the talking. She falls in beside you after a while, and the shared rhythm smooths what words roughened. Some disagreements need distance rather than debate, and this one finds its own shape by nightfall.",
+            "add_flags": [
+              "rhea_disagreement"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_vulnerability",
+      "title": "The Locked Door",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {
+        "min_region_index": 3,
+        "max_region_index": 4,
+        "requires_flags": [
+          "rhea_disagreement"
+        ]
+      },
+      "scene_role": "compact",
+      "body": "Over a low fire she tells you, in pieces, about the winter she spent locked in a storage room while collectors worked through her station, and how quiet she learned to be. What she wants, she admits looking at the flames, is a room whose door she can lock from the inside. Not a fortress. Just one door that answers to her hand alone.",
+      "choices": [
+        {
+          "label": "Stand watch so she can sleep deep",
+          "approach": "survival",
+          "check": {
+            "stat": "grit",
+            "difficulty": "favorable"
+          },
+          "success": {
+            "text": "You take the whole night watch without being asked, keeping the fire low and the perimeter walked. She sleeps the unguarded sleep of someone who has decided to trust, and wakes at dawn lighter than you have ever seen her. She does not thank you in words. She does not need to.",
+            "add_flags": [
+              "rhea_vulnerable"
+            ]
+          },
+          "failure": {
+            "text": "You doze near dawn and wake to her gentle hand on your shoulder, taking the last watch herself without reproach. She tells you the intention counted for more than the execution. You resolve to do better, and her small smile says she believes you will.",
+            "pressures": {
+              "fatigue": 8
+            },
+            "add_flags": [
+              "rhea_vulnerable"
+            ]
+          }
+        },
+        {
+          "label": "Help her plan that locked room",
+          "approach": "technical",
+          "outcome": {
+            "text": "You sketch latches and bar placements in the dirt with a stick, arguing companionably over bolt thickness and hinge placement. The exercise turns fear into carpentry. By the time you kick the drawings away, the room exists somewhere east of here, and it has a door only she can bar.",
+            "add_flags": [
+              "rhea_vulnerable"
+            ]
+          }
+        },
+        {
+          "label": "Tell her something true in return",
+          "approach": "social",
+          "outcome": {
+            "text": "You trade her your own locked-room story, the one you tell no one, and the telling costs you. She listens the way she does everything that matters: completely, without reaching to fix it. When you finish, the fire has burned low and the space between you feels chosen rather than accidental.",
+            "add_flags": [
+              "rhea_vulnerable"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_closeness",
+      "title": "What to Name This",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {
+        "min_region_index": 4,
+        "max_region_index": 5,
+        "requires_flags": [
+          "rhea_vulnerable"
+        ]
+      },
+      "scene_role": "compact",
+      "body": "The road has narrowed to the two of you and the question neither has asked aloud all season. At a quiet camp above the floodline, with dinner eaten and the watch divided fairly, there is time at last to decide what this companionship is becoming. Rhea waits without pressing, mending a strap, leaving the shape of it entirely in your hands.",
+      "choices": [
+        {
+          "label": "Ask if she wants more than the road",
+          "approach": "social",
+          "outcome": {
+            "text": "You ask plainly, giving her every room to refuse, and her answer arrives slowly and then all at once. She takes your hand like someone choosing, not drifting. No roll of fortune decides it, no gift purchases it. What follows is tentative and real, built from every mile you have already walked together.",
+            "add_flags": [
+              "rhea_close"
+            ]
+          }
+        },
+        {
+          "label": "Name it friendship and mean it",
+          "approach": "social",
+          "outcome": {
+            "text": "You tell her she is the best friend the road has given you, and you mean it down to the bone. Relief and warmth cross her face together. She clasps your forearm the way travelers seal promises. Whatever the east holds, you will face it as chosen kin rather than cautious allies.",
+            "add_flags": [
+              "rhea_friend"
+            ]
+          }
+        },
+        {
+          "label": "Keep your distance for now",
+          "approach": "evade",
+          "outcome": {
+            "text": "You let the evening pass without naming anything, and she accepts the silence with grace that costs her. The companionship cools by a degree neither of you mentions. The road continues, a little lonelier, with the question shelved but not answered.",
+            "add_flags": [
+              "rhea_distant"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_promise",
+      "title": "A Small Concrete Promise",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {
+        "min_region_index": 4,
+        "max_region_index": 5,
+        "requires_any_flags": [
+          "rhea_close",
+          "rhea_friend"
+        ]
+      },
+      "scene_role": "compact",
+      "body": "With the Glass Wastes behind and the Underrail ahead, you make one small concrete promise: to get each other through the next passage and share whatever shelter waits beyond it. Three ways forward present themselves tonight, and you must pick one together. Rhea studies each route with care, already planning how to watch your back along every step of it.",
+      "choices": [
+        {
+          "label": "Take the shelter road together",
+          "approach": "survival",
+          "outcome": {
+            "text": "You choose the shelter road, with its sealed rooms and shared rations, and promise to watch each other's cups and doors. She packs an extra blanket without comment, the practical shape of affection. You mark the shelter on both your maps and agree to meet at its inner door whatever happens.",
+            "add_flags": [
+              "rhea_promise",
+              "rhea_route_shelter"
+            ]
+          }
+        },
+        {
+          "label": "Take the smuggler passage together",
+          "approach": "social",
+          "outcome": {
+            "text": "You choose the smuggler passage, with its guides and tariffs and collectors to dodge, and promise to talk your way through side by side. She drills you on cover stories all evening, laughing at your worst lies until they improve. You memorize the rendezvous and the signals together.",
+            "add_flags": [
+              "rhea_promise",
+              "rhea_route_smuggler"
+            ]
+          }
+        },
+        {
+          "label": "Take the filtration station together",
+          "approach": "technical",
+          "outcome": {
+            "text": "You choose the filtration station, with its tanks and channels and humming machinery, and promise to keep each other out of the water. She walks you through valve order twice until you can recite it. You mark the drainage wheels on your map and agree to meet above the floodline.",
+            "add_flags": [
+              "rhea_promise",
+              "rhea_route_filtration"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_betrayal_shelter",
+      "title": "The Shared Cup",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 5,
+        "requires_flags": [
+          "rhea_route_shelter"
+        ]
+      },
+      "scene_role": "compact",
+      "body": "The shelter inner room is warm and close, with a stove ticking and two cups poured from the same kettle. Rhea hands you yours with both hands the way she always does, and something in the steadiness of the gesture stops you cold. Your cup smells faintly wrong, sweet underneath the tea, and her eyes are already bright with the thing she cannot unsay. A Citadel intermediary offered her passage east, a locked room of her own, for handing you over breathing but senseless. She chose the room. She is sorry in a way that does not change anything.",
+      "choices": [
+        {
+          "label": "Read the taste and treat it fast",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "favorable"
+          },
+          "success": {
+            "text": "You know the sweet wrongness from marsh warnings and act before the room tilts: bitter tonic chased with clean water, walking it off upright while she watches stricken. The dose was measured to fell, not kill, and your quick reading keeps it that way. You stay conscious, shaking, with the betrayal laid bare between you and no longer deniable by either.",
+            "items": {
+              "clean_water": -1
+            },
+            "pressures": {
+              "fatigue": 10
+            },
+            "add_flags": [
+              "rhea_betrayed_shelter",
+              "rhea_witnessed_betrayal"
+            ]
+          },
+          "failure": {
+            "text": "You recognize the taste a breath too late and the room goes soft at the edges before the tonic takes hold. You spend a grey hour on the floor with your back to the wall, fighting the drag of it while she sits frozen with her own cup untouched. You surface furious and alive, and the truth surfaces with you.",
+            "pressures": {
+              "fatigue": 14
+            },
+            "add_conditions": [
+              "fever"
+            ],
+            "add_flags": [
+              "rhea_betrayed_shelter",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Spend the field medkit",
+          "approach": "medical",
+          "requires": {
+            "items": {
+              "medkit": 1
+            },
+            "reason": "You carry no field medkit"
+          },
+          "costs": {
+            "items": {
+              "medkit": 1
+            }
+          },
+          "outcome": {
+            "text": "You do not wait for symptoms. The medkit comes out, antiseptic and charcoal and steady hands, and you treat the dose like any other poisoning: purge, dilute, walk. Rhea tries to help and you wave her off with a look that stops her mid-step. You live through her worst choice on your own terms.",
+            "add_flags": [
+              "rhea_betrayed_shelter",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Pour it out and walk into the cold",
+          "approach": "evade",
+          "outcome": {
+            "text": "You set the cup down untouched, meet her eyes until she looks away, and walk out into the dark without another word. The cold clears what the tea never touched. You lose the shelter, the warmth, and the person you thought she was, but you keep your blood unpoisoned and your footing sure.",
+            "pressures": {
+              "fatigue": 10
+            },
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "rhea_betrayed_shelter",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Confront her before drinking",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You name what you smell before lifting the cup, and the confrontation breaks her composure into confession. She admits the intermediary, the locked room, the price, all of it pouring out while the cups cool between you. You drink nothing and learn everything, which is its own bitter nourishment.",
+            "add_flags": [
+              "rhea_betrayed_shelter",
+              "rhea_witnessed_betrayal"
+            ]
+          },
+          "failure": {
+            "text": "You accuse and she denies, and the denial costs you the moment to act before she weeps in earnest. You drink half before the sweetness registers, and spend the night walking it off around the stove while she watches. Survival, but only just, and nothing between you will ever be uncomplicated again.",
+            "pressures": {
+              "fatigue": 12
+            },
+            "add_conditions": [
+              "fever"
+            ],
+            "add_flags": [
+              "rhea_betrayed_shelter",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_betrayal_smuggler",
+      "title": "The Signal at the Barricade",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 5,
+        "requires_flags": [
+          "rhea_route_smuggler"
+        ]
+      },
+      "scene_role": "compact",
+      "adversary_id": "toll_gang",
+      "body": "The smuggler passage narrows at a collector barricade strung with lamps, and Rhea walks it with you right up until the midpoint, hand near yours. Then her pace breaks. A knife opens your side in one practiced motion, shallow but real, and her raised lantern swings twice toward the barricade in a signal rehearsed well before tonight. Collectors rise with clubs out, arranged with a partner they have drilled with. Passage east for her, she says without meeting your eyes, in exchange for you. The lamps swing and the closing shape begins.",
+      "choices": [
+        {
+          "label": "Fight through the collectors",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "toll_gang",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "You go through their line bleeding and furious, and collector discipline lasts exactly until the first of them falls. Rhea is gone before the last one drops, lantern abandoned on the road. You strip cartridges from their tin and bind your side with shaking hands, alive through her worst arithmetic and finished with her definitions of necessity.",
+            "items": {
+              "revolver_rounds": 2
+            },
+            "add_flags": [
+              "rhea_betrayed_smuggler",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Break past before the net closes",
+          "approach": "evade",
+          "check": {
+            "stat": "agility",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You read the closing shape faster than they close it and go through the one gap that exists for exactly three heartbeats. A club kisses your shoulder as you clear the lamps. Behind you the collectors argue over whose line failed while Rhea stands alone in the lamplight with her bargain in ruins.",
+            "pressures": {
+              "health": -10
+            },
+            "add_flags": [
+              "rhea_betrayed_smuggler",
+              "rhea_witnessed_betrayal"
+            ]
+          },
+          "failure": {
+            "text": "The gap shuts a step early and the passage becomes a beating administered in lamplight. You take the worst of it on your arms and pack, and crawl out the far side with your ribs aching and your route intact. The collectors keep your spare supplies as tuition. Rhea keeps nothing but the sight of what she bought.",
+            "pressures": {
+              "health": -25
+            },
+            "add_conditions": [
+              "sprain"
+            ],
+            "add_flags": [
+              "rhea_betrayed_smuggler",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Buy them off with your supplies",
+          "approach": "social",
+          "requires": {
+            "items": {
+              "scrap_parts": 3
+            },
+            "reason": "You carry nothing worth their attention"
+          },
+          "costs": {
+            "items": {
+              "scrap_parts": 3
+            }
+          },
+          "outcome": {
+            "text": "You empty your salvage on the road between you and talk fast about weight, value, and the trouble of carrying a bleeding prisoner. The sergeant does the arithmetic out loud and takes the certain metal over Rhea uncertain promise. The line opens. You walk through it holding your side, having purchased your life with your pack.",
+            "add_flags": [
+              "rhea_betrayed_smuggler",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Name her price where all can hear",
+          "approach": "social",
+          "check": {
+            "stat": "presence",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You pitch your voice over the barricade and describe her bargain in detail: the intermediary, the locked room, the traveler sold for it. The collectors exchange looks; a partner who sells once sells twice. Their line wavers, her signal dies in her hand, and you walk the gap their doubt opens.",
+            "pressures": {
+              "health": -10
+            },
+            "add_flags": [
+              "rhea_betrayed_smuggler",
+              "rhea_witnessed_betrayal"
+            ]
+          },
+          "failure": {
+            "text": "Your accusation lands wrong and the collectors laugh it into the dirt. The beating that follows is thorough but not thorough enough to finish you. You leave skin and supplies on their road and carry the rest east, with her name filed carefully under lessons rather than grief.",
+            "pressures": {
+              "health": -25
+            },
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "rhea_betrayed_smuggler",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_betrayal_filtration",
+      "title": "The Chamber Door",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 5,
+        "requires_flags": [
+          "rhea_route_filtration"
+        ]
+      },
+      "scene_role": "compact",
+      "adversary_id": "reservoir_maw",
+      "body": "The filtration chamber hums below the walkway, twin drainage wheels turning slow above a dark intake where something vast shifts. Rhea checks the valves with you, recites the order back perfectly, and then moves first. Her shoulder takes you full in the chest, the walkway rail gives, and you land hard on the chamber floor as the door clangs shut above you. Through the grate her face is wet. Passage east, she says, for the one who delivers the traveler the Maw was already owed. The water starts rising and the intake screens begin to move.",
+      "choices": [
+        {
+          "label": "Kill the Maw in its chamber",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "reservoir_maw",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "You kill the intake-thing with the chamber half drowned around you, working the wheels between blows to keep the water at your waist. When it finally stills, you force the door from inside on raw strength and climb out past her abandoned lantern. She is gone. The chamber drains behind you like something deciding to forget.",
+            "items": {
+              "purifier_ampoule": 1
+            },
+            "add_flags": [
+              "rhea_betrayed_filtration",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Work the wheels and ride the drain",
+          "approach": "technical",
+          "check": {
+            "stat": "wits",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You ignore the Maw and work the twin wheels in the order she taught you, opening the drain channel as the water takes your knees. The outflow grabs you and fires you through the sluice into the lower channel, scraped and gasping and alive. Behind you the chamber keeps the monster and the woman who fed it.",
+            "add_flags": [
+              "rhea_betrayed_filtration",
+              "rhea_witnessed_betrayal"
+            ]
+          },
+          "failure": {
+            "text": "You fumble the wheel order under rising water and the Maw finds your leg before the drain catches. You win free at the cost of flesh and force the channel by main strength, half-drowned and bleeding. The escape works, barely, and leaves you with a limp and a complete education in trust.",
+            "pressures": {
+              "health": -25
+            },
+            "add_conditions": [
+              "sprain"
+            ],
+            "add_flags": [
+              "rhea_betrayed_filtration",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Force the door with spare salvage",
+          "approach": "force",
+          "requires": {
+            "items": {
+              "scrap_parts": 3
+            },
+            "reason": "You carry no salvage to wedge the door"
+          },
+          "costs": {
+            "items": {
+              "scrap_parts": 3
+            }
+          },
+          "outcome": {
+            "text": "You wedge salvage into the door track and lever the grate up a handspan at a time while the water climbs. The Maw circles, interested, but the gap opens before it commits. You squeeze through into the walkway light with the chamber still rising behind you, having spent metal to keep blood.",
+            "add_flags": [
+              "rhea_betrayed_filtration",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        },
+        {
+          "label": "Climb before the water takes you",
+          "approach": "evade",
+          "check": {
+            "stat": "agility",
+            "difficulty": "risky"
+          },
+          "success": {
+            "text": "You scale the intake screens hand over hand while the Maw turns below, find the maintenance ledge she never mentioned, and kick the emergency release. The door shudders up a foot and you roll under it into open air. The chamber keeps rising behind you, and so, finally, does your understanding.",
+            "add_flags": [
+              "rhea_betrayed_filtration",
+              "rhea_witnessed_betrayal"
+            ]
+          },
+          "failure": {
+            "text": "Your grip fails on the slick screens and you go under long enough to learn the taste of the chamber. You come up clawing, find the ledge on the second try, and force the release with water at your chin. You escape drowned-looking and furious, with her betrayal filed complete.",
+            "pressures": {
+              "health": -20
+            },
+            "add_conditions": [
+              "shaken"
+            ],
+            "add_flags": [
+              "rhea_betrayed_filtration",
+              "rhea_witnessed_betrayal"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rhea_aftermath",
+      "title": "What Remains of Rhea",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {
+        "min_region_index": 5,
+        "max_region_index": 5,
+        "requires_any_flags": [
+          "rhea_betrayed_shelter",
+          "rhea_betrayed_smuggler",
+          "rhea_betrayed_filtration"
+        ]
+      },
+      "scene_role": "compact",
+      "body": "East of the betrayal the road empties of everything but weather. Then, at a crossing camp, she is there: thinner, unarmed, waiting where you cannot pass without seeing. She does not run. She says the locked room was real and empty, the passage east a corridor with no end, and that she has carried your name like a weight since the night she spent it. She will abide by whatever accounting you name. The choice, she insists, is yours in a way hers never was.",
+      "choices": [
+        {
+          "label": "Demand the whole truth",
+          "approach": "social",
+          "outcome": {
+            "text": "You make her speak it all: the intermediary name, the meeting place, the exact price and the exact moment of choosing. She answers everything without flinching, and the completeness of it steadies something in you. No forgiveness passes between you, but understanding does, which is rarer and harder to counterfeit.",
+            "add_flags": [
+              "rhea_answers",
+              "rhea_closed"
+            ]
+          }
+        },
+        {
+          "label": "Take restitution in supplies",
+          "approach": "social",
+          "outcome": {
+            "text": "You name your price in practical coin: her spare rations, her spare cartridges, her spare tools, everything she carried east on your name. She pays without argument, unpacking her whole life onto the dirt between you. It does not balance anything. It acknowledges that balancing was never possible, which matters.",
+            "items": {
+              "canned_meat": 1,
+              "clean_water": 1
+            },
+            "add_flags": [
+              "rhea_restitution",
+              "rhea_closed"
+            ]
+          }
+        },
+        {
+          "label": "Refuse her entirely",
+          "approach": "evade",
+          "outcome": {
+            "text": "You walk past her without stopping and do not look back at the sound she makes. The road takes the sound and keeps the silence. Some doors, you decide, lock from the inside for good reason, and you are finished lending out your keys. The loneliness of the choice is the price of its clarity.",
+            "add_flags": [
+              "rhea_refused",
+              "rhea_closed"
+            ]
+          }
+        },
+        {
+          "label": "Hear her out without forgiving",
+          "approach": "social",
+          "outcome": {
+            "text": "You sit with her until the fire burns low and listen to the whole of it: the fear, the room, the terrible arithmetic of survival. You do not forgive her, and you say so plainly. But you accept that she is a person who did a cruel thing rather than a cruelty wearing a person, and that distinction has to be enough.",
+            "add_flags": [
+              "rhea_accepted",
+              "rhea_closed"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

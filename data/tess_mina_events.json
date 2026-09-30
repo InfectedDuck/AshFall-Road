@@ -1,0 +1,549 @@
+{
+  "events": [
+    {
+      "id": "tess_meeting",
+      "title": "The Pinned Sled",
+      "global": true,
+      "weight": 4,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 1, "max_region_index": 2, "requires_any_flags": ["rhea_witnessed_betrayal"]},
+      "scene_role": "compact",
+      "body": "A salvage sled lies pinned under a fallen signpost, and the woman working it does not look up as you approach. Tess Arlen, she says flatly, answering the question you had not asked, the way people do when they expect to be left alone. The sled holds two seasons of sorted copper and a winch with a stripped gear. She has the strength for one end of the post and needs hands, not company, for the other.",
+      "choices": [
+        {
+          "label": "Take the other end",
+          "approach": "force",
+          "check": {"stat": "strength", "difficulty": "favorable"},
+          "success": {
+            "text": "You lift together on her count and the post rolls clear without spilling a coil. She checks the winch first, then you, and something in her posture downgrades you from nuisance to possible asset. She offers water from her own skin, which for her is practically a speech.",
+            "items": {"clean_water": 1},
+            "add_flags": ["tess_met"]
+          },
+          "failure": {
+            "text": "The post slips and the sled tips, scattering copper across the dust. You spend an hour sorting it back together while she watches with folded arms, then surprises you by splitting the recovered water anyway. Effort, she allows, counts for something even when it fails.",
+            "pressures": {"fatigue": 8},
+            "add_flags": ["tess_met"]
+          }
+        },
+        {
+          "label": "Offer food for the work",
+          "approach": "social",
+          "requires": {"items": {"canned_meat": 1}, "reason": "You have no food to share"},
+          "costs": {"items": {"canned_meat": 1}},
+          "outcome": {
+            "text": "You set a tin on the sled bed and pick up the post without ceremony. She eats while you work out the leverage together, and the meal loosens exactly one story: how she prices copper by the coil. You part with full hands and a first, grudging respect.",
+            "add_flags": ["tess_met"]
+          }
+        },
+        {
+          "label": "Leave her to it",
+          "approach": "evade",
+          "outcome": {
+            "text": "You walk past the sled and her flat stare follows you a dozen paces. She manages alone or she does not; either way it is no longer your concern. The road keeps its usual counsel, which is to say none at all.",
+            "add_flags": ["tess_declined"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tess_work",
+      "title": "Copper by the Coil",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 2, "max_region_index": 3, "requires_flags": ["tess_met"]},
+      "scene_role": "compact",
+      "body": "Tess finds you at a stripped relay station with a proposal stripped to the bone: an hour of your labor sorting her claim, an even split of whatever the wire assays at, no stories and no questions. She works fast and expects you to keep up, correcting your grip twice without unkindness. The pile grows. So does a certain professional trust.",
+      "choices": [
+        {
+          "label": "Match her pace",
+          "approach": "force",
+          "check": {"stat": "grit", "difficulty": "favorable"},
+          "success": {
+            "text": "You keep her pace through the whole claim and split the wire coil for coil. She pays exact and prompt, counts it twice in front of you, and admits the count pleases her. Reliability, you are learning, is her entire love language.",
+            "items": {"scrap_parts": 2},
+            "add_flags": ["tess_worked"]
+          },
+          "failure": {
+            "text": "You fade in the last quarter and she finishes your share without comment, then docks your split with precise fairness. The lesson stings less than her refusal to make it personal. You resolve to be worth her exactness next time.",
+            "items": {"scrap_parts": 1},
+            "pressures": {"fatigue": 8},
+            "add_flags": ["tess_worked"]
+          }
+        },
+        {
+          "label": "Sort smart instead of fast",
+          "approach": "technical",
+          "check": {"stat": "wits", "difficulty": "favorable"},
+          "success": {
+            "text": "You spot the high-grade runs she was mixing with common wire and re-sort the claim by assay. The split jumps a full tier. She studies your method, adopts it on the spot, and pays the improved share without being asked. Respect, earned twice over.",
+            "items": {"scrap_parts": 2},
+            "add_flags": ["tess_worked"]
+          },
+          "failure": {
+            "text": "Your clever system tangles two coils beyond quick repair and costs an hour of picking. She untangles it patiently, pays the ordinary split, and files your theory under ideas to test elsewhere. The work still binds you, if only through shared tedium.",
+            "items": {"scrap_parts": 1},
+            "pressures": {"fatigue": 8},
+            "add_flags": ["tess_worked"]
+          }
+        },
+        {
+          "label": "Work silent alongside her",
+          "approach": "evade",
+          "outcome": {
+            "text": "You settle into the rhythm of the work without talk, handing her tools before she asks twice. By the end of the claim you move like a two-person crew. She pays the split and adds, almost inaudibly, that you are easy to work beside.",
+            "items": {"scrap_parts": 1},
+            "add_flags": ["tess_worked"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tess_boundary",
+      "title": "No Questions Asked",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 3, "max_region_index": 4, "requires_flags": ["tess_worked"]},
+      "scene_role": "compact",
+      "body": "Over a shared fire you ask where she learned to price copper, and the shutters come down so fast you hear them slam behind her eyes. Tess says she trades labor and honesty, not histories, and asks you to respect the difference. Her hand rests near her pack, not threatening, just ready. The fire pops. The question hangs unanswered between you.",
+      "choices": [
+        {
+          "label": "Respect it without prying",
+          "approach": "social",
+          "outcome": {
+            "text": "You let the question drop and talk wire gauges instead until her shoulders come down. Later, unprompted, she tells you one small true thing about a relay station she once kept. Given freely, it lands heavier than anything pried loose ever could.",
+            "add_flags": ["tess_boundary"]
+          }
+        },
+        {
+          "label": "Press her gently once",
+          "approach": "social",
+          "check": {"stat": "presence", "difficulty": "risky"},
+          "success": {
+            "text": "You press exactly once, kindly, and she answers with a piece of the past folded small: a burned certification, a registrar she crossed. It is not the whole story, but it is a real one, offered rather than taken. The fire feels warmer for it.",
+            "add_flags": ["tess_boundary"]
+          },
+          "failure": {
+            "text": "You press and she freezes you out for a full cold hour, tending the fire like a wall. When she thaws it is on her terms, with a warning attached: ask again and walk alone. You agree, and mean it, and the evening slowly recovers.",
+            "add_conditions": ["shaken"],
+            "add_flags": ["tess_boundary"]
+          }
+        },
+        {
+          "label": "Give her your own story first",
+          "approach": "social",
+          "outcome": {
+            "text": "Instead of asking, you offer: your own burned bridge, told plain. She listens the whole way through, and something in the exchange settles her. Histories, it turns out, can be traded like copper, coil for honest coil.",
+            "add_flags": ["tess_boundary"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tess_past",
+      "title": "Burned Papers",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 4, "max_region_index": 5, "requires_flags": ["tess_boundary"]},
+      "scene_role": "compact",
+      "body": "Walking a dead canal road, Tess finally tells it straight. She was Citadel salvage-certified, and when the registrars ordered her crew to strip a living station, she burned her papers instead of her conscience and walked. She has dodged their ledgers ever since. No ambush waits in the telling. No knife follows it. Only an old shame and an older pride.",
+      "choices": [
+        {
+          "label": "Tell her she chose right",
+          "approach": "social",
+          "outcome": {
+            "text": "You say plainly that burning the papers was the bravest arithmetic on the road, and watch years of tension leave her jaw. She has carried the registrars judgment so long she had forgotten any other verdict existed. Yours, she admits quietly, counts for more.",
+            "add_flags": ["tess_past"]
+          }
+        },
+        {
+          "label": "Ask what she wants now",
+          "approach": "technical",
+          "outcome": {
+            "text": "You turn the talk practical: what does a free engineer build toward? Her answer comes slowly, then with heat: her own claim, her own stamp, work no registrar can revoke. You spend the miles planning it like a real project, and the future gains edges.",
+            "add_flags": ["tess_past"]
+          }
+        },
+        {
+          "label": "Keep it light and walk on",
+          "approach": "evade",
+          "outcome": {
+            "text": "You accept the story without ceremony and set the pace east, giving her room to breathe around it. She falls in step, lighter than you have ever seen her. Some confessions need witness, not verdict, and you provided exactly that.",
+            "add_flags": ["tess_past"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tess_crisis",
+      "title": "The Registrar Crew",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_flags": ["tess_past"]},
+      "scene_role": "compact",
+      "adversary_id": "vault_scavs",
+      "body": "A registrar crew works the Underrail salvage with stamped writs and hired muscle, and their foreman knows Tess on sight. Papers or seizure, he says, and his muscle spreads out with the practiced ease of people who have done this with the same partners before. Tess steps to your side without being asked, wrench in hand. Whatever her past cost her, it will not cost you. You decide together how this goes.",
+      "choices": [
+        {
+          "label": "Stand with her against the crew",
+          "approach": "combat",
+          "combat": {"adversary_id": "vault_scavs", "can_flee": true},
+          "victory": {
+            "text": "You break their muscle line side by side, and the foreman discovers his writs do not cover this. Tess fights with furious precision, guarding your flank as promised, and the crew withdraws to easier claims. She stands in the settling dust, free in a way papers never made her, and it was your doing as much as hers.",
+            "items": {"scrap_parts": 2},
+            "add_flags": ["tess_crisis_done"]
+          }
+        },
+        {
+          "label": "Talk the foreman down",
+          "approach": "social",
+          "check": {"stat": "presence", "difficulty": "risky"},
+          "success": {
+            "text": "You bury the foreman in procedure: assay disputes, claim overlaps, the cost of bleeding over scrap. He folds rather than file. Tess watches you work with open admiration, and the crew moves on to softer targets. Her hand finds your shoulder and stays there.",
+            "add_flags": ["tess_crisis_done"]
+          },
+          "failure": {
+            "text": "The talk fails and the muscle takes its payment in bruises before you can disengage. You lose supplies and skin but keep each other, retreating in good order with Tess covering every step. The foreman keeps the claim. You keep the engineer, which was always the better asset.",
+            "pressures": {"health": -20},
+            "add_conditions": ["sprain"],
+            "add_flags": ["tess_crisis_done"]
+          }
+        },
+        {
+          "label": "Slip the claim and move on",
+          "approach": "evade",
+          "check": {"stat": "agility", "difficulty": "favorable"},
+          "success": {
+            "text": "You ghost the claim before the muscle closes, taking the back cut with Tess matching you stride for stride. Behind you the crew argues over an empty yard. Ahead the road is clear, and her grin says the escape pleased her more than any fight would have.",
+            "add_flags": ["tess_crisis_done"]
+          },
+          "failure": {
+            "text": "The back cut dead-ends and you pay the foreman's toll in salvage to walk out whole. Tess hates the payment and says so all the way east, but she says it beside you, which is the part that matters. Some victories are only about who you leave with.",
+            "items": {"scrap_parts": -2},
+            "add_flags": ["tess_crisis_done"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "tess_ending",
+      "title": "Her Own Stamp",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_flags": ["tess_crisis_done"]},
+      "scene_role": "compact",
+      "body": "At the last crossing before the gate country, Tess stops and says what you both know: her claim waits west, where the registrars do not run, and the east offers only the Citadel that burned her. She will not ask you to turn back. She will only ask what you want, honestly, with everything on the table between honest people.",
+      "choices": [
+        {
+          "label": "Ask her to walk east with you",
+          "approach": "social",
+          "outcome": {
+            "text": "You ask, and she studies you long enough to make your stomach drop before she laughs once, short and real. East, then, she says, but on her terms: partners, even shares, no registrars. You shake on it like the copper days, and the deal holds warmer than any paper.",
+            "add_flags": ["tess_stayed", "tess_closed"]
+          }
+        },
+        {
+          "label": "Promise to find her claim after",
+          "approach": "social",
+          "outcome": {
+            "text": "You promise to walk east now and find her western claim when the road allows, and she accepts the honest shape of it. She presses a stamped coil into your pack as earnest: her mark, her work, her trust made metal. Parting, for once, feels like a plan rather than a loss.",
+            "items": {"scrap_parts": 2},
+            "add_flags": ["tess_friends", "tess_closed"]
+          }
+        },
+        {
+          "label": "Part ways kindly here",
+          "approach": "evade",
+          "outcome": {
+            "text": "You part at the crossing with real warmth and no promises either of you would resent. She shoulders her rig toward her own stamp and her own free work. You walk east lighter for having been, briefly, a two-person crew with the most reliable hands on the road.",
+            "add_flags": ["tess_parted", "tess_closed"]
+          }
+        },
+        {
+          "label": "Turn back west with her",
+          "approach": "survival",
+          "outcome": {
+            "text": "You turn your boots west beside her, choosing the claim over the gate, and her disbelief melts into something fierce and glad. The Citadel will have to wait for another survivor. This one found the rarer thing: work worth doing with someone worth doing it beside.",
+            "add_flags": ["tess_stayed", "tess_closed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mina_meeting",
+      "title": "Triage at the Crossing",
+      "global": true,
+      "weight": 4,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 2, "max_region_index": 3, "requires_any_flags": ["rhea_witnessed_betrayal"]},
+      "scene_role": "compact",
+      "body": "At a wind-scoured crossing, a woman in a patched medic satchel works over two injured haulers with calm, unhurried hands. Mina Holt, the older hauler says between gritted teeth, late of the checkpoint infirmary, now doctor to whoever bleeds in front of her. She glances up, assesses you in one practiced look, and asks for an extra pair of hands without ceremony.",
+      "choices": [
+        {
+          "label": "Hold and fetch as directed",
+          "approach": "medical",
+          "check": {"stat": "wits", "difficulty": "favorable"},
+          "success": {
+            "text": "You follow her quiet instructions exactly: pressure here, bandage there, water for the shock. The haulers stabilize and her approval is professional and complete. She learns your name and uses it properly from then on, which among medics is a kind of vow.",
+            "add_flags": ["mina_met"]
+          },
+          "failure": {
+            "text": "You fumble the bandage roll and she corrects your grip without breaking rhythm, finishing the dressing herself. No scolding follows, only a second demonstration, slower. By the end you can hold pressure properly, and she counts that as sufficient for a first day.",
+            "pressures": {"fatigue": 6},
+            "add_flags": ["mina_met"]
+          }
+        },
+        {
+          "label": "Give her your spare supplies",
+          "approach": "social",
+          "requires": {"items": {"cloth_bandage": 1}, "reason": "You carry no spare bandages"},
+          "costs": {"items": {"cloth_bandage": 1}},
+          "outcome": {
+            "text": "You hand over your spare bandages without being asked twice, and her whole manner warms a degree. Supplies given freely are rare on this road, and she repays them in the only coin she mints: she checks you over on the spot and pronounces you fit to travel.",
+            "add_flags": ["mina_met"]
+          }
+        },
+        {
+          "label": "Walk past the wounded",
+          "approach": "evade",
+          "outcome": {
+            "text": "You keep walking past the triage scene and her eyes follow you with professional assessment rather than judgment. The wounded are not yours, and the road is wide. But her measured look stays with you longer than the crossing dust.",
+            "add_flags": ["mina_declined"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mina_aid",
+      "title": "The Crossing Band",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 3, "max_region_index": 4, "requires_flags": ["mina_met"]},
+      "scene_role": "compact",
+      "body": "Mina travels with a straggling group she calls the Crossing Band: haulers, a child, an old porter with bad lungs. She introduces you around the cookfire as if you already belong, and puts you to work before the introductions finish. Here is her whole philosophy in practice: no one walks east unfed, unbandaged, or unwitnessed if she can help it.",
+      "choices": [
+        {
+          "label": "Carry the porter stretches",
+          "approach": "force",
+          "check": {"stat": "strength", "difficulty": "favorable"},
+          "success": {
+            "text": "You take the heavy end of the porter's litter over two rough miles without complaint. The old man tells stories the whole way to distract you both. Mina watches the care you take and files it with the other evidence she is quietly gathering about your character.",
+            "add_flags": ["mina_aided"]
+          },
+          "failure": {
+            "text": "Your arms give out on the second mile and the Band rotates you to water duty without fuss. No one mocks the limit; Mina herself shows you the carrying strap that saves shoulders. The work still gets done, and you are still part of the doing.",
+            "pressures": {"fatigue": 8},
+            "add_flags": ["mina_aided"]
+          }
+        },
+        {
+          "label": "Organize their supplies",
+          "approach": "technical",
+          "outcome": {
+            "text": "You inventory the Band's scattered supplies and repack them for access: medicine up top, food by meal, tools by weight. Mina is delighted in a practical, unsentimental way, and presses her old signal mirror on you for the trouble. Waste, she says, is just carelessness with a shovel.",
+            "items": {"mirror_shard": 1},
+            "add_flags": ["mina_aided"]
+          }
+        },
+        {
+          "label": "Watch the child while they rest",
+          "approach": "social",
+          "outcome": {
+            "text": "You take charge of the child for an afternoon: stories, pebble games, a nap guarded well. The Band rests properly for the first time in days. Mina returns to find the camp peaceful and her people restored, and her gratitude needs no translation.",
+            "add_flags": ["mina_aided"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mina_vow",
+      "title": "What She Asks",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 3, "max_region_index": 4, "requires_flags": ["mina_aided"]},
+      "scene_role": "compact",
+      "body": "On a quiet watch Mina tells you the terms of her company plainly, the way she states a dosage. She has sworn the Crossing Band east, every one of them, and she will not trade them for any shortcut. She asks you to promise never to ask her to abandon her people. Her eyes hold yours. This boundary was set long before you arrived.",
+      "choices": [
+        {
+          "label": "Promise without hedging",
+          "approach": "social",
+          "outcome": {
+            "text": "You promise outright, and the relief that crosses her face tells you how many have hedged. She takes your hand briefly, medic to traveler, and seals it. From here forward you know exactly where she stands, which is more than most companions ever offer.",
+            "add_flags": ["mina_vowed"]
+          }
+        },
+        {
+          "label": "Hedge and stay honest about it",
+          "approach": "social",
+          "outcome": {
+            "text": "You refuse the blank promise but offer the honest one: you will never ask lightly, and you will argue openly if the road demands it. She accepts the hedge with a wry respect, preferring an honest limit to a comforting lie. The boundary holds, clearly marked on both sides.",
+            "add_conditions": ["shaken"],
+            "add_flags": ["mina_vowed"]
+          }
+        },
+        {
+          "label": "Ask what the Band means to her",
+          "approach": "social",
+          "outcome": {
+            "text": "You ask, and she tells you about the checkpoint winter when no one came for the sick, and her decision to become the one who comes. The vow is not sentiment, she explains; it is infrastructure. You understand her better than any promise could have managed.",
+            "add_flags": ["mina_vowed"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mina_trial",
+      "title": "The Cut-Off Band",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 4, "max_region_index": 5, "requires_flags": ["mina_vowed"]},
+      "scene_role": "compact",
+      "adversary_id": "bog_raiders",
+      "body": "Skiff riders cut the trail ahead and the Crossing Band is caught between the water and the raiders masks. A fast dry route runs around the whole snarl, and Mina looks at it exactly once before looking at you. Her people cannot run it. She will not run it without them. The choice she warned you about has arrived early, wearing heron masks and carrying patched guns.",
+      "choices": [
+        {
+          "label": "Stand with the Band",
+          "approach": "combat",
+          "combat": {"adversary_id": "bog_raiders", "can_flee": true},
+          "victory": {
+            "text": "You stand the bank with Mina between the raiders and her people, and the skiffs learn that medics keep fierce company. When the riders withdraw, the Band surrounds you both with more gratitude than discipline. Mina checks your wounds first, hands unsteady for the first time since you met her.",
+            "items": {"clean_water": 1},
+            "add_flags": ["mina_stood"]
+          }
+        },
+        {
+          "label": "Take the dry route around",
+          "approach": "evade",
+          "outcome": {
+            "text": "You take the dry route and do not look back, and Mina does not follow. She stays with her people as she always said she would, watching you go with no reproach and no farewell. The road east is faster alone. It is also, you discover mile by mile, considerably emptier.",
+            "add_flags": ["mina_abandoned", "mina_left"]
+          }
+        },
+        {
+          "label": "Bluff the riders off",
+          "approach": "social",
+          "check": {"stat": "presence", "difficulty": "risky"},
+          "success": {
+            "text": "You walk out front and sell the riders a story of patrols and fevers until their masks turn toward easier water. The Band breathes again. Mina squeezes your arm hard enough to bruise, laughing in something close to disbelief. Words, for once, outran weapons.",
+            "add_flags": ["mina_stood"]
+          },
+          "failure": {
+            "text": "The bluff collapses and the riders take their toll in supplies and dignity before moving on. The Band is shaken but whole, and Mina tends the bruised with her jaw set. You paid for the attempt, but the attempt itself told her everything she needed.",
+            "items": {"scrap_parts": -2},
+            "add_conditions": ["shaken"],
+            "add_flags": ["mina_stood"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mina_vigil",
+      "title": "After the Trail",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 6,
+      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_any_flags": ["mina_stood", "mina_left"]},
+      "scene_role": "compact",
+      "body": "The trail settles into whatever shape your choice gave it. If you stood, the Band camps close that night with the salt pork out and the child asleep against the old porter's pack. If you walked the dry route, the miles tick past in unbroken quiet, and you think about a medic's steady hands more often than you expected to.",
+      "body_variants": [
+        {"requires_any_flags": ["mina_left"], "text": "The dry route runs fast and empty all the way to the Underrail mouth, and no cookfire waits at dusk. No child asks for stories, no porter needs a shoulder, and the quiet has a particular texture you have started to recognize as the sound of your own choice walking beside you mile after weary mile toward nobody in the falling dark."}
+      ],
+      "choices": [
+        {
+          "label": "Tend what remains",
+          "approach": "social",
+          "outcome": {
+            "text": "You do the next necessary thing, whatever it is: bandages, watches, water, walking. The road rewards attention the way soil rewards rain, slowly and then all at once. What comes next will find you ready, or at least unwilling to be found idle.",
+            "add_flags": ["mina_vigil"]
+          }
+        },
+        {
+          "label": "Take stock of supplies",
+          "approach": "technical",
+          "outcome": {
+            "text": "You count and sort and mend, turning the pack into an argument for continuing. Needles, thread, tins in rows: small certainties against a large uncertain east. The inventory complete, you shoulder it and walk on steadier for the knowing.",
+            "items": {"scrap_parts": 1},
+            "add_flags": ["mina_vigil"]
+          }
+        },
+        {
+          "label": "Rest while you can",
+          "approach": "survival",
+          "outcome": {
+            "text": "You sleep a full unbroken span for the first time in regions, and wake with the particular clarity that only real rest gives. The road will still be there. For one morning you let it wait, and feel almost human when you finally rise.",
+            "pressures": {"fatigue": -10},
+            "add_flags": ["mina_vigil"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mina_ending",
+      "title": "The Infirmary Light",
+      "global": true,
+      "weight": 3,
+      "unique": true,
+      "narrative_priority": 8,
+      "eligibility": {"min_region_index": 5, "max_region_index": 5, "requires_flags": ["mina_vigil"]},
+      "scene_role": "compact",
+      "body": "At the last Underrail platform a lamp burns in a side room Mina has already claimed with her satchel and her steady habits. The Band beds down around it, or does not, depending on the road behind you. She looks up from her work and asks the only question that matters now: who walks east together, and who walks alone.",
+      "body_variants": [
+        {"requires_any_flags": ["mina_left"], "text": "At the last Underrail platform a lamp burns in a side room, and rumor says the crossing medic works there still with her Band around her. You did not stay to see it, and the lamp is someone else's comfort now. The question of who walks together was answered miles back, on the dry route, by your own boots alone."}
+      ],
+      "choices": [
+        {
+          "label": "Walk east together",
+          "approach": "social",
+          "outcome": {
+            "text": "You take your place in the lamp-lit room, among the Band, beside her work. There is always another bandage, another watch, another morning. It is not the Citadel and not glory. It is people, kept alive on purpose, and it is enough to walk toward.",
+            "variants": [{"requires_any_flags": ["mina_left"], "text": "You approach the lamp-lit room, but too much road lies between you now for easy return. She receives you kindly and briefly, then turns back to her patients. Some doors close quietly, and this one closed the day you took the dry route."}],
+            "add_flags": ["mina_together", "mina_closed"]
+          }
+        },
+        {
+          "label": "Part as sworn friends",
+          "approach": "social",
+          "outcome": {
+            "text": "You part with vows exchanged and routes shared, friends across whatever distance the east imposes. She presses a folded field dressing into your hand for the road. Carry it, she says, and remember that someone east knows your name and your worth.",
+            "items": {"cloth_bandage": 1},
+            "add_flags": ["mina_friends", "mina_closed"]
+          }
+        },
+        {
+          "label": "Leave her to her work",
+          "approach": "evade",
+          "outcome": {
+            "text": "You leave the lamp burning behind you without ceremony, carrying the memory of competent hands and clear terms. The Band has its medic. The road has its traveler. Both arrangements are honest, and honesty is rarer than company out here.",
+            "add_flags": ["mina_parted", "mina_closed"]
+          }
+        },
+        {
+          "label": "Promise aid from the east",
+          "approach": "technical",
+          "outcome": {
+            "text": "You promise to send back medicine and word from whatever the east holds, and mean it in the way that matters: with a route, a cache point, and a date. She marks it all down in her ledger hand. Hope, administered in practical doses, is still her favorite treatment.",
+            "add_flags": ["mina_friends", "mina_closed"]
+          }
+        }
+      ]
+    }
+  ]
+}

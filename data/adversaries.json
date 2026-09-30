@@ -77,6 +77,16 @@
           "heavy": "Its claws stop scraping. The hind legs fold under a gathering mass that no casual guard will hold.",
           "sweep": "It flattens its limbs and spreads across the ground, threatening every direction of escape.",
           "recover": "The creature settles after its rush, claws sunk too deeply to withdraw at once."
+        },
+        "traits": {
+          "prediction": {
+            "counter_bonus": 0.5,
+            "description": "It learns repeated actions. A third identical action draws its announced counter; anything else breaks the pattern."
+          }
+        },
+        "objective": {
+          "id": "break_the_pattern",
+          "text": "Never repeat yourself thrice. Vary attacks, guards, and item play to stay unreadable."
         }
       }
     },
@@ -375,6 +385,20 @@
           "strike": "Reeds part where nothing showed a moment ago, opening on the foot you have your weight on.",
           "heavy": "It takes hold and pulls toward deep water, tilting the whole raft behind a commitment no guard will hold but a sidestep can leave behind.",
           "recover": "It surfaces to breathe, eggs exposed along its back and nothing covering the length of it."
+        },
+        "traits": {
+          "brood": {
+            "max": 3,
+            "damage_per_brood": 0.25,
+            "preparation_move": "heavy",
+            "interrupt_moves": ["heavy", "charge"],
+            "nest_item": "incendiary_charge",
+            "description": "A heavy pull gathers the brood. Interrupt it, burn the nest, or finish it quickly."
+          }
+        },
+        "objective": {
+          "id": "burn_or_break",
+          "text": "Brood 0/3 • Interrupt its preparation, burn the nest with an incendiary, or kill it before the brood hatches."
         }
       },
       "field_note": "Reed raft over water; pale eggs in sequence; one laced boot."
@@ -402,6 +426,20 @@
           "heavy": "The whole mass rocks back against the tank wall, gathering weight no guard will hold behind a line you can still step out of.",
           "strike": "One plate edge comes out at knee height, moving faster than the mass behind it.",
           "recover": "It sags, plates loosening and heat pouring off it, with nothing holding the gaps closed."
+        },
+        "traits": {
+          "heat": {
+            "max": 3,
+            "danger_per_heat": 0.2,
+            "exposed_rounds": 2,
+            "exposed_damage_taken": 0.5,
+            "coolant_item": "coolant_canister",
+            "description": "Your attacks heat its shell. At full heat the shell opens: defend through the danger, then spend your strongest blow."
+          }
+        },
+        "objective": {
+          "id": "vent_or_endure",
+          "text": "Heat 0/3 • Attacks build heat and danger. At full heat the shell opens for 2 rounds. Coolant forces it open early."
         }
       },
       "field_note": "Stacked plates around a heat; scorch-rings on the tank; three knocks and a pause."
@@ -459,6 +497,17 @@
           "sweep": "It lashes the length of the tray at knee height.",
           "brace": "It coils around the live cable and goes still, taking half of whatever you land on it.",
           "recover": "It uncoils to find the next span, segments dragging."
+        },
+        "traits": {
+          "charge": {
+            "max": 3,
+            "danger_per_charge": 0.25,
+            "description": "Its electrical strikes charge a retaliation. Disrupt its draw, ground the cable, or wear grounding gear."
+          }
+        },
+        "objective": {
+          "id": "ground_or_endure",
+          "text": "Charge 0/3 • Strikes feed it. Disrupt the draw, ground the cable bare-handed, or kill it fast."
         }
       },
       "field_note": "Segmented body in the cable tray; shed insulation on the water; the lights dimming in sequence."
@@ -573,6 +622,85 @@
         }
       },
       "field_note": "Crawler armor fused to flesh; crater footsteps; pilgrim offerings at its trail."
+    },
+    {
+      "id": "reservoir_maw",
+      "name": "Reservoir Maw",
+      "threat": 18,
+      "xp_reward": 85,
+      "description": "A filtration-station mutant grown around the intake screens, still thirsty.",
+      "portrait_id": "enemy_maw",
+      "loot": ["purifier_ampoule", "scrap_parts"],
+      "combat": {
+        "max_health": 380,
+        "damage_min": 68,
+        "damage_max": 102,
+        "weapon_name": "Intake plates and drowning weight",
+        "critical_condition": "gutrot",
+        "flee_difficulty": "hard"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["strike", "charge", "heavy", "sweep", "recover"],
+        "tells": {
+          "strike": "A pale intake plate swings out of the dark water toward your legs.",
+          "charge": "The whole chamber gurgles and the waterline climbs the wall marks. A surge is gathering.",
+          "heavy": "It seals the outflow and throws its weight behind the rising water, a blow no guard will hold but a sidestep can leave behind.",
+          "sweep": "It turns the full width of the chamber, closing every dry line at once.",
+          "recover": "It vents and settles, screens gaping, with nothing covering the raw intake."
+        },
+        "traits": {
+          "flood": {
+            "max": 3,
+            "danger_per_flood": 0.2,
+            "description": "Its surges flood the chamber. At full water the response hits hardest. Two drainage wheels can empty it."
+          }
+        },
+        "objective": {
+          "id": "drain_or_drown",
+          "text": "Water 0/3 • Drains 0/2 • Kill it, or work both wheels and slip the channel."
+        }
+      },
+      "field_note": "Intake screens grown into flesh; twin wheel-valves above the waterline; boot-prints ending at the edge."
+    },
+    {
+      "id": "ossuary_hound",
+      "name": "Ossuary Hound",
+      "threat": 15,
+      "xp_reward": 46,
+      "description": "A scavenger with bone plates embedded in scarred hide, still hunting.",
+      "portrait_id": "enemy_hound",
+      "loot": ["cloth_bandage", "scrap_parts"],
+      "combat": {
+        "max_health": 260,
+        "damage_min": 56,
+        "damage_max": 84,
+        "weapon_name": "Plated fangs and raking claws",
+        "critical_condition": "bleeding",
+        "flee_difficulty": "hard"
+      },
+      "narrative_combat": {
+        "organic": true,
+        "sequence": ["strike", "heavy", "sweep", "recover"],
+        "tells": {
+          "strike": "The hound lowers its plated head, scarred flanks heaving, and comes straight on.",
+          "heavy": "It gathers its hindquarters under the bone plates. The coming lunge will carry everything it has.",
+          "sweep": "It circles wide, plates scraping, cutting off the ground you wanted.",
+          "recover": "It falls back to worry at its own seams, flesh visibly knitting under the plates."
+        },
+        "traits": {
+          "bleed": {
+            "aggression_bonus": 0.3,
+            "regen_per_recover": 12,
+            "description": "It scents bleeding survivors and knits itself on recover. Treat the blood, or stop the knitting with silver or cautery."
+          }
+        },
+        "objective": {
+          "id": "staunch_or_silver",
+          "text": "Bleeding draws it (+30%). It heals 12 on recover unless a silvered Riposte or cautery stops it."
+        }
+      },
+      "field_note": "Bone plates over scarred hide; old blood darkening the muzzle; tracks that pause to sniff."
     }
   ]
 }
