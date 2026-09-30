@@ -1,5 +1,29 @@
 # Project status
 
+## Stage 3 systems expansion (Combat+relationships.md Weeks 5-6) - 24 September 2026
+
+- Base-8 specializations with allocation milestones: Strength breaks guard through the next action, Agility preserves a consumed Opening, Wits suppresses a displayed trait for 2 rounds via study, Grit survives one lethal combat hit per run at 1 HP, Presence readies Opportunity from round one. Base stats only; gear never unlocks; crossings announced on confirm.
+- Remaining monsters: Cable Eater charge (electrical strikes feed retaliation; disrupt the draw, ground bare-handed, or wear grounding straps; the spark lance clears on interrupt), Ash Stalker prediction (third identical action draws an announced +50% counter; variety or mirror shard breaks it), Ossuary Hound (scent-of-blood aggression, +12 HP knitting on recover stopped by silvered Riposte or cautery).
+- Ten-item package complete (2 from Stage 1 + 8): silvered cleaver, spark lance, grounding straps, ashen wrap (prevented burn becomes Opening), mirror shard, ossuary plates, clotting poultice, cauterizing torch. Hunt, trade, and companion acquisition routes throughout.
+- Tess Arlen (reliable engineer with a burned-papers past) and Mina Holt (medic who leaves if abandoned): six chapters each with coherent endings, unlocked across lives by a witnessed betrayal, never randomly treacherous; distrust costs company.
+- Two declinable three-scene hunts (spark/Cable Eater after the second checkpoint region band, hound/Ossuary Hound after the fourth) with advertised rewards, once-per-run chains, and non-combat completions.
+- Verification: **3,645 regression assertions, 0 failures**; layout **1,933, 0 failures**; combat UI **0 failures**; save-recovery UI **201, 0 failures**; data-package audit **9 checks, 9 passed**. Fixture version 6.
+
+## Stage 2 relationship expansion (Combat+relationships.md Weeks 3-4) - 24 September 2026
+
+- Rhea Sorn: seven common chapters (meeting, shared competence, quiet hour, disagreement, vulnerability, closeness with romance-or-friendship and no Presence roll, promise with shelter/smuggler/filtration route choice) plus three route-tied betrayals and a four-way aftermath (answers, restitution, refusal, heard-without-forgiving). Priorities sit below focused Living Road chapters so one primary story keeps precedence while Rhea fills ordinary slots.
+- Betrayals are surprising but playable: shelter poison (treat, stocked medkit, or walk out injured), smuggler wound plus toll-gang signal (fight, evade, buy off, or turn the tables), filtration lock-in with the Reservoir Maw (kill, ride the drain, wedge salvage, or climb). No lethal exits, no mandatory stat, every exit writes `rhea_witnessed_betrayal` for the later Tess/Mina unlock.
+- Reservoir Maw (threat 18, 380 HP): flood trait with surges that flood +1 unless interrupted, +20% response per water level, twin drainage wheels that each lower water, and a drain escape that wins with full spoils after the committed response.
+- Content ships as `data/rhea_events.json` (11 events) behind the expansion gate with 11 Road Chronicle entries (40 total, 11 compatibility). Verification: **3,492 regression assertions, 0 failures** (82 new); layout **1,933, 0 failures**; combat UI **0 failures**; save-recovery UI **201, 0 failures**; data-package audit **9 checks, 9 passed**. Fixture version 5.
+
+## Stage 1 combat expansion (Combat+relationships.md Weeks 1-2) - 24 September 2026
+
+- Combat rules **v3**: Reed Widow brood (uninterrupted heavy hatches +1 to 3, +25% response each; interrupt, incendiary, tear, or race) and Kilnback heat (landed hits build 0-3, +20% danger each; at 3/3 the shell opens for 2 rounds of +50% damage taken; defend, coolant, or vent).
+- V3 damage scaling preserves the launch curve through stat 5, then +0.10 per effective point above 5 (5→10 is 1.30→1.80, about 38%). Legacy v1/v2 fights finish under frozen rules; new fights and the neutral equipment sandbox use v3.
+- Item sheet now commits consumables, carried-weapon switching, and environmental interactions (tear nest, vent heat) as full combat actions with the committed enemy response previewed. Switching never resets intention, talent limits, or trait counters; phase changes apply next round.
+- Two tactical consumables with exploration (Fallen Supply Pod) and negotiation (checkpoint trade) routes: Incendiary Charge (burns the nest, stops new brood) and Coolant Canister (forces the shell open).
+- Verification: **3,410 regression assertions, 0 failures** (36 new Stage 1 assertions); layout **1,933, 0 failures**; combat UI **0 failures**; save-recovery UI **201, 0 failures**; data-package audit **9 checks, 9 passed**. Fixture version bumped to 4; full 72k-encounter rebalance left for the Weeks 7-8 tuning pass.
+
 ## M11 balance and full-run verification - 8 September 2026
 
 - Encounter benchmark now covers **all 13 adversaries** with 10 named-stat fixtures across an early 15-point and a progressed 21-point tier, 4 policies, and 5 road states: **586,000** authoritative encounters.

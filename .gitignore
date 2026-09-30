@@ -1,3 +1,4 @@
+.claude/
 .godot/
 .import/
 .idea/
@@ -5,6 +6,8 @@
 builds/
 *.apk
 *.aab
+*.exe
+*.pck
 *.keystore
 *.jks
 android/build/

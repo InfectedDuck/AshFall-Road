@@ -73,6 +73,8 @@ func _run_all() -> void:
 	_test_full_run_replay(content)
 	_test_channel_nine_arc()
 	_test_betrayal_arc()
+	_test_rhea_arc()
+	_test_stage3_companions_hunts()
 	_test_experience_progression(content)
 	_test_combat_rules(content)
 	_test_combat_recovery(content)
@@ -100,14 +102,14 @@ func _run_all() -> void:
 func _test_content(content: ContentRepository) -> void:
 	_check(content.validate_all().is_empty(), "All content, combat, and supply references are valid")
 	_check(content.regions.size() == 6, "Six regions are defined")
-	_check(content.items.size() == 72, "Fifty launch items plus fifteen Phase A, three grit-wire build, and four D03 accessory build items are defined")
+	_check(content.items.size() == 82, "Seventy-four plus eight Stage 3 arms, wards, and field consumables are defined")
 	var icon_ids: Dictionary = {}
 	for item: Dictionary in content.items.values():
 		var icon_id := str(item.get("icon_id", ""))
 		if not icon_id.is_empty():
 			icon_ids[icon_id] = true
-	_check(icon_ids.size() == 72, "Every item has a unique stable icon ID")
-	var phase_a_rune_icons := {"item_rusted_machete": true, "item_bone_cleaver": true, "item_kiln_sword": true, "item_nail_smg": true, "item_rail_spike_rifle": true, "item_officer_revolver": true, "item_mutant_hide_vest": true, "item_kiln_plates": true, "item_stalker_cloak": true, "item_wolf_fang_charm": true, "item_gunslinger_holster": true, "item_sniper_scope": true, "item_mutant_serum": true, "item_purifier_poultice": true, "item_choir_incense": true, "item_chain_wrench": true, "item_slag_maul": true, "item_wire_rifle": true, "item_dredge_chain": true, "item_fan_guard": true, "item_brass_star": true, "item_stalkhide_wraps": true}
+	_check(icon_ids.size() == 82, "Every item has a unique stable icon ID")
+	var phase_a_rune_icons := {"item_rusted_machete": true, "item_bone_cleaver": true, "item_kiln_sword": true, "item_nail_smg": true, "item_rail_spike_rifle": true, "item_officer_revolver": true, "item_mutant_hide_vest": true, "item_kiln_plates": true, "item_stalker_cloak": true, "item_wolf_fang_charm": true, "item_gunslinger_holster": true, "item_sniper_scope": true, "item_mutant_serum": true, "item_purifier_poultice": true, "item_choir_incense": true, "item_chain_wrench": true, "item_slag_maul": true, "item_wire_rifle": true, "item_dredge_chain": true, "item_fan_guard": true, "item_brass_star": true, "item_stalkhide_wraps": true, "item_incendiary_charge": true, "item_coolant_canister": true, "item_silvered_cleaver": true, "item_spark_lance": true, "item_grounding_straps": true, "item_ashen_wrap": true, "item_mirror_shard": true, "item_ossuary_plates": true, "item_clotting_poultice": true, "item_cauterizing_torch": true}
 	var atlas_covers_launch_items := true
 	for icon_id: String in icon_ids:
 		if phase_a_rune_icons.has(icon_id):
@@ -120,9 +122,9 @@ func _test_content(content: ContentRepository) -> void:
 		var symbol := ItemIconWidget.placeholder_symbol(icon_id)
 		_check(not symbol.is_empty(), "%s has a temporary item symbol" % icon_id)
 		placeholder_symbols[symbol] = true
-	_check(placeholder_symbols.size() == 72, "Every item resolves to a distinct temporary inventory symbol")
+	_check(placeholder_symbols.size() == 82, "Every item resolves to a distinct temporary inventory symbol")
 	_check(content.conditions.size() == 19, "Thirteen survival conditions, checkpoint Momentum, three mutant afflictions, and three combat boons are defined")
-	_check(content.adversaries.size() == 21, "Twelve original adversaries, Mutant Crows, four creature profiles, and four Phase A mutants are defined")
+	_check(content.adversaries.size() == 23, "Twelve original adversaries, Mutant Crows, four creature profiles, four Phase A mutants, the Reservoir Maw, and the Ossuary Hound are defined")
 	_check(content.events.size() == 97, "The base content plus Bunker Forty-One and the eight-scene Rust-Sea arc is loaded")
 	var combat_choices := 0
 	var checked_choices := 0
@@ -249,8 +251,8 @@ func _test_living_road_expansion(release_content: ContentRepository, living_cont
 					polished_baseline_live = polished_baseline_live and str(polished_choice[outcome_key].get("text", "")) == str(choice_override["outcomes"][outcome_key])
 	_check(polished_baseline_live and polished_baseline_count == 43, "The remaining baseline prose polish is live in compatibility mode")
 	_check(release_content.polished_event_ids.size() == 76 and release_content.load_errors.is_empty(), "All 76 baseline events use polished prose in compatibility mode")
-	_check(living_content.living_road_enabled and living_content.events.size() == 124, "The expanded release loads fifteen callback events plus twelve betrayal-arc events")
-	_check(living_content.get_discovery_entries().size() == 29, "The Road Ledger contains twenty-nine spoiler-safe chapters")
+	_check(living_content.living_road_enabled and living_content.events.size() == 153, "The expanded release loads fifteen callbacks, twelve betrayals, eleven Rhea chapters, twelve Tess/Mina chapters, and six hunts")
+	_check(living_content.get_discovery_entries().size() == 54, "The Road Ledger contains fifty-four spoiler-safe chapters")
 	var callback_ids: Array = []
 	var callback_id_set: Dictionary = {}
 	var callback_regions: Dictionary = {}
@@ -350,8 +352,8 @@ func _test_living_road_expansion(release_content: ContentRepository, living_cont
 
 
 func _test_default_expansion_activation(default_content: ContentRepository) -> void:
-	_check(default_content.living_road_enabled and default_content.events.size() == 124, "The no-argument content repository activates the Living Road plus betrayal-arc release")
-	_check(default_content.get_discovery_entries().size() == 29, "The default release Chronicle includes all twenty-nine reachable chapters")
+	_check(default_content.living_road_enabled and default_content.events.size() == 153, "The no-argument content repository activates the full expansion release")
+	_check(default_content.get_discovery_entries().size() == 54, "The default release Chronicle includes all fifty-four reachable chapters")
 	var hooks := {"outskirts_child_radio": true, "outskirts_market": true, "outskirts_cache": true}
 	var hook_count := 0
 	for event_id: String in hooks:
@@ -1986,11 +1988,15 @@ func _test_equipment_routes(content: ContentRepository) -> void:
 				for reward_id: Variant in launch_choice.get(outcome_key, {}).get("items", {}).keys():
 					if int(launch_choice[outcome_key]["items"][reward_id]) > 0:
 						obtainable[str(reward_id)] = true
+	for entry: Variant in content.get_trade_catalog().get("equipment", []):
+		obtainable[str(entry.get("id", ""))] = true
+	obtainable[str(content.get_trade_catalog().get("medical", {}).get("item_id", ""))] = true
+	obtainable[str(content.get_trade_catalog().get("food", {}).get("item_id", ""))] = true
 	var unreachable: Array = []
 	for defined_id: String in content.items:
 		if not obtainable.has(defined_id):
 			unreachable.append(defined_id)
-	_check(content.items.size() == 72 and unreachable.is_empty(), "All seventy-two defined items have a launch starting or acquisition route")
+	_check(content.items.size() == 82 and unreachable.is_empty(), "All eighty-two defined items have a launch starting or acquisition route")
 
 
 ## N03 pilot arc: the Channel Nine thread must read differently for each history
@@ -2041,7 +2047,7 @@ func _test_betrayal_arc() -> void:
 	for event_id: String in betrayal_ids:
 		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
 		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
-	_check(expanded.events.size() == 124, "Twelve betrayal-arc events join the expanded release")
+	_check(expanded.events.size() == 153, "Betrayal, Rhea, Tess/Mina, and hunt events join the expanded release")
 	var cache := _new_game(expanded, 4242)
 	cache.run_state["region_index"] = 2
 	_check(not cache._event_eligible(expanded.get_event("betrayal_vex_cache")), "The sealed package is not offered before Vex is trusted")
@@ -2089,6 +2095,268 @@ func _test_betrayal_arc() -> void:
 	_check(not bool(stranger.get("changed", true)), "A stranger records no reckoning chapter")
 
 
+## Stage 2 (Combat+relationships.md Weeks 3-4): Rhea Sorn's nine-chapter arc
+## with three route-tied betrayals, a four-way aftermath, and the Reservoir Maw
+## flood boss. Affection is authored, never rolled or bought; every betrayal
+## response is playable with no mandatory stat, no single death roll, and no
+## lethal outcome; witness flags land on every exit before terminal cleanup.
+func _test_rhea_arc() -> void:
+	var expanded := ContentRepository.new(true)
+	var baseline := ContentRepository.new(false)
+	var rhea_ids := ["rhea_meeting", "rhea_competence", "rhea_quiet", "rhea_disagreement", "rhea_vulnerability", "rhea_closeness", "rhea_promise", "rhea_betrayal_shelter", "rhea_betrayal_smuggler", "rhea_betrayal_filtration", "rhea_aftermath"]
+	for event_id: String in rhea_ids:
+		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
+		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
+	_check(expanded.events.size() == 153, "Rhea, Tess/Mina, and hunt chapters join the expanded release")
+	_check(expanded.get_discovery_entries().size() == 54, "Tess, Mina, and hunt chapters join the Chronicle denominator")
+	# The Maw exists as a flood boss with drainage counterplay.
+	var maw: Dictionary = expanded.get_adversary("reservoir_maw")
+	_check(not maw.is_empty() and int(maw.get("threat", 0)) == 18, "The Reservoir Maw loads as a threat-18 boss")
+	_check(bool(maw.get("narrative_combat", {}).get("traits", {}).has("flood")), "The Maw fights while its chamber floods")
+	_check(baseline.get_adversary("reservoir_maw").is_empty() == false, "The boss definition ships in every build; only its chapters gate")
+	# Flag chain: meeting -> trust -> quiet -> disagreement -> vulnerable -> close -> promise -> route -> betrayal -> aftermath.
+	var chain := _new_game(expanded, 4311)
+	chain.run_state["region_index"] = 1
+	_check(chain._event_eligible(expanded.get_event("rhea_meeting")), "Rhea opens once the Salt Flats are reached")
+	chain.run_state["flags"] = ["rhea_met"]
+	chain.run_state["region_index"] = 2
+	_check(chain._event_eligible(expanded.get_event("rhea_competence")), "Shared competence follows the meeting")
+	chain.run_state["flags"] = ["rhea_trust_1"]
+	_check(chain._event_eligible(expanded.get_event("rhea_quiet")), "A quiet hour follows competence")
+	chain.run_state["flags"] = ["rhea_quiet"]
+	chain.run_state["region_index"] = 3
+	_check(chain._event_eligible(expanded.get_event("rhea_disagreement")), "Disagreement waits for the Industrial approach")
+	chain.run_state["flags"] = ["rhea_disagreement"]
+	_check(chain._event_eligible(expanded.get_event("rhea_vulnerability")), "Vulnerability follows the rift")
+	chain.run_state["flags"] = ["rhea_vulnerable"]
+	chain.run_state["region_index"] = 4
+	_check(chain._event_eligible(expanded.get_event("rhea_closeness")), "Closeness waits past the Glass Wastes")
+	# Romance is authored, never rolled or bought: closeness carries no checks.
+	var closeness: Dictionary = expanded.get_event("rhea_closeness")
+	var closeness_has_check := false
+	for choice: Dictionary in closeness.get("choices", []):
+		closeness_has_check = closeness_has_check or choice.has("check")
+	_check(not closeness_has_check, "Closeness offers romance or friendship with no Presence roll")
+	chain.run_state["flags"] = ["rhea_close"]
+	_check(chain._event_eligible(expanded.get_event("rhea_promise")), "A promise follows closeness")
+	# One betrayal per route, each gated on its own promise.
+	for route: Dictionary in [{"flag": "rhea_route_shelter", "event": "rhea_betrayal_shelter"}, {"flag": "rhea_route_smuggler", "event": "rhea_betrayal_smuggler"}, {"flag": "rhea_route_filtration", "event": "rhea_betrayal_filtration"}]:
+		var gated := _new_game(expanded, 4312)
+		gated.run_state["region_index"] = 5
+		_check(not gated._event_eligible(expanded.get_event(str(route["event"]))), "%s waits on its promised route" % str(route["event"]))
+		gated.run_state["flags"] = [str(route["flag"])]
+		_check(gated._event_eligible(expanded.get_event(str(route["event"]))), "%s opens on its promised route" % str(route["event"]))
+	# No betrayal is a stat gate or a death roll: every exit is resolvable and
+	# none is lethal, and every exit writes the witness unlock for later runs.
+	for betrayal_id: String in ["rhea_betrayal_shelter", "rhea_betrayal_smuggler", "rhea_betrayal_filtration"]:
+		var betrayal: Dictionary = expanded.get_event(betrayal_id)
+		_check(betrayal.get("choices", []).size() >= 3, "%s offers at least three playable responses" % betrayal_id)
+		var exits_write_witness := true
+		var has_lethal := false
+		for choice: Dictionary in betrayal.get("choices", []):
+			for outcome_key: String in ["success", "failure", "outcome", "victory", "critical_success", "critical_failure"]:
+				if not choice.has(outcome_key):
+					continue
+				var outcome: Dictionary = choice[outcome_key]
+				exits_write_witness = exits_write_witness and ("rhea_witnessed_betrayal" in outcome.get("add_flags", []))
+				has_lethal = has_lethal or bool(outcome.get("lethal", false))
+		_check(exits_write_witness, "%s persists the witness unlock on every exit" % betrayal_id)
+		_check(not has_lethal, "%s surprises but never executes: no lethal exit" % betrayal_id)
+	# Shelter: treatment, stocked medicine, or walking out with a lasting injury.
+	var shelter := _new_game(expanded, 4313)
+	shelter.run_state["current_event_id"] = "rhea_betrayal_shelter"
+	shelter.run_state["phase"] = "event"
+	shelter.run_state["survivor"]["inventory"]["medkit"] = 1
+	_check(bool(shelter.get_choice_preview(shelter.current_event()["choices"][1]).get("available", false)), "A stocked medkit opens the shelter treatment")
+	shelter.run_state["survivor"]["inventory"]["medkit"] = 0
+	_check(not bool(shelter.get_choice_preview(shelter.current_event()["choices"][1]).get("available", true)), "The medkit route stays locked without one")
+	shelter.resolve_choice(2)
+	_check("rhea_betrayed_shelter" in shelter.run_state["flags"] and "rhea_witnessed_betrayal" in shelter.run_state["flags"] and "shaken" in shelter.run_state["survivor"].get("conditions", []), "Walking out of the shelter survives with a lasting injury and the witness flag")
+	# Smuggler: combat, evasion, bought passage, or turning the tables.
+	var smuggler := _new_game(expanded, 4314)
+	smuggler.run_state["current_event_id"] = "rhea_betrayal_smuggler"
+	smuggler.run_state["phase"] = "event"
+	_check(bool(smuggler.start_combat(0).get("combat_started", false)), "The smuggler betrayal can be fought through")
+	smuggler.run_state["combat_state"]["enemy_health"] = 1
+	smuggler.prepare_combat_action("attack")
+	smuggler.run_state["pending_combat_round"]["player_roll"] = 20
+	smuggler.resolve_prepared_combat_round()
+	_check("rhea_betrayed_smuggler" in smuggler.run_state["flags"] and "rhea_witnessed_betrayal" in smuggler.run_state["flags"], "Winning the barricade fight records the betrayal and the witness")
+	var bought := _new_game(expanded, 4315)
+	bought.run_state["current_event_id"] = "rhea_betrayal_smuggler"
+	bought.run_state["phase"] = "event"
+	bought.run_state["survivor"]["inventory"]["scrap_parts"] = 3
+	bought.resolve_choice(2)
+	_check("rhea_betrayed_smuggler" in bought.run_state["flags"] and int(bought.get_item_quantity("scrap_parts")) == 0, "Buying the line spends the salvage and still witnesses")
+	# Filtration: kill the Maw, ride the drain, wedge the door, or climb.
+	var filtration := _new_game(expanded, 4316)
+	filtration.run_state["current_event_id"] = "rhea_betrayal_filtration"
+	filtration.run_state["phase"] = "event"
+	_check(bool(filtration.start_combat(0).get("combat_started", false)), "The Maw chamber can be fought")
+	_check(str(filtration.run_state["combat_state"].get("adversary_id", "")) == "reservoir_maw", "The chamber fight is the Reservoir Maw")
+	var wedged := _new_game(expanded, 4317)
+	wedged.run_state["current_event_id"] = "rhea_betrayal_filtration"
+	wedged.run_state["phase"] = "event"
+	wedged.run_state["survivor"]["inventory"]["scrap_parts"] = 3
+	wedged.resolve_choice(2)
+	_check("rhea_betrayed_filtration" in wedged.run_state["flags"] and "rhea_witnessed_betrayal" in wedged.run_state["flags"], "Forcing the grate with salvage escapes with the witness")
+	# Maw flood boss: surges flood, wheels drain, both wheels open a winning exit.
+	var maw_fight := _new_game(expanded, 4318)
+	maw_fight.run_state["current_event_id"] = "rhea_betrayal_filtration"
+	maw_fight.run_state["phase"] = "event"
+	maw_fight.start_combat(0)
+	maw_fight.run_state["survivor"]["vitals"]["health"] = 2000
+	maw_fight.run_state["survivor"]["vitals"]["max_health"] = 2000
+	_check(str(maw_fight.run_state["combat_state"].get("trait_id", "")) == "flood", "The Maw carries the flood trait")
+	_check("WATER 0/3" in " ".join(maw_fight.combat_presentation_snapshot().get("status_labels", [])), "Flood and drain counters are visible")
+	maw_fight.run_state["combat_state"]["move_index"] = 1
+	maw_fight.run_state["combat_state"]["committed_move"] = {"id": "charge", "damage": 0, "block": 0, "dodge": 0, "incoming": 1.0, "bonus": 0.0, "tell": "Surge.", "narration": ["Surge."]}
+	maw_fight.prepare_combat_action("attack")
+	maw_fight.run_state["pending_combat_round"]["player_roll"] = 5
+	maw_fight.run_state["pending_combat_round"]["enemy_roll"] = 10
+	maw_fight.resolve_prepared_combat_round()
+	_check(int(maw_fight.run_state["combat_state"].get("trait_flood", -1)) == 1, "An uninterrupted surge floods the chamber")
+	maw_fight.prepare_combat_action("interact", "operate_drainage_north")
+	maw_fight.resolve_prepared_combat_round()
+	_check(bool(maw_fight.run_state["combat_state"].get("trait_drain_north", false)), "The north wheel runs")
+	maw_fight.prepare_combat_action("interact", "operate_drainage_south")
+	maw_fight.resolve_prepared_combat_round()
+	_check(bool(maw_fight.run_state["combat_state"].get("trait_drain_south", false)), "The south wheel runs")
+	maw_fight.prepare_combat_action("interact", "escape_through_drain")
+	maw_fight.resolve_prepared_combat_round()
+	_check(str(maw_fight.run_state.get("phase", "")) == "result" and "reservoir_maw" in maw_fight.run_state.get("defeated_adversaries", []), "Draining both wheels and escaping wins with spoils")
+	# Aftermath offers answers, restitution, refusal, or hearing without forgiving.
+	var aftermath := _new_game(expanded, 4319)
+	aftermath.run_state["region_index"] = 5
+	aftermath.run_state["flags"] = ["rhea_betrayed_shelter"]
+	_check(aftermath._event_eligible(expanded.get_event("rhea_aftermath")), "The aftermath opens for a betrayed survivor")
+	aftermath.run_state["current_event_id"] = "rhea_aftermath"
+	aftermath.run_state["phase"] = "event"
+	aftermath.resolve_choice(0)
+	_check("rhea_answers" in aftermath.run_state["flags"] and "rhea_closed" in aftermath.run_state["flags"], "Demanding answers closes the arc")
+	# Chronicle: meeting, betrayal, and aftermath all record.
+	var profile := SaveService.new("ashfall_rhea_test_").default_profile()
+	var met := StoryDiscoveryRules.apply_resolution({"event_id": "rhea_meeting"}, ["rhea_met"], expanded.get_discovery_entries(), profile)
+	_check(bool(met.get("changed", false)) and "ledger_rhea_meeting:met" in profile["discovered_story_nodes"], "Meeting Rhea records its Chronicle chapter")
+	var betrayed := StoryDiscoveryRules.apply_resolution({"event_id": "rhea_betrayal_shelter"}, ["rhea_betrayed_shelter", "rhea_witnessed_betrayal"], expanded.get_discovery_entries(), profile)
+	_check(bool(betrayed.get("changed", false)) and "ledger_rhea_betrayal_shelter:betrayed" in profile["discovered_story_nodes"], "Surviving the shelter betrayal records its chapter")
+	var closed := StoryDiscoveryRules.apply_resolution({"event_id": "rhea_aftermath"}, ["rhea_answers", "rhea_closed"], expanded.get_discovery_entries(), profile)
+	_check(bool(closed.get("changed", false)) and "ledger_rhea_aftermath:answers" in profile["discovered_story_nodes"], "The aftermath records its closing chapter")
+
+
+## Stage 3 (Combat+relationships.md Weeks 5-6): Tess and Mina open only after a
+## witnessed betrayal (including across lives), each reach a coherent ending,
+## Mina leaves when abandoned, and two declinable hunts pay advertised rewards.
+func _test_stage3_companions_hunts() -> void:
+	var expanded := ContentRepository.new(true)
+	var baseline := ContentRepository.new(false)
+	for event_id: String in ["tess_meeting", "tess_work", "tess_boundary", "tess_past", "tess_crisis", "tess_ending", "mina_meeting", "mina_aid", "mina_vow", "mina_trial", "mina_vigil", "mina_ending", "hunt_spark_evidence", "hunt_spark_prep", "hunt_spark_confront", "hunt_hound_evidence", "hunt_hound_prep", "hunt_hound_confront"]:
+		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
+		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
+	_check(expanded.events.size() == 153, "Twelve companion chapters and six hunt scenes join the expanded release")
+	_check(expanded.get_discovery_entries().size() == 54, "Fourteen companion and hunt chapters join the Chronicle")
+	# Cross-run unlock: a witnessed betrayal in any past life opens Tess and Mina.
+	_check(StoryDiscoveryRules.betrayal_witnessed(["ledger_rhea_betrayal_shelter:betrayed"]), "A betrayed Shelter account counts as witnessed")
+	_check(not StoryDiscoveryRules.betrayal_witnessed(["ledger_family_1:trusted"]), "An unrelated chapter does not unlock companions")
+	var seeded := _new_game(expanded, 4501)
+	_check(not seeded._event_eligible(expanded.get_event("tess_meeting")), "Tess waits until a betrayal has been witnessed")
+	seeded.apply_cross_run_unlocks(["ledger_rhea_betrayal_smuggler:betrayed"])
+	_check("rhea_witnessed_betrayal" in seeded.run_state["flags"], "A past-life witness seeds the run flag")
+	seeded.run_state["region_index"] = 1
+	_check(seeded._event_eligible(expanded.get_event("tess_meeting")), "Tess opens in the Salt Flats once unlocked")
+	var fresh := _new_game(expanded, 4502)
+	fresh.apply_cross_run_unlocks([])
+	_check("rhea_witnessed_betrayal" not in fresh.run_state["flags"], "A first life meets no alternative companions")
+	# Tess chain: guarded but reliable, past is shame rather than threat.
+	var tess := _new_game(expanded, 4503)
+	tess.run_state["region_index"] = 2
+	tess.run_state["flags"] = ["rhea_witnessed_betrayal", "tess_met"]
+	_check(tess._event_eligible(expanded.get_event("tess_work")), "Tess works after meeting")
+	tess.run_state["flags"] = ["rhea_witnessed_betrayal", "tess_worked"]
+	tess.run_state["region_index"] = 3
+	_check(tess._event_eligible(expanded.get_event("tess_boundary")), "Tess sets terms after working")
+	# Mina chain: vow first, then the trial that can end her company.
+	var mina := _new_game(expanded, 4504)
+	mina.run_state["region_index"] = 4
+	mina.run_state["flags"] = ["rhea_witnessed_betrayal", "mina_vowed"]
+	_check(mina._event_eligible(expanded.get_event("mina_trial")), "The trial waits on her vow")
+	mina.run_state["current_event_id"] = "mina_trial"
+	mina.run_state["phase"] = "event"
+	mina.resolve_choice(1)
+	_check("mina_abandoned" in mina.run_state["flags"] and "mina_left" in mina.run_state["flags"], "Taking the dry route makes Mina leave")
+	var stood := _new_game(expanded, 4505)
+	stood.run_state["current_event_id"] = "mina_trial"
+	stood.run_state["phase"] = "event"
+	stood.run_state["survivor"]["inventory"]["scrap_parts"] = 0
+	stood.start_combat(0)
+	stood.run_state["combat_state"]["enemy_health"] = 1
+	stood.prepare_combat_action("attack")
+	stood.run_state["pending_combat_round"]["player_roll"] = 20
+	stood.resolve_prepared_combat_round()
+	_check("mina_stood" in stood.run_state["flags"], "Standing with the Band records it")
+	var vigil := _new_game(expanded, 4506)
+	vigil.run_state["region_index"] = 5
+	vigil.run_state["flags"] = ["rhea_witnessed_betrayal", "mina_left"]
+	_check(vigil._event_eligible(expanded.get_event("mina_vigil")), "The vigil reads for the abandoned path too")
+	_check("runs fast and empty" in vigil.resolve_body(expanded.get_event("mina_vigil")), "The vigil admits the lonely version")
+	# Hunts: evidence advertises, prep equips, confrontation pays, decline closes.
+	var spark_evidence: Dictionary = expanded.get_event("hunt_spark_evidence")
+	_check("disruptor" in str(spark_evidence.get("body", "")), "The spark evidence advertises its reward category")
+	var spark := _new_game(expanded, 4507)
+	spark.run_state["region_index"] = 2
+	_check(spark._event_eligible(spark_evidence), "The spark hunt opens in the Marches")
+	spark.run_state["current_event_id"] = "hunt_spark_evidence"
+	spark.run_state["phase"] = "event"
+	spark.resolve_choice(2)
+	_check("hunt_spark_declined" in spark.run_state["flags"], "The spark hunt can be declined")
+	var tracked := _new_game(expanded, 4508)
+	tracked.run_state["region_index"] = 2
+	tracked.run_state["flags"] = ["hunt_spark_tracked"]
+	_check(tracked._event_eligible(expanded.get_event("hunt_spark_prep")), "Preparation follows tracking")
+	tracked.run_state["current_event_id"] = "hunt_spark_prep"
+	tracked.run_state["phase"] = "event"
+	tracked.resolve_choice(0)
+	_check(int(tracked.get_item_quantity("grounding_straps")) == 1 and "hunt_spark_ready" in tracked.run_state["flags"], "Preparation equips grounding straps")
+	var confront := _new_game(expanded, 4509)
+	confront.run_state["current_event_id"] = "hunt_spark_confront"
+	confront.run_state["phase"] = "event"
+	confront.start_combat(0)
+	_check(str(confront.run_state["combat_state"].get("adversary_id", "")) == "cable_eater", "The spark confrontation is a Cable Eater")
+	confront.run_state["combat_state"]["enemy_health"] = 1
+	confront.prepare_combat_action("attack")
+	confront.run_state["pending_combat_round"]["player_roll"] = 20
+	confront.resolve_prepared_combat_round()
+	_check(int(confront.get_item_quantity("spark_lance")) == 1 and "hunt_spark_closed" in confront.run_state["flags"], "The spark hunt pays its advertised pike")
+	var hound := _new_game(expanded, 4510)
+	hound.run_state["region_index"] = 4
+	hound.run_state["flags"] = ["hunt_hound_ready"]
+	_check(hound._event_eligible(expanded.get_event("hunt_hound_confront")), "The hound confrontation waits on preparation")
+	hound.run_state["current_event_id"] = "hunt_hound_confront"
+	hound.run_state["phase"] = "event"
+	hound.start_combat(0)
+	_check(str(hound.run_state["combat_state"].get("adversary_id", "")) == "ossuary_hound", "The hound confrontation is an Ossuary Hound")
+	hound.run_state["combat_state"]["enemy_health"] = 1
+	hound.prepare_combat_action("attack")
+	hound.run_state["pending_combat_round"]["player_roll"] = 20
+	hound.resolve_prepared_combat_round()
+	_check(int(hound.get_item_quantity("silvered_cleaver")) == 1 and int(hound.get_item_quantity("ossuary_plates")) == 1 and "hunt_hound_closed" in hound.run_state["flags"], "The hound hunt pays silver and bone")
+	# Allocation crossing: base 8 unlocks specialization, gear never does.
+	var allot := _new_game(expanded, 4511)
+	allot.run_state["phase"] = "checkpoint"
+	allot.run_state["survivor"]["stats"] = {"strength": 7, "agility": 3, "wits": 3, "grit": 3, "presence": 3}
+	allot.run_state["unspent_stat_points"] = 1
+	var draft: Dictionary = allot.run_state["survivor"]["stats"].duplicate(true)
+	draft["strength"] = 8
+	var done := allot.confirm_stat_allocation(draft)
+	_check(bool(done.get("success", false)) and "strength" in done.get("specialization_unlocked", []), "Base strength 8 unlocks specialization")
+	# Chronicle records companions and hunts without replacing earlier accounts.
+	var profile := SaveService.new("ashfall_stage3_test_").default_profile()
+	var tess_met := StoryDiscoveryRules.apply_resolution({"event_id": "tess_meeting"}, ["rhea_witnessed_betrayal", "tess_met"], expanded.get_discovery_entries(), profile)
+	_check(bool(tess_met.get("changed", false)) and "ledger_tess_meeting:met" in profile["discovered_story_nodes"], "Meeting Tess records its chapter")
+	var hunt_done := StoryDiscoveryRules.apply_resolution({"event_id": "hunt_hound_confront"}, ["hunt_hound_ready", "hunt_hound_closed"], expanded.get_discovery_entries(), profile)
+	_check(bool(hunt_done.get("changed", false)) and "ledger_hunt_hound:closed" in profile["discovered_story_nodes"], "Closing the hound hunt records its chapter")
+
+
 func _distinct(values: Array) -> int:
 	var seen: Dictionary = {}
 	for value: Variant in values:
@@ -2134,7 +2402,7 @@ func _test_road_chronicle(content: ContentRepository) -> void:
 		advertises_expansion = advertises_expansion or event_id.begins_with("lr_")
 	_check(entries.size() == 11 and reachable and not advertises_expansion, "The launch Chronicle lists exactly the eleven reachable chapters and no disabled callback")
 	var living := ContentRepository.new(true)
-	_check(living.get_discovery_entries().size() == 29, "Enabling the expansion restores all twenty-nine chapters and their denominator")
+	_check(living.get_discovery_entries().size() == 54, "Enabling the expansion restores all fifty-four chapters and their denominator")
 	var ledger_contract_holds := true
 	var ledger_variant_count := 0
 	for entry: Dictionary in living.get_discovery_entries().values():
@@ -2145,7 +2413,7 @@ func _test_road_chronicle(content: ContentRepository) -> void:
 			ledger_contract_holds = ledger_contract_holds and not variant_id.is_empty() and not variant_ids.has(variant_id)
 			variant_ids[variant_id] = true
 			ledger_variant_count += 1
-	_check(ledger_contract_holds and ledger_variant_count == 58, "All twenty-nine Chronicle definitions have a loaded trigger, spoiler-safe hint, and locally unique variants")
+	_check(ledger_contract_holds and ledger_variant_count == 98, "All fifty-four Chronicle definitions have a loaded trigger, spoiler-safe hint, and locally unique variants")
 
 	# A chapter is recorded from an authoritative resolution, and only once.
 	var game := _new_game(content, 7301)

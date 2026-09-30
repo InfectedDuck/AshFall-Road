@@ -21,9 +21,9 @@ Ashfall Road is an offline-first, portrait-oriented post-apocalyptic systems rog
 
 ## Implemented content
 
-- 6 sequential regions, 60 base region events, 12 base global events, a 13-scene Bunker Forty-One narrative arc, an 8-scene Mara Venn/Rust-Sea expansion, 1 safe fallback, a Bunker-aware 3-stage finale, 15 Living Road callbacks, and a 12-scene betrayal arc (Vex, Slate, Anselm): 124 events in the default release.
-- Bespoke prose overrides are active for all 76 baseline events. The Road Chronicle exposes 29 reachable lore chapters alongside the latest twenty run summaries; the Living Road callbacks provide five recurring-human threads and ten mutually exclusive equipment rewards.
-- 50 items (including two shields), 17 adversary archetypes, and 13 conditions/injuries, including checkpoint Momentum.
+- 6 sequential regions, 60 base region events, 12 base global events, a 13-scene Bunker Forty-One narrative arc, an 8-scene Mara Venn/Rust-Sea expansion, 1 safe fallback, a Bunker-aware 3-stage finale, 15 Living Road callbacks, a 12-scene betrayal arc (Vex, Slate, Anselm), an 11-scene Rhea Sorn relationship arc with three route-tied betrayals, two 6-scene alternative-companion arcs (Tess, Mina), and two 3-scene optional hunts: 153 events in the default release.
+- Bespoke prose overrides are active for all 76 baseline events. The Road Chronicle exposes 54 reachable lore chapters alongside the latest twenty run summaries; the Living Road callbacks provide five recurring-human threads and ten mutually exclusive equipment rewards.
+- 82 items (including three shields, four tactical consumables, and specialization-supporting arms and wards), 23 adversary archetypes with Reed Widow brood, Kilnback heat, Reservoir Maw flood, Cable Eater charge, Ash Stalker prediction, and Ossuary Hound bleed traits, base-8 stat specializations, and 19 conditions/injuries, including checkpoint Momentum.
 - Layered Dossier survivor HUD with heart/meal vitals, a tappable five-stat symbol capsule, persistent pressure strip, placeholder portraits/item runes, drawn D20, and tactical combat screen.
 - Locally bundled Literata narrative and Inter interface fonts, with their OFL licences, for complete offline presentation.
 - Data-driven weapons and adversaries, armor mitigation, ammunition fallback, critical effects, combat log, and flee rules.
@@ -59,4 +59,4 @@ The launch-v1 game has no network dependency, advertising, or purchases. Deferre
 - [Mega-Chain expansion progress](docs/MEGA_CHAIN_EXPANSION.md)
 - [Living Road narrative bible](docs/LIVING_ROAD_NARRATIVE_BIBLE.md)
 
-Combat rules 2 adds committed enemy tells, weapon signatures/mastery, shield builds and Manual/Quick Roll. Existing saved fights keep their legacy rules until they end. See [the implementation and measured balance report](docs/NARRATIVE_COMBAT_REPORT.md); Samsung testing remains required before release.
+Combat rules 3 adds Reed Widow brood, Kilnback heat, Reservoir Maw flood, Cable Eater charge, Ash Stalker prediction, and Ossuary Hound bleed traits, v3 late-game scaling with base-8 specializations, weapon switching and environmental interactions through the Item sheet, and tactical consumables plus warding gear. Rules 2 adds committed enemy tells, weapon signatures/mastery, shield builds and Manual/Quick Roll. Existing saved fights keep their legacy rules until they end. See [the implementation and measured balance report](docs/NARRATIVE_COMBAT_REPORT.md) and [Combat+relationships](docs/Combat+relationships.md); Samsung testing remains required before release.

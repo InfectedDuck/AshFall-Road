@@ -473,7 +473,7 @@ func _verify_road_chronicle(ui, context: String) -> void:
 	await _settle()
 	var discoveries_copy := "
 ".join(_label_texts(ui.page))
-	verify("1 / 29 chapters" in discoveries_copy, "Discovery progress counts every chapter the default build can reach " + context)
+	verify("1 / 54 chapters" in discoveries_copy, "Discovery progress counts every chapter the default build can reach " + context)
 	verify("1 recorded account" in discoveries_copy, "Accounts are counted apart from chapters " + context)
 	verify("BUNKER FORTY-ONE" in discoveries_copy and "Family on Channel Nine".to_upper() in discoveries_copy, "The default Chronicle advertises its Living Road chapters with spoiler-safe hints " + context)
 	verify(ui.page.find_child("ChronicleDiscoveriesScroll", true, false) != null, "The discovery list scrolls " + context)

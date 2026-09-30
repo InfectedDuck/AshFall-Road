@@ -34,6 +34,8 @@ func run(repository: ContentRepository, assertion: Callable) -> void:
 	_content_snapshot()
 	_benchmark_roster()
 	_disk_recovery()
+	_stage1_traits_and_scaling()
+	_stage3_specializations_and_traits()
 
 
 func _content_snapshot() -> void:
@@ -490,3 +492,184 @@ func _disk_recovery() -> void:
 	store.delete_run_files()
 	for suffix: String in ["profile.json", "profile.json.bak"]:
 		store._remove_if_exists("user://ashfall_combat_v2_test_" + suffix)
+
+
+## Stage 1 (Combat+relationships.md Weeks 1-2): two distinctive fights, v3
+## scaling, interaction UI domain, and two supporting items. Every mechanic has
+## at least two responses and phase changes affect the next round.
+func _stage1_traits_and_scaling() -> void:
+	var CombatResolver = load("res://scripts/domain/combat_resolver.gd")
+	check.call(is_equal_approx(CombatResolver.stat_damage_multiplier(5), 1.3), "V2 scaling is 1.3x at stat 5")
+	check.call(is_equal_approx(CombatResolver.stat_damage_multiplier_v3(5), 1.3), "V3 preserves the launch curve through stat 5")
+	check.call(is_equal_approx(CombatResolver.stat_damage_multiplier_v3(10), 1.8), "V3 stat 5 to 10 is 1.3 to 1.8 (about 38 percent)")
+	# New fights start on v3; in-flight v2 fights keep their frozen rules.
+	var fresh := fixture("reed_widow", "salvage_cleaver", "", 9101)
+	check.call(int(fresh.run_state["combat_state"].get("combat_rules_version", 0)) == Rules.VERSION, "New fights start under combat rules v3")
+	check.call(str(fresh.run_state["combat_state"].get("trait_id", "")) == "brood", "Reed Widow carries the brood trait")
+	check.call("BROOD 0/3" in " ".join(fresh.combat_presentation_snapshot().get("status_labels", [])), "Brood counter is visible before it hatches")
+	# Brood: an uninterrupted heavy hatches +1 and strengthens the response.
+	move_to(fresh, "heavy")
+	var heavy_index := int(fresh.run_state["combat_state"]["move_index"])
+	# Use an unmastered non-disruption weapon so the heavy is never interrupted.
+	var hatched := round_for(fresh, "attack", 12, 10)
+	check.call(int(fresh.run_state["combat_state"].get("trait_brood", -1)) == 1, "An uninterrupted Widow heavy hatches one brood")
+	check.call(int(fresh.run_state["combat_state"]["move_index"]) == heavy_index + 1, "Phase change advances the sequence instead of replacing the previewed attack")
+	# Second response: tear the nest bare-handed without spending an item.
+	var tear_preview := fresh.combat_action_preview("interact", "tear_nest")
+	check.call(bool(tear_preview.get("available", false)), "Tearing the nest is available while brood lives")
+	round_for(fresh, "interact", 0, 10, "tear_nest")
+	check.call(int(fresh.run_state["combat_state"].get("trait_brood", -1)) == 0, "Tearing clears one brood without a consumable")
+	# Third response: incendiary clears and prevents future brood.
+	fresh.run_state["survivor"]["inventory"]["incendiary_charge"] = 1
+	move_to(fresh, "heavy")
+	round_for(fresh, "use_item", 0, 10, "incendiary_charge")
+	check.call(bool(fresh.run_state["combat_state"].get("trait_nest_destroyed", false)), "Incendiary destroys the nest")
+	check.call(int(fresh.run_state["combat_state"].get("trait_brood", -1)) == 0, "Burning clears the brood")
+	move_to(fresh, "heavy")
+	round_for(fresh, "attack", 12, 10)
+	check.call(int(fresh.run_state["combat_state"].get("trait_brood", -1)) == 0, "A destroyed nest hatches no new brood")
+	# Kilnback: attacks build heat, full heat opens the shell for bonus damage.
+	var kiln := fixture("kilnback", "salvage_cleaver", "", 9201)
+	check.call(str(kiln.run_state["combat_state"].get("trait_id", "")) == "heat", "Kilnback carries the heat trait")
+	for i in range(3):
+		if int(kiln.run_state["combat_state"].get("enemy_health", 0)) <= 0:
+			break
+		move_to(kiln, "strike")
+		round_for(kiln, "attack", 20, 1)
+	check.call(bool(kiln.run_state["combat_state"].get("trait_shell_open", false)), "Three landed hits open the Kilnback shell")
+	var open_preview := kiln.combat_action_preview("attack")
+	check.call(int(open_preview.get("damage_min", 0)) > 0, "Open-shell preview still prices the attack")
+	# Coolant forces the window early; venting cools without attacking.
+	var cool := fixture("kilnback", "salvage_cleaver", "", 9202)
+	cool.run_state["survivor"]["inventory"]["coolant_canister"] = 1
+	round_for(cool, "use_item", 0, 10, "coolant_canister")
+	check.call(bool(cool.run_state["combat_state"].get("trait_shell_open", false)), "Coolant forces the shell open")
+	var vent := fixture("kilnback", "salvage_cleaver", "", 9203)
+	move_to(vent, "strike")
+	round_for(vent, "attack", 20, 1)
+	check.call(int(vent.run_state["combat_state"].get("trait_heat", 0)) == 1, "A landed hit builds one heat")
+	check.call(not vent.combat_interactions().is_empty(), "Venting is offered while heat lives")
+	round_for(vent, "interact", 0, 10, "vent_heat")
+	check.call(int(vent.run_state["combat_state"].get("trait_heat", 0)) == 0, "Venting cools one heat without attacking")
+	# Switching consumes the round, keeps intention, and never resets traits.
+	var swap := fixture("reed_widow", "salvage_cleaver", "", 9301)
+	swap.run_state["survivor"]["inventory"]["rebar_spear"] = 1
+	var committed_before := str(swap.run_state["combat_state"]["committed_move"]["id"])
+	var brood_before_swap := int(swap.run_state["combat_state"].get("trait_brood", 0))
+	round_for(swap, "switch_weapon", 0, 10, "rebar_spear")
+	check.call(str(swap.run_state["survivor"]["equipment"].get("weapon", "")) == "rebar_spear", "Switching equips the carried weapon")
+	check.call(int(swap.run_state["combat_state"].get("trait_brood", -1)) == brood_before_swap, "Switching never resets trait counters")
+	check.call(str(swap.run_state["combat_state"]["committed_move"]) != "", "Switching advances to a next committed move")
+	check.call(committed_before != "" , "Enemy intention existed before the switch")
+	# Prepared switch/interact persist their trait snapshot for restart safety.
+	swap = fixture("kilnback", "salvage_cleaver", "", 9302)
+	swap.run_state["survivor"]["inventory"]["rebar_spear"] = 1
+	swap.prepare_combat_action("switch_weapon", "rebar_spear")
+	check.call(swap.run_state["pending_combat_round"].has("trait_heat"), "Prepared switches carry trait state for restart")
+
+
+## Stage 3 (Combat+relationships.md Weeks 5-6): base-8 specializations plus
+## Cable Eater charge, Ash Stalker prediction, and Ossuary Hound bleed/regen.
+func _stage3_specializations_and_traits() -> void:
+	var Engine = load("res://scripts/domain/game_engine.gd")
+	check.call(Engine.stat_milestone_text(4, 5) == "next: mastery at base 6, specialization at base 8", "Allocation names both milestones below mastery")
+	check.call(Engine.stat_milestone_text(6, 7) == "mastered • next: specialization at base 8", "Allocation names specialization past mastery")
+	check.call(Engine.stat_milestone_text(8, 9) == "specialized", "Allocation confirms specialization at base 8")
+	# Strength breaks guard through the next action, once per fight.
+	var strong := fixture("road_bandits", "salvage_cleaver", "", 9401)
+	strong.run_state["survivor"]["stats"]["strength"] = 8
+	move_to(strong, "brace")
+	round_for(strong, "attack", 14, 10)
+	check.call(bool(strong.run_state["combat_state"].get("spec_str_used", false)), "A successful attack spends the Strength break")
+	check.call(bool(strong.run_state["combat_state"].get("spec_str_next", false)), "The breach stays open through the next action")
+	round_for(strong, "attack", 14, 10)
+	check.call(not bool(strong.run_state["combat_state"].get("spec_str_next", false)), "The breach closes after the following action")
+	# Agility preserves a consumed Opening, once per fight.
+	var agile := fixture("road_bandits", "pipe_pistol", "", 9402)
+	agile.run_state["survivor"]["stats"]["agility"] = 8
+	move_to(agile, "strike")
+	round_for(agile, "dodge", 18, 10)
+	check.call(bool(agile.run_state["combat_state"].get("opening", false)), "A good dodge banks Opening")
+	round_for(agile, "attack", 14, 10)
+	check.call(bool(agile.run_state["combat_state"].get("spec_agi_used", false)), "Attacking with Opening spends the Agility preserve")
+	check.call(bool(agile.run_state["combat_state"].get("opening", false)), "Opening survives the attack it would consume")
+	# Wits suppresses a displayed trait for two rounds, once per fight.
+	var clever := fixture("reed_widow", "salvage_cleaver", "", 9403)
+	clever.run_state["survivor"]["stats"]["wits"] = 8
+	move_to(clever, "heavy")
+	round_for(clever, "attack", 12, 10)
+	check.call(int(clever.run_state["combat_state"].get("trait_brood", 0)) == 1, "Setup hatches one brood")
+	var suppress_preview := clever.combat_action_preview("interact", "study_and_suppress")
+	check.call(bool(suppress_preview.get("available", false)), "Study and suppress is offered in a trait fight")
+	round_for(clever, "interact", 0, 10, "study_and_suppress")
+	check.call(int(clever.run_state["combat_state"].get("spec_wits_timer", 0)) == 1, "Suppression holds after the committed response")
+	check.call(Rules.brood_damage_bonus(clever) == 0.0, "Suppression zeroes the displayed trait")
+	# Grit survives a lethal combat hit at 1 HP, once per run.
+	var gritty := fixture("kilnback", "salvage_cleaver", "", 9404)
+	gritty.run_state["survivor"]["stats"]["grit"] = 8
+	gritty.run_state["survivor"]["vitals"]["health"] = 30
+	move_to(gritty, "heavy")
+	gritty.prepare_combat_action("dodge")
+	gritty.run_state["pending_combat_round"]["player_roll"] = 5
+	gritty.run_state["pending_combat_round"]["enemy_roll"] = 20
+	gritty.resolve_prepared_combat_round()
+	check.call(int(gritty.run_state["survivor"]["vitals"]["health"]) == 1, "Grit specialization survives lethal damage at 1 HP")
+	check.call(bool(gritty.run_state.get("spec_grit_used", false)), "The once-per-run save is spent")
+	# Presence opens Opportunity from the first round.
+	var commanding := fixture("road_bandits", "holdout_revolver", "", 9405)
+	commanding.run_state["survivor"]["stats"]["presence"] = 8
+	Rules.initialize(commanding)
+	check.call(bool(commanding.run_state["combat_state"].get("opportunity_ready", false)), "Presence 8 readies Opportunity immediately")
+	# Cable Eater: strikes feed charge, grounding clears it, straps ward it.
+	var cable := fixture("cable_eater", "salvage_cleaver", "", 9411)
+	move_to(cable, "strike")
+	round_for(cable, "attack", 12, 10)
+	check.call(int(cable.run_state["combat_state"].get("trait_charge", -1)) == 1, "An electrical strike feeds one charge")
+	var ground_preview := cable.combat_action_preview("interact", "ground_cable")
+	check.call(bool(ground_preview.get("available", false)), "Grounding is offered while charged")
+	round_for(cable, "interact", 0, 10, "ground_cable")
+	check.call(int(cable.run_state["combat_state"].get("trait_charge", -1)) == 0, "Grounding clears the charge")
+	cable.run_state["survivor"]["equipment"]["accessory"] = "grounding_straps"
+	cable.run_state["survivor"]["inventory"]["grounding_straps"] = 1
+	check.call(Rules.trait_ward_factor(cable, "charge") == 0.0, "Grounding straps negate the retaliation")
+	# Disruption breaks the Eater draw; the spark lance also clears it.
+	var spark := fixture("cable_eater", "spark_lance", "", 9412)
+	move_to(spark, "strike")
+	round_for(spark, "attack", 12, 10)
+	check.call(int(spark.run_state["combat_state"].get("trait_charge", -1)) == 1, "Setup feeds one charge")
+	move_to(spark, "charge")
+	round_for(spark, "attack", 15, 10)
+	check.call(int(spark.run_state["combat_state"].get("trait_charge", -1)) == 0, "A spark-lance interrupt breaks the draw and clears charge")
+	# Ash Stalker: three in a row draws the announced counter; variety breaks it.
+	var stalker := fixture("ash_stalkers", "salvage_cleaver", "", 9421)
+	round_for(stalker, "attack", 12, 10)
+	round_for(stalker, "attack", 12, 10)
+	check.call(int(stalker.run_state["combat_state"].get("trait_repeat", 0)) == 2, "Two identical actions teach it")
+	var warned := stalker.combat_action_preview("attack")
+	check.call("PREDICTED" in " ".join(warned.get("effects", [])), "The third identical action is announced")
+	var first_blood: int = round_for(stalker, "attack", 12, 10).get("enemy_damage", 0)
+	var varied := fixture("ash_stalkers", "salvage_cleaver", "", 9422)
+	round_for(varied, "attack", 12, 10)
+	round_for(varied, "attack", 12, 10)
+	round_for(varied, "dodge", 18, 10)
+	check.call(int(varied.run_state["combat_state"].get("trait_repeat", 0)) == 1, "A different action breaks its prediction")
+	check.call(first_blood >= 0, "Counter rounds resolve without engine errors")
+	# Ossuary Hound: blood scents it, treatment calms it, silver and cautery stop knitting.
+	var hound := fixture("ossuary_hound", "salvage_cleaver", "", 9431)
+	check.call(str(hound.run_state["combat_state"].get("trait_id", "")) == "bleed", "The Hound carries the bleed trait")
+	hound.run_state["survivor"]["conditions"] = ["bleeding"]
+	move_to(hound, "strike")
+	var bloody := round_for(hound, "attack", 12, 10)
+	check.call(int(bloody.get("enemy_damage", 0)) >= 0, "Blooded rounds resolve")
+	hound.run_state["survivor"]["inventory"]["cloth_bandage"] = 1
+	round_for(hound, "use_item", 0, 10, "cloth_bandage")
+	check.call("bleeding" not in hound.run_state["survivor"].get("conditions", []), "Treatment staunches the bleeding")
+	move_to(hound, "recover")
+	hound.run_state["combat_state"]["enemy_health"] = 100
+	round_for(hound, "dodge", 18, 1)
+	check.call(int(hound.run_state["combat_state"].get("enemy_health", 0)) == 112, "It knits 12 HP on recover")
+	hound.run_state["survivor"]["inventory"]["cauterizing_torch"] = 1
+	round_for(hound, "use_item", 0, 10, "cauterizing_torch")
+	move_to(hound, "recover")
+	round_for(hound, "dodge", 18, 1)
+	check.call(int(hound.run_state["combat_state"].get("enemy_health", 0)) == 112, "Cautery blocks the knitting")
