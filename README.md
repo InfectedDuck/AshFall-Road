@@ -17,12 +17,12 @@ An offline, story-driven survival RPG about the price of getting one more mile e
 
 | Platform | Download | How to play |
 |---|---|---|
-| Windows 64-bit | [Windows playtest ZIP](downloads/Ashfall-Road-0.2.0-playtest-Windows.zip) | Extract the ZIP and run `ashfall-road.exe` with `ashfall-road.pck` beside it. |
-| Android 7.0+ | [Android playtest ZIP](downloads/Ashfall-Road-0.2.0-playtest-Android.zip) | Extract the ZIP and install `ashfall-road-debug.apk` on an arm64 or x86_64 device. |
+| Windows 64-bit | [Windows playtest ZIP](downloads/Ashfall-Road-0.2.1-playtest-Windows.zip) | Extract the ZIP and run `ashfall-road.exe` with `ashfall-road.pck` beside it. |
+| Android 7.0+ | [Android playtest ZIP](downloads/Ashfall-Road-0.2.1-playtest-Android.zip) | Extract the ZIP and install `ashfall-road-debug.apk` on an arm64 or x86_64 device. |
 
 Both builds work offline. The Windows executable is unsigned and the Android APK is debug-signed for trial use. See the [playtest instructions and SHA-256 checksums](docs/ADMISSIONS_PLAYTEST.md).
 
-The title menu offers **New run** to choose a survivor. If this device already has a saved run, **Continue** appears alongside it. Starting a new run replaces the old save only after you choose a survivor.
+The title menu offers **New run** to choose a survivor. If this device already has a saved run, **Continue** appears alongside it. During a run, open **Settings → Start New Run**. The old save stays available until you choose a new survivor.
 
 ## See the game
 

@@ -82,6 +82,7 @@ var story_reveal_cache: Dictionary = {}
 var inventory_filter := "all"
 var inventory_scroll_offset := 0
 var bootstrap_on_ready := true
+var settings_return_to_menu := false
 var palette: Dictionary = {}
 # Compatibility aliases keep legacy widget call sites semantic while their values
 # are refreshed exclusively from UiPalette whenever the player switches theme.
@@ -611,6 +612,7 @@ func _panel() -> VBoxContainer:
 func _show_main_menu() -> void:
 	if _gameplay_locked():
 		return
+	settings_return_to_menu = true
 	_clear_page()
 	_set_atmosphere("title")
 	var utilities := HBoxContainer.new()
@@ -766,6 +768,7 @@ func _render_current() -> void:
 	if game.run_state.is_empty():
 		_show_main_menu()
 		return
+	settings_return_to_menu = false
 	match str(game.run_state.get("phase", "event")):
 		"event": _show_event()
 		"resolving", "roll_pending": _show_event_roll()
@@ -3279,8 +3282,17 @@ func _show_settings() -> void:
 			options.add_child(_button("HOW TO PLAY", _show_first_run_tutorial))
 			if monetization_enabled:
 				options.add_child(_button("COSMETIC STORE", _show_store))
+	if not game.run_state.is_empty() and str(game.run_state.get("status", "")) == "active":
+		body.add_child(_button("START NEW RUN", _confirm_new_run_from_settings))
 	body.add_child(_button("DONE", _close_settings))
 	_popup_center_responsive(settings_popup, 0.94, 0.88)
+
+
+func _confirm_new_run_from_settings() -> void:
+	if _gameplay_locked():
+		return
+	_close_settings()
+	_confirm_new_run()
 
 
 func _select_settings_section(section: String) -> void:
@@ -3312,7 +3324,7 @@ func _settings_choice(parent: VBoxContainer, title_text: String, hint: String, k
 		if key in ["font_scale", "selected_theme"]:
 			_apply_theme()
 			settings_popup.hide()
-			_render_current() if not game.run_state.is_empty() else _show_main_menu()
+			_render_after_settings()
 			_show_settings()
 	)
 
@@ -3362,7 +3374,7 @@ func _cycle_font_scale() -> void:
 		return
 	_apply_theme()
 	settings_popup.hide()
-	_render_current() if not game.run_state.is_empty() else _show_main_menu()
+	_render_after_settings()
 	_show_settings()
 
 
@@ -3409,7 +3421,7 @@ func _cycle_theme() -> void:
 	_apply_theme()
 	if is_instance_valid(settings_popup):
 		settings_popup.hide()
-	_render_current() if not game.run_state.is_empty() else _show_main_menu()
+	_render_after_settings()
 	_show_settings()
 
 
@@ -3419,7 +3431,14 @@ func _close_settings() -> void:
 	if is_instance_valid(settings_popup):
 		settings_popup.hide()
 	_pause_story(false)
-	_render_current() if not game.run_state.is_empty() else _show_main_menu()
+	_render_after_settings()
+
+
+func _render_after_settings() -> void:
+	if settings_return_to_menu or game.run_state.is_empty():
+		_show_main_menu()
+	else:
+		_render_current()
 
 
 func _show_store() -> void:

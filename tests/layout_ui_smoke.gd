@@ -127,6 +127,9 @@ func _run() -> void:
 			await _verify_run_summary(ui, context)
 			await _verify_contextual_tips(ui, context)
 			await _verify_road_chronicle(ui, context)
+			ui.game = fixtures.fixture()
+			await _verify_new_run_from_game(ui, context)
+			store.cleanup()
 
 			viewport.queue_free()
 			await process_frame
@@ -195,6 +198,11 @@ func _verify_phone_pages(ui, context: String) -> void:
 	ui._show_main_menu()
 	await _settle()
 	verify(_button_with(ui.page, "Continue") != null, "Returning from survivor selection keeps Continue available " + context)
+	ui._show_settings()
+	await _settle()
+	ui._close_settings()
+	await _settle()
+	verify(_button_with(ui.page, "Continue") != null and _button_with(ui.page, "New run") != null, "Closing title settings returns to the menu instead of resuming the run " + context)
 	await _capture(ui, "menu")
 	ui.candidates = ui.game.create_candidates(4401)
 	ui._show_candidates()
@@ -260,6 +268,40 @@ func _verify_phone_pages(ui, context: String) -> void:
 		verify(ui.profile.get("story_text_speed") == "instant" and ui.saves.load_profile().get("story_text_speed") == "instant", "Selecting Instant persists directly " + context)
 	ui._close_settings()
 	await _settle()
+
+
+func _verify_new_run_from_game(ui, context: String) -> void:
+	ui._render_current()
+	var original_run: Dictionary = ui.game.run_state.duplicate(true)
+	verify(ui.saves.save_run(original_run), "An active run is saved before testing restart " + context)
+	ui._show_settings()
+	await _settle()
+	var restart := _button_with(ui.settings_popup, "START NEW RUN")
+	verify(restart != null, "Settings expose New Run while playing " + context)
+	if restart == null:
+		return
+	_verify_pinned(restart, ui.settings_popup.size.y, "start a new run from settings " + context)
+	restart.pressed.emit()
+	await _settle()
+	verify(not ui.settings_popup.visible and ui.confirmation_popup.visible, "New Run opens a confirmation from the game " + context)
+	var keep := _button_with(ui.confirmation_popup, "KEEP RUN")
+	keep.pressed.emit()
+	verify(ui.game.run_state == original_run and ui.saves.load_run().get("run_id") == original_run.get("run_id"), "Canceling in-game New Run keeps the saved run " + context)
+	ui._show_settings()
+	await _settle()
+	_button_with(ui.settings_popup, "START NEW RUN").pressed.emit()
+	await _settle()
+	_button_with(ui.confirmation_popup, "CHOOSE SURVIVOR").pressed.emit()
+	await _settle()
+	verify(ui.saves.load_run().get("run_id") == original_run.get("run_id"), "Browsing survivors keeps the old save " + context)
+	var walk := _button_with(ui.page, "Walk as")
+	verify(walk != null, "A new survivor can be selected from the in-game restart " + context)
+	if walk == null:
+		return
+	walk.pressed.emit()
+	await _settle()
+	var new_id := str(ui.game.run_state.get("run_id", ""))
+	verify(new_id != "" and new_id != str(original_run.get("run_id", "")) and str(ui.saves.load_run().get("run_id", "")) == new_id, "Selecting a survivor persists a distinct new run " + context)
 
 
 func _verify_item_sheet(ui, context: String) -> void:

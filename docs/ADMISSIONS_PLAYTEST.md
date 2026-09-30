@@ -1,16 +1,16 @@
-# Admissions playtest — 0.2.0
+# Admissions playtest — 0.2.1
 
 Prepared on 1 October 2026 from the current Godot 4.7.2 project. These are trial builds for reviewers, not store releases. The game works offline and needs no account.
 
-On the title screen, choose **New run** to select a survivor. If you have played Ashfall Road on the same device before, **Continue** resumes the locally saved run. The game keeps that save while you browse new survivors and replaces it only when you choose one.
+On the title screen, choose **New run** to select a survivor. If you have played Ashfall Road on the same device before, **Continue** resumes the locally saved run. During a run, open **Settings → Start New Run** to restart. The game keeps the old save while you browse new survivors and replaces it only when you choose one.
 
 ## Windows desktop
 
-Download the [Windows ZIP](../downloads/Ashfall-Road-0.2.0-playtest-Windows.zip), extract it, and run `ashfall-road.exe`. Keep `ashfall-road.pck` beside the executable. This build is for 64-bit Windows and does not need Godot installed. The executable is unsigned, so Windows may identify its publisher as unknown.
+Download the [Windows ZIP](../downloads/Ashfall-Road-0.2.1-playtest-Windows.zip), extract it, and run `ashfall-road.exe`. Keep `ashfall-road.pck` beside the executable. This build is for 64-bit Windows and does not need Godot installed. The executable is unsigned, so Windows may identify its publisher as unknown.
 
 ## Android
 
-Download the [Android ZIP](../downloads/Ashfall-Road-0.2.0-playtest-Android.zip), extract it, and open `ashfall-road-debug.apk` on an Android 7.0 or newer arm64 or x86_64 device. Android may ask you to allow installation from the app used to open the APK. This package is debug-signed for trial installation and is not a Google Play release.
+Download the [Android ZIP](../downloads/Ashfall-Road-0.2.1-playtest-Android.zip), extract it, and open `ashfall-road-debug.apk` on an Android 7.0 or newer arm64 or x86_64 device. Android may ask you to allow installation from the app used to open the APK. This package is debug-signed for trial installation and is not a Google Play release.
 
 ## Artwork status
 
@@ -25,5 +25,5 @@ The screenshots in the README show the playable build. Some enemy and survivor p
 
 | Archive | Size | SHA-256 |
 |---|---:|---|
-| `Ashfall-Road-0.2.0-playtest-Windows.zip` | 60,481,567 bytes | `8FB1FEF75C220F1AFA640E44754D6C28AE99D517A2A0377ACA727761E9D4A0CE` |
-| `Ashfall-Road-0.2.0-playtest-Android.zip` | 79,377,292 bytes | `BF2B892DA34E08B3002DA8D38017E2BE5C532B5BF0F99BB5AA1ACD70DEB17346` |
+| `Ashfall-Road-0.2.1-playtest-Windows.zip` | 60,481,509 bytes | `0A96CCD967D25FD89983CA29DAA9F729573B1D683530AABCEA3B73C4D25DF1D5` |
+| `Ashfall-Road-0.2.1-playtest-Android.zip` | 79,377,219 bytes | `6C2A66C061C3C7DC16BA58F8521DCD35160AF8E6FFD7D15F513534C6EEEF1609` |
