@@ -24,6 +24,7 @@
 *.ttf binary
 *.otf binary
 *.apk binary
+*.zip binary
 *.aab binary
 *.jks binary
 *.keystore binary

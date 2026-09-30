@@ -2,83 +2,93 @@
 
 ![Ashfall Road cover](art_sources/marketing/ashfall_road_itch_cover_v1.png)
 
-> A complete offline post-apocalyptic survival game with tactical combat.
-> Features **153 events, 440+ choices and 480+ unique outcomes with 30,000+ words**.
-> Validated with **3,600+ automated tests, 586,000 simulated battles, and 1,000 full playthroughs with zero crashes**.
+> **Walk until the road ends.**
+
+An offline, story-driven survival RPG about the price of getting one more mile east. Read the danger, choose what you can afford to lose, and live with what the road remembers.
 
 ![Godot 4.7](https://img.shields.io/badge/Godot-4.7-478cbf?logo=godot-engine&logoColor=white)
-![GDScript](https://img.shields.io/badge/GDScript-domain%20%2B%20UI-green)
-![Offline](https://img.shields.io/badge/offline-first-no%20ads%20%E2%80%A2%20no%20purchases-brightgreen)
-![Tests](https://img.shields.io/badge/tests-3645%20assertions%20%E2%80%A2%200%20failures-success)
-![Content](https://img.shields.io/badge/content-153%20events%20%E2%80%A2%2082%20items%20%E2%80%A2%2023%20enemies-orange)
+![GDScript](https://img.shields.io/badge/GDScript-game%20and%20UI-green)
+![Offline](https://img.shields.io/badge/offline-no%20ads%20%C2%B7%20no%20purchases-brightgreen)
+![Content](https://img.shields.io/badge/content-153%20events%20%C2%B7%20440%2B%20choices-orange)
 
-Built with **Godot 4.7.2 + GDScript**. Portrait 393×852, offline-first, no ads, no purchases in v1.
+**153 authored events · 440+ choices · 480+ outcomes · 30,000+ words · 23 adversaries.** One life, six regions, and no reset when a decision goes badly.
 
-## The world
+## Download the playtest
 
-Six hand-painted regions, travelled in fixed order — outskirts to underrail — each with its own dangers, supply chances, and story chains.
-
-| Shattered Outskirts | Salt Flats | Drowned Marches |
+| Platform | Download | How to play |
 |---|---|---|
-| ![Outskirts](assets/backgrounds/region_1_outskirts.png) | ![Salt Flats](assets/backgrounds/region_2_salt_flats.png) | ![Marches](assets/backgrounds/region_3_marshes.png) |
+| Windows 64-bit | [Windows playtest ZIP](downloads/Ashfall-Road-0.2.0-playtest-Windows.zip) | Extract the ZIP and run `ashfall-road.exe` with `ashfall-road.pck` beside it. |
+| Android 7.0+ | [Android playtest ZIP](downloads/Ashfall-Road-0.2.0-playtest-Android.zip) | Extract the ZIP and install `ashfall-road-debug.apk` on an arm64 or x86_64 device. |
 
-| Hollow Industrial | Glass Wastes | The Underrail |
-|---|---|---|
-| ![Industrial](assets/backgrounds/region_4_industrial.png) | ![Glass Wastes](assets/backgrounds/region_5_glass_wastes.png) | ![Underrail](assets/backgrounds/region_6_underrail.png) |
+Both builds work offline. The Windows executable is unsigned and the Android APK is debug-signed for trial use. See the [playtest instructions and SHA-256 checksums](docs/ADMISSIONS_PLAYTEST.md).
 
-## Your survivors
+## See the game
 
-Pick 1 of 3 randomly generated survivors — equal budgets, different builds. Grit sets your hearts, your highest stat sets your starting kit.
+These 540×960 screenshots come from the running Godot UI. The [capture script](tools/readme_showcase.gd) selects authored scenes and resolves the pictured rolls and combat turns through the game engine.
 
-| | | |
-|---|---|---|
-| ![Survivor 1](assets/portraits/survivor_1.png) | ![Survivor 2](assets/portraits/survivor_2.png) | ![Survivor 3](assets/portraits/survivor_3.png) |
+> **Playtest art:** Some enemy and survivor portraits, along with some item icons, are still temporary or awaiting final artwork. The screenshots show the current playable build; the Feral Dogs portrait shown below is included.
 
-## Your enemies
+### One child, or the safety of a column
 
-23 authored adversaries with readable tells and unique traits — brood-hatching widows, heat-venting kilnbacks, flood-raising maws, charge-stealing cable eaters, prediction punishers, bleeding hounds.
+Perrin is keeping a fleeing group safe by ringing a muffled bell from a flooded chapel roof. Rescue him, draw the searchers away, or tell his mother to leave him. A failed rescue saves Perrin but scatters the families and leaves you badly hurt.
 
-| Feral Dogs | Road Bandits | Ash Stalker |
-|---|---|---|
-| ![Dogs](assets/portraits/enemy_dogs.png) | ![Bandits](assets/portraits/enemy_bandits.png) | ![Stalker](assets/portraits/enemy_stalker.png) |
+| Make the call | Live with the result |
+|:---:|:---:|
+| [![The Bell-Keeper's Son asks whether to rescue Perrin, divert searchers, or leave him](docs/screenshots/06-bellkeepers-son-choice.png)](docs/screenshots/06-bellkeepers-son-choice.png) | [![A failed rescue returns Perrin but scatters the column and costs health](docs/screenshots/07-bellkeepers-son-result.png)](docs/screenshots/07-bellkeepers-son-result.png) |
 
-| Toll Gang | Leeches | The Warden |
-|---|---|---|
-| ![Toll](assets/portraits/enemy_toll.png) | ![Leeches](assets/portraits/enemy_leeches.png) | ![Warden](assets/portraits/enemy_warden.png) |
+### A fight already in motion
 
-## How a run plays
+The Feral Dogs have taken 126 HP. Your survivor has lost 101. The next committed tell, the exchange log, and every tactical action remain visible while the fight is still live.
 
-1. **Choose** your survivor from 3 candidates.
-2. **Travel** 6 regions × 5 events — checked D20 rolls with exact odds shown, concealed persisted results, natural 1/20 drama.
-3. **Survive** — hearts, 4 meals, Fatigue, Radiation, weight, ammo, conditions. Hunger ticks every 2 events; starvation costs a full heart.
-4. **Fight** — cinematic portrait combat: Attack, Block, Dodge, Item, Flee + once-per-fight Opportunity. Committed enemy tells, Riposte/Opening windows, armor blocks, shields, weapon mastery.
-5. **Level** — run-only XP from survival, hard checks, checkpoints, kills. Banked stat points, allocated only at checkpoints. Death erases everything.
-6. **Finish** — checkpoint rest-or-push gambles, companion arcs that remember you, and a Bunker-aware 3-stage finale. Or die and leave only a Chronicle entry.
+[![An ongoing Feral Dogs fight at 299 of 400 survivor HP and 24 of 150 enemy HP](docs/screenshots/05-feral-dogs-combat.png)](docs/screenshots/05-feral-dogs-combat.png)
 
-## Content at a glance
+### Choices with visible odds
 
-| System | Scale |
-|---|---|
-| Events | **153** — 60 region + 12 global + 13 Bunker Forty-One + 8 Mara Venn/Rust-Sea + 15 Living Road callbacks + 12 betrayal + 11 Rhea Sorn + 12 Tess/Mina + 6 hunts + 3-stage finale |
-| Choices & prose | **440+ choices, 480+ outcomes, 30,000+ words**, bespoke rewrites for all 76 baseline events |
-| Items / enemies / conditions | **82 items, 23 adversaries, 19 conditions**, base-8 stat specializations |
-| Memory | 5 recurring humans whose stories return your choices as consequences chapters later; 54 lore chapters + last 20 run summaries in the Road Chronicle |
+At an evacuation bus, forcing the doors has better odds, while tracing the release may recover medical supplies. The game shows the exact chance and required D20 roll before you commit, then records what happened and what you gained.
 
-## Why it is technically strong
+| Choose your approach | See the consequence |
+|:---:|:---:|
+| [![The Sealed Bus presents two checked choices and their exact odds](docs/screenshots/01-sealed-bus-choice.png)](docs/screenshots/01-sealed-bus-choice.png) | [![A successful D20 check opens the bus and grants bandages, parts, and experience](docs/screenshots/02-checked-choice-result.png)](docs/screenshots/02-checked-choice-result.png) |
 
-- **Deterministic engine** — same seed + same decisions = byte-identical replay. Previews and resolution share one code path; UI never decides outcomes.
-- **Crash-safe saves** — atomic JSON + backup recovery, prepare/commit/retry transactions, versioned prepared-roll recovery, death marker. Interrupt at any roll, damage, XP, or death without duplication or loss.
-- **Simulated balance** — 586,000 combat encounters across builds/policies/seeds, plus a 1,000-run full-journey soak with 0 engine errors. Encounter, robustness, and human evidence kept separate.
-- **Data-driven content** — all events, items, adversaries, and prose overrides are JSON with a mechanical-snapshot equality check and a 9-point launch audit.
-- **Mobile-ready presentation** — 360×640 to tall portrait, 3 text sizes, High Contrast, reduced motion, typewriter reveal with double-tap skip, contextual tips instead of a tutorial wall.
+### People return with boundaries of their own
+
+Rhea Sorn first helps you repair a pump. Later, she pushes back when survival means taking from people who may return. Recurring characters carry their histories into later regions, and your choices shape those encounters.
+
+| Meet Rhea | Meet her again |
+|:---:|:---:|
+| [![Rhea Sorn joins the scene at a broken pump in the Salt Flats](docs/screenshots/03-meet-rhea.png)](docs/screenshots/03-meet-rhea.png) | [![Rhea draws a moral boundary in the Hollow Industrial Zone](docs/screenshots/04-rhea-returns.png)](docs/screenshots/04-rhea-returns.png) |
+
+### What the road buried
+
+Deep in Bunker Forty-One, you find the record of an evacuation that chose who entered and who was left outside. Carry its key, broadcast the abandoned names, or destroy the evidence.
+
+[![The Last Evacuation presents three choices about the Bunker Forty-One records](docs/screenshots/08-last-evacuation.png)](docs/screenshots/08-last-evacuation.png)
+
+## What a run asks of you
+
+1. **Choose a survivor.** Three randomly generated candidates have equal stat budgets and different builds. Grit determines hearts; your strongest stat shapes your starting kit.
+2. **Make hard calls.** Travel through five events per region. Checked choices show their exact odds, and natural 1s and 20s can turn a scene sharply.
+3. **Manage the cost.** Food, fatigue, radiation, injury, carrying weight, ammo, and conditions all matter. Hunger advances as the journey does.
+4. **Fight with intent.** Attack, block, dodge, use an item, flee, or spend a once-per-fight Opportunity. Enemies commit to readable moves; good timing creates Riposte and Opening windows.
+5. **Carry the consequences.** Earn XP, invest stat points at checkpoints, and decide whether to rest or press on. Companion stories and the three-stage finale respond to earlier choices. Death ends the run and writes its Chronicle entry.
+
+The content includes **82 items, 19 conditions, five recurring human story threads, 54 lore chapters**, and the last 20 run summaries in the Road Chronicle.
+
+## Built to hold together
+
+- **Deterministic engine:** the same seed and decisions produce the same replay. Previews and resolution share the same rules; the UI does not decide outcomes.
+- **Crash-safe saves:** atomic JSON writes, backup recovery, and prepare/commit/retry transactions protect rolls, combat turns, XP, and death from duplicate or lost progress.
+- **Data-driven stories:** events, items, adversaries, and prose overrides live in JSON and pass a mechanical-snapshot equality check.
+- **Portrait phone UI:** supports compact and tall screens, three text sizes, high contrast, reduced motion, and typewriter reveal with a skip gesture.
+- **Measured balance:** the project records 586,000 simulated combat encounters and a 1,000-run full-journey soak with zero engine errors. The automated suite reports 3,645 assertions with zero failures.
 
 ## Run locally
 
-1. Open this directory with **Godot 4.7.2 Standard**.
-2. Run with **F6/F5**.
-3. Automated checks: `docs/TESTING.md` (headless `tests/test_runner.gd` — 3,645 assertions, 0 failures).
+1. Open this directory in **Godot 4.7.2 Standard**.
+2. Press **F6** or **F5** to run the game.
+3. See [testing](docs/TESTING.md) for the automated suite and capture commands.
 
-No network dependency, advertising, or purchases in launch v1. Android monetization stays behind disabled adapters; the Firebase purchase-verification backend in `backend/` is deferred post-launch.
+The launch game works offline. It has no ads or purchases. Android monetization adapters and the Firebase verification backend are deferred beyond v1.
 
 ## Project guides
 
@@ -92,6 +102,6 @@ No network dependency, advertising, or purchases in launch v1. Android monetizat
 - [Bunker Forty-One narrative map](docs/BUNKER41_NARRATIVE.md)
 - [Living Road narrative bible](docs/LIVING_ROAD_NARRATIVE_BIBLE.md)
 - [Narrative combat report](docs/NARRATIVE_COMBAT_REPORT.md)
-- [Combat+relationships](docs/Combat+relationships.md)
-- [Itch.io public-playtest packet](docs/E05_PLAYTEST_PACKET.md)
+- [Combat and relationships](docs/Combat+relationships.md)
+- [Itch.io public playtest packet](docs/E05_PLAYTEST_PACKET.md)
 - [Release checklist](docs/RELEASE_CHECKLIST.md)
