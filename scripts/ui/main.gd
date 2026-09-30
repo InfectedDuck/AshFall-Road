@@ -127,10 +127,7 @@ func _ready() -> void:
 func _after_startup_recovery(_result: Dictionary) -> void:
 	if str(profile.get("selected_theme", "default")) not in _available_themes():
 		_commit_profile_changes({"selected_theme": "default"})
-	if not game.run_state.is_empty():
-		_render_current()
-	else:
-		_show_main_menu()
+	_show_main_menu()
 
 
 func _notification(what: int) -> void:
@@ -639,6 +636,7 @@ func _show_main_menu() -> void:
 		carry.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		carry.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		actions.add_child(carry)
+		actions.add_child(_button("New run", _confirm_new_run))
 	else:
 		actions.add_child(_button("New run", _begin_candidate_selection))
 	var chronicle_button := _button("   Road chronicle", _show_road_chronicle.bind(""))
@@ -653,6 +651,33 @@ func _show_main_menu() -> void:
 	var stats := _role_label(stats_text, "caption", _c("disabled"))
 	stats.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	page.add_child(stats)
+
+
+func _confirm_new_run() -> void:
+	if _gameplay_locked():
+		return
+	if is_instance_valid(confirmation_popup):
+		confirmation_popup.queue_free()
+	confirmation_popup = PopupPanel.new()
+	confirmation_popup.name = "NewRunConfirmation"
+	confirmation_popup.exclusive = true
+	add_child(confirmation_popup)
+	var body := _popup_body(confirmation_popup, 15)
+	body.add_child(_overlay_header("START A NEW RUN?", confirmation_popup.hide))
+	body.add_child(_label("Your current run stays saved until you choose a new survivor. Choosing one replaces it.", 16))
+	var actions := VBoxContainer.new()
+	var start := _button("CHOOSE SURVIVOR", _start_new_run_selection)
+	actions.add_child(start)
+	var keep := _button("KEEP RUN", confirmation_popup.hide)
+	actions.add_child(keep)
+	body.add_child(actions)
+	_popup_center_responsive(confirmation_popup, 0.9, 0.52)
+
+
+func _start_new_run_selection() -> void:
+	if is_instance_valid(confirmation_popup):
+		confirmation_popup.hide()
+	_begin_candidate_selection()
 
 
 func _begin_candidate_selection() -> void:

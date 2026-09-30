@@ -22,6 +22,8 @@ An offline, story-driven survival RPG about the price of getting one more mile e
 
 Both builds work offline. The Windows executable is unsigned and the Android APK is debug-signed for trial use. See the [playtest instructions and SHA-256 checksums](docs/ADMISSIONS_PLAYTEST.md).
 
+The title menu offers **New run** to choose a survivor. If this device already has a saved run, **Continue** appears alongside it. Starting a new run replaces the old save only after you choose a survivor.
+
 ## See the game
 
 These 540×960 screenshots come from the running Godot UI. The [capture script](tools/readme_showcase.gd) selects authored scenes and resolves the pictured rolls and combat turns through the game engine.
