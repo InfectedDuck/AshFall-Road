@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <!-- Temporary same-ID placeholder. Replace with survivor_4.png; PNG takes priority. -->
+  <rect width="64" height="64" fill="#20272B"/>
+  <path d="M8 64V55L15 47L24 43H40L50 48L57 56V64Z" fill="#8B714F"/>
+  <path d="M14 64V55L24 49H40L51 56V64Z" fill="#512F2B"/>
+  <path d="M20 13L27 8H39L47 15L49 29L44 43L36 50H28L20 42L16 28Z" fill="#C99E79"/>
+  <path d="M19 16L25 8L39 7L47 13L49 21L43 17L35 14L25 16L18 23Z" fill="#746F68"/>
+  <path d="M18 25L22 19L24 34L29 43L36 46L43 40L47 29L47 39L40 49L28 50L19 41Z" fill="#6B625A"/>
+  <path d="M22 25L28 22L31 24L28 27L22 27Z" fill="#302C2B"/>
+  <path d="M36 23L43 24L44 27L38 27Z" fill="#302C2B"/>
+  <rect x="27" y="24" width="2" height="2" fill="#B7CBD1"/>
+  <rect x="39" y="24" width="2" height="2" fill="#B7CBD1"/>
+  <path d="M34 26L32 34L36 35" fill="none" stroke="#8B604E" stroke-width="2"/>
+  <path d="M28 39L34 41L40 38L37 43L31 43Z" fill="#493A35"/>
+  <path d="M43 17L41 23L43 29L40 35" fill="none" stroke="#8E433A" stroke-width="2"/>
+  <path d="M11 58L22 48L29 53L22 64H11Z" fill="#9B8058"/>
+  <path d="M53 58L42 48L35 53L42 64H53Z" fill="#9B8058"/>
+</svg>
