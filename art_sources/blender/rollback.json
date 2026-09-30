@@ -1,0 +1,71 @@
+﻿{
+    "status":  "reverted_after_user_visual_review",
+    "date":  "2026-09-08",
+    "entries":  [
+                    {
+                        "id":  "enemy_dogs",
+                        "action":  "restored_original",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_guard",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_cult",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_scavs",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_bandits",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_hunters",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_drones",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_crows",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_stalker",
+                        "action":  "restored_original",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_raiders",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_leeches",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_toll",
+                        "action":  "restored_original",
+                        "verified":  true
+                    },
+                    {
+                        "id":  "enemy_warden",
+                        "action":  "removed_experiment_runtime_copy",
+                        "verified":  true
+                    }
+                ]
+}

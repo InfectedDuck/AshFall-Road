@@ -1,0 +1,67 @@
+﻿{
+    "enemy_dogs":  {
+                       "had_original":  true,
+                       "original_sha256":  "1A0B3189D25737F46308C0738D3449D2897227CA593E4B3A1724C5D69C9338B8",
+                       "installed_sha256":  "CDE331DBEE79B244B34BB512348FB33E590584B3F2144462D3DBF3914C4F67D2"
+                   },
+    "enemy_guard":  {
+                        "had_original":  false,
+                        "original_sha256":  null,
+                        "installed_sha256":  "EEEB5D6DD2286AF705AF1356A93FC0EC495520E0C0D20F95158D3BD4A3145894"
+                    },
+    "enemy_cult":  {
+                       "had_original":  false,
+                       "original_sha256":  null,
+                       "installed_sha256":  "C0C89BA04ED0656EE23C7887D18A5AECF7A4F778AD43C5BFBFB593C814031527"
+                   },
+    "enemy_scavs":  {
+                        "had_original":  false,
+                        "original_sha256":  null,
+                        "installed_sha256":  "17357C580DB73B7816BBBEF26E1B65C25E0D09E473C764BA89D78BCB9D40B238"
+                    },
+    "enemy_bandits":  {
+                          "had_original":  false,
+                          "original_sha256":  null,
+                          "installed_sha256":  "88B0EA58F9F4F42F25F03A79940BC77B2804D2EC85EED0467C76C8F25F9D6037"
+                      },
+    "enemy_hunters":  {
+                          "had_original":  false,
+                          "original_sha256":  null,
+                          "installed_sha256":  "CA9CD7DD2664CE15653F771A21583A1A6E6B567C7D892D89AE25623DB533E6D1"
+                      },
+    "enemy_drones":  {
+                         "had_original":  false,
+                         "original_sha256":  null,
+                         "installed_sha256":  "7F30E716E3C6F1CBDA24DB1F63E439EA9EF3081CE19ECE071D4230537F3A8F02"
+                     },
+    "enemy_crows":  {
+                        "had_original":  false,
+                        "original_sha256":  null,
+                        "installed_sha256":  "1EDA69B84E850AF4369B9B1D799DEE7FA71E2BF7C9805B52161AB684C3913073"
+                    },
+    "enemy_stalker":  {
+                          "had_original":  true,
+                          "original_sha256":  "ACC7366929434C617388E99CF059756FD7F782B61236FFB8F133742259675334",
+                          "installed_sha256":  "BBCDEDA575C058558BE5615650F277BCB1C807E0049E7783CD821102A3F77F52"
+                      },
+    "enemy_raiders":  {
+                          "had_original":  false,
+                          "original_sha256":  null,
+                          "installed_sha256":  "9AC92FA13F35C3582F4EAD969554031D6959FD5D6631E05CA5CB834DAC115793"
+                      },
+    "enemy_leeches":  {
+                          "had_original":  false,
+                          "original_sha256":  null,
+                          "installed_sha256":  "4B496309E3C042DF3A4CAFF15184F95CC4A22ED52AA37F73F5C856CAEBA9AEDF"
+                      },
+    "enemy_toll":  {
+                       "had_original":  true,
+                       "original_sha256":  "847504A862ABCBE657285683EDF4F5C7E48A175C45B518619661D1BC5AB645E2",
+                       "installed_sha256":  "53EFD268051F800B5A96ABE5E9D30C258FCEDA5374793776E01531C4565ABA33"
+                   },
+    "enemy_warden":  {
+                         "had_original":  false,
+                         "original_sha256":  null,
+                         "installed_sha256":  "92264E417188BFDA0760ACE38BAD8625DE8560A182E5070E91F836F6C9E8743A"
+                     }
+}

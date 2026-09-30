@@ -1,0 +1,83 @@
+{
+	"failures": 13,
+	"portraits": [
+		{
+			"colors": 20,
+			"id": "enemy_bandits",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_bandits.png"
+		},
+		{
+			"colors": 19,
+			"id": "enemy_dogs",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_dogs.png"
+		},
+		{
+			"colors": 14,
+			"id": "enemy_stalker",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_stalker.png"
+		},
+		{
+			"colors": 19,
+			"id": "enemy_toll",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_toll.png"
+		},
+		{
+			"colors": 13,
+			"id": "enemy_leeches",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_leeches.png"
+		},
+		{
+			"colors": 19,
+			"id": "enemy_raiders",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_raiders.png"
+		},
+		{
+			"colors": 19,
+			"id": "enemy_drones",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_drones.png"
+		},
+		{
+			"colors": 19,
+			"id": "enemy_scavs",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_scavs.png"
+		},
+		{
+			"colors": 19,
+			"id": "enemy_cult",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_cult.png"
+		},
+		{
+			"colors": 17,
+			"id": "enemy_hunters",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_hunters.png"
+		},
+		{
+			"colors": 17,
+			"id": "enemy_guard",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_guard.png"
+		},
+		{
+			"colors": 16,
+			"id": "enemy_warden",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_warden.png"
+		},
+		{
+			"colors": 16,
+			"id": "enemy_crows",
+			"passed": false,
+			"path": "res://assets/portraits/enemy_crows.png"
+		}
+	]
+}
