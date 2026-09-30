@@ -8,12 +8,12 @@ extends SceneTree
 const Fixtures = preload("res://tests/narrative_combat_tests.gd")
 const Rules = preload("res://scripts/domain/narrative_combat.gd")
 
-const FIXTURE_VERSION := 3
+const FIXTURE_VERSION := 6
 const SEEDS_PER_ROW := 1000
 const POLICY_SEED_OFFSET := 1000003
 const EXCHANGE_LIMIT := 60
 ## Every adversary in the package, not a prototype subset.
-const BENCHMARK_ENEMIES := ["road_bandits", "feral_dogs", "ash_stalkers", "toll_gang", "marsh_leeches", "bog_raiders", "drone_swarm", "vault_scavs", "glass_cult", "tunnel_hunters", "citadel_guard", "warden_machine", "mutant_crows", "reed_widow", "kilnback", "shutter_skitters", "cable_eater", "pox_dogs", "bile_spewer", "cinder_mauler", "salt_colossus"]
+const BENCHMARK_ENEMIES := ["road_bandits", "feral_dogs", "ash_stalkers", "toll_gang", "marsh_leeches", "bog_raiders", "drone_swarm", "vault_scavs", "glass_cult", "tunnel_hunters", "citadel_guard", "warden_machine", "mutant_crows", "reed_widow", "kilnback", "shutter_skitters", "cable_eater", "pox_dogs", "bile_spewer", "cinder_mauler", "salt_colossus", "reservoir_maw", "ossuary_hound"]
 ## State variants are extra evidence, so they run against a representative
 ## subset rather than multiplying the standard comparison.
 const SCENARIO_ENEMIES := ["feral_dogs", "road_bandits", "warden_machine"]

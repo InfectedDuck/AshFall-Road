@@ -72,6 +72,18 @@ static func stat_damage_multiplier(stat_value: int) -> float:
 	return 0.8 + float(safe_stat) / float(safe_stat + 5)
 
 
+## Expansion scaling (Combat+relationships.md §2): preserve the launch curve
+## through stat 5, then add +0.10 per effective point above 5. Stat 5 → 10 is
+## 1.30 → 1.80, approximately a 38% increase, so late-game investment stays
+## noticeable without changing early fights. Legacy fights (rules v1/v2) keep
+## using stat_damage_multiplier; new fights (rules v3) use this.
+static func stat_damage_multiplier_v3(stat_value: int) -> float:
+	var safe_stat := maxi(0, stat_value)
+	if safe_stat <= 5:
+		return 0.8 + float(safe_stat) / float(safe_stat + 5)
+	return 1.3 + 0.10 * float(safe_stat - 5)
+
+
 static func damage_for_roll(roll: int, minimum: int, maximum: int, multiplier: float = 1.0) -> int:
 	var face := clampi(roll, 1, 20)
 	var base := roundi(lerpf(float(minimum), float(maximum), float(face - 1) / 19.0))

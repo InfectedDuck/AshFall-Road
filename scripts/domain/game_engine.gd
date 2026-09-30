@@ -150,6 +150,20 @@ func restore_run(saved_state: Dictionary) -> void:
 	run_state = saved_state.duplicate(true)
 
 
+## Cross-run companion unlocks. New survivors remember nothing, but a player
+## who has witnessed Rhea's betrayal in any previous life meets Tess and Mina
+## instead. Seeds the same witness flag the betrayal writes, so eligibility
+## keeps reading run flags only; Tess and Mina never reference the past life.
+func apply_cross_run_unlocks(discovered_nodes: Variant) -> void:
+	if run_state.is_empty():
+		return
+	if StoryDiscovery.betrayal_witnessed(discovered_nodes):
+		var flags: Array = run_state.get("flags", [])
+		if "rhea_witnessed_betrayal" not in flags:
+			flags.append("rhea_witnessed_betrayal")
+			run_state["flags"] = flags
+
+
 func current_region() -> Dictionary:
 	var ordered: Array = content.ordered_regions()
 	var index := int(run_state.get("region_index", 0))
@@ -543,13 +557,20 @@ func confirm_stat_allocation(proposed_stats: Dictionary) -> Dictionary:
 		return {"success": false, "text": "That draft spends more points than are available."}
 	var old_hearts := max_hearts_for_grit(int(current.get("grit", 1)))
 	var mastery_unlocked: Array[String] = []
+	var specialization_unlocked: Array[String] = []
 	var armed_id := str(run_state.get("survivor", {}).get("equipment", {}).get("weapon", ""))
 	var armed_attack := str(content.get_item(armed_id).get("combat", {}).get("attack_stat", ""))
 	var armed_old := int(current.get(armed_attack, 0)) if armed_attack != "" else 0
+	var old_stats: Dictionary = current.duplicate(true)
 	for stat: String in STATS:
 		current[stat] = int(proposed_stats.get(stat, current.get(stat, 0)))
 	if armed_attack != "" and armed_old < 6 and int(current.get(armed_attack, 0)) >= 6:
 		mastery_unlocked.append(armed_attack)
+	# Specializations unlock on BASE stat reaching 8, never on temporary or
+	# equipment bonuses. Crossing is reported once, like mastery.
+	for stat: String in STATS:
+		if int(old_stats.get(stat, 0)) < 8 and int(current.get(stat, 0)) >= 8:
+			specialization_unlocked.append(stat)
 	var new_hearts := max_hearts_for_grit(int(current.get("grit", 1)))
 	var gained_hearts := maxi(0, new_hearts - old_hearts)
 	if gained_hearts > 0:
@@ -558,7 +579,17 @@ func confirm_stat_allocation(proposed_stats: Dictionary) -> Dictionary:
 		vitals["max_health"] = new_hearts * HP_PER_HEART
 		vitals["health"] = mini(int(vitals["max_health"]), int(vitals.get("health", 0)) + gained_hearts * HP_PER_HEART)
 	run_state["unspent_stat_points"] = int(run_state.get("unspent_stat_points", 0)) - spent
-	return {"success": true, "spent": spent, "heart_gain": gained_hearts, "mastery_unlocked": mastery_unlocked, "text": "%d stat point%s committed." % [spent, "" if spent == 1 else "s"]}
+	return {"success": true, "spent": spent, "heart_gain": gained_hearts, "mastery_unlocked": mastery_unlocked, "specialization_unlocked": specialization_unlocked, "text": "%d stat point%s committed." % [spent, "" if spent == 1 else "s"]}
+
+
+## Base-stat milestone text for the allocation sheet. Mastery unlocks at base 6,
+## specialization at base 8; equipment and temporary bonuses never unlock them.
+static func stat_milestone_text(current_value: int, proposed_value: int) -> String:
+	if proposed_value >= 8:
+		return "specialized" if current_value >= 8 else "SPECIALIZATION UNLOCKS ON CONFIRM"
+	if proposed_value >= 6:
+		return "mastered • next: specialization at base 8" if current_value >= 6 else "mastery unlocks on confirm • next: specialization at base 8"
+	return "next: mastery at base 6, specialization at base 8"
 
 
 ## Run-only talents: one choice after the first region, another after the
@@ -847,6 +878,30 @@ func combat_usable_items() -> Array[String]:
 	return result
 
 
+## Carried weapons available through the Item sheet. Switching consumes a full
+## combat action and never resets enemy intention or talent limits.
+func combat_switchable_weapons() -> Array[String]:
+	var result: Array[String] = []
+	var equipped := str(run_state.get("survivor", {}).get("equipment", {}).get("weapon", ""))
+	for item_id: String in run_state.get("survivor", {}).get("inventory", {}):
+		if str(item_id) == equipped:
+			continue
+		var item: Dictionary = content.get_item(item_id)
+		if get_item_quantity(item_id) <= 0 or item.get("combat", {}).is_empty():
+			continue
+		if str(item.get("equipment_slot", "")) != "weapon":
+			continue
+		result.append(item_id)
+	result.sort()
+	return result
+
+
+## Environmental interactions for the current fight, also committed through the
+## Item sheet as a full combat action with the enemy responding.
+func combat_interactions() -> Array:
+	return NarrativeCombat.available_interactions_for(self)
+
+
 func _combat_item_priority(item_id: String) -> int:
 	var effects: Dictionary = content.get_item(item_id).get("effects", {})
 	for condition_id: Variant in effects.get("remove_conditions", []):
@@ -870,7 +925,8 @@ func equipment_lock_reason(item_id: String) -> String:
 
 
 func is_narrative_combat() -> bool:
-	return int(run_state.get("combat_state", {}).get("combat_rules_version", 1)) == NarrativeCombat.VERSION
+	# v2 and v3 both use NarrativeCombat; v1 is the legacy guard path.
+	return int(run_state.get("combat_state", {}).get("combat_rules_version", 1)) >= 2
 
 
 func combat_effective_stats() -> Dictionary:
@@ -1045,6 +1101,47 @@ func combat_presentation_snapshot() -> Dictionary:
 		status_labels.append("INTERRUPT RECHARGING • %d" % int(state["interrupt_cooldown"]))
 	if float(state.get("suppression_carry", 0.0)) > 0.0:
 		status_labels.append("SUPPRESSION CARRY • −%d%% NEXT RESPONSE" % roundi(float(state["suppression_carry"]) * 100.0))
+	# Stage 1 traits: surface counters so decisions are explicit and testable.
+	if int(state.get("combat_rules_version", 1)) >= 3:
+		if str(state.get("trait_id", "")) == "brood":
+			if bool(state.get("trait_nest_destroyed", false)):
+				status_labels.append("NEST DESTROYED • NO NEW BROOD")
+			else:
+				var brood := clampi(int(state.get("trait_brood", 0)), 0, 3)
+				status_labels.append("BROOD %d/3 • RESPONSE +%d%%" % [brood, roundi(0.25 * brood * 100.0)])
+		if str(state.get("trait_id", "")) == "heat":
+			if bool(state.get("trait_shell_open", false)):
+				status_labels.append("SHELL OPEN • +50% TAKEN • %d LEFT" % int(state.get("trait_shell_timer", 0)))
+			else:
+				var heat := clampi(int(state.get("trait_heat", 0)), 0, 3)
+				status_labels.append("SHELL HEAT %d/3 • DANGER +%d%%" % [heat, roundi(0.2 * heat * 100.0)])
+		if str(state.get("trait_id", "")) == "flood":
+			var flood := clampi(int(state.get("trait_flood", 0)), 0, 3)
+			var drains := (1 if bool(state.get("trait_drain_north", false)) else 0) + (1 if bool(state.get("trait_drain_south", false)) else 0)
+			if drains >= 2:
+				status_labels.append("DRAINS 2/2 • EXIT OPEN • WATER %d/3" % flood)
+			else:
+				status_labels.append("WATER %d/3 • DANGER +%d%% • DRAINS %d/2" % [flood, roundi(0.2 * flood * 100.0), drains])
+		if str(state.get("trait_id", "")) == "charge":
+			var charge := clampi(int(state.get("trait_charge", 0)), 0, 3)
+			status_labels.append("CHARGE %d/3 • RETALIATION +%d%%" % [charge, roundi(0.25 * charge * 100.0)])
+		if str(state.get("trait_id", "")) == "prediction":
+			var streak := maxi(0, int(state.get("trait_repeat", 0)))
+			var last_action := str(state.get("trait_last_action", ""))
+			if last_action != "" and streak >= 3:
+				status_labels.append("PREDICTED • COUNTER +50%")
+			elif last_action != "" and streak >= 2:
+				status_labels.append("LEARNING %s • %d IN A ROW" % [last_action.to_upper(), streak])
+		if str(state.get("trait_id", "")) == "bleed":
+			if "bleeding" in run_state.get("survivor", {}).get("conditions", []):
+				status_labels.append("BLOOD SCENTED • RESPONSE +30%")
+			if int(state.get("trait_regen_blocked", 0)) > 0:
+				status_labels.append("KNITTING BLOCKED • %d LEFT" % int(state.get("trait_regen_blocked", 0)))
+		if int(state.get("combat_rules_version", 1)) >= 3:
+			if bool(state.get("spec_str_next", false)):
+				status_labels.append("BREACH OPEN • NEXT ACTION IGNORES GUARD")
+			if int(state.get("spec_wits_timer", 0)) > 0:
+				status_labels.append("TRAIT SUPPRESSED • %d LEFT" % int(state.get("spec_wits_timer", 0)))
 	var owned_talents: Array = TalentRules.owned_talents(run_state)
 	if not owned_talents.is_empty():
 		var talent_names: Array[String] = []

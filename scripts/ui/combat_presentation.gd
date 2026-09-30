@@ -44,7 +44,7 @@ var enemy_feedback: Label
 func configure(snapshot: Dictionary, theme_palette: Dictionary, scale_value: float, attack_profile: Dictionary, flee_preview: Dictionary, items_available: bool) -> void:
 	palette = theme_palette
 	font_scale = scale_value
-	narrative_rules = int(snapshot.get("combat_rules_version", 1)) == 2
+	narrative_rules = int(snapshot.get("combat_rules_version", 1)) >= 2
 	compact_mode = bool(snapshot.get("compact", false))
 	if narrative_rules:
 		_configure_narrative(snapshot, items_available)
@@ -120,7 +120,7 @@ func configure(snapshot: Dictionary, theme_palette: Dictionary, scale_value: flo
 
 
 func play_round(round_result: Dictionary, reduced_motion: bool) -> void:
-	if int(round_result.get("combat_rules_version", 1)) == 2:
+	if int(round_result.get("combat_rules_version", 1)) >= 2:
 		await _play_narrative_round(round_result, reduced_motion)
 		return
 	animating = true

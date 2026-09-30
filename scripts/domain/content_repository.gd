@@ -55,6 +55,9 @@ func reload() -> void:
 		_merge_index(events, "res://data/living_road_events.json", "events")
 		_apply_source_flag_patches("res://data/living_road_events.json")
 		_merge_index(events, "res://data/betrayal_events.json", "events")
+		_merge_index(events, "res://data/rhea_events.json", "events")
+		_merge_index(events, "res://data/tess_mina_events.json", "events")
+		_merge_index(events, "res://data/hunt_events.json", "events")
 		for event_id: String in events:
 			if bool(events[event_id].get("living_road_callback", false)):
 				polished_event_ids[event_id] = true
@@ -332,7 +335,10 @@ func _validate_trade_catalog(errors: PackedStringArray) -> void:
 		if typeof(entry) != TYPE_DICTIONARY or not items.has(str(entry.get("id", ""))):
 			errors.append("Trade catalog offers missing equipment '%s'" % str(entry.get("id", "")))
 			continue
-		if str(items[str(entry.get("id", ""))].get("equipment_slot", "")).is_empty():
+		var offered: Dictionary = items[str(entry.get("id", ""))]
+		# Stage 1 tactical consumables are tradable negotiation routes alongside
+		# equippable gear: either an equipment slot or consumable use counts.
+		if str(offered.get("equipment_slot", "")).is_empty() and not bool(offered.get("consumable", false)):
 			errors.append("Trade catalog equipment '%s' cannot be equipped" % str(entry.get("id", "")))
 		if seen.has(str(entry.get("id", ""))):
 			errors.append("Trade catalog offers duplicate equipment '%s'" % str(entry.get("id", "")))

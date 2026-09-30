@@ -125,12 +125,14 @@ func _check_item_routes(launch) -> void:
 				for item_id: Variant in choice.get(outcome_key, {}).get("items", {}).keys():
 					if int(choice[outcome_key]["items"][item_id]) > 0:
 						obtainable[str(item_id)] = true
+	for entry: Variant in launch.get_trade_catalog().get("equipment", []):
+		obtainable[str(entry.get("id", ""))] = true
 	for item_id: String in launch.items:
 		if not obtainable.has(item_id):
 			problems.append("%s has no starting or authored acquisition route" % item_id)
-	if launch.items.size() != 72:
-		problems.append("expected 72 defined items, found %d" % launch.items.size())
-	_record("All seventy-two items have acquisition routes", problems)
+	if launch.items.size() != 82:
+		problems.append("expected 82 defined items, found %d" % launch.items.size())
+	_record("All eighty-two items have acquisition routes", problems)
 
 
 ## 4. Appended choices are legal content and no event grew past four.
@@ -203,8 +205,8 @@ func _check_callbacks_enabled(release, compatibility) -> void:
 			callback_events += 1
 	if callback_events != 15:
 		problems.append("expected 15 default callback events, found %d" % callback_events)
-	if release.events.size() != 124:
-		problems.append("expected the 124-event default release, found %d" % release.events.size())
+	if release.events.size() != 153:
+		problems.append("expected the 153-event default release, found %d" % release.events.size())
 	if compatibility.living_road_enabled or compatibility.events.size() != 97 or compatibility.get_discovery_entries().size() != 11:
 		problems.append("ContentRepository.new(false) no longer provides the 97-event, 11-chapter compatibility configuration")
 	_record("Living Road callbacks load by default and compatibility stays explicit", problems)
@@ -214,8 +216,8 @@ func _check_callbacks_enabled(release, compatibility) -> void:
 func _check_discoveries_reachable(release, compatibility) -> void:
 	var problems: Array = []
 	var entries: Dictionary = release.get_discovery_entries()
-	if entries.size() != 29:
-		problems.append("expected 29 reachable default-release chapters, found %d" % entries.size())
+	if entries.size() != 54:
+		problems.append("expected 54 reachable default-release chapters, found %d" % entries.size())
 	var produced: Dictionary = {}
 	for event_id: String in release.events:
 		for choice: Dictionary in release.events[event_id].get("choices", []):

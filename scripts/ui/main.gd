@@ -721,6 +721,9 @@ func _select_candidate(index: int) -> void:
 		return
 	var before := game.run_state.duplicate(true)
 	game.start_run(candidates[index], candidate_seed + index * 37)
+	# Later runs remember what no single survivor could: a witnessed betrayal
+	# opens Tess and Mina as alternative companions for this fresh life.
+	game.apply_cross_run_unlocks(profile.get("discovered_story_nodes", []))
 	if not saves.save_run(game.run_state):
 		game.restore_run(before)
 		_show_toast("Could not save the new run. Free some storage and try again.")
@@ -1540,7 +1543,10 @@ func _show_cinematic_combat() -> void:
 			snapshot["action_previews"][action] = game.combat_action_preview(action)
 	var flee := game.get_flee_preview()
 	var presentation = CombatPresentationScript.new()
-	presentation.configure(snapshot, palette, float(profile.get("font_scale", 1.0)), profile_data, flee, not game.combat_usable_items().is_empty())
+	var has_consumables := not game.combat_usable_items().is_empty()
+	var has_switch := not game.combat_switchable_weapons().is_empty() if game.has_method("combat_switchable_weapons") else false
+	var has_interact := not game.combat_interactions().is_empty() if game.has_method("combat_interactions") else false
+	presentation.configure(snapshot, palette, float(profile.get("font_scale", 1.0)), profile_data, flee, has_consumables or has_switch or has_interact)
 	presentation.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	presentation.action_requested.connect(func(action: String) -> void: _prepare_combat_action(action, ""))
 	presentation.items_requested.connect(_show_combat_items)
@@ -1687,6 +1693,16 @@ func _show_combat_tactics() -> void:
 	for action: String in ["attack", "block", "dodge", "flee", "opportunity"]:
 		var preview := game.combat_action_preview(action)
 		list.add_child(_label("%s • %d%% • ROLL %d+\n%s\n%s" % [action.to_upper(), preview["chance"], preview["required_roll"], "\n".join(preview["effects"]), preview["cost"]], 14))
+	# Stage 1 counters: show switch and interact options alongside the six main
+	# previews so testers can see every response to a trait.
+	if game.has_method("combat_switchable_weapons"):
+		for weapon_id: String in game.combat_switchable_weapons():
+			var switch_preview := game.combat_action_preview("switch_weapon", weapon_id)
+			list.add_child(_label("SWITCH → %s\n%s\n%s" % [content.get_item(weapon_id).get("name", weapon_id), "\n".join(switch_preview.get("effects", [])), switch_preview["cost"]], 14))
+	if game.has_method("combat_interactions"):
+		for interaction: Dictionary in game.combat_interactions():
+			var interaction_preview := game.combat_action_preview("interact", str(interaction.get("id", "")))
+			list.add_child(_label("INTERACT • %s\n%s\n%s" % [str(interaction.get("label", "")), "\n".join(interaction_preview.get("effects", [])), interaction_preview["cost"]], 14))
 	var weapon: Dictionary = content.get_item(str(game.run_state["survivor"]["equipment"].get("weapon", "")))
 	list.add_child(_label(_weapon_signature_text(weapon, game.run_state["survivor"]["stats"]), 14, _c("accent")))
 	_popup_center_responsive(action_popup, 0.96, 0.86)
@@ -1695,7 +1711,54 @@ func _show_combat_tactics() -> void:
 func _show_combat_items() -> void:
 	if _gameplay_locked():
 		return
-	_show_action_popup("USE ITEM", game.combat_usable_items(), func(item_id: String) -> void: _prepare_combat_action("use_item", item_id))
+	# Stage 1 Item sheet: consumables, carried-weapon switching, and available
+	# environmental interactions. Switching or operating machinery costs the
+	# round; every preview shows the committed enemy response.
+	if is_instance_valid(action_popup):
+		action_popup.queue_free()
+	action_popup = PopupPanel.new()
+	action_popup.exclusive = true
+	add_child(action_popup)
+	var body := _popup_body(action_popup, 14)
+	body.add_child(_overlay_header("ITEM • SWITCH • INTERACT", action_popup.hide))
+	var tell := str(game.run_state.get("combat_state", {}).get("committed_move", {}).get("tell", ""))
+	if tell != "":
+		body.add_child(_label("Enemy intends: " + tell, 12, _c("muted")))
+	var consumables := game.combat_usable_items()
+	body.add_child(_label("CONSUMABLES • enemy responds", 12, _c("accent")))
+	if consumables.is_empty():
+		body.add_child(_label("No consumables carried.", 12, _c("muted")))
+	for item_id: String in consumables:
+		var item: Dictionary = content.get_item(item_id)
+		var preview := game.combat_action_preview("use_item", item_id)
+		var detail := "×%d • %s" % [game.get_item_quantity(item_id), str(preview.get("cost", ""))]
+		body.add_child(_button("%s  %s\n%s" % [item.get("name", item_id), detail, "\n".join(preview.get("effects", []))], func() -> void:
+			_prepare_combat_action("use_item", item_id)
+		))
+	body.add_child(_label("CARRIED WEAPONS • switching costs the round", 12, _c("accent")))
+	var switchable: Array = game.combat_switchable_weapons() if game.has_method("combat_switchable_weapons") else []
+	if switchable.is_empty():
+		body.add_child(_label("No other weapon carried.", 12, _c("muted")))
+	for weapon_id: String in switchable:
+		var weapon: Dictionary = content.get_item(weapon_id)
+		var switch_preview := game.combat_action_preview("switch_weapon", weapon_id)
+		body.add_child(_button("%s • %s\n%s" % [weapon.get("name", weapon_id), str(switch_preview.get("cost", "")), "\n".join(switch_preview.get("effects", []))], func() -> void:
+			_prepare_combat_action("switch_weapon", weapon_id)
+		))
+	body.add_child(_label("ENVIRONMENT • machinery costs the round", 12, _c("accent")))
+	var interactions: Array = game.combat_interactions() if game.has_method("combat_interactions") else []
+	if interactions.is_empty():
+		body.add_child(_label("Nothing to operate here.", 12, _c("muted")))
+	for interaction: Dictionary in interactions:
+		var interaction_id := str(interaction.get("id", ""))
+		var interaction_preview := game.combat_action_preview("interact", interaction_id)
+		body.add_child(_button("%s\n%s" % [str(interaction.get("label", interaction_id)), "\n".join(interaction_preview.get("effects", []))], func() -> void:
+			_prepare_combat_action("interact", interaction_id)
+		))
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(spacer)
+	_popup_center_responsive(action_popup, 0.96, 0.86)
 
 
 func _show_result() -> void:
@@ -2148,6 +2211,7 @@ func _refresh_level_draft_controls() -> void:
 		var detail := "Raw aptitude %.1f%% → %.1f%%  (%+.1f)" % [float(preview.get("raw_before", 0.0)), float(preview.get("raw_after", 0.0)), improvement]
 		if int(preview.get("heart_gain", 0)) > 0:
 			detail += "  •  +%d HEART / +%d HP" % [int(preview["heart_gain"]), int(preview["heart_gain"]) * GameEngine.HP_PER_HEART]
+		detail += "\n" + GameEngine.stat_milestone_text(int(current_stats[stat]), proposed) + " (base only; gear never unlocks)."
 		if is_instance_valid(detail_label):
 			var weapon: Dictionary = content.get_item(str(game.run_state["survivor"]["equipment"].get("weapon", "")))
 			if str(weapon.get("combat", {}).get("attack_stat", "")) == stat:
@@ -2179,6 +2243,8 @@ func _after_allocation(result: Dictionary) -> void:
 			receipt += " +%d HEART." % int(result["heart_gain"])
 		for stat: Variant in result.get("mastery_unlocked", []):
 			receipt += " %s MASTERY UNLOCKED." % str(stat).to_upper()
+		for stat: Variant in result.get("specialization_unlocked", []):
+			receipt += " %s SPECIALIZATION UNLOCKED." % str(stat).to_upper()
 		receipt += " Choose REST or CONTINUE JOURNEY."
 		_show_toast(receipt)
 	else:

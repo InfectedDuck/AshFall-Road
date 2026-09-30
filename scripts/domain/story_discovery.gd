@@ -84,6 +84,19 @@ static func requirements_met(definition: Dictionary, run_flags: Array) -> bool:
 	return false
 
 
+## Cross-run unlock: true once any previous life witnessed Rhea's betrayal.
+## New survivors remember nothing, but the PLAYER has earned Tess and Mina as
+## alternative companions. Callers seed a run flag from the profile at run
+## start; eligibility itself keeps reading run flags only.
+static func betrayal_witnessed(nodes: Variant) -> bool:
+	if typeof(nodes) != TYPE_ARRAY:
+		return false
+	for token: Variant in nodes:
+		if str(token).begins_with("ledger_rhea_betrayal_"):
+			return true
+	return false
+
+
 static func _normalized_collection(value: Variant) -> Array:
 	var result: Array = []
 	if typeof(value) != TYPE_ARRAY:

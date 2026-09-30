@@ -50,6 +50,10 @@ const PLACEHOLDER_SYMBOLS := {
 	"item_mutant_hide_vest": "♠", "item_kiln_plates": "♣", "item_stalker_cloak": "♦", "item_wolf_fang_charm": "⌘", "item_gunslinger_holster": "⌗", "item_sniper_scope": "⌙",
 	"item_mutant_serum": "⌜", "item_purifier_poultice": "⌞", "item_choir_incense": "⌟",
 	"item_dredge_chain": "⛓", "item_fan_guard": "◉", "item_brass_star": "✶", "item_stalkhide_wraps": "❋",
+	"item_incendiary_charge": "⬢", "item_coolant_canister": "❄",
+	"item_silvered_cleaver": "◬", "item_spark_lance": "⬣", "item_grounding_straps": "⍉",
+	"item_ashen_wrap": "▨", "item_mirror_shard": "◭", "item_ossuary_plates": "⬓",
+	"item_clotting_poultice": "◫", "item_cauterizing_torch": "♨",
 }
 
 
