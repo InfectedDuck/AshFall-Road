@@ -77,6 +77,7 @@ func _run_all() -> void:
 	_test_stage3_companions_hunts()
 	_test_experience_progression(content)
 	_test_combat_rules(content)
+	_test_combat_v4_switch(content)
 	_test_combat_recovery(content)
 	_test_complete_run(content)
 	_test_save_migration_and_death_marker(content)
@@ -88,10 +89,13 @@ func _run_all() -> void:
 	_test_legal_actions_and_item_reach(content)
 	_test_talents(content)
 	_test_choice_revisions(content)
+	_test_choice_stakes(content)
 	_test_checkpoint_trading(content)
 	_test_soak_policy_paths()
 	_test_receipt_item_icons(content)
+	_test_result_receipt_first(content)
 	_test_stat_status_lines(content)
+	_test_first_fight_lessons(content)
 	_test_returning_stories(content, ContentRepository.new(true))
 	preload("res://tests/narrative_combat_tests.gd").new().run(content, _check)
 	preload("res://tests/action_transaction_tests.gd").new().run(content, _check)
@@ -1086,27 +1090,24 @@ func _test_ui_components(content: ContentRepository) -> void:
 	_check(inventory_link.find_child("InventoryIcon", true, false) is UiIconWidget and conditions_link.find_child("StatusIcon", true, false) is UiIconWidget, "Inventory and status controls use their generated pixel-art icons while retaining accessible labels")
 	var hud_portrait_frame := hud.find_child("SurvivorPortraitFrame", true, false)
 	_check(hud_portrait_frame != null and hud_portrait_frame.custom_minimum_size == Vector2(64, 64), "The survivor HUD reserves a readable 64-pixel portrait frame")
-	_check(PortraitArtWidget.expected_ids().size() == 25, "Portrait resolver owns four survivor and twenty-one adversary IDs, every one shipping with art or a field note")
-	# A creature with no image is described rather than labelled with its own ID.
-	var widow: Dictionary = content.get_adversary("reed_widow")
-	var described := PortraitArtWidget.create_view(str(widow["portrait_id"]), Color.WHITE, 9, str(widow["name"]), str(widow.get("field_note", "")))
+	_check(PortraitArtWidget.expected_ids().size() == 27, "Portrait resolver owns four survivor and twenty-three adversary IDs")
+	# Every adversary now ships with art; a future creature without an image is
+	# still described rather than labelled with its own ID.
+	var described := PortraitArtWidget.create_view("enemy_unpainted_fixture", Color.WHITE, 9, "Unpainted Fixture", "Pale shape; one note for testing.")
 	var note_label := described.get_child(0) as Label
 	_check(note_label != null and note_label.name == "PortraitFieldNote", "A creature without artwork renders a described frame rather than the ID placeholder")
 	_check(note_label != null and "PORTRAIT" not in note_label.text, "The described frame never shows the raw PORTRAIT placeholder")
-	_check(note_label != null and "REED WIDOW" in note_label.text and "one laced boot" in note_label.text, "The described frame names the creature and shows its field note")
-	for creature_id: String in ["shutter_skitters", "cable_eater", "pox_dogs", "bile_spewer", "cinder_mauler", "salt_colossus", "bog_raiders", "vault_scavs", "glass_cult", "tunnel_hunters", "citadel_guard"]:
-		var creature: Dictionary = content.get_adversary(creature_id)
-		var creature_view := PortraitArtWidget.create_view(str(creature["portrait_id"]), Color.WHITE, 9, str(creature["name"]), str(creature.get("field_note", "")))
-		var creature_note := creature_view.get_child(0) as Label
-		_check(creature_note != null and creature_note.name == "PortraitFieldNote" and creature_note.text.contains(str(creature["name"]).to_upper()) and not creature_note.text.contains("PORTRAIT"), "%s uses the described missing-image presentation" % creature_id)
-		creature_view.queue_free()
+	_check(note_label != null and "UNPAINTED FIXTURE" in note_label.text and "one note for testing" in note_label.text, "The described frame names the creature and shows its field note")
+	for adversary_id: String in ["road_bandits", "feral_dogs", "ash_stalkers", "toll_gang", "marsh_leeches", "bog_raiders", "drone_swarm", "vault_scavs", "glass_cult", "tunnel_hunters", "citadel_guard", "warden_machine", "mutant_crows", "reed_widow", "kilnback", "shutter_skitters", "cable_eater", "pox_dogs", "bile_spewer", "cinder_mauler", "salt_colossus", "reservoir_maw", "ossuary_hound"]:
+		var adversary: Dictionary = content.get_adversary(adversary_id)
+		_check(str(adversary.get("portrait_id", "")) in PortraitArtWidget.ENEMY_IDS and PortraitArtWidget.load_texture(str(adversary["portrait_id"])) != null, "%s ships with registered portrait artwork" % adversary_id)
 	var plain := PortraitArtWidget.create_view("enemy_vagrant", Color.WHITE, 9, "Vagrant", "")
 	var plain_label := plain.get_child(0) as Label
 	_check(plain_label != null and plain_label.name == "PortraitFallback" and plain_label.text.begins_with("PORTRAIT"), "An adversary with no field note keeps the existing placeholder unchanged")
 	var bandits := PortraitArtWidget.create_view("enemy_bandits", Color.WHITE, 9, "Road Bandits", "")
 	_check(bandits.get_child(0).name == "PortraitTexture", "The finished bandit portrait renders art instead of the placeholder")
 	bandits.queue_free()
-	for creature_id: String in ["enemy_skitters", "enemy_widow", "enemy_kilnback", "enemy_cable_eater", "enemy_pox_dogs", "enemy_bile_spewer", "enemy_cinder_mauler", "enemy_salt_colossus"]:
+	for creature_id: String in ["enemy_skitters", "enemy_widow", "enemy_kilnback", "enemy_cable_eater", "enemy_pox_dogs", "enemy_bile_spewer", "enemy_cinder_mauler", "enemy_salt_colossus", "enemy_maw", "enemy_hound"]:
 		_check(creature_id in PortraitArtWidget.ENEMY_IDS, "The roster registers %s" % creature_id)
 	described.queue_free()
 	plain.queue_free()
@@ -1123,7 +1124,7 @@ func _test_ui_components(content: ContentRepository) -> void:
 		completed_portraits += 1
 		if portrait_id.begins_with("survivor_"):
 			loaded_survivor_portraits += 1
-		_check(portrait_texture.get_size() == Vector2(64, 64), "%s is a native 64×64 portrait sprite" % portrait_id)
+		_check(portrait_texture.get_size() == Vector2(128, 128), "%s is a native 128×128 portrait sprite" % portrait_id)
 	_check(completed_portraits >= 1, "The incremental portrait campaign has at least one loadable runtime sprite")
 	_check(loaded_survivor_portraits == 4, "All four survivor portrait IDs resolve to packaged runtime art")
 	var survivor_portrait_view := PortraitArtWidget.create_view("survivor_1", ui_palette["muted"])
@@ -1821,6 +1822,394 @@ func _test_combat_rules(content: ContentRepository) -> void:
 	_check("Feral Dogs" in str(death_summary.get("cause", "")) and not death_summary.get("equipment", []).is_empty(), "Permadeath history records the responsible enemy and final equipped loadout")
 
 
+## Gameplay plan B1: combat rules v4 switch. New fights start on v4 while
+## saved v3 fights keep v3 behaviour; nothing else changes yet.
+func _test_combat_v4_switch(content: ContentRepository) -> void:
+	var RulesV4 = load("res://scripts/domain/narrative_combat.gd")
+	_check(int(RulesV4.VERSION) == 4, "Combat rules version is 4 for new fights")
+	var fresh := _new_game(content, 710)
+	fresh.run_state["current_event_id"] = "outskirts_dogs"
+	fresh.run_state["phase"] = "event"
+	var started := fresh.start_combat(0)
+	_check(bool(started.get("combat_started", false)), "Dogs event starts tactical combat for the v4 check")
+	_check(int(fresh.run_state["combat_state"].get("combat_rules_version", 0)) == 4, "A new fight starts on combat rules v4")
+	_check(bool(RulesV4.is_v4(fresh)), "is_v4 reports a new fight as v4")
+	# A saved v3 fight keeps v3 behaviour after restore.
+	fresh.run_state["combat_state"]["combat_rules_version"] = 3
+	var restored := GameEngine.new(content)
+	restored.restore_run(fresh.run_state)
+	_check(int(restored.run_state["combat_state"].get("combat_rules_version", 0)) == 3, "A saved v3 fight stays on v3 after restore")
+	_check(not bool(RulesV4.is_v4(restored)), "is_v4 stays false for a loaded v3 fight")
+	_check(not bool(RulesV4.is_legacy_v2_fight(restored)), "A v3 fight is not treated as legacy v2")
+	var preview_v3 := restored.combat_action_preview("attack")
+	_check(bool(preview_v3.get("available", false)), "A loaded v3 fight still previews attacks")
+	_test_combat_v4_telegraphs(content)
+	_test_combat_intent_chip(content)
+	_test_combat_momentum(content)
+	_test_combat_upcoming(content)
+
+
+## Gameplay plan B2: stronger v4 telegraphs. Heavy x2.0 punishes attacks,
+## Sweep/Heavy reward the correct defend, Brace taxes attacks but pays
+## defenders with Fatigue, Recover is a free punish. All numbers come from
+## combat_content.json v4; saved v3 fights keep old numbers.
+func _test_combat_v4_telegraphs(content: ContentRepository) -> void:
+	var Rules = load("res://scripts/domain/narrative_combat.gd")
+	_check(content.combat_data.has("v4"), "v4 tuning lives in combat_content.json, not code")
+	var v4tab: Dictionary = content.combat_data.get("v4", {})
+	_check(float((v4tab.get("heavy", {}) as Dictionary).get("damage", 0.0)) == 2.0, "v4 Heavy hits x2.0 from data")
+	_check(float((v4tab.get("brace", {}) as Dictionary).get("incoming", 0.0)) == 0.3, "v4 Brace receives 30% from data")
+	_check(float((v4tab.get("brace", {}) as Dictionary).get("damage", 0.0)) == 0.6, "v4 Brace counters at ~60% strike from data")
+	_check(float((v4tab.get("recover", {}) as Dictionary).get("bonus", 0.0)) == 0.5, "v4 Recover grants +50% from data")
+	_check(float((v4tab.get("recover", {}) as Dictionary).get("damage", 1.0)) == 0.0, "v4 Recover deals no damage from data")
+	_check(int(v4tab.get("brace_defend_recovery", 0)) == 6, "v4 Brace defend recovery is 6 Fatigue from data")
+	_check(float((v4tab.get("finisher", {}) as Dictionary).get("bonus", 0.0)) == 2.0, "v4 Finisher bonus is x3.0 from data")
+	# Heavy: v4 commits x2.0, v3 keeps x1.5.
+	var heavy_v4 := _v4_fixture(content, "road_bandits", 7201, "heavy")
+	_check(float(heavy_v4.run_state["combat_state"]["committed_move"].get("damage", 0.0)) == 2.0, "v4 Heavy commits x2.0 damage")
+	var heavy_preview: Dictionary = heavy_v4.combat_action_preview("attack")
+	_check("Heavy (v4)" in " ".join(heavy_preview.get("effects", [])), "v4 Heavy attack preview warns of the punish")
+	var heavy_v3 := _v4_fixture(content, "road_bandits", 7202, "heavy", 3)
+	_check(float(heavy_v3.run_state["combat_state"]["committed_move"].get("damage", 0.0)) == 1.5, "v3 Heavy stays x1.5")
+	# Heavy attack-into: v4 applies the enemy critical_condition on a landed hit.
+	var punish := _v4_fixture(content, "road_bandits", 7203, "heavy")
+	punish.prepare_combat_action("attack")
+	punish.run_state["pending_combat_round"]["player_roll"] = 20
+	punish.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var punish_result: Dictionary = punish.resolve_prepared_combat_round()
+	_check(int(punish_result.get("enemy_damage", 0)) > 0, "Attacking v4 Heavy still takes the counter")
+	_check("bleeding" in punish.run_state["survivor"].get("conditions", []), "Attacking v4 Heavy applies its critical condition on a hit")
+	var punish_v3 := _v4_fixture(content, "road_bandits", 7204, "heavy", 3)
+	punish_v3.prepare_combat_action("attack")
+	punish_v3.run_state["pending_combat_round"]["player_roll"] = 20
+	punish_v3.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var punish_v3_result: Dictionary = punish_v3.resolve_prepared_combat_round()
+	_check(int(punish_v3_result.get("enemy_damage", 0)) > 0, "Attacking v3 Heavy still takes its counter")
+	_check("bleeding" not in punish_v3.run_state["survivor"].get("conditions", []), "Attacking v3 Heavy does not auto-apply its condition without a crit")
+	# Dodge Heavy: success negates and banks Opening (both versions, but v4 names it).
+	var dodge_heavy := _v4_fixture(content, "road_bandits", 7205, "heavy")
+	dodge_heavy.prepare_combat_action("dodge")
+	dodge_heavy.run_state["pending_combat_round"]["player_roll"] = 20
+	dodge_heavy.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var dodge_result: Dictionary = dodge_heavy.resolve_prepared_combat_round()
+	_check(int(dodge_result.get("enemy_damage", -1)) == 0, "Dodging Heavy negates its damage")
+	_check(bool(dodge_heavy.run_state["combat_state"].get("opening", false)), "Dodging Heavy banks Opening")
+	var dodge_preview: Dictionary = _v4_fixture(content, "road_bandits", 7206, "heavy").combat_action_preview("dodge")
+	_check("Heavy (v4)" in " ".join(dodge_preview.get("effects", [])), "v4 Dodge-Heavy preview names the full negate")
+	# Sweep: Block success negates and banks Riposte.
+	var sweep_block := _v4_fixture(content, "bog_raiders", 7207, "sweep")
+	sweep_block.prepare_combat_action("block")
+	sweep_block.run_state["pending_combat_round"]["player_roll"] = 20
+	sweep_block.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var sweep_result: Dictionary = sweep_block.resolve_prepared_combat_round()
+	_check(int(sweep_result.get("enemy_damage", -1)) == 0, "Blocking Sweep negates its damage")
+	_check(bool(sweep_block.run_state["combat_state"].get("riposte", false)), "Blocking Sweep banks Riposte")
+	var sweep_preview: Dictionary = _v4_fixture(content, "bog_raiders", 7208, "sweep").combat_action_preview("block")
+	_check("Sweep (v4)" in " ".join(sweep_preview.get("effects", [])), "v4 Block-Sweep preview names the full negate")
+	# Brace: attacks deal 30% in v4 (50% in v3) and the enemy still counters.
+	var brace_v4 := _v4_fixture(content, "road_bandits", 7209, "brace")
+	var strike_v4 := _v4_fixture(content, "road_bandits", 7210, "strike")
+	var brace_hit: Dictionary = brace_v4.combat_action_preview("attack")
+	var strike_hit: Dictionary = strike_v4.combat_action_preview("attack")
+	_check(float(brace_hit.get("damage_max", 0)) <= float(ceili(float(strike_hit.get("damage_max", 0)) * 0.3)) + 1.0, "v4 Brace attack deals ~30% damage")
+	var brace_v3 := _v4_fixture(content, "road_bandits", 7211, "brace", 3)
+	var strike_v3 := _v4_fixture(content, "road_bandits", 7212, "strike", 3)
+	var brace_v3_hit: Dictionary = brace_v3.combat_action_preview("attack")
+	var strike_v3_hit: Dictionary = strike_v3.combat_action_preview("attack")
+	_check(float(brace_v3_hit.get("damage_max", 0)) <= float(ceili(float(strike_v3_hit.get("damage_max", 0)) * 0.5)) + 1.0, "v3 Brace still deals ~50% damage")
+	_check("braced (v4)" in " ".join(brace_hit.get("effects", [])).to_lower(), "v4 Brace attack preview names the counter")
+	var brace_counter := _v4_fixture(content, "road_bandits", 7213, "brace")
+	brace_counter.prepare_combat_action("attack")
+	brace_counter.run_state["pending_combat_round"]["player_roll"] = 1
+	brace_counter.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var brace_counter_result: Dictionary = brace_counter.resolve_prepared_combat_round()
+	_check(int(brace_counter_result.get("enemy_damage", 0)) > 0, "Attacking Brace still takes its quick counter")
+	# Brace defend: v4 recovers Fatigue, v3 does not.
+	var brace_defend := _v4_fixture(content, "road_bandits", 7214, "brace")
+	brace_defend.run_state["survivor"]["pressures"]["fatigue"] = 20
+	brace_defend.prepare_combat_action("block")
+	brace_defend.run_state["pending_combat_round"]["player_roll"] = 20
+	brace_defend.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var fatigue_before: int = 20
+	brace_defend.resolve_prepared_combat_round()
+	var fatigue_after: int = int(brace_defend.run_state["survivor"]["pressures"]["fatigue"])
+	# Recovery 6 then exertion 3 nets -3: 20 -> 17.
+	_check(fatigue_after == fatigue_before - 3, "v4 Brace defend nets -3 Fatigue (recover 6, exert 3)")
+	var brace_defend_v3 := _v4_fixture(content, "road_bandits", 7215, "brace", 3)
+	brace_defend_v3.run_state["survivor"]["pressures"]["fatigue"] = 20
+	brace_defend_v3.prepare_combat_action("block")
+	brace_defend_v3.run_state["pending_combat_round"]["player_roll"] = 20
+	brace_defend_v3.run_state["pending_combat_round"]["enemy_roll"] = 10
+	brace_defend_v3.resolve_prepared_combat_round()
+	_check(int(brace_defend_v3.run_state["survivor"]["pressures"]["fatigue"]) == 23, "v3 Brace defend still only exerts +3 Fatigue")
+	# Recover: attacks gain +50% in v4 (+25% v3) and take no damage.
+	var recover_v4 := _v4_fixture(content, "road_bandits", 7216, "recover")
+	var recover_hit: Dictionary = recover_v4.combat_action_preview("attack")
+	_check("recovering (v4)" in " ".join(recover_hit.get("effects", [])).to_lower(), "v4 Recover preview names +50% and no damage")
+	recover_v4.prepare_combat_action("attack")
+	recover_v4.run_state["pending_combat_round"]["player_roll"] = 1
+	recover_v4.run_state["pending_combat_round"]["enemy_roll"] = 20
+	var recover_result: Dictionary = recover_v4.resolve_prepared_combat_round()
+	_check(int(recover_result.get("enemy_damage", -1)) == 0, "v4 Recover deals no damage even on a critical miss")
+	var recover_v3 := _v4_fixture(content, "road_bandits", 7217, "recover", 3)
+	recover_v3.prepare_combat_action("attack")
+	recover_v3.run_state["pending_combat_round"]["player_roll"] = 1
+	recover_v3.run_state["pending_combat_round"]["enemy_roll"] = 20
+	_check(int(recover_v3.resolve_prepared_combat_round().get("enemy_damage", -1)) == 0, "v3 Recover also deals no damage")
+
+
+## Gameplay plan B4: readable enemy intent. One large chip per move with icon,
+## colour and cost, plus per-button takes. Chip renders for every move id and
+## nothing overflows a 393px row.
+func _test_combat_intent_chip(content: ContentRepository) -> void:
+	var Rules = load("res://scripts/domain/narrative_combat.gd")
+	var move_enemy := {"strike": "road_bandits", "heavy": "road_bandits", "brace": "road_bandits", "recover": "road_bandits", "sweep": "bog_raiders", "charge": "warden_machine"}
+	var want_label := {"strike": "STRIKE", "heavy": "HEAVY", "sweep": "SWEEP", "brace": "BRACE", "recover": "RECOVER", "charge": "CHARGE"}
+	var want_color := {"strike": "muted", "heavy": "danger", "sweep": "critical", "brace": "fatigue", "recover": "success", "charge": "accent"}
+	var seed_index := 0
+	for move_id: String in ["strike", "heavy", "sweep", "brace", "recover", "charge"]:
+		var game := _v4_fixture(content, str(move_enemy[move_id]), 7300 + seed_index, move_id)
+		seed_index += 1
+		var chip: Dictionary = Rules.intent_chip(game)
+		_check(str(chip.get("move_id", "")) == move_id, "Intent names its move: %s" % move_id)
+		_check(str(chip.get("label", "")) == str(want_label[move_id]), "Intent %s shows its name" % move_id)
+		_check(str(chip.get("icon", "")) != "", "Intent %s carries an icon" % move_id)
+		_check(str(chip.get("color_key", "")) == str(want_color[move_id]), "Intent %s uses its colour" % move_id)
+		_check(not str(chip.get("tell", "")).is_empty(), "Intent %s keeps the full tell" % move_id)
+		var detail := str(chip.get("detail", ""))
+		if move_id == "heavy":
+			_check(detail.begins_with("Big hit"), "Heavy chip warns of the big hit")
+		elif move_id == "sweep":
+			_check(detail.begins_with("Wide hit"), "Sweep chip warns of the wide hit")
+		elif move_id == "strike":
+			_check(detail.begins_with("Strike"), "Strike chip names its damage")
+		elif move_id == "brace":
+			_check(detail == "Guarding", "Brace chip reads Guarding")
+		elif move_id == "recover":
+			_check(detail == "Open!", "Recover chip reads Open!")
+		elif move_id == "charge":
+			_check(detail == "Building up", "Charge chip reads Building up")
+		if move_id in ["strike", "heavy", "sweep"]:
+			_check("~" in detail and int(chip.get("expected_raw", 0)) > 0, "Damaging intent %s shows ~damage" % move_id)
+		else:
+			_check(int(chip.get("expected_raw", -1)) == 0 or move_id == "brace", "Non-damaging intent %s shows no hit" % move_id)
+		var snap: Dictionary = game.combat_presentation_snapshot()
+		_check(str(snap.get("move_id", "")) == move_id, "Snapshot carries the move id for %s" % move_id)
+		_check(str((snap.get("enemy_intent", {}) as Dictionary).get("move_id", "")) == move_id, "Snapshot carries the intent chip for %s" % move_id)
+		for action: String in ["attack", "block", "dodge"]:
+			var preview: Dictionary = game.combat_action_preview(action)
+			_check(str(preview.get("expected_take_text", "")) != "", "Preview %s vs %s names its take" % [action, move_id])
+		_check("take 0" in str(game.combat_action_preview("dodge").get("expected_take_text", "")), "Dodge preview reads take 0 on success vs %s" % move_id)
+		# Presentation: large chip plus per-button takes, all touch-sized.
+		var ui_palette: Dictionary = UiPaletteWidget.create("default")
+		snap["action_previews"] = {}
+		for action: String in ["attack", "block", "dodge", "flee", "opportunity"]:
+			snap["action_previews"][action] = game.combat_action_preview(action)
+		var presentation = CombatPresentationWidget.new()
+		root.add_child(presentation)
+		presentation.configure(snap, ui_palette, 1.0, game.get_player_weapon_profile(), game.get_flee_preview(), true)
+		var tell := presentation.find_child("CommittedEnemyTell", true, false)
+		_check(tell is Button, "Intent chip renders as a tappable control for %s" % move_id)
+		if tell is Button:
+			var chip_button := tell as Button
+			_check(str(want_label[move_id]) in chip_button.text and str(chip.get("detail", "")) in chip_button.text, "Chip text names %s and its cost" % move_id)
+			_check(chip_button.custom_minimum_size.y >= 44.0, "Chip stays touch-sized for %s" % move_id)
+			_check(chip_button.text.length() <= 44, "Chip text fits a 393px row for %s" % move_id)
+			_check(str(snap.get("enemy_tell", "")) in chip_button.tooltip_text, "Chip keeps the full tell one tap away for %s" % move_id)
+		var attack_button := presentation.find_child("Action_attack", true, false) as Button
+		var dodge_button := presentation.find_child("Action_dodge", true, false) as Button
+		var block_button := presentation.find_child("Action_block", true, false) as Button
+		_check(attack_button != null and "take" in attack_button.text.to_lower(), "Attack button shows its take vs %s" % move_id)
+		_check(dodge_button != null and "take 0" in dodge_button.text.to_lower(), "Dodge button shows take 0 vs %s" % move_id)
+		_check(block_button != null and "take 0" in block_button.text.to_lower(), "Block button shows take 0 vs %s" % move_id)
+		if attack_button != null:
+			_check(attack_button.custom_minimum_size.y >= 44.0, "Attack button stays touch-sized vs %s" % move_id)
+			for line: String in attack_button.text.split("\n"):
+				_check(line.length() <= 30, "Attack button line fits 393px vs %s" % move_id)
+		presentation.queue_free()
+
+
+## B3: Momentum and Finisher (v4 only). Correct reads build to 3, wrong
+## reads reset, neutral exchanges leave it alone, the Finisher spends it on a
+## guaranteed x3.0 wound, and the count survives save/load. v3 never builds it.
+func _test_combat_momentum(content: ContentRepository) -> void:
+	var Rules = load("res://scripts/domain/narrative_combat.gd")
+	var fresh := _v4_fixture(content, "road_bandits", 7400, "strike")
+	_check(int(fresh.run_state["combat_state"].get("momentum", -1)) == 0, "New fights start at 0 Momentum")
+	_check(Rules.momentum_pips(0) == "MOMENTUM ○○○" and Rules.momentum_pips(2) == "MOMENTUM ●●○" and Rules.momentum_pips(3) == "MOMENTUM ●●●", "Momentum pips render 0-3")
+	# Gains: one correct read each.
+	var dodge_heavy := _v4_fixture(content, "road_bandits", 7401, "heavy")
+	_momentum_round(dodge_heavy, "dodge", 20, 10)
+	_check(int(dodge_heavy.run_state["combat_state"].get("momentum", -1)) == 1, "Dodging Heavy banks 1 Momentum")
+	var block_sweep := _v4_fixture(content, "bog_raiders", 7402, "sweep")
+	_momentum_round(block_sweep, "block", 20, 10)
+	_check(int(block_sweep.run_state["combat_state"].get("momentum", -1)) == 1, "Blocking Sweep banks 1 Momentum")
+	var attack_recover := _v4_fixture(content, "road_bandits", 7403, "recover")
+	_momentum_round(attack_recover, "attack", 1, 10)
+	_check(int(attack_recover.run_state["combat_state"].get("momentum", -1)) == 1, "Attacking Recover banks Momentum even on a miss")
+	var defend_brace := _v4_fixture(content, "road_bandits", 7404, "brace")
+	_momentum_round(defend_brace, "block", 20, 10)
+	_check(int(defend_brace.run_state["combat_state"].get("momentum", -1)) == 1, "Defending Brace banks 1 Momentum")
+	# Cap at 3.
+	var capped := _v4_fixture(content, "road_bandits", 7405, "recover")
+	capped.run_state["combat_state"]["momentum"] = 2
+	_momentum_round(capped, "attack", 20, 10)
+	_check(int(capped.run_state["combat_state"].get("momentum", -1)) == 3, "Momentum builds to 3")
+	var already_full := _v4_fixture(content, "road_bandits", 7406, "heavy")
+	already_full.run_state["combat_state"]["momentum"] = 3
+	_momentum_round(already_full, "dodge", 20, 10)
+	_check(int(already_full.run_state["combat_state"].get("momentum", -1)) == 3, "Momentum never exceeds 3")
+	# Resets: wrong reads wipe it.
+	var wrong_attack_heavy := _v4_fixture(content, "road_bandits", 7407, "heavy")
+	wrong_attack_heavy.run_state["combat_state"]["momentum"] = 2
+	_momentum_round(wrong_attack_heavy, "attack", 1, 10)
+	_check(int(wrong_attack_heavy.run_state["combat_state"].get("momentum", -1)) == 0, "Attacking Heavy resets Momentum")
+	var wrong_attack_brace := _v4_fixture(content, "road_bandits", 7408, "brace")
+	wrong_attack_brace.run_state["combat_state"]["momentum"] = 2
+	_momentum_round(wrong_attack_brace, "attack", 20, 10)
+	_check(int(wrong_attack_brace.run_state["combat_state"].get("momentum", -1)) == 0, "Attacking Brace resets Momentum")
+	var wrong_defend_recover := _v4_fixture(content, "road_bandits", 7409, "recover")
+	wrong_defend_recover.run_state["combat_state"]["momentum"] = 2
+	_momentum_round(wrong_defend_recover, "dodge", 20, 10)
+	_check(int(wrong_defend_recover.run_state["combat_state"].get("momentum", -1)) == 0, "Defending Recover resets Momentum")
+	# Neutral: strikes, charges, items and fleeing leave it alone.
+	var neutral := _v4_fixture(content, "road_bandits", 7410, "strike")
+	neutral.run_state["combat_state"]["momentum"] = 2
+	_momentum_round(neutral, "attack", 20, 10)
+	_check(int(neutral.run_state["combat_state"].get("momentum", -1)) == 2, "Strikes leave Momentum alone")
+	neutral.run_state["survivor"]["inventory"]["cloth_bandage"] = 1
+	neutral.prepare_combat_action("use_item", "cloth_bandage")
+	neutral.run_state["pending_combat_round"]["enemy_roll"] = 10
+	neutral.resolve_prepared_combat_round()
+	_check(int(neutral.run_state["combat_state"].get("momentum", -1)) == 2, "Items leave Momentum alone")
+	# Saving and restart keep the count, including prepared rounds.
+	var saved := _v4_fixture(content, "road_bandits", 7411, "heavy")
+	saved.run_state["combat_state"]["momentum"] = 2
+	var reloaded := GameEngine.new(content)
+	reloaded.restore_run(saved.run_state)
+	_check(int(reloaded.run_state["combat_state"].get("momentum", -1)) == 2, "Saved Momentum survives restore")
+	saved.prepare_combat_action("dodge")
+	saved.run_state["pending_combat_round"]["player_roll"] = 20
+	saved.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var resumed := GameEngine.new(content)
+	resumed.restore_run(saved.run_state)
+	var first: Dictionary = saved.resolve_prepared_combat_round()
+	var second: Dictionary = resumed.resolve_prepared_combat_round()
+	_check(int(first.get("momentum", -1)) == int(second.get("momentum", -2)) and int(resumed.run_state["combat_state"].get("momentum", -1)) == int(saved.run_state["combat_state"].get("momentum", -2)), "Prepared Momentum resolves identically after restart")
+	# Finisher: locked below 3, guaranteed x3.0 at 3, spends to 0.
+	var locked := _v4_fixture(content, "road_bandits", 7412, "strike")
+	var locked_preview: Dictionary = locked.combat_action_preview("finisher")
+	_check(not bool(locked_preview.get("available", true)), "Finisher is locked below 3 Momentum")
+	var primed := _v4_fixture(content, "road_bandits", 7413, "strike")
+	primed.run_state["combat_state"]["momentum"] = 3
+	# A x3.0 Finisher would one-shot the 200-HP bandit from full health, and a
+	# killing blow ends the fight (cleaning up combat_state). Test the spend
+	# and the previewed damage on a healthy target instead; the remaining-HP
+	# cap is engine behavior, not Finisher behavior.
+	primed.run_state["combat_state"]["enemy_health"] = 10000
+	primed.run_state["combat_state"]["enemy_max_health"] = 10000
+	var fin_preview: Dictionary = primed.combat_action_preview("finisher")
+	var atk_preview: Dictionary = primed.combat_action_preview("attack")
+	_check(bool(fin_preview.get("available", false)) and int(fin_preview.get("chance", 0)) == 100, "Finisher is guaranteed at 3 Momentum")
+	_check(int(fin_preview.get("damage_max", 0)) > int(atk_preview.get("damage_max", 0)), "Finisher hits harder than an attack")
+	primed.prepare_combat_action("finisher")
+	var fin_result: Dictionary = primed.resolve_prepared_combat_round()
+	_check(int(fin_result.get("player_damage", 0)) == int(fin_preview.get("damage_max", -1)), "Finisher deals its previewed damage")
+	_check(int(primed.run_state["combat_state"].get("momentum", -1)) == 0, "Finisher spends Momentum to 0")
+	_check(bool(fin_result.get("finisher", false)), "Finisher flags its result")
+	# v3 never builds Momentum and has no Finisher.
+	var old := _v4_fixture(content, "road_bandits", 7414, "heavy", 3)
+	_momentum_round(old, "dodge", 20, 10)
+	_check(int(old.run_state["combat_state"].get("momentum", -1)) == 0, "v3 fights never build Momentum")
+	_check(not bool(old.combat_action_preview("finisher").get("available", true)), "v3 fights have no Finisher")
+	# Presentation: pips always render; the button appears only at 3.
+	var ui_palette: Dictionary = UiPaletteWidget.create("default")
+	for pip_count: int in [0, 3]:
+		var shown := _v4_fixture(content, "road_bandits", 7420 + pip_count, "heavy")
+		shown.run_state["combat_state"]["momentum"] = pip_count
+		var snap: Dictionary = shown.combat_presentation_snapshot()
+		_check(int(snap.get("momentum", -1)) == pip_count, "Snapshot carries Momentum %d" % pip_count)
+		snap["action_previews"] = {}
+		for action: String in ["attack", "block", "dodge", "flee", "opportunity", "finisher"]:
+			snap["action_previews"][action] = shown.combat_action_preview(action)
+		var presentation = CombatPresentationWidget.new()
+		root.add_child(presentation)
+		presentation.configure(snap, ui_palette, 1.0, shown.get_player_weapon_profile(), shown.get_flee_preview(), true)
+		var pips := presentation.find_child("MomentumPips", true, false) as Label
+		_check(pips != null and ("●●●" in pips.text if pip_count == 3 else "○" in pips.text), "Momentum pips render at %d" % pip_count)
+		_check((presentation.find_child("Action_finisher", true, false) != null) == (pip_count == 3), "Finisher button appears only at 3 Momentum")
+		presentation.queue_free()
+
+
+## B5: the fixed sequence shows its next move; base Wits 6+ sees two ahead.
+func _test_combat_upcoming(content: ContentRepository) -> void:
+	var Rules = load("res://scripts/domain/narrative_combat.gd")
+	var plain := _v4_fixture(content, "road_bandits", 7500, "strike")
+	# road_bandits runs strike, brace, heavy, recover: after strike comes brace.
+	var one: Array = Rules.upcoming_moves(plain)
+	_check(one.size() == 1 and str(one[0].get("move_id", "")) == "brace", "Base Wits sees one move ahead (brace after strike)")
+	_check(Rules.upcoming_text(plain).begins_with("Then: ") and "BRACE" in Rules.upcoming_text(plain), "Upcoming line names the next move")
+	plain.run_state["survivor"]["stats"]["wits"] = 6
+	var two: Array = Rules.upcoming_moves(plain)
+	_check(two.size() == 2 and str(two[0].get("move_id", "")) == "brace" and str(two[1].get("move_id", "")) == "heavy", "Wits 6 sees two moves ahead (brace, heavy)")
+	# Wraps around the end of the sequence.
+	var last := _v4_fixture(content, "road_bandits", 7501, "recover")
+	last.run_state["survivor"]["stats"]["wits"] = 6
+	var wrapped: Array = Rules.upcoming_moves(last)
+	_check(wrapped.size() == 2 and str(wrapped[0].get("move_id", "")) == "strike" and str(wrapped[1].get("move_id", "")) == "brace", "Upcoming wraps past the sequence end")
+	var snap: Dictionary = plain.combat_presentation_snapshot()
+	_check((snap.get("upcoming", []) as Array).size() == 2, "Snapshot carries both upcoming moves for Wits 6")
+	snap["action_previews"] = {}
+	for action: String in ["attack", "block", "dodge", "flee", "opportunity", "finisher"]:
+		snap["action_previews"][action] = plain.combat_action_preview(action)
+	var ui_palette: Dictionary = UiPaletteWidget.create("default")
+	var presentation = CombatPresentationWidget.new()
+	root.add_child(presentation)
+	presentation.configure(snap, ui_palette, 1.0, plain.get_player_weapon_profile(), plain.get_flee_preview(), true)
+	var upcoming := presentation.find_child("UpcomingMoves", true, false) as Label
+	_check(upcoming != null and "BRACE" in upcoming.text and upcoming.text.length() <= 44, "Upcoming line renders small enough for a 393px row")
+	presentation.queue_free()
+
+
+## B3 helper: one fixed-rolls exchange.
+func _momentum_round(game: GameEngine, action: String, player_roll: int, enemy_roll: int) -> Dictionary:
+	game.prepare_combat_action(action)
+	game.run_state["pending_combat_round"]["player_roll"] = player_roll
+	game.run_state["pending_combat_round"]["enemy_roll"] = enemy_roll
+	return game.resolve_prepared_combat_round()
+
+
+## B2 fixture: a v4 (or forced-v3) fight against a chosen enemy and move.
+func _v4_fixture(content: ContentRepository, enemy_id: String, seed_value: int, move_id: String, force_version: int = 4) -> GameEngine:
+	var Rules = load("res://scripts/domain/narrative_combat.gd")
+	var game := GameEngine.new(content)
+	var survivor: Dictionary = game.create_candidates(seed_value)[0]
+	survivor["stats"] = {"strength": 5, "agility": 5, "wits": 5, "grit": 5, "presence": 5}
+	survivor["vitals"] = {"health": 400, "max_health": 400, "max_hearts": 8, "satiety": 4}
+	survivor["inventory"] = {"salvage_cleaver": 1}
+	survivor["equipment"] = {"weapon": "salvage_cleaver", "armor": "", "accessory": "", "backpack": ""}
+	game.start_run(survivor, seed_value)
+	game.run_state["current_event_id"] = "outskirts_dogs"
+	game.run_state["phase"] = "event"
+	game.start_combat(0)
+	var state: Dictionary = game.run_state["combat_state"]
+	state["adversary_id"] = enemy_id
+	state["enemy_health"] = int(content.get_adversary(enemy_id)["combat"]["max_health"])
+	state["enemy_max_health"] = state["enemy_health"]
+	state["can_flee"] = true
+	Rules.initialize(game)
+	if force_version != 4:
+		game.run_state["combat_state"]["combat_rules_version"] = force_version
+		var sequence: Array = content.get_adversary(enemy_id)["narrative_combat"]["sequence"]
+		game.run_state["combat_state"]["move_index"] = sequence.find(move_id)
+		Rules.commit_move(game)
+	else:
+		var seq: Array = content.get_adversary(enemy_id)["narrative_combat"]["sequence"]
+		game.run_state["combat_state"]["move_index"] = seq.find(move_id)
+		Rules.commit_move(game)
+	return game
+
+
 func _test_combat_recovery(content: ContentRepository) -> void:
 	var original := _combat_game(content, 8080, "outskirts_dogs", 0)
 	original.prepare_combat_action("attack")
@@ -2457,7 +2846,7 @@ func _test_contextual_guidance(content: ContentRepository) -> void:
 	ids.sort()
 	var expected_sorted: Array = expected.duplicate()
 	expected_sorted.sort()
-	_check(ids == expected_sorted and ids.size() == 7, "The seven contextual moments match the profile's stored tip IDs")
+	_check(ids == expected_sorted and ids.size() == 10, "The ten contextual moments match the profile's stored tip IDs")
 	var within_two_sentences := true
 	var short_enough := true
 	for tip_id: String in tips:
@@ -2481,7 +2870,7 @@ func _test_contextual_guidance(content: ContentRepository) -> void:
 	var experienced := {"schema_version": 4, "tutorial_seen": true}
 	saves._atomic_write("user://ashfall_tip_test_profile.json", experienced)
 	var migrated := saves.load_profile()
-	_check((migrated.get("contextual_tips_seen", []) as Array).size() == 7 and bool(migrated.get("contextual_tips_enabled", false)), "An experienced profile receives no new mandatory guidance")
+	_check((migrated.get("contextual_tips_seen", []) as Array).size() == 10 and bool(migrated.get("contextual_tips_enabled", false)), "An experienced profile receives no new mandatory guidance")
 
 
 func _test_equipment_comparison(content: ContentRepository) -> void:
@@ -2739,6 +3128,35 @@ func _test_choice_revisions(content: ContentRepository) -> void:
 	_check(refusal_variants == 1, "The Chronicle tells the road away apart from entry")
 
 
+## Gameplay plan A1: every choice shows its stakes before committing.
+func _test_choice_stakes(content: ContentRepository) -> void:
+	var game := _new_game(content, 6101)
+	var market: Dictionary = content.get_event("outskirts_market")
+	var first: Dictionary = market.get("choices", [])[0]
+	var stakes: Dictionary = game.choice_stakes(first)
+	var gains: Array = stakes.get("gains", [])
+	var risks: Array = stakes.get("risks", [])
+	_check("Cloth Bandage" in gains and "Rad Tabs" in gains, "Market medicine stakes list its Cloth Bandage and Rad Tabs gains")
+	_check("Scrap Parts" in risks, "Market medicine stakes list the Scrap Parts risk")
+	var preview: Dictionary = game.get_choice_preview(first)
+	_check("Cloth Bandage" in str(preview.get("stakes_text", "")) and "Rad Tabs" in str(preview.get("stakes_text", "")) and "Scrap Parts" in str(preview.get("stakes_text", "")), "Market medicine preview carries its stakes line")
+	_check(str(preview.get("stakes_text", "")).length() <= 65, "Stakes line stays short enough for a choice row")
+	var hatchet: Dictionary = market.get("choices", [])[2]
+	var hatchet_stakes: Dictionary = game.choice_stakes(hatchet)
+	_check("Rusted Hatchet" in hatchet_stakes.get("gains", []), "Certain market work lists its hatchet gain")
+	_check(not str(game.choice_stakes(market.get("choices", [])[1]).get("text", "")).is_empty(), "Every market choice carries a stakes line")
+	var combat_event: Dictionary = content.get_event("outskirts_dogs")
+	var combat_choice: Dictionary = {}
+	for choice: Dictionary in combat_event.get("choices", []):
+		if choice.has("combat"):
+			combat_choice = choice
+			break
+	_check(not combat_choice.is_empty(), "Dogs event offers a combat route for stakes coverage")
+	if not combat_choice.is_empty():
+		var combat_stakes: Dictionary = game.choice_stakes(combat_choice)
+		_check(str(combat_stakes.get("text", "")).begins_with("Fight: ") and not str(combat_stakes.get("enemy_name", "")).is_empty(), "Combat choices show Fight plus the enemy name")
+
+
 ## Latest_plan Week 2: checkpoint trading. Three saved offers per checkpoint,
 ## browsed free and bought once instead of resting or pressing on, with stock
 ## that reopening or restarting cannot refresh.
@@ -2868,6 +3286,84 @@ func _test_receipt_item_icons(content: ContentRepository) -> void:
 	ui._show_result()
 	_check(ui.page.find_children("ReceiptItemRow_*", "", true, false).is_empty(), "A result without entries renders its text receipt with no icon rows")
 	ui.queue_free()
+
+
+## Gameplay plan A2: the committed receipt leads the result screen.
+func _test_result_receipt_first(content: ContentRepository) -> void:
+	var game := _new_game(content, 6102)
+	game.run_state["phase"] = "result"
+	game.run_state["last_result"] = {"event_id": "outskirts_market", "outcome_text": "You split firewood and earn the hatchet.", "changes": ["Rusted Hatchet +1", "Fatigue +6"], "xp_awards": [], "resolution": {}}
+	var ui = MainUI.new()
+	ui.bootstrap_on_ready = false
+	root.add_child(ui)
+	ui.content = content
+	ui.saves = SaveService.new("ashfall_receipt_order_")
+	ui.profile = ui.saves.default_profile()
+	ui.entitlements = ui.saves.load_entitlements()
+	ui.game = game
+	ui.ads = AdService.new()
+	ui.ads.configure(ui.entitlements)
+	ui.billing = BillingService.new()
+	ui.billing.configure(ui.entitlements)
+	ui._build_shell()
+	ui._show_result()
+	var receipt: Node = ui.page.find_child("ResultReceipt", true, false)
+	_check(receipt != null, "The result screen exposes its receipt container")
+	if receipt != null and is_instance_valid(ui.active_story):
+		_check(receipt.get_parent() == ui.active_story.get_parent(), "Receipt and prose share the reveal column")
+		_check(receipt.get_index() < ui.active_story.get_index(), "Receipt precedes prose in the reveal order")
+		_check(bool(receipt.visible), "Receipt is visible before the typewriter finishes")
+	_check(not ui.active_story_actions.visible, "Continue waits for the prose while the receipt leads")
+	ui.queue_free()
+
+
+## B7: first-fight lessons name the exact response at the right moment, once
+## per profile, and stay off when tips are disabled.
+func _test_first_fight_lessons(content: ContentRepository) -> void:
+	var heavy_game := _v4_fixture(content, "feral_dogs", 7600, "heavy")
+	var heavy_ui = _lesson_ui(content, heavy_game, "heavy")
+	heavy_ui._show_cinematic_combat()
+	_check(heavy_ui.active_tip_id == "heavy_lesson", "Heavy winding up teaches Dodge on the first fight")
+	heavy_ui._dismiss_contextual_tip()
+	_check("heavy_lesson" in (heavy_ui.profile.get("contextual_tips_seen", []) as Array), "Dismissing the heavy lesson records it")
+	heavy_ui._offer_combat_tips()
+	_check(heavy_ui.active_tip_id != "heavy_lesson", "The heavy lesson appears only once")
+	heavy_ui.queue_free()
+	var recover_game := _v4_fixture(content, "feral_dogs", 7601, "recover")
+	var recover_ui = _lesson_ui(content, recover_game, "recover")
+	recover_ui._show_cinematic_combat()
+	_check(recover_ui.active_tip_id == "recover_lesson", "Recovering teaches the punish attack")
+	recover_ui.queue_free()
+	var full_game := _v4_fixture(content, "feral_dogs", 7602, "strike")
+	full_game.run_state["combat_state"]["momentum"] = 3
+	var full_ui = _lesson_ui(content, full_game, "full")
+	full_ui._show_cinematic_combat()
+	_check(full_ui.active_tip_id == "finisher_lesson", "Full Momentum teaches the Finisher")
+	full_ui.queue_free()
+	var quiet_game := _v4_fixture(content, "feral_dogs", 7603, "heavy")
+	var quiet_ui = _lesson_ui(content, quiet_game, "quiet")
+	quiet_ui.profile["contextual_tips_enabled"] = false
+	quiet_ui._show_cinematic_combat()
+	_check(not quiet_ui.tip_banner.visible and quiet_ui.active_tip_id == "", "Disabled tips stay closed on the first fight")
+	quiet_ui.queue_free()
+
+
+## Lesson helper: a shell around a fixed combat game with a fresh profile.
+func _lesson_ui(content: ContentRepository, game: GameEngine, tag: String):
+	var ui = MainUI.new()
+	ui.bootstrap_on_ready = false
+	root.add_child(ui)
+	ui.content = content
+	ui.saves = SaveService.new("ashfall_lesson_%s_" % tag)
+	ui.profile = ui.saves.default_profile()
+	ui.entitlements = ui.saves.load_entitlements()
+	ui.game = game
+	ui.ads = AdService.new()
+	ui.ads.configure(ui.entitlements)
+	ui.billing = BillingService.new()
+	ui.billing.configure(ui.entitlements)
+	ui._build_shell()
+	return ui
 
 
 ## Opening stats shows the statuses moving each ability, not just gear: hover
@@ -4348,3 +4844,4 @@ func _check(condition: bool, description: String) -> void:
 		push_error("FAIL: %s" % description)
 	else:
 		print("PASS: %s" % description)
+

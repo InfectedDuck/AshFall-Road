@@ -157,6 +157,13 @@ func _run() -> void:
 				scenario_rows.append(scenario_row)
 				print(JSON.stringify(scenario_row))
 				await process_frame
+	var skill_gap := summarize_skill_gap(rows)
+	var per_enemy := summarize_per_enemy(rows)
+	for enemy: String in enemies:
+		if per_enemy.has(enemy):
+			var summary: Dictionary = per_enemy[enemy]
+			print("ENEMY_GAP enemy=%s attack_only=%.3f random_actions=%.3f read_tells=%.3f gap=%+.3f (rows=%d)" % [enemy, float(summary.get("attack_only", 0.0)), float(summary.get("random_actions", 0.0)), float(summary.get("read_tells", 0.0)), float(summary.get("gap", 0.0)), int(summary.get("rows_per_strategy", 0))])
+	print("SKILL_GAP attack_only=%.3f read_tells=%.3f gap=%+.3f (standard rows: %d)" % [float(skill_gap.get("attack_only", 0.0)), float(skill_gap.get("read_tells", 0.0)), float(skill_gap.get("gap", 0.0)), int(skill_gap.get("standard_rows", 0))])
 	var output := {
 		"benchmark_version": 2,
 		"rules": Rules.VERSION,
@@ -174,6 +181,8 @@ func _run() -> void:
 		"fixtures": fixture_metadata,
 		"rows": rows,
 		"state_rows": scenario_rows,
+		"skill_gap": skill_gap,
+		"per_enemy": per_enemy,
 	}
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output_path.get_base_dir()))
 	var file := FileAccess.open(output_path, FileAccess.WRITE)
@@ -385,6 +394,67 @@ func _apply_build(game: GameEngine, build: Dictionary) -> int:
 	return maximum
 
 
+static func summarize_skill_gap(rows: Array) -> Dictionary:
+	var attack_sum := 0.0
+	var attack_n := 0
+	var tell_sum := 0.0
+	var tell_n := 0
+	for row: Dictionary in rows:
+		match str(row.get("strategy", "")):
+			"attack_only":
+				attack_sum += float(row.get("win_rate", 0.0))
+				attack_n += 1
+			"read_tells":
+				tell_sum += float(row.get("win_rate", 0.0))
+				tell_n += 1
+	var attack_avg := attack_sum / maxf(1.0, float(attack_n))
+	var tell_avg := tell_sum / maxf(1.0, float(tell_n))
+	return {
+		"attack_only": snappedf(attack_avg, 0.001),
+		"read_tells": snappedf(tell_avg, 0.001),
+		"gap": snappedf(tell_avg - attack_avg, 0.001),
+		"standard_rows": mini(attack_n, tell_n),
+	}
+
+
+static func summarize_per_enemy(rows: Array) -> Dictionary:
+	var grouped: Dictionary = {}
+	for row: Dictionary in rows:
+		var enemy := str(row.get("enemy", ""))
+		if enemy.is_empty():
+			continue
+		if not grouped.has(enemy):
+			grouped[enemy] = {"attack_only": 0.0, "attack_n": 0, "random_actions": 0.0, "random_n": 0, "read_tells": 0.0, "tell_n": 0}
+		var entry: Dictionary = grouped[enemy]
+		match str(row.get("strategy", "")):
+			"attack_only":
+				entry["attack_only"] = float(entry["attack_only"]) + float(row.get("win_rate", 0.0))
+				entry["attack_n"] = int(entry["attack_n"]) + 1
+			"random_actions":
+				entry["random_actions"] = float(entry["random_actions"]) + float(row.get("win_rate", 0.0))
+				entry["random_n"] = int(entry["random_n"]) + 1
+			"read_tells":
+				entry["read_tells"] = float(entry["read_tells"]) + float(row.get("win_rate", 0.0))
+				entry["tell_n"] = int(entry["tell_n"]) + 1
+	var result: Dictionary = {}
+	for enemy: String in grouped:
+		var entry: Dictionary = grouped[enemy]
+		var attack_n := maxi(1, int(entry["attack_n"]))
+		var random_n := maxi(1, int(entry["random_n"]))
+		var tell_n := maxi(1, int(entry["tell_n"]))
+		var attack_avg := float(entry["attack_only"]) / float(attack_n)
+		var random_avg := float(entry["random_actions"]) / float(random_n)
+		var tell_avg := float(entry["read_tells"]) / float(tell_n)
+		result[enemy] = {
+			"attack_only": snappedf(attack_avg, 0.001),
+			"random_actions": snappedf(random_avg, 0.001),
+			"read_tells": snappedf(tell_avg, 0.001),
+			"gap": snappedf(tell_avg - attack_avg, 0.001),
+			"rows_per_strategy": mini(attack_n, tell_n),
+		}
+	return result
+
+
 static func choose_action(game: GameEngine, strategy: String, policy_rng: RandomNumberGenerator = null) -> String:
 	if strategy == "attack_only": return "attack"
 	if strategy == "random_actions":
@@ -401,9 +471,15 @@ static func choose_action(game: GameEngine, strategy: String, policy_rng: Random
 	var state: Dictionary = game.run_state["combat_state"]
 	var move := str(state["committed_move"]["id"])
 	var attack := game.combat_action_preview("attack")
-	# Take a likely killing blow; exploit recovery/charge, defend heavy/sweep
-	# when no attack window is already banked, use the saved opportunity freely.
+	# B6 v4: spend a full Momentum bar first, take a likely killing blow,
+	# defend Heavy/Sweep and Brace, exploit Recover, use the saved opportunity
+	# freely. Brace is always defended: attacking into guard wastes the hit
+	# while defending banks Fatigue, Momentum and a fresh window.
+	var finisher := game.combat_action_preview("finisher")
+	if bool(finisher.get("available", false)): return "finisher"
 	if int(state["enemy_health"]) <= int(attack["damage_min"]): return "attack"
 	if move in ["heavy", "sweep"] and not bool(state["riposte"]) and not bool(state["opening"]): return best_defense
+	if move == "brace": return best_defense
 	if bool(state["opportunity_ready"]) and not bool(state["opportunity_used"]): return "opportunity"
+	if move == "recover": return "attack"
 	return "attack"

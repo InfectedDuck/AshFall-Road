@@ -6,7 +6,7 @@ const ExperienceRules = preload("res://scripts/domain/experience_rules.gd")
 const PROFILE_SCHEMA := 5
 const RUN_SCHEMA := 5
 const ENTITLEMENT_SCHEMA := 1
-const CONTEXTUAL_TIP_IDS := ["checked_choice", "event_preparation", "enemy_heavy_sweep", "defense_window", "weapon_mastery", "opportunity", "checkpoint_allocation"]
+const CONTEXTUAL_TIP_IDS := ["checked_choice", "event_preparation", "enemy_heavy_sweep", "defense_window", "weapon_mastery", "opportunity", "checkpoint_allocation", "heavy_lesson", "recover_lesson", "finisher_lesson"]
 const DISCOVERY_COLLECTIONS := ["discovered_story_nodes", "discovered_characters", "discovered_endings"]
 
 var prefix := ""

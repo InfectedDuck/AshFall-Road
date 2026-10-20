@@ -125,7 +125,7 @@ The noncritical `runs_started` display counter uses the same checked single-prof
 - Active-run schema remains **5**. `pending_action` is optional; absent means no immediate intent. Existing event/combat pending fields and legacy combat migration remain unchanged.
 - Profile schema is **5**; entitlement schema remains **1**.
 - New profile arrays: `contextual_tips_seen` and `applied_profile_update_ids`.
-- Migrating a profile older than schema 5 with `tutorial_seen=true` dismisses the seven current tips. Otherwise tips start empty. Already-schema-5 partial progress is preserved.
+- Migrating a profile older than schema 5 with `tutorial_seen=true` dismisses the ten current tips. Otherwise tips start empty. Already-schema-5 partial progress is preserved.
 - Current stable tip IDs: `checked_choice`, `event_preparation`, `enemy_heavy_sweep`, `defense_window`, `weapon_mastery`, `opportunity`, `checkpoint_allocation`.
 - M08 still implements contextual prompt presentation. Use these IDs and checked profile updates; do not rerun legacy migration when recording a dismissal. Reading tips must not use gameplay RNG.
 - M09 reads committed profile discoveries/history only; discoveries are never awarded from UI render callbacks, and the Chronicle shows only the content repository's enabled discovery entries.
@@ -150,3 +150,4 @@ Coverage includes preparation rollback, all nine immediate operations, current/l
 UI checks cover allocation, inventory, drop confirmation, rest, event resolution, and combat resolution at 360x640, 540x960, and 540x1200 with Large text and Reduced Motion. They verify reachable shared Retry, unchanged originating sheets, blocked Back/background/other actions/profile changes, presentation only after commitment, and no duplicate callback. Combat's former in-screen Retry expectation was updated to the same modal recovery boundary, avoiding a stranded retry behind another overlay. The sandboxed UI runs emit a Windows root-certificate-store warning; offline tests still complete with the results above. The full suite runs with permission for isolated `user://` test saves.
 
 **Not claimed:** a fresh Android export, Samsung physical-device interruption tests, real low-storage-device testing, or production certification. These remain release/device acceptance work; the automated failures simulate unsuccessful writes and process recreation.
+

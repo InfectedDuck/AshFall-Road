@@ -444,16 +444,67 @@ func _configure_narrative(snapshot: Dictionary, items_available: bool) -> void:
 	exchange_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	exchange_body.add_theme_constant_override("separation", 2)
 	exchange.add_child(exchange_body)
-	var tell := Button.new()
-	tell.text = str(snapshot.get("enemy_tell", "")) + " ⓘ"
-	tell.flat = true
-	_style_compact_control(tell)
-	tell.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	tell.add_theme_font_size_override("font_size", int(12 * font_scale))
-	tell.custom_minimum_size.y = 44
-	tell.pressed.connect(func() -> void: tactics_requested.emit())
-	tell.name = "CommittedEnemyTell"
-	exchange_body.add_child(tell)
+	# B4: large intent chip above the actions. The full tell stays one tap away
+	# through the tactics popup; the chip itself shows icon, name and cost.
+	var intent: Dictionary = snapshot.get("enemy_intent", {})
+	if not intent.is_empty():
+		var chip := Button.new()
+		chip.name = "CommittedEnemyTell"
+		var chip_icon := str(intent.get("icon", "●"))
+		var chip_label := str(intent.get("label", "ENEMY"))
+		var chip_detail := str(intent.get("detail", ""))
+		chip.text = "%s %s • %s" % [chip_icon, chip_label, chip_detail]
+		chip.custom_minimum_size = Vector2(0, 48)
+		chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		chip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		chip.add_theme_font_size_override("font_size", int(16 * font_scale))
+		var chip_color: Color = palette.get(str(intent.get("color_key", "text")), palette["text"])
+		chip.add_theme_color_override("font_color", chip_color)
+		chip.tooltip_text = str(snapshot.get("enemy_tell", "")) + "\nTap for full read."
+		chip.accessibility_name = "Enemy intent: %s %s. Activate for full details." % [chip_label, chip_detail]
+		for chip_state: String in ["normal", "hover", "pressed", "focus"]:
+			var chip_box := _box(palette["surface"], chip_color, 2 if chip_state in ["focus", "hover"] else 1)
+			chip_box.content_margin_left = 8
+			chip_box.content_margin_right = 8
+			chip_box.content_margin_top = 6
+			chip_box.content_margin_bottom = 6
+			chip.add_theme_stylebox_override(chip_state, chip_box)
+		chip.pressed.connect(func() -> void: tactics_requested.emit())
+		exchange_body.add_child(chip)
+		var intent_hint := _label("Tap intent for the full tell", 9, palette["muted"])
+		intent_hint.name = "IntentHint"
+		intent_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		exchange_body.add_child(intent_hint)
+	else:
+		var tell := Button.new()
+		tell.text = str(snapshot.get("enemy_tell", "")) + " ⓘ"
+		tell.flat = true
+		_style_compact_control(tell)
+		tell.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		tell.add_theme_font_size_override("font_size", int(12 * font_scale))
+		tell.custom_minimum_size.y = 44
+		tell.pressed.connect(func() -> void: tactics_requested.emit())
+		tell.name = "CommittedEnemyTell"
+		exchange_body.add_child(tell)
+	# B3: Momentum pips ride with the intent so correct reads feel rewarding.
+	var pips_text := str(snapshot.get("momentum_pips", ""))
+	if pips_text == "":
+		var pip_count := clampi(int(snapshot.get("momentum", 0)), 0, 3)
+		pips_text = "MOMENTUM " + "●".repeat(pip_count) + "○".repeat(3 - pip_count)
+	var pips := _label(pips_text, 12, palette["accent"])
+	pips.name = "MomentumPips"
+	pips.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pips.tooltip_text = "Correct reads build Momentum: defend Heavy/Sweep, attack Recover, defend Brace. At 3, the Finisher appears."
+	exchange_body.add_child(pips)
+	# B5: the sequence is fixed, so name what comes next. Kept small and grey
+	# so the current intent stays the loudest thing on the panel.
+	var upcoming_text := str(snapshot.get("upcoming_text", ""))
+	if upcoming_text != "":
+		var upcoming := _label(upcoming_text, 10, palette["muted"])
+		upcoming.name = "UpcomingMoves"
+		upcoming.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		upcoming.tooltip_text = "The enemy follows a fixed sequence. Plan one exchange ahead."
+		exchange_body.add_child(upcoming)
 	if not windows.is_empty():
 		var window_label := _label(" | ".join(windows), 10, palette["accent"])
 		window_label.name = "AttackWindowStatus"
@@ -472,6 +523,21 @@ func _configure_narrative(snapshot: Dictionary, items_available: bool) -> void:
 	feed_scroll.add_child(feed_body)
 	exchange_body.add_child(feed_scroll)
 	call_deferred("_scroll_feed", feed_scroll)
+	# B3: the Finisher appears as its own full-width button at 3 Momentum so
+	# the six-action grid (and its layout tests) stays stable.
+	if clampi(int(snapshot.get("momentum", 0)), 0, 3) >= 3:
+		var fin_preview: Dictionary = snapshot.get("action_previews", {}).get("finisher", {})
+		var fin_take := str(fin_preview.get("expected_take_text", "take ~0"))
+		var fin_button := _action_button("FINISHER • 100%%\n%d–%d • %s" % [fin_preview.get("damage_min", 0), fin_preview.get("damage_max", 0), fin_take], "finisher", pending or not bool(fin_preview.get("available", false)))
+		fin_button.name = "Action_finisher"
+		fin_button.custom_minimum_size = Vector2(0, 48)
+		fin_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		fin_button.add_theme_font_size_override("font_size", int(14 * font_scale))
+		fin_button.add_theme_color_override("font_color", palette["accent"])
+		fin_button.tooltip_text = "\n".join(fin_preview.get("effects", [])) + "\n" + str(fin_preview.get("cost", ""))
+		fin_button.accessibility_description = fin_button.tooltip_text
+		fin_button.accessibility_name = "Finisher: guaranteed heavy hit. Spends Momentum."
+		add_child(fin_button)
 	var actions := GridContainer.new()
 	actions.name = "NarrativeActionGrid"
 	actions.columns = 2
@@ -479,19 +545,26 @@ func _configure_narrative(snapshot: Dictionary, items_available: bool) -> void:
 	actions.add_theme_constant_override("v_separation", 3)
 	for action: String in ["attack", "block", "dodge", "item", "flee", "opportunity"]:
 		var preview: Dictionary = snapshot.get("action_previews", {}).get(action, {})
+		var take_text := str(preview.get("expected_take_text", ""))
+		if action == "item" and take_text == "":
+			var intent_take: int = int(snapshot.get("enemy_intent", {}).get("expected_take", 0))
+			take_text = "take ~%d" % intent_take if intent_take > 0 else "take 0"
 		var label := action.to_upper()
 		if action == "opportunity":
 			label = str(preview.get("profile", {}).get("opportunity_name", "Opportunity")).to_upper()
-		if int(preview.get("chance", 0)) > 0 and action != "opportunity":
+		if action in ["attack", "block", "dodge", "flee"] and int(preview.get("chance", 0)) > 0:
 			label += " • %d%%" % preview["chance"]
 		if action in ["attack", "opportunity"]:
-			label += "\n%d–%d damage" % [preview.get("damage_min", 0), preview.get("damage_max", 0)]
+			var dmg := "%d–%d" % [preview.get("damage_min", 0), preview.get("damage_max", 0)]
+			label += "\n%s • %s" % [dmg, take_text] if take_text != "" else "\n%s" % dmg
 		elif action in ["block", "dodge"]:
-			label += "\nStop the attack"
+			# B4: a correct defend negates, so the button names its payoff.
+			label += "\n%s" % ("Take 0" if take_text == "" or take_text == "take 0" else take_text)
 		elif action == "item":
-			label += "\nENEMY RESPONDS"
+			label += "\n%s" % take_text if take_text != "" else "\nENEMY RESPONDS"
 		elif action == "flee":
-			label += "\nROLL %d+ • ESCAPE" % preview.get("required_roll", 0)
+			var flee_take := str(preview.get("expected_take_text", "take 0"))
+			label += "\nROLL %d+ • %s" % [preview.get("required_roll", 0), flee_take]
 		var available := items_available if action == "item" else bool(preview.get("available", false))
 		if not pending and not available:
 			label = action.to_upper() + "\n" + ("NO SUPPLIES" if action == "item" else "NO ESCAPE" if action == "flee" else "NOT READY")

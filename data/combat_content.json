@@ -70,9 +70,26 @@
         "narration": [
           "{enemy} regains its balance without attacking. The exposed interval is already passing.",
           "The last movement has left {enemy} extended; it spends this exchange putting itself back into position.",
-          "{enemy} settles into reach again. Nothing strikes at you while it recovers its fighting posture."
+          "It settles into reach again. Nothing strikes at you while it recovers its fighting posture."
         ]
       }
+    },
+    "v4": {
+      "heavy": {
+        "damage": 2.0
+      },
+      "brace": {
+        "damage": 0.6,
+        "incoming": 0.3
+      },
+      "recover": {
+        "damage": 0.0,
+        "bonus": 0.5
+      },
+      "finisher": {
+        "bonus": 2.0
+      },
+      "brace_defend_recovery": 6
     },
     "families": {
       "execution": {

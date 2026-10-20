@@ -899,6 +899,11 @@ func _show_event() -> void:
 				button_text += "\nCERTAIN"
 		else:
 			button_text += "\n▣ LOCKED: %s" % preview.get("reason", "Unavailable")
+		var stakes_text := str(game.choice_stakes(choice).get("text", ""))
+		if stakes_text == "":
+			stakes_text = str(preview.get("stakes_text", ""))
+		if stakes_text != "":
+			button_text += "\n%s" % stakes_text
 		var choice_button := _choice_button(button_text, _resolve_choice.bind(index), not preview.get("available", false))
 		choice_button.tooltip_text = "%s\n%s" % [str(preview.get("reason", "")).strip_edges(), guaranteed_cost] if guaranteed_cost != "" else str(preview.get("reason", ""))
 		choice_list.add_child(choice_button)
@@ -1567,7 +1572,7 @@ func _show_cinematic_combat() -> void:
 		snapshot["enemy"]["field_note"] = str(fighting["field_note"])
 	if game.is_narrative_combat():
 		snapshot["action_previews"] = {}
-		for action: String in ["attack", "block", "dodge", "flee", "opportunity"]:
+		for action: String in ["attack", "block", "dodge", "flee", "opportunity", "finisher"]:
 			snapshot["action_previews"][action] = game.combat_action_preview(action)
 	var flee := game.get_flee_preview()
 	var presentation = CombatPresentationScript.new()
@@ -1690,6 +1695,15 @@ func _offer_combat_tips() -> void:
 	if not game.is_narrative_combat():
 		return
 	var state: Dictionary = game.run_state.get("combat_state", {})
+	# B7: first-fight lessons name the exact response. Each shows once per
+	# profile through the shared seen list; the generic tips below remain as
+	# fallback once the lessons are dismissed.
+	if int(state.get("momentum", 0)) >= 3:
+		_show_contextual_tip("finisher_lesson")
+	if str(state.get("committed_move", {}).get("id", "")) == "heavy":
+		_show_contextual_tip("heavy_lesson")
+	elif str(state.get("committed_move", {}).get("id", "")) == "recover":
+		_show_contextual_tip("recover_lesson")
 	if str(state.get("committed_move", {}).get("id", "")) in ["heavy", "sweep"]:
 		_show_contextual_tip("enemy_heavy_sweep")
 	if bool(state.get("riposte", false)) or bool(state.get("opening", false)):
@@ -1718,7 +1732,7 @@ func _show_combat_tactics() -> void:
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
 	list.add_child(_label(str(game.run_state["combat_state"]["committed_move"]["tell"]), 17))
-	for action: String in ["attack", "block", "dodge", "flee", "opportunity"]:
+	for action: String in ["attack", "block", "dodge", "flee", "opportunity", "finisher"]:
 		var preview := game.combat_action_preview(action)
 		list.add_child(_label("%s • %d%% • ROLL %d+\n%s\n%s" % [action.to_upper(), preview["chance"], preview["required_roll"], "\n".join(preview["effects"]), preview["cost"]], 14))
 	# Stage 1 counters: show switch and interact options alongside the six main
@@ -1837,16 +1851,21 @@ func _show_result() -> void:
 		odds.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		odds.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		reveal.add_child(odds)
+	# A2: the committed receipt leads the result so the outcome is readable
+	# before the prose. It is visible immediately; only Continue waits for
+	# the typewriter.
+	var receipt := VBoxContainer.new()
+	receipt.name = "ResultReceipt"
+	receipt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	receipt.add_theme_constant_override("separation", 8)
+	reveal.add_child(receipt)
 	var narrative = StoryTypewriterScript.new()
 	narrative.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_type(narrative, "prose", "normal_font")
 	narrative.add_theme_color_override("default_color", _c("text"))
 	narrative.add_theme_constant_override("line_separation", UiTypeScript.line_spacing("prose", float(profile.get("font_scale", 1.0))))
 	reveal.add_child(narrative)
-	var footer := VBoxContainer.new()
-	footer.modulate.a = 0.0
-	footer.visible = false
-	active_story_actions = footer
+	var footer := receipt
 	var changes: Array = result.get("changes", [])
 	# Items gained or spent render as icon rows from the structured entries;
 	# their text lines are folded away so the receipt never lists them twice.
@@ -1890,19 +1909,18 @@ func _show_result() -> void:
 			footer.add_child(_label("LEVEL UP — %d STAT POINT%s BANKED\nAllocate at the next checkpoint." % [levels_gained, "" if levels_gained == 1 else "S"], 15, _c("critical")))
 	for condition_change: Variant in result.get("condition_changes", []):
 		footer.add_child(_condition_card(str(condition_change.get("id", "")), str(condition_change.get("change", "added"))))
-	reveal.add_child(footer)
-	# Continue is the way off this screen, so it lives outside the scroll. It
-	# arrives with the consequences rather than sitting lit while prose is still
-	# revealing.
+	# Continue is the way off this screen, so it lives outside the scroll. The
+	# receipt is already visible above the prose; only the way out waits for
+	# the typewriter.
 	var actions := VBoxContainer.new()
 	actions.name = "RevealActions"
 	actions.modulate.a = 0.0
 	actions.visible = false
+	active_story_actions = actions
 	actions.add_child(_button("Continue", _continue_from_result))
 	body.add_child(actions)
 	var story_key := _story_instance_key("result", str(result.get("event_id", "")))
 	_start_story(narrative, str(result.get("outcome_text", "")), story_key, func() -> void:
-		_reveal_choices(footer)
 		_reveal_choices(actions)
 	)
 
@@ -3505,6 +3523,9 @@ const CONTEXTUAL_TIPS := {
 	"defense_window": {"text": "Spend Riposte or Opening on your next action."},
 	"weapon_mastery": {"text": "A weapon signature grows stronger at base stat 6, where mastery unlocks."},
 	"opportunity": {"text": "Opportunity: one big attack per fight. It never expires."},
+	"heavy_lesson": {"text": "It is winding up a HEAVY — Dodge!"},
+	"recover_lesson": {"text": "It is RECOVERING — attack now!"},
+	"finisher_lesson": {"text": "Momentum full — use your Finisher!"},
 	"checkpoint_allocation": {"text": "Apply stat points first. Rest and Press On are a separate decision."},
 }
 

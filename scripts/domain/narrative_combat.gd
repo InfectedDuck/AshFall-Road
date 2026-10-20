@@ -1,17 +1,19 @@
 extends RefCounted
-## Combat rules version 3 (Combat+relationships.md Stages 1-2). Presentation
+## Combat rules version 4 (GAMEPLAY_IMPROVEMENT_PLAN.md Phase B). Presentation
 ## consumes this output; it never rolls or computes damage. Versions 1 and 2
 ## remain playable for in-flight legacy fights: v1 uses GameEngine guard math,
-## v2 uses the original 0.8+s/(s+5) scaling and no traits. New fights use v3
-## scaling (+0.10 per effective point above 5) plus Reed Widow brood, Kilnback
-## heat, and Reservoir Maw flood traits, weapon switching, and environmental
-## interactions.
+## v2 uses the original 0.8+s/(s+5) scaling and no traits. Version 3 is frozen
+## for saved v3 fights (v3 scaling + brood/heat/flood/charge/prediction/bleed
+## traits, weapon switching, environmental interactions). New fights use v4,
+## which starts identical to v3; B2 onward adds v4-only telegraphs behind
+## is_v4() so saved v3 fights never change behaviour.
 
 const Legacy = preload("res://scripts/domain/combat_resolver.gd")
 const XP = preload("res://scripts/domain/experience_rules.gd")
 const TalentRules = preload("res://scripts/domain/talent_rules.gd")
-const VERSION := 3
+const VERSION := 4
 const LEGACY_VERSION := 2
+const V3_VERSION := 3
 ## Every unresolved exchange is exertion, including successful defenses and
 ## waiting through recovery. Long fights must reach the shared strain penalties.
 const FATIGUE_PER_EXCHANGE := 3
@@ -20,8 +22,22 @@ const DODGE_ARMOR := [0, 0, 5, 10, 20, 25]
 ## Six main buttons stay: attack, block, dodge, use_item (sheet), flee,
 ## opportunity. switch_weapon and interact are committed through the Item sheet
 ## and consume a full combat action with the enemy resolving its move.
-const ACTIONS := ["attack", "block", "dodge", "use_item", "flee", "opportunity", "switch_weapon", "interact"]
+const ACTIONS := ["attack", "block", "dodge", "use_item", "flee", "opportunity", "switch_weapon", "interact", "finisher"]
 const MAIN_ACTIONS := ["attack", "block", "dodge", "use_item", "flee", "opportunity"]
+## B3: combat Momentum (0-3 pips) lives in combat_state, separate from the
+## "momentum" survivor condition (+1 stats for a checked choice). Finisher
+## spends 3 pips for a guaranteed x3.0 hit. Both are v4-only.
+const MOMENTUM_MAX := 3
+## B4: readable enemy intent. Colour keys name palette entries so themes stay
+## consistent; icons are single glyphs that survive 16px in one colour.
+const INTENT_META := {
+	"strike": {"label": "STRIKE", "icon": "●", "color": "muted", "verb": "Strike"},
+	"heavy": {"label": "HEAVY", "icon": "▼", "color": "danger", "verb": "Big hit"},
+	"sweep": {"label": "SWEEP", "icon": "◀", "color": "critical", "verb": "Wide hit"},
+	"brace": {"label": "BRACE", "icon": "■", "color": "fatigue", "verb": "Guarding"},
+	"charge": {"label": "CHARGE", "icon": "▲", "color": "accent", "verb": "Building up"},
+	"recover": {"label": "RECOVER", "icon": "○", "color": "success", "verb": "Open!"},
+}
 
 
 static func probability(value: float, maximum: int = 95) -> int:
@@ -39,7 +55,7 @@ static func hit_damage(roll: int, chance: int, minimum: int, maximum: int) -> in
 
 static func initialize(game) -> void:
 	var state: Dictionary = game.run_state["combat_state"]
-	state.merge({"combat_rules_version": VERSION, "move_index": 0, "riposte": false, "opening": false, "interrupt_cooldown": 0, "opportunity_ready": false, "opportunity_used": false, "opportunity_chance": 15, "narration_indices": {}, "exploit_used": false, "field_medicine_used": false, "suppression_carry": 0.0}, true)
+	state.merge({"combat_rules_version": VERSION, "move_index": 0, "riposte": false, "opening": false, "interrupt_cooldown": 0, "opportunity_ready": false, "opportunity_used": false, "opportunity_chance": 15, "narration_indices": {}, "exploit_used": false, "field_medicine_used": false, "suppression_carry": 0.0, "momentum": 0}, true)
 	# Stage 1-2 traits: brood (Reed Widow), heat/shell (Kilnback), flood/drains
 	# (Reservoir Maw). Defaults keep every other fight exactly on legacy v2
 	# behavior. All keys persist in the saved combat_state, so prepared actions
@@ -133,6 +149,171 @@ static func trait_config_for(game) -> Dictionary:
 static func is_legacy_v2_fight(game) -> bool:
 	var state: Dictionary = game.run_state.get("combat_state", {})
 	return int(state.get("combat_rules_version", VERSION)) <= LEGACY_VERSION
+
+
+## B1: v4 gate. New fights start on VERSION (4); saved v3 fights keep v3
+## behaviour. B2+ checks this before applying stronger telegraphs.
+static func is_v4(game) -> bool:
+	var state: Dictionary = game.run_state.get("combat_state", {})
+	return int(state.get("combat_rules_version", VERSION)) >= VERSION
+
+
+## B2: v4 tuning numbers live in data, not code. Brace defend recovery is the
+## Fatigue regained by a successful defend against Brace (v4 only).
+static func v4_brace_recovery(game) -> int:
+	var v4_table: Dictionary = game.content.combat_data.get("v4", {})
+	return int(v4_table.get("brace_defend_recovery", 6))
+
+
+## B6: the Finisher bonus lives in data with the other v4 numbers. A x3.0
+## base (bonus 2.0) rewards three correct reads with a fight-shortening blow
+## that mashing can never access.
+static func v4_finisher_bonus(game) -> float:
+	var v4_table: Dictionary = game.content.combat_data.get("v4", {})
+	return float((v4_table.get("finisher", {}) as Dictionary).get("bonus", 2.0))
+
+
+## B4: live trait bonus total for the committed response, mirroring resolve's
+## round-start read so the chip and button takes stay honest.
+static func live_trait_bonus(game) -> float:
+	var state: Dictionary = game.run_state.get("combat_state", {})
+	if int(state.get("combat_rules_version", VERSION)) <= LEGACY_VERSION:
+		return 0.0
+	var total := brood_damage_bonus(game) + heat_danger_bonus(game) + flood_damage_bonus(game) + charge_damage_bonus(game)
+	total += prediction_damage_bonus(game, str(state.get("trait_last_action", "")))
+	total += bleed_aggression_bonus(game)
+	var ward_trait := str(state.get("trait_id", ""))
+	if ward_trait in ["charge", "prediction", "bleed"]:
+		total *= trait_ward_factor(game, ward_trait)
+	return total
+
+
+## B4: midpoint raw damage of the committed move before armor.
+static func expected_raw_for(game, move: Dictionary) -> int:
+	if float(move.get("damage", 0.0)) <= 0.0:
+		return 0
+	var state: Dictionary = game.run_state.get("combat_state", {})
+	var adversary: Dictionary = game.content.get_adversary(str(state.get("adversary_id", "")))
+	var combat: Dictionary = adversary.get("combat", {})
+	var mult := float(move.get("damage", 0.0)) * (1.0 + live_trait_bonus(game))
+	var midpoint := (float(combat.get("damage_min", 0)) + float(combat.get("damage_max", 0))) * 0.5 * mult
+	return maxi(0, roundi(midpoint))
+
+
+## B4: expected damage the survivor takes this exchange after armor.
+## Defend-success reads as 0; everything else takes the mitigated midpoint.
+static func expected_take_for(game, move: Dictionary, action: String) -> int:
+	if float(move.get("damage", 0.0)) <= 0.0:
+		return 0
+	if action in ["block", "dodge"]:
+		return 0
+	var raw: int = expected_raw_for(game, move)
+	var mitigated: Dictionary = Legacy.mitigate_damage(raw, int(game._armor_rating()))
+	return maxi(0, int(mitigated.get("final", raw)))
+
+
+## B4: chip data for the committed move. Domain owns labels, icons, colours
+## and numbers; the presentation only maps the colour key to the palette.
+static func intent_chip(game) -> Dictionary:
+	var state: Dictionary = game.run_state.get("combat_state", {})
+	var move: Dictionary = state.get("committed_move", {})
+	var move_id := str(move.get("id", "strike"))
+	if not INTENT_META.has(move_id):
+		move_id = "strike"
+	var meta: Dictionary = INTENT_META[move_id]
+	var raw: int = expected_raw_for(game, move)
+	var take: int = expected_take_for(game, move, "attack")
+	var detail := ""
+	match move_id:
+		"heavy":
+			detail = "Big hit • ~%d" % raw
+		"sweep":
+			detail = "Wide hit • ~%d" % raw
+		"strike":
+			detail = "Strike • ~%d" % raw
+		"brace":
+			detail = "Guarding"
+		"recover":
+			detail = "Open!"
+		"charge":
+			detail = "Building up"
+		_:
+			detail = str(meta.get("verb", ""))
+	return {
+		"move_id": move_id,
+		"label": str(meta.get("label", move_id.to_upper())),
+		"icon": str(meta.get("icon", "●")),
+		"color_key": str(meta.get("color", "muted")),
+		"detail": detail,
+		"expected_raw": raw,
+		"expected_take": take,
+		"tell": str(move.get("tell", "")),
+	}
+
+
+## B3: combat Momentum pips (0-3). Gains reward correct reads, wrong reads
+## reset to 0, neutral exchanges (strike/charge, items, flee) leave it alone.
+## Defends must succeed to gain; Recover attacks gain on choice; the Finisher
+## spends. Returns the new total without writing it.
+static func momentum_after(game, action: String, success: bool, move_id: String, before: int) -> int:
+	if action == "finisher":
+		return 0
+	var attack_like := action in ["attack", "opportunity"]
+	var defend := action in ["block", "dodge"]
+	match move_id:
+		"heavy", "sweep":
+			if defend and success:
+				return mini(MOMENTUM_MAX, before + 1)
+			if attack_like:
+				return 0
+		"recover":
+			if attack_like:
+				return mini(MOMENTUM_MAX, before + 1)
+			if defend:
+				return 0
+		"brace":
+			if defend and success:
+				return mini(MOMENTUM_MAX, before + 1)
+			if attack_like:
+				return 0
+	return before
+
+
+## B3: pips text for the intent row, e.g. "MOMENTUM ●●○".
+static func momentum_pips(before: int) -> String:
+	var filled := clampi(before, 0, MOMENTUM_MAX)
+	return "MOMENTUM " + "●".repeat(filled) + "○".repeat(MOMENTUM_MAX - filled)
+
+
+## B5: the fixed sequence is known, so show what comes after the committed
+## move. Everyone sees one ahead; base Wits 6+ sees two.
+static func upcoming_moves(game) -> Array:
+	var state: Dictionary = game.run_state.get("combat_state", {})
+	var out: Array = []
+	if state.is_empty():
+		return out
+	var adversary: Dictionary = game.content.get_adversary(str(state.get("adversary_id", "")))
+	var sequence: Array = adversary.get("narrative_combat", {}).get("sequence", [])
+	if sequence.is_empty():
+		return out
+	var count := 2 if base_stat(game, "wits") >= 6 else 1
+	var index: int = int(state.get("move_index", 0))
+	for offset: int in range(1, count + 1):
+		var move_id := str(sequence[(index + offset) % sequence.size()])
+		var meta: Dictionary = INTENT_META.get(move_id, {"label": move_id.to_upper(), "icon": "●"})
+		out.append({"move_id": move_id, "label": str(meta.get("label", move_id.to_upper())), "icon": str(meta.get("icon", "●"))})
+	return out
+
+
+## B5: small grey "then" line for the exchange panel.
+static func upcoming_text(game) -> String:
+	var coming := upcoming_moves(game)
+	if coming.is_empty():
+		return ""
+	var parts: Array[String] = []
+	for entry: Dictionary in coming:
+		parts.append("%s %s" % [str(entry.get("icon", "")), str(entry.get("label", ""))])
+	return "Then: " + " • ".join(parts)
 
 
 static func brood_count(game) -> int:
@@ -325,6 +506,13 @@ static func commit_move(game) -> void:
 	var move_id := str(sequence[int(state["move_index"]) % sequence.size()])
 	var move: Dictionary = game.content.combat_data["moves"][move_id].duplicate(true)
 	move["id"] = move_id
+	# B2: v4 numbers override the base move table for new fights only.
+	# Saved v3 fights keep the numbers above untouched.
+	if is_v4(game):
+		var v4_table: Dictionary = game.content.combat_data.get("v4", {})
+		if v4_table.has(move_id) and v4_table[move_id] is Dictionary:
+			for key: String in (v4_table[move_id] as Dictionary):
+				move[key] = (v4_table[move_id] as Dictionary)[key]
 	var tell := str(definition["tells"][move_id])
 	# Show the committed intention with its live counters. Phase changes were
 	# already applied during resolve, so this tell describes the next round
@@ -488,16 +676,30 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		result["damage_min"] = maxi(1, roundi(float(profile["unrounded_min"]) * (1.0 + bonus) * defense_effective * (1.0 + shell_bonus)))
 		result["damage_max"] = maxi(int(result["damage_min"]), roundi(float(profile["unrounded_max"]) * (1.0 + bonus) * defense_effective * (1.0 + shell_bonus)))
 		result["chance"] = probability(chance)
+		var move_id := str(move.get("id", ""))
 		if defense < 1.0 and not spec_break:
-			effects.append("Enemy braced: receives 50% damage this exchange.")
+			if is_v4(game):
+				effects.append("Enemy braced (v4): receives 30%% damage; it counters ~60%% strike; defending recovers %d Fatigue instead." % v4_brace_recovery(game))
+			else:
+				effects.append("Enemy braced: receives 50% damage this exchange.")
 		if defense < 1.0 and spec_break:
 			effects.append("Enemy braced: specialization breaks through for full damage.")
 		# Agility specialization (base 8, once per fight): an attack preserves
 		# the Opening it would normally consume.
 		if not is_legacy_v2_fight(game) and base_stat(game, "agility") >= 8 and bool(state.get("opening", false)) and not bool(state.get("spec_agi_used", false)):
 			effects.append("Agility specialization ready: this attack preserves Opening once.")
+		if is_v4(game) and move_id == "heavy":
+			var foe: Dictionary = game.content.get_adversary(str(state.get("adversary_id", "")))
+			var crit_id := str(foe.get("combat", {}).get("critical_condition", ""))
+			var crit_name := str(game.content.get_condition(crit_id).get("name", crit_id)) if crit_id != "" else "injury"
+			effects.append("Heavy (v4): x2.0 damage; attacking risks %s; Dodge negates for Opening." % crit_name)
+		if is_v4(game) and move_id == "sweep" and action in ["attack", "opportunity"]:
+			effects.append("Sweep (v4): Block negates for Riposte; Dodging it is risky.")
 		if float(move.get("bonus", 0.0)) > 0.0:
-			effects.append("Enemy recovering: +25% damage this exchange.")
+			if is_v4(game):
+				effects.append("Enemy recovering (v4): +50% damage this exchange; it deals no damage.")
+			else:
+				effects.append("Enemy recovering: +25% damage this exchange.")
 		if not is_legacy_v2_fight(game):
 			if str(state.get("trait_id", "")) == "brood":
 				var brood := brood_count(game)
@@ -560,6 +762,47 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 				effects.append("Patient Shot: Opening attack spends no ammunition.")
 			else:
 				result["cost"] = "%d %s" % [int(profile["ammo_per_attack"]), game.content.get_item(str(profile["ammo_type"])).get("name", "rounds")]
+	elif action == "finisher":
+		# B3 (v4 only): guaranteed hit at x3.0 that spends 3 Momentum.
+		if not is_v4(game):
+			result.merge({"available": false, "reason": "The Finisher is a v4 technique."}, true)
+		elif int(state.get("momentum", 0)) < MOMENTUM_MAX:
+			result.merge({"available": false, "reason": "Build Momentum to %d first." % MOMENTUM_MAX}, true)
+		else:
+			var fin_family := str(profile["family"])
+			var fin_mastered := bool(profile["mastered"])
+			var fin_bonus := v4_finisher_bonus(game) + float(move.get("bonus", 0.0))
+			if bool(state.get("riposte", false)):
+				fin_bonus += (0.65 if fin_mastered else 0.5) if fin_family == "counter" else 0.25
+				effects.append("Riposte: bonus damage; consumed by this action.")
+			if bool(state.get("opening", false)):
+				if fin_family == "precision":
+					fin_bonus += 0.4 if fin_mastered else 0.3
+				effects.append("Opening: consumed by this action.")
+			var fin_bloodlust: bool = game.has_method("has_talent") and game.has_talent("bloodlust")
+			if fin_family == "execution" and int(state.get("enemy_health", 1)) * 5 <= int(state.get("enemy_max_health", 1)) * (3 if fin_bloodlust else 2):
+				fin_bonus += 0.45 if fin_mastered else 0.3
+				effects.append("Execution: enemy weak; bonus damage.")
+			var fin_defense := float(move.get("incoming", 1.0))
+			var fin_shell := shell_damage_taken_bonus(game)
+			var fin_break := false
+			if base_stat(game, "strength") >= 8 and bool(state.get("spec_str_next", false)):
+				fin_break = true
+				effects.append("Breach open: Strength specialization ignores its guard through this action.")
+			var fin_effective := 1.0 if fin_break and fin_defense < 1.0 else fin_defense
+			result["damage_min"] = maxi(1, roundi(float(profile["unrounded_min"]) * (1.0 + fin_bonus) * fin_effective * (1.0 + fin_shell)))
+			result["damage_max"] = maxi(int(result["damage_min"]), roundi(float(profile["unrounded_max"]) * (1.0 + fin_bonus) * fin_effective * (1.0 + fin_shell)))
+			result["chance"] = 100
+			effects.append("Finisher: guaranteed hit at x3.0 damage; spends Momentum (3 to 0).")
+			effects.append("The enemy still answers this exchange unless the blow ends it.")
+			if float(move.get("bonus", 0.0)) > 0.0:
+				effects.append("Enemy recovering: +50% damage this exchange; it deals no damage.")
+			if fin_defense < 1.0 and not fin_break:
+				effects.append("Enemy braced: guard still reduces this blow.")
+			if str(profile.get("ammo_type", "")) != "":
+				result["cost"] = "%d %s • Spends Momentum" % [int(profile["ammo_per_attack"]), game.content.get_item(str(profile["ammo_type"])).get("name", "rounds")]
+			else:
+				result["cost"] = "Spends Momentum (3 to 0)"
 	elif action in ["block", "dodge"]:
 		var block := action == "block"
 		var stat_value := float(stats.get("strength" if block else "agility", 0))
@@ -580,6 +823,13 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		result["chance"] = probability(chance, 85)
 		effects.append("Enemy movement: %+d percentage points." % int(move.get(action, 0)))
 		effects.append("Success prevents damage and conditions; %s next turn." % ("Riposte" if block else "Opening"))
+		var defend_move := str(move.get("id", ""))
+		if is_v4(game) and defend_move == "heavy" and not block:
+			effects.append("Heavy (v4): Dodge success fully negates and grants Opening.")
+		if is_v4(game) and defend_move == "sweep" and block:
+			effects.append("Sweep (v4): Block success fully negates and grants Riposte.")
+		if is_v4(game) and defend_move == "brace":
+			effects.append("Brace (v4): defending recovers %d Fatigue instead of taking the counter." % v4_brace_recovery(game))
 		var retaliation: bool = block and game.has_method("has_talent") and game.has_talent("retaliation") and TalentRules.shield_active(game)
 		if retaliation:
 			effects.append("Retaliation: failed Block still grants Riposte; failure takes 150% damage after armor.")
@@ -673,6 +923,18 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 			result.merge({"available": false, "reason": "No such interaction here."}, true)
 		else:
 			result["chance"] = 100
+	# B4: expected incoming for this button. Defends read as take 0 on success;
+	# attacks, items, switches, interacts and failed flees take the midpoint.
+	var take: int = expected_take_for(game, move, action)
+	if action == "flee" and float(move.get("damage", 0.0)) > 0.0:
+		result["expected_take"] = take
+		result["expected_take_text"] = "fail ~%d" % take if take > 0 else "take 0"
+	elif take <= 0:
+		result["expected_take"] = 0
+		result["expected_take_text"] = "take 0"
+	else:
+		result["expected_take"] = take
+		result["expected_take_text"] = "take ~%d" % take
 	if int(result["chance"]) > 0:
 		result["required_roll"] = D20Resolver.required_roll(int(result["chance"]))
 	return result
@@ -742,6 +1004,7 @@ static func resolve(game) -> Dictionary:
 	var pre_enemy := int(state["enemy_health"])
 	var pending_version := int(pending.get("combat_rules_version", VERSION))
 	var legacy_fight := pending_version <= LEGACY_VERSION
+	var v4_fight := pending_version >= VERSION
 	var result := {"combat_rules_version": pending_version, "action": action, "player_roll": roll, "enemy_roll": int(pending["enemy_roll"]), "chance": int(action_preview["chance"]), "required_roll": int(action_preview["required_roll"]), "move_id": str(move["id"]), "entries": [], "player_damage": 0, "enemy_damage": 0}
 	game.run_state["phase"] = "combat"
 	state["round"] = int(state["round"]) + 1
@@ -758,6 +1021,7 @@ static func resolve(game) -> Dictionary:
 	var cooldown_before := int(state.get("interrupt_cooldown", 0))
 	state["interrupt_cooldown"] = maxi(0, cooldown_before - 1)
 	var attack := action in ["attack", "opportunity"]
+	var finisher := action == "finisher"
 	var defense := action in ["block", "dodge"]
 	var enemy_attacks := float(move["damage"]) > 0.0
 	var success := roll >= int(action_preview["required_roll"]) and roll != 1
@@ -814,7 +1078,7 @@ static func resolve(game) -> Dictionary:
 	result["trait_heat_before"] = heat_before
 	result["trait_flood_before"] = flood_before
 	result["trait_charge_before"] = charge_before
-	if action in ["attack", "opportunity", "block", "dodge", "flee"]:
+	if action in ["attack", "opportunity", "finisher", "block", "dodge", "flee"]:
 		game._tick_temporary_conditions()
 	if attack:
 		if action == "opportunity":
@@ -895,10 +1159,53 @@ static func resolve(game) -> Dictionary:
 			if str(state.get("trait_id", "")) == "bleed" and riposte_before and str(profile.get("family", "")) == "counter" and str(profile.get("item_id", "")) == "silvered_cleaver":
 				state["trait_silvered_mark"] = true
 				game._add_combat_entry(result, "success", "SILVERED RIPOSTE • ITS WOUNDS WILL NOT KNIT", 0, "player")
+	elif finisher:
+		# B3: guaranteed x3.0 wound that spends 3 Momentum. The preview priced
+		# the damage; resolution applies the max (a guaranteed hit never
+		# glances). The enemy still answers unless the blow ends the fight.
+		var fin_ammo := str(profile.get("ammo_type", ""))
+		if fin_ammo != "":
+			result["ammo_used"] = int(profile["ammo_per_attack"])
+			game._change_item(fin_ammo, -int(result["ammo_used"]))
+		var fin_damage: int = mini(pre_enemy, int(action_preview.get("damage_max", 1)))
+		result["rolled_player_damage"] = fin_damage
+		result["player_damage"] = fin_damage
+		state["enemy_health"] = maxi(0, pre_enemy - fin_damage)
+		success = true
+		var fin_momentum_before: int = int(state.get("momentum", 0))
+		state["momentum"] = 0
+		result["momentum_before"] = fin_momentum_before
+		result["momentum"] = 0
+		result["finisher_spent"] = true
+		game._add_combat_entry(result, "success", "%s\nFINISHER • GUARANTEED HIT • %d DAMAGE • MOMENTUM %d TO 0" % [passage(game, pending, "hit", profile), fin_damage, fin_momentum_before], fin_damage, "player")
+		if int(result.get("ammo_used", 0)) > 0:
+			game._add_combat_entry(result, "ammo", "%s −%d" % [game.content.get_item(fin_ammo).get("name", fin_ammo), result["ammo_used"]], 0, "player")
+		if not legacy_fight:
+			if base_stat(game, "strength") >= 8 and not bool(state.get("spec_str_used", false)):
+				state["spec_str_used"] = true
+				state["spec_str_next"] = true
+				game._add_combat_entry(result, "success", "STRENGTH SPECIALIZATION • GUARD BROKEN THROUGH YOUR NEXT ACTION", 0, "player")
+			elif bool(state.get("spec_str_next", false)):
+				state["spec_str_next"] = false
+			if base_stat(game, "agility") >= 8 and not bool(state.get("spec_agi_used", false)) and opening_before:
+				state["spec_agi_used"] = true
+				state["opening"] = true
+				game._add_combat_entry(result, "success", "AGILITY SPECIALIZATION • OPENING PRESERVED", 0, "player")
+			if str(state.get("trait_id", "")) == "bleed" and riposte_before and str(profile.get("family", "")) == "counter" and str(profile.get("item_id", "")) == "silvered_cleaver":
+				state["trait_silvered_mark"] = true
+				game._add_combat_entry(result, "success", "SILVERED RIPOSTE • ITS WOUNDS WILL NOT KNIT", 0, "player")
 	elif defense:
 		var category := "%s_%s" % [action, "success" if success else "failure"] if enemy_attacks else "idle_defense"
 		if success and enemy_attacks:
 			state["riposte" if action == "block" else "opening"] = true
+		# B2 (v4 only): reading Brace with a successful defend catches your
+		# breath instead of trading with its counter. Saved v3 fights keep the
+		# old behaviour of simply negating through a successful defend.
+		if v4_fight and success and str(move.get("id", "")) == "brace":
+			var recovery := v4_brace_recovery(game)
+			var regained: int = -game._change_pressure("fatigue", -recovery)
+			result["brace_recovered"] = regained
+			game._add_combat_entry(result, "success", "BRACE READ • FATIGUE −%d • YOU CATCH YOUR BREATH" % regained, 0, "player")
 		# Ashen Wrap (heat-resistant armor): the first prevented burn becomes an
 		# Opening as well, once per fight.
 		if not legacy_fight and success and enemy_attacks and not bool(state.get("spec_ashen_used", false)):
@@ -1045,7 +1352,8 @@ static func resolve(game) -> Dictionary:
 				break
 		if not already_noted:
 			game._add_combat_entry(result, "success", "SUSTAINED PRESSURE • CARRY −%d%%" % carried, 0, "player")
-	result["hit"] = success if attack else false
+	result["hit"] = (success if attack else true) if finisher else (success if attack else false)
+	result["finisher"] = finisher
 	result["defense_success"] = defense and success and enemy_attacks
 	result["enemy_interrupted"] = interrupted
 	result["suppression_percent"] = roundi(suppressed * 100.0)
@@ -1087,6 +1395,23 @@ static func resolve(game) -> Dictionary:
 		# Phase transitions apply to the next round, never to the previewed hit.
 		if not legacy_fight and int(state.get("enemy_health", 0)) > 0:
 			_apply_trait_transitions(game, result, action, success, interrupted, brood_before, nest_destroyed_before, heat_before, shell_open_before, flood_before, charge_before)
+		# B3 (v4 only): Momentum for the next round. Saved v3 fights never
+		# build it. The Finisher already spent it in its own branch.
+		if v4_fight and not finisher and int(state.get("enemy_health", 0)) > 0 and str(game.run_state.get("phase", "")) != "death":
+			var momentum_before: int = int(state.get("momentum", 0))
+			var momentum_now: int = momentum_after(game, action, success, str(move.get("id", "")), momentum_before)
+			state["momentum"] = momentum_now
+			result["momentum_before"] = momentum_before
+			result["momentum"] = momentum_now
+			if momentum_now > momentum_before:
+				game._add_combat_entry(result, "success", "MOMENTUM +1 • %s • CORRECT READ" % momentum_pips(momentum_now), 0, "player")
+			elif momentum_now < momentum_before:
+				game._add_combat_entry(result, "failure", "MOMENTUM LOST • %s • WRONG READ" % momentum_pips(momentum_now), 0, "player")
+		elif v4_fight and finisher:
+			result["momentum_before"] = int(result.get("momentum_before", 0))
+			result["momentum"] = 0
+		elif not v4_fight and not result.has("momentum"):
+			result["momentum"] = int(state.get("momentum", 0))
 	if str(game.run_state["phase"]) == "combat":
 		var fatigue_before := int(game.run_state["survivor"]["pressures"].get("fatigue", 0))
 		game._change_pressure("fatigue", FATIGUE_PER_EXCHANGE)
@@ -1262,6 +1587,18 @@ static func resolve_enemy(game, pending: Dictionary, result: Dictionary, defende
 			game._apply_condition(condition_id)
 			result["critical_condition"] = str(game.content.get_condition(condition_id).get("name", condition_id))
 			game._add_combat_entry(result, "condition", "%s • %s" % [result["critical_condition"], game.content.get_condition(condition_id).get("description", "")], 0, "enemy")
+	# B2 (v4 only): attacking into Heavy is punished even without an enemy
+	# crit. A landed Heavy response applies the enemy's critical_condition on
+	# any hit, so trading blows with a telegraphed Heavy is a real mistake.
+	# Saved v3 fights keep the old crit-only behaviour.
+	var pending_v4 := int(pending.get("combat_rules_version", VERSION)) >= VERSION
+	var heavy_attack := str(pending.get("action", "")) in ["attack", "opportunity"] and str(pending.get("move", {}).get("id", "")) == "heavy"
+	if pending_v4 and heavy_attack and not defended and int(result.get("enemy_damage", 0)) > 0 and int(game.run_state["survivor"]["vitals"]["health"]) > 0 and not result.has("critical_condition"):
+		var heavy_condition := str(combat.get("critical_condition", ""))
+		if heavy_condition != "" and heavy_condition not in game.run_state["survivor"]["conditions"]:
+			game._apply_condition(heavy_condition)
+			result["critical_condition"] = str(game.content.get_condition(heavy_condition).get("name", heavy_condition))
+			game._add_combat_entry(result, "condition", "HEAVY PUNISH • %s • %s" % [result["critical_condition"], game.content.get_condition(heavy_condition).get("description", "")], 0, "enemy")
 	game._update_death_state()
 
 

@@ -291,6 +291,7 @@ func get_choice_preview(choice: Dictionary) -> Dictionary:
 		var can_flee := bool(choice.get("combat", {}).get("can_flee", true))
 		var flee_preview := _flee_preview_for_adversary(adversary)
 		var flee_text := "Flee %d%% • Need %d+" % [int(flee_preview.get("chance", 0)), int(flee_preview.get("required_roll", 20))] if can_flee else "Flee unavailable"
+		var combat_stakes := choice_stakes(choice)
 		return {
 			"available": true,
 			"chance": -1,
@@ -303,10 +304,14 @@ func get_choice_preview(choice: Dictionary) -> Dictionary:
 			"enemy_damage_max": int(enemy_combat.get("damage_max", 0)),
 			"flee_chance": int(flee_preview.get("chance", 0)) if can_flee else -1,
 			"description": "FIGHT • %s THREAT • +%d XP\nYour damage %d-%d • Enemy damage %d-%d • %s" % [_threat_label(threat), int(adversary.get("xp_reward", 0)), profile["damage_min"], profile["damage_max"], int(enemy_combat.get("damage_min", 0)), int(enemy_combat.get("damage_max", 0)), flee_text],
+			"stakes_gains": combat_stakes.get("gains", []),
+			"stakes_risks": combat_stakes.get("risks", []),
+			"stakes_text": combat_stakes.get("text", ""),
 		}
 	var check: Dictionary = choice.get("check", {})
 	if check.is_empty():
-		return {"available": true, "chance": -1, "description": "CERTAIN"}
+		var certain_stakes := choice_stakes(choice)
+		return {"available": true, "chance": -1, "description": "CERTAIN", "stakes_gains": certain_stakes.get("gains", []), "stakes_risks": certain_stakes.get("risks", []), "stakes_text": certain_stakes.get("text", "")}
 	var stat := str(check.get("stat", "wits"))
 	var stat_value := int(run_state["survivor"]["stats"].get(stat, 0))
 	var modifiers := _collect_modifiers(stat, str(choice.get("approach", "")), int(choice.get("modifier", 0)))
@@ -318,7 +323,124 @@ func get_choice_preview(choice: Dictionary) -> Dictionary:
 	var chance := D20Resolver.calculate_percentage(effective_stat, difficulty)
 	var required_roll := D20Resolver.required_roll(chance)
 	var stat_label := str(STAT_LABELS.get(stat, stat.capitalize()))
-	return {"available": true, "chance": chance, "required_roll": required_roll, "stat": stat, "stat_label": stat_label, "stat_value": stat_value, "effective_stat": effective_stat, "difficulty": difficulty, "description": "%s • %d%% SUCCESS • NEED %d+" % [stat_label.to_upper(), chance, required_roll], "modifiers": modifiers}
+	var stakes := choice_stakes(choice)
+	return {"available": true, "chance": chance, "required_roll": required_roll, "stat": stat, "stat_label": stat_label, "stat_value": stat_value, "effective_stat": effective_stat, "difficulty": difficulty, "description": "%s • %d%% SUCCESS • NEED %d+" % [stat_label.to_upper(), chance, required_roll], "modifiers": modifiers, "stakes_gains": stakes.get("gains", []), "stakes_risks": stakes.get("risks", []), "stakes_text": stakes.get("text", "")}
+
+
+## A1: one short stakes line per choice so players can tell what is at stake
+## before committing. Data-driven from JSON: gains come from success/outcome,
+## risks come from failure (or from outcome negatives for certain choices).
+func choice_stakes(choice: Dictionary) -> Dictionary:
+	if choice.has("combat"):
+		var adversary_id := str(choice.get("combat", {}).get("adversary_id", current_event().get("adversary_id", "")))
+		var adversary: Dictionary = content.get_adversary(adversary_id)
+		var enemy_name := str(adversary.get("name", adversary_id))
+		if enemy_name.is_empty():
+			enemy_name = adversary_id
+		return {"gains": [], "risks": [], "is_combat": true, "enemy_name": enemy_name, "text": "Fight: %s" % enemy_name}
+	var gain_sources: Array = []
+	var risk_sources: Array = []
+	if choice.has("success") or choice.has("failure"):
+		for key: String in ["success", "critical_success", "victory", "critical_victory", "outcome"]:
+			if choice.has(key) and choice[key] is Dictionary:
+				gain_sources.append(choice[key])
+		for key: String in ["failure", "critical_failure"]:
+			if choice.has(key) and choice[key] is Dictionary:
+				risk_sources.append(choice[key])
+	elif choice.has("outcome"):
+		gain_sources.append(choice["outcome"])
+		risk_sources.append(choice["outcome"])
+	elif choice.has("victory"):
+		gain_sources.append(choice["victory"])
+		if choice.has("critical_victory") and choice["critical_victory"] is Dictionary:
+			gain_sources.append(choice["critical_victory"])
+	else:
+		return {"gains": [], "risks": [], "is_combat": false, "enemy_name": "", "text": "Story only"}
+	var gains: Array[String] = []
+	var risks: Array[String] = []
+	for source: Dictionary in gain_sources:
+		for item_id: Variant in source.get("items", {}):
+			if int(source["items"][item_id]) > 0:
+				var label := str(content.get_item(str(item_id)).get("name", item_id))
+				if label not in gains:
+					gains.append(label)
+		for vital: Variant in source.get("vitals", {}):
+			if int(source["vitals"][vital]) > 0:
+				var vlabel := "HP" if str(vital) == "health" else str(vital).capitalize()
+				if vlabel not in gains:
+					gains.append(vlabel)
+		for pressure: Variant in source.get("pressures", {}):
+			var delta := int(source["pressures"][pressure])
+			var pname := str(pressure)
+			# Only recoveries count as gains; exertion costs are not rewards.
+			if pname == "health" and delta > 0:
+				if "HP" not in gains:
+					gains.append("HP")
+			elif pname in ["fatigue", "radiation", "hunger"] and delta < 0:
+				var recovery := pname.capitalize()
+				if recovery not in gains:
+					gains.append(recovery)
+		for condition_id: Variant in source.get("remove_conditions", []):
+			var clabel := str(content.get_condition(str(condition_id)).get("name", condition_id))
+			if clabel not in gains:
+				gains.append(clabel)
+	for source: Dictionary in risk_sources:
+		var is_certain := gain_sources.has(source) and risk_sources.has(source)
+		for item_id: Variant in source.get("items", {}):
+			if int(source["items"][item_id]) < 0:
+				var label := str(content.get_item(str(item_id)).get("name", item_id))
+				if label not in risks:
+					risks.append(label)
+			elif is_certain and int(source["items"][item_id]) == 0:
+				continue
+		for vital: Variant in source.get("vitals", {}):
+			if int(source["vitals"][vital]) < 0:
+				var vlabel := "HP" if str(vital) == "health" else str(vital).capitalize()
+				if vlabel not in risks:
+					risks.append(vlabel)
+		for pressure: Variant in source.get("pressures", {}):
+			var delta := int(source["pressures"][pressure])
+			var pname := str(pressure)
+			var harmful := false
+			if pname == "health" and delta < 0:
+				harmful = true
+			elif pname in ["fatigue", "radiation", "hunger"] and delta > 0:
+				harmful = true
+			if harmful:
+				# Certain-outcome exertion (e.g. hatchet fatigue) is a known cost.
+				var plabel := "HP" if pname == "health" else pname.capitalize()
+				if plabel not in risks and plabel not in gains:
+					risks.append(plabel)
+		for condition_id: Variant in source.get("add_conditions", []):
+			var clabel := str(content.get_condition(str(condition_id)).get("name", condition_id))
+			if clabel not in risks:
+				risks.append(clabel)
+		if bool(source.get("lethal", false)):
+			if "Death" not in risks:
+				risks.append("Death")
+	# Success exertion is a known cost even when the roll succeeds, so surface
+	# it as a risk for checked choices (e.g. fatigue on a successful climb).
+	if choice.has("success") or choice.has("critical_success"):
+		for source: Dictionary in gain_sources:
+			for pressure: Variant in source.get("pressures", {}):
+				var delta := int(source["pressures"][pressure])
+				var pname := str(pressure)
+				if pname in ["fatigue", "radiation", "hunger"] and delta > 0:
+					var plabel := pname.capitalize()
+					if plabel not in risks and plabel not in gains:
+						risks.append(plabel)
+	var text := ""
+	if not gains.is_empty() and not risks.is_empty():
+		text = "Could gain: %s · Risk: %s" % [", ".join(gains), ", ".join(risks)]
+	elif not gains.is_empty():
+		text = "Could gain: %s" % ", ".join(gains)
+	elif not risks.is_empty():
+		text = "Risk: %s" % ", ".join(risks)
+	else:
+		text = "Story only"
+	if text.length() > 60:
+		text = text.left(59) + "…"
+	return {"gains": gains, "risks": risks, "is_combat": false, "enemy_name": "", "text": text}
 
 
 func prepare_choice(choice_index: int) -> Dictionary:
@@ -1153,6 +1275,12 @@ func combat_presentation_snapshot() -> Dictionary:
 		"round": int(state.get("round", 0)) + 1,
 		"combat_rules_version": int(state.get("combat_rules_version", 1)),
 		"enemy_tell": str(state.get("committed_move", {}).get("tell", "")),
+		"move_id": str(state.get("committed_move", {}).get("id", "strike")),
+		"enemy_intent": NarrativeCombat.intent_chip(self),
+		"momentum": int(state.get("momentum", 0)),
+		"momentum_pips": NarrativeCombat.momentum_pips(int(state.get("momentum", 0))),
+		"upcoming": NarrativeCombat.upcoming_moves(self),
+		"upcoming_text": NarrativeCombat.upcoming_text(self),
 		"prepared_preview": pending.get("preview", {}).duplicate(true),
 		"player": {
 			"name": str(survivor.get("callsign", "YOU")),

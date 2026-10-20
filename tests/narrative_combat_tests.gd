@@ -186,7 +186,14 @@ func _defenses_and_moves() -> void:
 	check.call(game.run_state["survivor"]["vitals"]["health"] == hp and game.run_state["combat_state"]["committed_move"]["id"] == "heavy", "Charge deals no damage and commits Heavy next")
 	game = fixture("road_bandits", "", "plated_coat")
 	for index in range(3): round_for(game, "dodge", 20, 1)
-	check.call(game.run_state["survivor"]["pressures"]["fatigue"] == 9, "Three ongoing exchanges add nine Fatigue, including successful defenses")
+	# B2 v4: the second exchange defends Brace and recovers 6 Fatigue, so three
+	# dodges net 6 (3 + 0 + 3) instead of the v3 9.
+	check.call(game.run_state["survivor"]["pressures"]["fatigue"] == 6, "Three v4 dodges net six Fatigue with Brace recovery")
+	var v3fatigue := fixture("road_bandits", "", "plated_coat")
+	v3fatigue.run_state["combat_state"]["combat_rules_version"] = 3
+	move_to(v3fatigue, "strike")
+	for index in range(3): round_for(v3fatigue, "dodge", 20, 1)
+	check.call(v3fatigue.run_state["survivor"]["pressures"]["fatigue"] == 9, "Three v3 dodges still add nine Fatigue")
 
 
 func _difficulty_pressure() -> void:
@@ -241,7 +248,7 @@ func _difficulty_pressure() -> void:
 			exchanges = 0
 			while str(game.run_state["phase"]) == "combat" and exchanges < 60:
 				var action := str(benchmark.choose_action(game, strategy, policy_rng))
-				if action not in ["attack", "block", "dodge", "opportunity"] or game.prepare_combat_action(action).has("error"):
+				if action not in ["attack", "block", "dodge", "opportunity", "finisher"] or game.prepare_combat_action(action).has("error"):
 					totals["invalid_actions"] += 1
 					break
 				game.resolve_prepared_combat_round()
@@ -284,7 +291,8 @@ func _armor_order_and_windows() -> void:
 	move_to(game, "recover")
 	var profile := game.get_player_weapon_profile()
 	var attack := game.combat_action_preview("opportunity")
-	check.call(attack["damage_max"] == roundi(float(profile["unrounded_max"]) * (1.0 + 0.45 + 0.75 + 0.25 + 0.25)), "Execution, Opportunity, Riposte and Recover add before one rounding step")
+	# B2 v4: Recover grants +50% (was +25% in v3).
+	check.call(attack["damage_max"] == roundi(float(profile["unrounded_max"]) * (1.0 + 0.45 + 0.75 + 0.25 + 0.5)), "Execution, Opportunity, Riposte and v4 Recover add before one rounding step")
 	var ammo := game.get_item_quantity("shotgun_shells")
 	round_for(game, "opportunity", 1, 1)
 	check.call(game.get_item_quantity("shotgun_shells") == ammo - 1 and not game.run_state["combat_state"]["riposte"], "Opportunity miss consumes ammunition and the attack window")
@@ -300,7 +308,16 @@ func _armor_order_and_windows() -> void:
 	round_for(game, "dodge", 20, 1)
 	var opened := game.combat_action_preview("attack")
 	var plain := game.get_player_weapon_profile()
-	check.call(opened["damage_max"] == roundi(float(plain["unrounded_max"]) * 1.3 * 0.5), "Precision adds thirty percent to Opening before enemy Brace")
+	# B2 v4: Brace receives 30% (was 50% in v3).
+	check.call(opened["damage_max"] == roundi(float(plain["unrounded_max"]) * 1.3 * 0.3), "Precision adds thirty percent to Opening before v4 Brace")
+	var v3brace := fixture("road_bandits", "pipe_pistol")
+	v3brace.run_state["combat_state"]["combat_rules_version"] = 3
+	move_to(v3brace, "strike")
+	round_for(v3brace, "dodge", 20, 1)
+	# After dodging strike the commitment advances to Brace, mirroring the v4 flow.
+	var v3opened := v3brace.combat_action_preview("attack")
+	var v3plain := v3brace.get_player_weapon_profile()
+	check.call(v3opened["damage_max"] == roundi(float(v3plain["unrounded_max"]) * 1.3 * 0.5), "v3 Brace still halves through Opening")
 
 
 func _signatures_and_equipment() -> void:
@@ -502,9 +519,9 @@ func _stage1_traits_and_scaling() -> void:
 	check.call(is_equal_approx(CombatResolver.stat_damage_multiplier(5), 1.3), "V2 scaling is 1.3x at stat 5")
 	check.call(is_equal_approx(CombatResolver.stat_damage_multiplier_v3(5), 1.3), "V3 preserves the launch curve through stat 5")
 	check.call(is_equal_approx(CombatResolver.stat_damage_multiplier_v3(10), 1.8), "V3 stat 5 to 10 is 1.3 to 1.8 (about 38 percent)")
-	# New fights start on v3; in-flight v2 fights keep their frozen rules.
+	# New fights start on the current version; in-flight v2 fights keep frozen rules.
 	var fresh := fixture("reed_widow", "salvage_cleaver", "", 9101)
-	check.call(int(fresh.run_state["combat_state"].get("combat_rules_version", 0)) == Rules.VERSION, "New fights start under combat rules v3")
+	check.call(int(fresh.run_state["combat_state"].get("combat_rules_version", 0)) == Rules.VERSION, "New fights start under the current combat rules")
 	check.call(str(fresh.run_state["combat_state"].get("trait_id", "")) == "brood", "Reed Widow carries the brood trait")
 	check.call("BROOD 0/3" in " ".join(fresh.combat_presentation_snapshot().get("status_labels", [])), "Brood counter is visible before it hatches")
 	# Brood: an uninterrupted heavy hatches +1 and strengthens the response.

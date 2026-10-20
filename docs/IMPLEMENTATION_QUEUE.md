@@ -159,7 +159,7 @@ M08 completion record:
 - Tips are one short line each, capped at 80 characters and two sentences by assertion, because a tip shares a 360×640 combat screen with six actions.
 - Combat makes room rather than losing anything: while a tip is visible the round log stops reserving rows and the portraits shrink, so the clue, the windows, and all six actions keep their places. No tip opens while a die is resolving or a saved roll waits to be revealed.
 - Guidance provably changes nothing: the event, checkpoint, and combat suites all compare the whole run state, RNG included, across showing and dismissing a tip.
-- Profiles: `contextual_tips_enabled` defaults to true, progress persists to disk, and a pre-schema-5 profile with `tutorial_seen` still migrates with all seven tips already dismissed.
+- Profiles: `contextual_tips_enabled` defaults to true, progress persists to disk, and a pre-schema-5 profile with `tutorial_seen` still migrates with all ten tips already dismissed.
 - Verification: `tests/test_runner.gd` **2,432 assertions, 0 failures**; `tests/layout_ui_smoke.gd` **468 assertions, 0 failures**; `tests/combat_ui_smoke.gd` **0 layout/input failures**; `tests/action_ui_smoke.gd` **201 assertions, 0 failures**.
 
 M07 completion record:
@@ -237,3 +237,4 @@ M01 completion record:
 - Use the lowest reasoning effort that safely completes the bounded task.
 - Escalate to Sol or Astra only for a documented ambiguity, failed repair, or cross-system risk.
 - Routine checks should be run locally and summarized, not reproduced as large model-generated output.
+

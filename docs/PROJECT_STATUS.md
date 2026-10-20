@@ -51,11 +51,11 @@
 
 ## M08 contextual guidance update - 7 September 2026
 
-- The first-run tutorial wall is gone. Seven one-line tips appear at the moment each rule applies, and the full reference stays under Settings → HOW TO PLAY.
+- The first-run tutorial wall is gone. Ten one-line tips appear at the moment each rule applies, and the full reference stays under Settings → HOW TO PLAY.
 - Guidance is a tappable strip beside the page rather than an overlay, so it cannot cover a control; tapping dismisses it, and Settings switches every tip off or resets their progress.
 - No tip opens while a die is resolving or a saved roll waits to be revealed. Combat makes room for a visible tip by collapsing the round log's reserved rows and shrinking the portraits, keeping the clue, the windows, and all six actions in place.
 - Guidance changes nothing: the event, checkpoint, and combat suites compare the entire run state, RNG included, across showing and dismissing a tip.
-- Existing experienced profiles receive no new mandatory tutorial; a pre-schema-5 profile with `tutorial_seen` migrates with all seven tips already dismissed.
+- Existing experienced profiles receive no new mandatory tutorial; a pre-schema-5 profile with `tutorial_seen` migrates with all ten tips already dismissed.
 - Verification: **2,432 regression assertions, 0 failures**; layout **468 assertions, 0 failures**; combat UI **0 layout/input failures**; save-recovery UI **201 assertions, 0 failures**.
 
 ## M07 compact-screen readability update - 7 September 2026
@@ -104,7 +104,7 @@
 - Shared save-aware transactions now cover event preparation/resolution, combat, equipment, consumables/treatment, travel, checkpoint decisions, and confirmed stat allocation. Failed preparations restore the full state/RNG; failed commits retain the result and block actions/Back behind Retry.
 - Inventory/allocation refresh and dice/result presentation occur only after commitment. Immediate-action intents survive process restart without duplicate allocation, food, rewards, or XP.
 - Atomic profile-only receipts preserve discoveries and completed-run summaries before terminal cleanup, replay idempotently at startup, and preserve death-marker precedence. Receipts contain no restorable living run.
-- Profile schema 5 adds contextual tip progress and processed receipt IDs; legacy tutorial-seen profiles dismiss the seven current tips. M08 added the `contextual_tips_enabled` preference on the same schema and built the prompt UI. Run schema stays 5; gameplay and release flags are unchanged.
+- Profile schema 5 adds contextual tip progress and processed receipt IDs; legacy tutorial-seen profiles dismiss the ten current tips. M08 added the `contextual_tips_enabled` preference on the same schema and built the prompt UI. Run schema stays 5; gameplay and release flags are unchanged.
 - Verification: **2,259 regression assertions, 0 failures**; **201 save-recovery UI assertions, 0 failures**; existing combat layout/input smoke tests report **0 failures**. No new Android export or physical-device verification was performed for M02.
 - Required later-UI calling conventions and crash/retry evidence: [SAVE_TRANSACTIONS.md](SAVE_TRANSACTIONS.md). Next ready task: M12 in [IMPLEMENTATION_QUEUE.md](IMPLEMENTATION_QUEUE.md).
 
@@ -170,3 +170,4 @@
 Post-launch only: isolate and pin compatible AdMob/UMP and Google Play Billing plugins, create products/backend resources, update privacy and Data Safety declarations, then deliberately enable the monetization flag.
 
 The project is a substantial playable implementation, not a production-certified release. Follow `LAUNCH_SPRINT.md` and `RELEASE_CHECKLIST.md`; do not enable ads or payments in version 1.
+
