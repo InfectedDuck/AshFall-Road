@@ -1,13 +1,16 @@
 extends SceneTree
 
-const FINAL_SIZE := 64
+const DEFAULT_SIZE := 64
 const DEFAULT_MAX_COLORS := 20
+## Background pixels within this RGB distance of a corner colour, and connected
+## to the image edge, are flattened. Exact-match-only masks left speckled fields.
+const BACKGROUND_TOLERANCE := 0.09
 
 
 func _init() -> void:
 	var args := OS.get_cmdline_user_args()
 	if args.size() < 2:
-		printerr("Usage: godot --headless --script tools/prepare_portrait.gd -- <source.png> <output.png> [max_colors] [flat_background_hex]")
+		printerr("Usage: godot --headless --script tools/prepare_portrait.gd -- <source.png> <output.png> [max_colors] [flat_background_hex] [size] [nearest|area]")
 		quit(2)
 		return
 
@@ -16,6 +19,10 @@ func _init() -> void:
 	var maximum_colors := clampi(int(args[2]) if args.size() > 2 else DEFAULT_MAX_COLORS, 2, 256)
 	var flatten_background := args.size() > 3 and not str(args[3]).is_empty()
 	var background_color := Color.html(str(args[3])) if flatten_background else Color.TRANSPARENT
+	var final_size := clampi(int(args[4]) if args.size() > 4 else DEFAULT_SIZE, 16, 512)
+	# Area sampling keeps painterly sources readable at larger sizes; nearest
+	# preserves the hard grid of sources already drawn as pixel art.
+	var interpolation := Image.INTERPOLATE_LANCZOS if args.size() > 5 and str(args[5]) == "area" else Image.INTERPOLATE_NEAREST
 	var image := Image.load_from_file(source_path)
 	if image == null or image.is_empty():
 		printerr("Could not load portrait source: %s" % source_path)
@@ -28,15 +35,15 @@ func _init() -> void:
 		var side := mini(source_size.x, source_size.y)
 		var offset := Vector2i((source_size.x - side) / 2, (source_size.y - side) / 2)
 		image = image.get_region(Rect2i(offset, Vector2i(side, side)))
-	image.resize(FINAL_SIZE, FINAL_SIZE, Image.INTERPOLATE_NEAREST)
+	image.resize(final_size, final_size, interpolation)
 	var background_mask := PackedByteArray()
 	if flatten_background:
-		background_mask = _corner_color_mask(image)
+		background_mask = _corner_color_mask(image, background_color)
 		_paint_mask(image, background_mask, background_color)
 	var colors_before := _unique_color_count(image)
 	var quantized_color_limit := maximum_colors - 1 if flatten_background else maximum_colors
 	if colors_before > quantized_color_limit:
-		_apply_median_cut(image, quantized_color_limit)
+		_apply_median_cut(image, quantized_color_limit, background_mask)
 	if flatten_background:
 		_paint_mask(image, background_mask, background_color)
 
@@ -51,28 +58,67 @@ func _init() -> void:
 		source_size.x,
 		source_size.y,
 		output_path,
-		FINAL_SIZE,
-		FINAL_SIZE,
+		final_size,
+		final_size,
 		colors_before,
 		_unique_color_count(image),
 	])
 	quit()
 
 
-func _corner_color_mask(image: Image) -> PackedByteArray:
-	var background_colors := {
-		image.get_pixel(0, 0).to_rgba32(): true,
-		image.get_pixel(image.get_width() - 1, 0).to_rgba32(): true,
-		image.get_pixel(0, image.get_height() - 1).to_rgba32(): true,
-		image.get_pixel(image.get_width() - 1, image.get_height() - 1).to_rgba32(): true,
-	}
+## A corner seeds the background only when it is close to the target colour or
+## shares its colour with another corner (a background band). A lone corner of
+## another colour is the subject cropped by the frame and must not be erased.
+func _corner_color_mask(image: Image, target: Color) -> PackedByteArray:
+	var corners: Array[Color] = [
+		image.get_pixel(0, 0),
+		image.get_pixel(image.get_width() - 1, 0),
+		image.get_pixel(0, image.get_height() - 1),
+		image.get_pixel(image.get_width() - 1, image.get_height() - 1),
+	]
+	var references: Array[Color] = []
+	for index in range(corners.size()):
+		var shared := false
+		for other_index in range(corners.size()):
+			if other_index != index and _color_distance(corners[index], corners[other_index]) <= 0.03:
+				shared = true
+		if _color_distance(corners[index], target) <= 0.12 or shared:
+			references.append(corners[index])
+	var width := image.get_width()
+	var height := image.get_height()
 	var mask := PackedByteArray()
-	mask.resize(image.get_width() * image.get_height())
-	for y in range(image.get_height()):
-		for x in range(image.get_width()):
-			if background_colors.has(image.get_pixel(x, y).to_rgba32()):
-				mask[y * image.get_width() + x] = 1
+	mask.resize(width * height)
+	var queue: Array[Vector2i] = []
+	for x in range(width):
+		queue.append(Vector2i(x, 0))
+		queue.append(Vector2i(x, height - 1))
+	for y in range(height):
+		queue.append(Vector2i(0, y))
+		queue.append(Vector2i(width - 1, y))
+	while not queue.is_empty():
+		var point: Vector2i = queue.pop_back()
+		if point.x < 0 or point.y < 0 or point.x >= width or point.y >= height:
+			continue
+		var index := point.y * width + point.x
+		if mask[index] == 1 or not _near_any(image.get_pixel(point.x, point.y), references):
+			continue
+		mask[index] = 1
+		queue.append(point + Vector2i.LEFT)
+		queue.append(point + Vector2i.RIGHT)
+		queue.append(point + Vector2i.UP)
+		queue.append(point + Vector2i.DOWN)
 	return mask
+
+
+func _near_any(color: Color, references: Array[Color]) -> bool:
+	for reference in references:
+		if _color_distance(color, reference) <= BACKGROUND_TOLERANCE:
+			return true
+	return false
+
+
+func _color_distance(left: Color, right: Color) -> float:
+	return Vector3(left.r - right.r, left.g - right.g, left.b - right.b).length()
 
 
 func _paint_mask(image: Image, mask: PackedByteArray, color: Color) -> void:
@@ -90,10 +136,14 @@ func _unique_color_count(image: Image) -> int:
 	return colors.size()
 
 
-func _apply_median_cut(image: Image, maximum_colors: int) -> void:
+## Background pixels are excluded from the histogram: the flat field otherwise
+## dominates the pixel counts and starves saturated subject colours of buckets.
+func _apply_median_cut(image: Image, maximum_colors: int, background_mask: PackedByteArray) -> void:
 	var histogram := {}
 	for y in range(image.get_height()):
 		for x in range(image.get_width()):
+			if not background_mask.is_empty() and background_mask[y * image.get_width() + x] == 1:
+				continue
 			var color := image.get_pixel(x, y)
 			var key := color.to_rgba32()
 			if histogram.has(key):

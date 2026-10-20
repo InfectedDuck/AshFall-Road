@@ -25,6 +25,8 @@ const ENEMY_IDS := [
 	"enemy_bile_spewer",
 	"enemy_cinder_mauler",
 	"enemy_salt_colossus",
+	"enemy_maw",
+	"enemy_hound",
 ]
 
 
