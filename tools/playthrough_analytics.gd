@@ -37,6 +37,13 @@ const TALENT_FOR_FAMILY := {"execution": "bloodlust", "precision": "patient_shot
 
 var content: ContentRepository
 
+## Phase 0: optional cross-run memory. With --cross-run-memory, witnessed
+## flags earned by finished runs carry into later runs of the same
+## invocation, so Tess/Mina chapters (gated on rhea_witnessed_betrayal)
+## can appear. Off by default to keep the baseline comparable.
+var _cross_run_memory := false
+var _memory_pool: Array = []
+
 
 func _init() -> void:
 	if Engine.get_main_loop() == null:
@@ -50,10 +57,11 @@ func _run() -> void:
 	var runs := int(_argument(args, "--runs", "500"))
 	var seed_base := int(_argument(args, "--seed-base", "20000"))
 	var output := _argument(args, "--output", "res://builds/playthrough_analytics.json")
+	_cross_run_memory = _has_flag(args, "--cross-run-memory")
 	var report := {
 		"analytics_version": ANALYTICS_VERSION, "rules_version": Rules.VERSION,
 		"living_road_enabled": content.living_road_enabled, "runs_per_policy": runs,
-		"seed_base": seed_base, "policies": {},
+		"seed_base": seed_base, "cross_run_memory": _cross_run_memory, "policies": {},
 		"evidence_class": "simulated player models; not a human completion or retention estimate",
 	}
 	var started := Time.get_ticks_msec()
@@ -68,7 +76,7 @@ func _run() -> void:
 			if index % 250 == 249:
 				print("  %s %d/%d (%.0fs)" % [policy, index + 1, runs, (Time.get_ticks_msec() - started) / 1000.0])
 		report["policies"][policy] = agg
-		print("%s: victories %d / %d, mean regions %.2f, errors %d" % [policy, int(agg["victories"]), runs, float(agg["regions_sum"]) / maxf(1.0, runs), int(agg["errors"])])
+		print("%s: victories %d / %d, mean regions %.2f, errors %d, fight sims %d" % [policy, int(agg["victories"]), runs, float(agg["regions_sum"]) / maxf(1.0, runs), int(agg["errors"]), _fight_sim_count])
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output.get_base_dir()))
 	var file := FileAccess.open(output, FileAccess.WRITE)
 	assert(file != null, "Could not open %s" % output)
@@ -85,6 +93,13 @@ func _argument(args: PackedStringArray, name: String, fallback: String = "") -> 
 	return fallback
 
 
+func _has_flag(args: PackedStringArray, name: String) -> bool:
+	for entry: String in args:
+		if entry == name:
+			return true
+	return false
+
+
 # ---------------------------------------------------------------------------
 # One run
 # ---------------------------------------------------------------------------
@@ -94,18 +109,26 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 	var candidates := game.create_candidates(seed_value)
 	var candidate: Dictionary = candidates[candidate_index % candidates.size()]
 	game.start_run(candidate, seed_value)
+	if _cross_run_memory:
+		var flags: Array = game.run_state.get("flags", [])
+		for flag: String in _memory_pool:
+			if not flags.has(flag):
+				flags.append(flag)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value * 7919 + POLICIES.find(policy)
 	var run := {
 		"policy": policy, "seed": seed_value, "archetype": _archetype(candidate),
 		"start_weapon": str(candidate["equipment"].get("weapon", "")),
 		"start_hearts": int(candidate["vitals"]["max_hearts"]),
-		"errors": 0, "steps": 0, "result": "unfinished", "cause_kind": "", "cause_detail": "",
+		"errors": 0, 		"steps": 0, "result": "unfinished", "cause_kind": "", "cause_detail": "",
+		"memory_applied": 0,
 		"region_arrivals": [], "choices": [], "availability": [], "fights": [],
 		"combat_actions": {}, "items_gained": {}, "items_spent": {}, "items_used": {},
 		"conditions_applied": {}, "checkpoints": [], "starvation_ticks": 0,
 		"events_seen": [], "upkeep_uses": 0,
 	}
+	if _cross_run_memory:
+		run["memory_applied"] = _memory_pool.size()
 	var region_marker := -1
 	var fight: Dictionary = {}
 	var steps := 0
@@ -155,7 +178,8 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 					var state: Dictionary = game.run_state.get("combat_state", {})
 					fight = {"enemy": str(state.get("adversary_id", "")), "event": event_id, "region": region,
 						"hp_start": int(before["hp"]), "hp_max": int(before["hp_max"]), "rounds": 0,
-						"result": "", "items_used": 0, "fatigue_start": int(before["fatigue"]), "level": int(game.run_state.get("level", 1))}
+						"result": "", "items_used": 0, "fatigue_start": int(before["fatigue"]), "level": int(game.run_state.get("level", 1)),
+						"max_hit_share": 0.0, "big_hits": 0}
 			"combat":
 				var action := _choose_combat(game, policy, rng)
 				var prepared := game.prepare_combat_action(str(action["action"]), str(action.get("item", "")))
@@ -179,6 +203,12 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 					fight["items_used"] = int(fight.get("items_used", 0)) + 1
 					var used_id := str(action.get("item", ""))
 					run["items_used"][used_id] = int(run["items_used"].get(used_id, 0)) + 1
+				# Phase 0: per-hit damage as a share of max HP, for the Phase 3
+				# burst-death hypothesis (single hits regularly above 40% max HP).
+				var hit_share := float(int(round_result.get("enemy_damage", 0))) / maxf(1.0, float(before["hp_max"]))
+				fight["max_hit_share"] = maxf(float(fight.get("max_hit_share", 0.0)), hit_share)
+				if hit_share > 0.4:
+					fight["big_hits"] = int(fight.get("big_hits", 0)) + 1
 				var after_phase := str(game.run_state.get("phase", ""))
 				if after_phase != "combat" or int(fight["rounds"]) >= COMBAT_ROUND_CAP:
 					if after_phase == "death":
@@ -240,6 +270,10 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 	run["final_equipment"] = (game.run_state["survivor"]["equipment"] as Dictionary).duplicate()
 	run["final_inventory"] = (game.run_state["survivor"]["inventory"] as Dictionary).duplicate()
 	run["final_vitals"] = _vitals_snapshot(game)
+	if _cross_run_memory:
+		for flag: Variant in game.run_state.get("flags", []):
+			if "witnessed" in str(flag) and not _memory_pool.has(str(flag)):
+				_memory_pool.append(str(flag))
 	return run
 
 
@@ -474,6 +508,8 @@ func _choose_event(game: GameEngine, policy: String, rng: RandomNumberGenerator)
 			legal.append(index)
 	if legal.is_empty():
 		return -1
+	if legal.size() == 1:
+		return int(legal[0])
 	if policy in ["random", "novice"]:
 		return int(legal[rng.randi_range(0, legal.size() - 1)])
 	var survivor: Dictionary = game.run_state["survivor"]
@@ -485,7 +521,7 @@ func _choose_event(game: GameEngine, policy: String, rng: RandomNumberGenerator)
 		var preview: Dictionary = previews[index]
 		var score := 0.0
 		if bool(preview.get("combat", false)):
-			score = _fight_score(game, choice, preview, policy, hp)
+			score = _fight_score(game, choice, preview, policy, hp, str(game.run_state.get("current_event_id", "")), index)
 		else:
 			var chance := float(preview.get("chance", -1))
 			var cost := -_outcome_value(game, {"items": choice.get("costs", {}).get("items", {})}, hp) if choice.has("costs") else 0.0
@@ -505,26 +541,125 @@ func _choose_event(game: GameEngine, policy: String, rng: RandomNumberGenerator)
 	return best
 
 
-func _fight_score(game: GameEngine, choice: Dictionary, preview: Dictionary, policy: String, hp: float) -> float:
+func _fight_score(game: GameEngine, choice: Dictionary, preview: Dictionary, policy: String, hp: float, event_id: String = "", choice_index: int = -1) -> float:
 	var adversary: Dictionary = content.get_adversary(str(choice.get("combat", {}).get("adversary_id", game.current_event().get("adversary_id", ""))))
 	var combat: Dictionary = adversary.get("combat", {})
 	var reward := float(adversary.get("xp_reward", 0)) * 3.0 + _outcome_value(game, choice.get("victory", {}), hp)
 	if policy == "aggressive":
 		return 10000.0 + reward
-	# Rough exchanges to kill it versus the hits we can take.
-	var profile := game.get_player_weapon_profile()
-	var our_hit := maxf(1.0, (float(profile.get("damage_min", 1)) + float(profile.get("damage_max", 1))) * 0.5 * 0.75)
-	var exchanges := float(combat.get("max_health", 100)) / our_hit
-	var armor := int(content.get_item(str(game.run_state["survivor"]["equipment"].get("armor", ""))).get("damage_reduction", 0))
-	var their_hit := (float(combat.get("damage_min", 10)) + float(combat.get("damage_max", 10))) * 0.5 * (1.0 - 0.06 * armor)
-	# Reading tells avoids roughly half of the incoming pressure.
-	var expected_loss := exchanges * their_hit * 0.45
+	# Phase 0: informed measures close calls with a quick simulation of the
+	# actual fight; clear cases keep the rough estimate so the 10k-run loop
+	# stays usable. Cautious keeps the rough estimate on purpose: it is the
+	# avoid-fights baseline Phase 2 measures against.
+	if policy == "informed" and event_id != "" and choice_index >= 0:
+		var rough_margin := hp - _rough_expected_loss(game, combat)
+		if rough_margin < -100.0 or rough_margin > 250.0:
+			if rough_margin < 40.0:
+				return -1000.0 + rough_margin
+			return reward - (hp - rough_margin)
+		return _informed_fight_score(game, event_id, choice_index, reward, hp)
+	var expected_loss := _rough_expected_loss(game, combat)
 	var margin := hp - expected_loss
 	if policy == "cautious":
 		return -500.0 if margin < hp * 0.6 else reward * 0.5 - expected_loss
 	if margin < 40.0:
 		return -1000.0 + margin
 	return reward - expected_loss * 1.0
+
+
+## Phase 0 harness upgrade: quick combat_balance.gd-style simulation of the
+## actual fight. Plays FIGHT_SIM_SEEDS sandbox copies of the current run
+## state with read_tells play (the same policy the benchmark measures) and
+## returns the measured win rate and mean HP lost. Situations repeat
+## constantly (Toll Gang at full HP early), so results are memoized per
+## adversary/build/HP-bucket situation within one harness invocation.
+const FIGHT_SIM_SEEDS := 4
+const FIGHT_SIM_ROUND_CAP := 24
+const FIGHT_SIM_TAKE_WIN := 0.5
+
+var _fight_sim_cache := {}
+var _fight_sim_count := 0
+
+
+## Rough exchanges-to-kill versus the hits we can take. Reading tells avoids
+## roughly half of the incoming pressure. Shared by the cautious baseline
+## and the informed gate; the informed close-call sim refines it.
+func _rough_expected_loss(game: GameEngine, combat: Dictionary) -> float:
+	var profile := game.get_player_weapon_profile()
+	var our_hit := maxf(1.0, (float(profile.get("damage_min", 1)) + float(profile.get("damage_max", 1))) * 0.5 * 0.75)
+	var exchanges := float(combat.get("max_health", 100)) / our_hit
+	var armor := int(content.get_item(str(game.run_state["survivor"]["equipment"].get("armor", ""))).get("damage_reduction", 0))
+	var their_hit := (float(combat.get("damage_min", 10)) + float(combat.get("damage_max", 10))) * 0.5 * (1.0 - 0.06 * armor)
+	return exchanges * their_hit * 0.45
+
+
+func _informed_fight_score(game: GameEngine, event_id: String, choice_index: int, reward: float, hp: float) -> float:
+	var sim := _simulate_fight(game, choice_index)
+	var hp_lost := float(sim.get("hp_lost", 0.0))
+	var expected_end := hp - hp_lost
+	if float(sim.get("win", 0.0)) < FIGHT_SIM_TAKE_WIN or expected_end < 40.0:
+		return -1000.0 + expected_end
+	return reward - hp_lost
+
+
+func _simulate_fight(game: GameEngine, choice_index: int) -> Dictionary:
+	var survivor: Dictionary = game.run_state["survivor"]
+	var stats: Dictionary = survivor["stats"]
+	var profile := game.get_player_weapon_profile()
+	var hp_start := int(survivor["vitals"]["health"])
+	var hp_max := maxi(1, int(survivor["vitals"]["max_health"]))
+	var ammo_type := str(profile.get("ammo_type", ""))
+	var ammo := game.get_item_quantity(ammo_type) if ammo_type != "" else -1
+	var conditions: Array = (survivor["conditions"] as Array).duplicate()
+	conditions.sort()
+	var talents: Array = (game.run_state.get("talents", []) as Array).duplicate()
+	talents.sort()
+	var event: Dictionary = game.current_event()
+	var choice: Dictionary = event.get("choices", [])[choice_index]
+	var adversary_id := str(choice.get("combat", {}).get("adversary_id", event.get("adversary_id", "")))
+	var key := "|".join([
+		adversary_id,
+		str(survivor["equipment"].get("weapon", "")),
+		str(survivor["equipment"].get("armor", "")),
+		str(survivor["equipment"].get("accessory", "")),
+		"s%d" % int(stats.get("strength", 1)), "a%d" % int(stats.get("agility", 1)),
+		"w%d" % int(stats.get("wits", 1)), "g%d" % int(stats.get("grit", 1)),
+		"p%d" % int(stats.get("presence", 1)), "L%d" % int(game.run_state.get("level", 1)),
+		"hp%d" % int(10.0 * float(hp_start) / float(hp_max)),
+		"ammo%d" % mini(ammo, 6), ",".join(conditions), ",".join(talents),
+	])
+	if _fight_sim_cache.has(key):
+		return _fight_sim_cache[key]
+	_fight_sim_count += 1
+	var base_rng := int(game.run_state.get("rng_state", 1))
+	var defeated_before := (game.run_state.get("defeated_adversaries", []) as Array).size()
+	var wins := 0
+	var hp_lost_sum := 0.0
+	for s in range(FIGHT_SIM_SEEDS):
+		var sandbox := GameEngine.new(content)
+		sandbox.run_state = game.run_state.duplicate(true)
+		sandbox.run_state["rng_state"] = 1 + int(abs(base_rng + 7919 * (s + 1)) % 2147483646)
+		var policy_rng := RandomNumberGenerator.new()
+		policy_rng.seed = base_rng + 1000003 + s * 131
+		if sandbox.start_combat(choice_index).has("error"):
+			continue
+		var exchanges := 0
+		while str(sandbox.run_state.get("phase", "")) == "combat" and exchanges < FIGHT_SIM_ROUND_CAP:
+			var action := _choose_combat(sandbox, "informed", policy_rng)
+			var prepared: Dictionary = sandbox.prepare_combat_action(str(action["action"]), str(action.get("item", "")))
+			if prepared.has("error"):
+				prepared = sandbox.prepare_combat_action("attack")
+				if prepared.has("error"):
+					break
+			sandbox.resolve_prepared_combat_round()
+			exchanges += 1
+		var end_hp := int(sandbox.run_state["survivor"]["vitals"]["health"])
+		hp_lost_sum += maxf(0.0, float(hp_start - end_hp))
+		if (sandbox.run_state.get("defeated_adversaries", []) as Array).size() > defeated_before:
+			wins += 1
+	var result := {"win": float(wins) / float(FIGHT_SIM_SEEDS), "hp_lost": hp_lost_sum / float(FIGHT_SIM_SEEDS)}
+	_fight_sim_cache[key] = result
+	return result
 
 
 ## Rough value of an outcome dictionary in "HP-equivalent" points.
@@ -820,6 +955,7 @@ func _new_aggregate() -> Dictionary:
 		"items_gained": {}, "items_spent": {}, "items_used": {}, "held_at_end": {},
 		"conditions_applied": {}, "checkpoints": {}, "talents": {}, "talent_outcomes": {},
 		"archetypes": {}, "start_weapons": {}, "final_weapons": {}, "allocations": {},
+		"runs_with_memory": 0,
 		"died_with": {"healing": 0, "food": 0, "both": 0, "deaths_counted": 0},
 		"runs_list": [],
 	}
@@ -844,6 +980,7 @@ func _merge_run(agg: Dictionary, run: Dictionary) -> void:
 	agg["level_sum"] = int(agg["level_sum"]) + int(run["level"])
 	agg["steps_sum"] = int(agg["steps_sum"]) + int(run["steps"])
 	agg["upkeep_uses"] = int(agg["upkeep_uses"]) + int(run["upkeep_uses"])
+	agg["runs_with_memory"] = int(agg["runs_with_memory"]) + int(int(run.get("memory_applied", 0)) > 0)
 	agg["starvation_ticks"] = int(agg["starvation_ticks"]) + int(run["starvation_ticks"])
 	agg["runs_with_starvation"] = int(agg["runs_with_starvation"]) + int(int(run["starvation_ticks"]) > 0)
 	_bump(agg["final_region_hist"], str(final_region if result != "victory" else "victory"))
@@ -908,7 +1045,7 @@ func _merge_run(agg: Dictionary, run: Dictionary) -> void:
 		agg["events"][event_id] = event
 	for fight: Dictionary in run["fights"]:
 		var enemy := str(fight["enemy"])
-		var bucket: Dictionary = agg["enemies"].get(enemy, {"fights": 0, "won": 0, "fled": 0, "died": 0, "stalled": 0, "rounds": 0, "hp_lost": 0.0, "hp_start_pct": 0.0, "items_used": 0, "regions": {}, "level": 0})
+		var bucket: Dictionary = agg["enemies"].get(enemy, {"fights": 0, "won": 0, "fled": 0, "died": 0, "stalled": 0, "rounds": 0, "hp_lost": 0.0, "hp_start_pct": 0.0, "items_used": 0, "regions": {}, "level": 0, "big_hit_fights": 0, "max_hit_share_sum": 0.0})
 		bucket["fights"] = int(bucket["fights"]) + 1
 		match str(fight["result"]):
 			"won": bucket["won"] = int(bucket["won"]) + 1
@@ -917,6 +1054,8 @@ func _merge_run(agg: Dictionary, run: Dictionary) -> void:
 			_: bucket["stalled"] = int(bucket["stalled"]) + 1
 		bucket["rounds"] = int(bucket["rounds"]) + int(fight["rounds"])
 		bucket["hp_lost"] = float(bucket["hp_lost"]) + float(int(fight["hp_start"]) - int(fight.get("hp_end", 0)))
+		bucket["big_hit_fights"] = int(bucket["big_hit_fights"]) + int(float(fight.get("max_hit_share", 0.0)) > 0.4)
+		bucket["max_hit_share_sum"] = float(bucket["max_hit_share_sum"]) + float(fight.get("max_hit_share", 0.0))
 		bucket["hp_start_pct"] = float(bucket["hp_start_pct"]) + float(fight["hp_start"]) / maxf(1.0, float(fight["hp_max"]))
 		bucket["items_used"] = int(bucket["items_used"]) + int(fight["items_used"])
 		bucket["level"] = int(bucket["level"]) + int(fight["level"])

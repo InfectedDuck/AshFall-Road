@@ -1,7 +1,10 @@
 """Summarize builds/playthrough/<policy>.json files into a Markdown balance report.
 
 Usage (from the project root):
-    python tools/playthrough_report.py [builds/playthrough] [output.md]
+    python tools/playthrough_report.py [builds/playthrough] [output.md] [--check]
+
+With --check, exits 1 when a present model falls outside the Phase 0
+target bands (TARGET_WIN / TARGET_REACH_R2 below), else exits 0.
 
 Reads every <policy>.json written by tools/playthrough_analytics.gd in the
 directory and writes report.md next to them. The numbers are simulated player
@@ -15,6 +18,19 @@ from collections import defaultdict
 
 ORDER = ["random", "novice", "cautious", "informed", "aggressive"]
 REGIONS = ["Shattered Outskirts", "Salt Flats", "Drowned Marches", "Hollow Industrial", "Glass Wastes", "The Underrail"]
+
+# BALANCE_FIX_PLAN Phase 0 target bands (recommended starting targets, Oct 2026).
+# Win rates are per-model victory shares; reach-R2 applies to every model.
+# The pre-tuning baseline fails several of these on purpose: the check defines
+# the destination that Phases 1-5 must turn green.
+TARGET_WIN = {
+    "random": (0.00, 0.01),
+    "novice": (0.02, 0.05),
+    "cautious": (0.05, 0.20),
+    "informed": (0.15, 0.25),
+    "aggressive": (0.02, 0.08),
+}
+TARGET_REACH_R2 = (0.80, 0.90)
 
 
 def load(directory):
@@ -80,9 +96,49 @@ def threat_label(threat):
     return "LOW"
 
 
+def check_targets(policies):
+    """Compare each present model against the Phase 0 target bands.
+
+    Returns a list of failure strings (empty means all green). Models absent
+    from the directory are skipped, not failed, so partial runs stay usable.
+    """
+    failures = []
+    for model in ORDER:
+        if model not in policies:
+            print(f"[SKIP] {model}: not in directory")
+            continue
+        agg = policies[model]
+        runs = agg["runs"]
+        win = agg["victories"] / runs if runs else 0.0
+        lo, hi = TARGET_WIN[model]
+        ok = lo - 1e-9 <= win <= hi + 1e-9
+        print(f"[{'PASS' if ok else 'FAIL'}] {model} win {win:.1%} (target {lo:.0%}-{hi:.0%})")
+        if not ok:
+            failures.append(f"{model} win {win:.3f} outside {lo:.3f}-{hi:.3f}")
+        r2 = agg["arrivals"].get("1", {}).get("count", 0) / runs if runs else 0.0
+        lo2, hi2 = TARGET_REACH_R2
+        ok2 = lo2 - 1e-9 <= r2 <= hi2 + 1e-9
+        print(f"[{'PASS' if ok2 else 'FAIL'}] {model} reach-R2 {r2:.1%} (target {lo2:.0%}-{hi2:.0%})")
+        if not ok2:
+            failures.append(f"{model} reach-R2 {r2:.3f} outside {lo2:.3f}-{hi2:.3f}")
+        if agg["errors"]:
+            print(f"[FAIL] {model} engine errors: {agg['errors']}")
+            failures.append(f"{model} had {agg['errors']} engine errors")
+        else:
+            print(f"[PASS] {model} engine errors: 0")
+        if agg["unfinished"]:
+            print(f"[FAIL] {model} unfinished runs: {agg['unfinished']}")
+            failures.append(f"{model} had {agg['unfinished']} unfinished runs")
+        else:
+            print(f"[PASS] {model} unfinished runs: 0")
+    return failures
+
+
 def main():
-    directory = sys.argv[1] if len(sys.argv) > 1 else "builds/playthrough"
-    output = sys.argv[2] if len(sys.argv) > 2 else os.path.join(directory, "report.md")
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    flags = [a for a in sys.argv[1:] if a.startswith("--")]
+    directory = args[0] if len(args) > 0 else "builds/playthrough"
+    output = args[1] if len(args) > 1 else os.path.join(directory, "report.md")
     policies, meta = load(directory)
     events, adversaries, items = content()
     lines = []
@@ -177,8 +233,9 @@ def main():
             regions = ",".join(f"R{int(k)+1}" for k, _ in sorted(b["regions"].items(), key=lambda kv: -kv[1])[:3])
             hp_lost = b["hp_lost"] / f if f else 0
             rows.append([enemy, f"{threat} {threat_label(threat)}", xp, f, pct(b["won"], f), pct(b["fled"], f), pct(b["died"], f), f"{hp_lost:.0f}",
-                         mean(b["rounds"], f), pct(b["hp_start_pct"], f), mean(b["level"], f), f"{100 * xp / hp_lost:.0f}" if hp_lost > 0 else "–", regions])
-        w(table(["enemy", "threat", "XP", "fights", "won", "fled", "died", "HP lost", "rounds", "start HP %", "level", "XP/100 HP", "regions"], rows))
+                         mean(b["rounds"], f), pct(b["hp_start_pct"], f), mean(b["level"], f), f"{100 * xp / hp_lost:.0f}" if hp_lost > 0 else "–",
+                         pct(b.get("big_hit_fights", 0), f), regions])
+        w(table(["enemy", "threat", "XP", "fights", "won", "fled", "died", "HP lost", "rounds", "start HP %", "level", "XP/100 HP", "burst>40%", "regions"], rows))
         w("")
 
     # 6. Lethal choices
@@ -377,6 +434,21 @@ def main():
     with open(output, "w", encoding="utf-8") as handle:
         handle.write("\n".join(lines))
     print(f"Wrote {output}")
+    if "--check" in flags:
+        print("\n## Target check (BALANCE_FIX_PLAN Phase 0 bands)\n")
+        failures = check_targets(policies)
+        w2 = ["\n## Target check\n"]
+        if failures:
+            w2.append("FAIL: %d band(s) missed:\n" % len(failures))
+            w2.extend("- " + f for f in failures)
+        else:
+            w2.append("PASS: every present model is inside its target bands.")
+        with open(output, "a", encoding="utf-8") as handle:
+            handle.write("\n".join(w2))
+        if failures:
+            print(f"TARGET CHECK: FAIL ({len(failures)} bands missed)")
+            sys.exit(1)
+        print("TARGET CHECK: PASS")
 
 
 if __name__ == "__main__":

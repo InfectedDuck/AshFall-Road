@@ -99,6 +99,21 @@ Re-run `tools/combat_balance.gd` for every enemy touched (`--enemies toll_gang,.
 
 After Phases 1–5 pass the simulation targets, run the closed-test build (`docs/CLOSED_TESTING.md`). Record human results separately in `RUN_VERIFICATION.md`, and compare the novice model's reach-R2 and death causes with the real testers'. That comparison is the main check on whether the simulation models are trustworthy.
 
+## Phase 0 completion log (21 October 2026)
+
+All four harness upgrades are in, measured at the fixed seed base 100000:
+
+- Baseline preserved: pre-change `builds/playthrough/*.json` copied to `docs/baselines/playthrough_2026-10-20/` (matches the table above).
+- `--check` added to `tools/playthrough_report.py` (`TARGET_WIN` / `TARGET_REACH_R2`, recommended bands). Current `report.md` fails 9 bands with 0 engine errors and 0 unfinished runs everywhere — the documented pre-tuning fail state. Validated both directions (fails on current data, passes on synthetic all-green data).
+- Informed fight decisions now run a quick combat_balance.gd-style simulation (sandbox copy, read_tells play, `FIGHT_SIM_SEEDS = 4`, `FIGHT_SIM_ROUND_CAP = 24`, memoized per situation, take at win ≥ 0.5). Rough-estimate gate (`-100`/`250` margin) and singleton-choice shortcut keep the loop usable: informed 2000 runs take ~6.5 min (others ~1 min). Cautious keeps the rough estimate as the avoid-fights baseline.
+- Per-hit damage recorded as a share of max HP (`burst>40%` column in report section 5): Toll Gang 8.7%, Road Bandits 9.9% of informed fights contain a >40% hit.
+- `--cross-run-memory` flag added (off by default): witnessed flags carry across runs so Tess/Mina chapters can appear. Smoked, not yet run at scale.
+- `tools/full_run_harness.gd --soak 50`: 0 engine errors, 0 recovery mismatches.
+- Model change from the sim (same seeds): informed 39.1% → **70.5%** wins, reach-R2 95.4% → 98.1%, fights/run 3.01 → 2.13, Toll Gang deaths 32.2% → 17.7%. Cautious still wins most at 99.7%, so the Phase 1 ordering problem stands. Random/novice/aggressive/cautious reproduce the baseline exactly (A4 prose trims confirmed mechanics-neutral).
+- `tests/test_runner.gd`: 3916 assertions, 0 failures. `tools/data_package_audit.gd`: 9/9.
+
+Open before Phase 1 tuning: the three decisions at the top of this file (cautious win allowance, Bunker 41 vs gate ending routing, final target bands).
+
 ## Working rules
 
 - Change one subsystem at a time. After each change, run:
