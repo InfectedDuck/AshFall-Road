@@ -714,11 +714,11 @@
             }
           },
           "failure": {
-            "text": "The long loop cooks you inside your clothes. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
+            "text": "The glare hides you for a mile. Then the salt crust breaks loud under your boot, and a whistle carries across the flats. Two collectors leave the barricade at a run and cut you off before the haze can close again.",
             "pressures": {
-              "fatigue": 14,
-              "hunger": 5
-            }
+              "fatigue": 6
+            },
+            "next_event": "flats_toll_run_down"
           }
         },
         {
@@ -1339,14 +1339,11 @@
             }
           },
           "failure": {
-            "text": "You stumble in the black water. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
+            "text": "You stumble in the black water, and the breeding pool comes for the noise.",
             "pressures": {
-              "health": -10,
-              "fatigue": 12
+              "fatigue": 6
             },
-            "add_conditions": [
-              "infection"
-            ]
+            "next_event": "marsh_leeches_dragged"
           }
         },
         {
@@ -2184,11 +2181,11 @@
             "text": "Freight cars conceal your route. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile."
           },
           "failure": {
-            "text": "You crawl beneath rusted cars until your muscles fail. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
+            "text": "A coupling drops with a clang under your weight, and the roof calls a number.",
             "pressures": {
-              "fatigue": 15,
-              "health": -4
-            }
+              "fatigue": 6
+            },
+            "next_event": "industrial_scavs_spotted"
           }
         }
       ]
@@ -3633,14 +3630,11 @@
             "text": "The mimic does not recognize you as prey. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile."
           },
           "failure": {
-            "text": "A copied stumble draws it out. The mistake announces itself in small, merciless details. You force yourself onward while the place closes behind you, carrying a cost you cannot ignore.",
+            "text": "A copied stumble draws it out of the cable nest.",
             "pressures": {
-              "health": -12,
-              "fatigue": 8
+              "fatigue": 5
             },
-            "add_conditions": [
-              "shaken"
-            ]
+            "next_event": "rail_nest_flushed"
           }
         }
       ]
@@ -4954,6 +4948,121 @@
             "warden_broken"
           ],
           "text": "The inner gate opens a hand's width and stops there. Clean air comes through the gap with rain and filtered metal in it, and the drive inside the wall grinds down in pitch, dropping toward the note a mechanism makes before it stops for good.\n\nBehind you the Warden lies across its own bright groove with the turret face down on the concrete, still declaring contamination to the floor. Nothing on the court is aiming at you. That is what the guard behind the armored glass above the seam is looking at, back and forth, the wreck and then you, because the decision the machine used to make has just become theirs.\n\nThey are not the only one. Above the glass, rifle apertures matching the ones at the outer door slide open, and a barrel settles into the nearest.\n\nThe leaves of the gate are as thick as a person is wide, and the plate beside the seam says they close under their own weight and lock the moment the drive fails; the seam's edges are scored bright by something that did not get out of the way. The emergency controller below the plate shows a red-bordered diagram, a voltage rating with too many digits, and a burned glove fused to the frame.\n\nNothing has to be touched yet. The gap breathes on you. When the drive quits, the gate closes, and when the guard decides, the rifles do the rest, and the last mistake ends within sight of shelter."
+        }
+      ]
+    },
+    {
+      "id": "flats_toll_run_down",
+      "scene_role": "micro",
+      "title": "Run Down on the Salt",
+      "body": "The collectors come at you from both sides, boots cracking the crust, the barricade far behind them now. There is no haze left to step into and no road out here they do not own. The oldest one says the toll has gone up.",
+      "weight": 1,
+      "unique": false,
+      "adversary_id": "toll_gang",
+      "tags": [
+        "caught_fight"
+      ],
+      "choices": [
+        {
+          "label": "Stand your ground",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "toll_gang",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "The last collector limps back toward the barricade without looking round. You take revolver rounds and a tin from the bag he dropped and keep walking east.",
+            "items": {
+              "revolver_rounds": 2,
+              "canned_meat": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_leeches_dragged",
+      "scene_role": "micro",
+      "title": "Pulled Under",
+      "body": "The water around your legs thickens with bodies as long as forearms. The bank is three strides away and the mud will not give you one. They have your scent now, and the pool behind them keeps emptying toward you.",
+      "weight": 1,
+      "unique": false,
+      "adversary_id": "marsh_leeches",
+      "tags": [
+        "caught_fight"
+      ],
+      "choices": [
+        {
+          "label": "Tear them off",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "marsh_leeches",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "You crawl onto the bank and grind the last of them off under your heel. A torn bandage roll floats in the reeds, and you take it.",
+            "items": {
+              "cloth_bandage": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_scavs_spotted",
+      "scene_role": "micro",
+      "title": "Caught in the Yard",
+      "body": "Three of the welding crew drop from the freight cars with practiced ease and close both ends of the row. The masked woman watches from the roof and does not call them back. Running means turning your back on people who rarely miss.",
+      "weight": 1,
+      "unique": false,
+      "adversary_id": "vault_scavs",
+      "tags": [
+        "caught_fight"
+      ],
+      "choices": [
+        {
+          "label": "Fight your way clear",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "vault_scavs",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "The crew falls back to the warehouse with their wounded. From the gravel you take rifle cartridges and a bag of scrap somebody dropped in the scramble.",
+            "items": {
+              "rifle_rounds": 2,
+              "scrap_parts": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_nest_flushed",
+      "scene_role": "micro",
+      "title": "The Stalker Comes Out",
+      "body": "It leaves the nest in one long movement, cable and coats sliding off its back, and stops a body length away with its head tilted. Every step you take it takes too. The office door is behind it, and the platform is a long way back.",
+      "weight": 1,
+      "unique": false,
+      "adversary_id": "ash_stalkers",
+      "tags": [
+        "caught_fight"
+      ],
+      "choices": [
+        {
+          "label": "Break the rhythm",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "ash_stalkers",
+            "can_flee": true
+          },
+          "victory": {
+            "text": "The Ash Stalker drops in the doorway it guarded. Among the stolen coats near the nest you find radiation tablets and a roll of stalk-hide.",
+            "items": {
+              "rad_tabs": 1,
+              "stalkhide_wraps": 1
+            }
+          }
         }
       ]
     }

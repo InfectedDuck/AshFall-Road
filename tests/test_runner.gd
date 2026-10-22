@@ -46,6 +46,7 @@ func _run_all() -> void:
 	_test_living_road_expansion(content, ContentRepository.new(true))
 	_test_focused_thread_scheduling(ContentRepository.new(true), content)
 	_test_story_slot_selection(ContentRepository.new(true))
+	_test_caught_fights(ContentRepository.new())
 	_test_bunker41_chain(content)
 	_test_rustsea_chain(content)
 	_test_d20_and_damage()
@@ -130,7 +131,7 @@ func _test_content(content: ContentRepository) -> void:
 	_check(placeholder_symbols.size() == 82, "Every item resolves to a distinct temporary inventory symbol")
 	_check(content.conditions.size() == 19, "Thirteen survival conditions, checkpoint Momentum, three mutant afflictions, and three combat boons are defined")
 	_check(content.adversaries.size() == 23, "Twelve original adversaries, Mutant Crows, four creature profiles, four Phase A mutants, the Reservoir Maw, and the Ossuary Hound are defined")
-	_check(content.events.size() == 97, "The base content plus Bunker Forty-One and the eight-scene Rust-Sea arc is loaded")
+	_check(content.events.size() == 101, "The base content plus Bunker Forty-One, the eight-scene Rust-Sea arc, and four caught fights is loaded")
 	var combat_choices := 0
 	var checked_choices := 0
 	var outcome_passages := 0
@@ -150,9 +151,9 @@ func _test_content(content: ContentRepository) -> void:
 					outcome_passages += 1
 					var outcome_words := ContentRepository.word_count(str(choice[outcome_key].get("text", "")))
 					_check(outcome_words >= int(band["outcome_min"]) and outcome_words <= int(band["outcome_max"]), "%s outcome prose fits its %s budget of %d–%d words" % [event.get("id", "event"), role, int(band["outcome_min"]), int(band["outcome_max"])])
-	_check(combat_choices == 21, "Twenty-one authored choices enter tactical combat: the leech and drone fights join the creature and Phase A mutant routes")
+	_check(combat_choices == 25, "Twenty-five authored choices enter tactical combat: the leech and drone fights join the creature and Phase A mutant routes, and four caught fights follow failed evasions")
 	_check(checked_choices == 149, "All 149 checked choices use percentage rules: D01 adds the probe-grounded drone route")
-	_check(outcome_passages == 415, "All base, Bunker Forty-One, Rust-Sea, equipment-route, creature-victory, depleted-pack, N06 earned-route, E02 refusal, Phase A mutant-victory, D01 build-gate, and D02 agility-gate outcome passages remain present")
+	_check(outcome_passages == 419, "All base, caught-fight, Bunker Forty-One, Rust-Sea, equipment-route, creature-victory, depleted-pack, N06 earned-route, E02 refusal, Phase A mutant-victory, D01 build-gate, and D02 agility-gate outcome passages remain present")
 	var legacy_global_opening := "The road has been quiet long enough for that quiet to feel deliberate."
 	var global_openings_are_distinct := true
 	for event: Dictionary in content.events.values():
@@ -241,7 +242,7 @@ func _test_living_road_expansion(release_content: ContentRepository, living_cont
 		for error: String in validation_errors:
 			print("LIVING ROAD VALIDATION: %s" % error)
 	_check(validation_errors.is_empty(), "Living Road expansion content passes narrative, reachability, item, and callback validation")
-	_check(not release_content.living_road_enabled and release_content.events.size() == 97, "The explicit compatibility repository keeps the baseline callback-free")
+	_check(not release_content.living_road_enabled and release_content.events.size() == 101, "The explicit compatibility repository keeps the baseline callback-free")
 	var v11_document: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/narrative_overrides_v11.json"))
 	var polished_baseline_live := typeof(v11_document) == TYPE_DICTIONARY
 	var polished_baseline_count := 0
@@ -256,7 +257,7 @@ func _test_living_road_expansion(release_content: ContentRepository, living_cont
 					polished_baseline_live = polished_baseline_live and str(polished_choice[outcome_key].get("text", "")) == str(choice_override["outcomes"][outcome_key])
 	_check(polished_baseline_live and polished_baseline_count == 43, "The remaining baseline prose polish is live in compatibility mode")
 	_check(release_content.polished_event_ids.size() == 76 and release_content.load_errors.is_empty(), "All 76 baseline events use polished prose in compatibility mode")
-	_check(living_content.living_road_enabled and living_content.events.size() == 153, "The expanded release loads fifteen callbacks, twelve betrayals, eleven Rhea chapters, twelve Tess/Mina chapters, and six hunts")
+	_check(living_content.living_road_enabled and living_content.events.size() == 157, "The expanded release loads fifteen callbacks, twelve betrayals, eleven Rhea chapters, twelve Tess/Mina chapters, and six hunts")
 	_check(living_content.get_discovery_entries().size() == 54, "The Road Ledger contains fifty-four spoiler-safe chapters")
 	var callback_ids: Array = []
 	var callback_id_set: Dictionary = {}
@@ -357,7 +358,7 @@ func _test_living_road_expansion(release_content: ContentRepository, living_cont
 
 
 func _test_default_expansion_activation(default_content: ContentRepository) -> void:
-	_check(default_content.living_road_enabled and default_content.events.size() == 153, "The no-argument content repository activates the full expansion release")
+	_check(default_content.living_road_enabled and default_content.events.size() == 157, "The no-argument content repository activates the full expansion release")
 	_check(default_content.get_discovery_entries().size() == 54, "The default release Chronicle includes all fifty-four reachable chapters")
 	var hooks := {"outskirts_child_radio": true, "outskirts_market": true, "outskirts_cache": true}
 	var hook_count := 0
@@ -780,6 +781,39 @@ func _test_story_slot_selection(living_content: ContentRepository) -> void:
 	hatch.run_state["phase"] = "event"
 	hatch.resolve_choice(2)
 	_check("b41_ash_invite" in hatch.run_state["flags"] and "b41_contact" not in hatch.run_state["flags"], "Marking the hatch and leaving keeps the original Citadel gate; only entering Bunker Forty-One routes to its ending")
+
+
+## BALANCE_FIX_PLAN Phase 2. A failed evasion in a combat scene chains into a
+## fight the survivor cannot talk past, so a build that never fights still has
+## to survive some fights. The stakes line says so before the roll.
+func _test_caught_fights(content: ContentRepository) -> void:
+	var routes := [
+		{"event": "flats_toll", "choice": 2, "caught": "flats_toll_run_down", "enemy": "Toll Gang", "flee": false},
+		{"event": "marsh_leeches", "choice": 1, "caught": "marsh_leeches_dragged", "enemy": "Marsh Leeches", "flee": false},
+		{"event": "industrial_scavs", "choice": 2, "caught": "industrial_scavs_spotted", "enemy": "Vault Scavengers", "flee": true},
+		{"event": "rail_nest", "choice": 1, "caught": "rail_nest_flushed", "enemy": "Ash Stalker", "flee": true},
+	]
+	for route: Dictionary in routes:
+		var game := _new_game(content, 9601)
+		game.run_state["current_event_id"] = str(route["event"])
+		game.run_state["phase"] = "event"
+		var choice: Dictionary = game.current_event()["choices"][int(route["choice"])]
+		var stakes: String = str(game.get_choice_preview(choice).get("stakes_text", ""))
+		_check(stakes.begins_with("Risk: Fight: %s" % route["enemy"]), "%s warns that a failed evasion means fighting the %s (%s)" % [route["event"], route["enemy"], stakes])
+		var slot_before := int(game.run_state.get("events_in_region", 0))
+		var result := game.resolve_choice(int(route["choice"]), 2)
+		_check(not result.has("error") and str(game.run_state.get("pending_event_id", "")) == str(route["caught"]), "Failing to slip past at %s leads into %s" % [route["event"], route["caught"]])
+		game.continue_after_result()
+		var caught := game.current_event()
+		_check(str(caught.get("id", "")) == str(route["caught"]) and caught.get("choices", []).size() == 1 and caught["choices"][0].has("combat"), "%s offers only the fight" % route["caught"])
+		_check(bool(caught["choices"][0]["combat"].get("can_flee", true)) == bool(route["flee"]), "%s %s" % [route["caught"], "still allows a desperate escape" if route["flee"] else "cannot be fled"])
+		_check(int(game.run_state.get("events_in_region", 0)) == slot_before, "Being caught adds a scene without spending a travel slot")
+		var started := game.start_combat(0)
+		_check(started.get("combat_started", false), "%s starts tactical combat" % route["caught"])
+	var plain := _new_game(content, 9602)
+	plain.run_state["current_event_id"] = "outskirts_bandits"
+	plain.run_state["phase"] = "event"
+	_check(not str(plain.get_choice_preview(plain.current_event()["choices"][1]).get("stakes_text", "")).contains("Fight:"), "The opening region's evasions stay forgiving and never chain into a fight")
 
 
 func _test_bunker41_chain(content: ContentRepository) -> void:
@@ -2543,7 +2577,7 @@ func _test_betrayal_arc() -> void:
 	for event_id: String in betrayal_ids:
 		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
 		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
-	_check(expanded.events.size() == 153, "Betrayal, Rhea, Tess/Mina, and hunt events join the expanded release")
+	_check(expanded.events.size() == 157, "Betrayal, Rhea, Tess/Mina, and hunt events join the expanded release")
 	var cache := _new_game(expanded, 4242)
 	cache.run_state["region_index"] = 2
 	_check(not cache._event_eligible(expanded.get_event("betrayal_vex_cache")), "The sealed package is not offered before Vex is trusted")
@@ -2603,7 +2637,7 @@ func _test_rhea_arc() -> void:
 	for event_id: String in rhea_ids:
 		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
 		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
-	_check(expanded.events.size() == 153, "Rhea, Tess/Mina, and hunt chapters join the expanded release")
+	_check(expanded.events.size() == 157, "Rhea, Tess/Mina, and hunt chapters join the expanded release")
 	_check(expanded.get_discovery_entries().size() == 54, "Tess, Mina, and hunt chapters join the Chronicle denominator")
 	# The Maw exists as a flood boss with drainage counterplay.
 	var maw: Dictionary = expanded.get_adversary("reservoir_maw")
@@ -2749,7 +2783,7 @@ func _test_stage3_companions_hunts() -> void:
 	for event_id: String in ["tess_meeting", "tess_work", "tess_boundary", "tess_past", "tess_crisis", "tess_ending", "mina_meeting", "mina_aid", "mina_vow", "mina_trial", "mina_vigil", "mina_ending", "hunt_spark_evidence", "hunt_spark_prep", "hunt_spark_confront", "hunt_hound_evidence", "hunt_hound_prep", "hunt_hound_confront"]:
 		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
 		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
-	_check(expanded.events.size() == 153, "Twelve companion chapters and six hunt scenes join the expanded release")
+	_check(expanded.events.size() == 157, "Twelve companion chapters and six hunt scenes join the expanded release")
 	_check(expanded.get_discovery_entries().size() == 54, "Fourteen companion and hunt chapters join the Chronicle")
 	# Cross-run unlock: a witnessed betrayal in any past life opens Tess and Mina.
 	_check(StoryDiscoveryRules.betrayal_witnessed(["ledger_rhea_betrayal_shelter:betrayed"]), "A betrayed Shelter account counts as witnessed")
@@ -3640,7 +3674,7 @@ func _test_scene_roles_and_conditional_passages(content: ContentRepository) -> v
 			micros_earned = micros_earned and ContentRepository.word_count(str(promoted.get("body", ""))) < 60
 	_check(roles_valid, "Every declared scene role is a known role other than the implicit default")
 	_check(promotions_earned, "A scene that declares a longer role actually carries a longer introduction than the compact band allows")
-	_check(micros_earned and micro_count == 28, "Twenty-eight basic scenes declare micro and carry introductions shorter than the compact band allows")
+	_check(micros_earned and micro_count == 32, "Thirty-two basic scenes declare micro and carry introductions shorter than the compact band allows")
 	_check(promoted_scenes.size() >= 4, "The pilot promotions survive later packages")
 	_check(compact_events == content.events.size() - promoted_scenes.size(), "Every event outside that pilot set still authors its scene role implicitly")
 	_check(compact_events_in_band == compact_events, "All %d existing passages pass unchanged under the default compact band" % compact_events)

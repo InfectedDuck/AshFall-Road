@@ -293,7 +293,10 @@ func validate_all() -> PackedStringArray:
 			errors.append("Event '%s' introduction must contain %d-%d words for a %s scene (found %d)" % [event_id, int(band["body_min"]), int(band["body_max"]), role, introduction_words])
 		_validate_passage_variants(event_id, "introduction", event, "body_variants", int(band["body_min"]), int(band["body_max"]), produced_flags, errors)
 		var choices: Array = event.get("choices", [])
-		if choices.size() < 2 or choices.size() > 4:
+		# A caught fight (BALANCE_FIX_PLAN Phase 2) is the one scene with no way
+		# around it: a single combat choice, reached only through next_event.
+		var caught_fight: bool = "caught_fight" in event.get("tags", []) and choices.size() == 1 and typeof(choices[0]) == TYPE_DICTIONARY and choices[0].has("combat")
+		if not caught_fight and (choices.size() < 2 or choices.size() > 4):
 			errors.append("Event '%s' must have two to four choices" % event_id)
 		if "supply_opportunity" in event.get("tags", []) and not _event_has_two_satiety_route(event):
 			errors.append("Supply event '%s' needs a successful route worth at least two satiety" % event_id)

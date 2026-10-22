@@ -332,6 +332,22 @@ func get_choice_preview(choice: Dictionary) -> Dictionary:
 	return {"available": true, "chance": chance, "required_roll": required_roll, "stat": stat, "stat_label": stat_label, "stat_value": stat_value, "effective_stat": effective_stat, "difficulty": difficulty, "description": "%s • %d%% SUCCESS • NEED %d+" % [stat_label.to_upper(), chance, required_roll], "modifiers": modifiers, "stakes_gains": stakes.get("gains", []), "stakes_risks": stakes.get("risks", []), "stakes_text": stakes.get("text", "")}
 
 
+## BALANCE_FIX_PLAN Phase 2: a scene whose every choice is a fight is one the
+## survivor cannot talk or sneak out of. Returns its enemy's name, or "".
+func _forced_fight_enemy_name(event_id: String) -> String:
+	if event_id == "":
+		return ""
+	var event: Dictionary = content.get_event(event_id)
+	var choices: Array = event.get("choices", [])
+	if choices.is_empty():
+		return ""
+	for choice: Dictionary in choices:
+		if not choice.has("combat"):
+			return ""
+	var adversary_id := str(choices[0].get("combat", {}).get("adversary_id", event.get("adversary_id", "")))
+	return str(content.get_adversary(adversary_id).get("name", adversary_id))
+
+
 ## A1: one short stakes line per choice so players can tell what is at stake
 ## before committing. Data-driven from JSON: gains come from success/outcome,
 ## risks come from failure (or from outcome negatives for certain choices).
@@ -389,6 +405,11 @@ func choice_stakes(choice: Dictionary) -> Dictionary:
 			var clabel := str(content.get_condition(str(condition_id)).get("name", condition_id))
 			if clabel not in gains:
 				gains.append(clabel)
+	for source: Dictionary in risk_sources:
+		var forced_enemy := _forced_fight_enemy_name(str(source.get("next_event", "")))
+		if forced_enemy != "" and ("Fight: %s" % forced_enemy) not in risks:
+			# First, so the length cap can never cut a fight out of the line.
+			risks.insert(0, "Fight: %s" % forced_enemy)
 	for source: Dictionary in risk_sources:
 		var is_certain := gain_sources.has(source) and risk_sources.has(source)
 		for item_id: Variant in source.get("items", {}):

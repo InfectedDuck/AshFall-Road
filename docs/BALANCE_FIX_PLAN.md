@@ -149,3 +149,34 @@ Open before Phase 1 tuning: the three decisions at the top of this file (cautiou
   This takes about 3 minutes in parallel.
 - Keep the seed base fixed (100000) for comparisons. Confirm a finished phase on a second seed base (200000) before treating it as done.
 - Run `tests/test_runner.gd` after every phase, and update the pinned content contracts deliberately rather than loosening them.
+
+## Phase 2 progress log (22 October 2026): caught fights
+
+Decision 1 asked for fights the survivor cannot avoid. Implemented as content, with no engine change to combat:
+
+- A failed evasion now chains (`next_event`) into a one-choice **caught fight** (tag `caught_fight`, `scene_role: micro`). The fight takes no extra travel slot. The failure keeps only a small Fatigue cost; the fight is the price. Caught victories pay less than choosing the fight.
+
+| Scene | Failed choice | Caught fight | Flee |
+|---|---|---|---|
+| R2 `flats_toll` | Circle them through the glare | `flats_toll_run_down` (Toll Gang) | no |
+| R3 `marsh_leeches` | Sprint through the channel | `marsh_leeches_dragged` (Marsh Leeches) | no |
+| R4 `industrial_scavs` | Slip through the rail yard | `industrial_scavs_spotted` (Vault Scavengers) | yes (hard) |
+| R6 `rail_nest` | Pass without changing rhythm | `rail_nest_flushed` (Ash Stalker) | yes (risky) |
+
+- R1 stays forgiving. R5 gets no caught fight yet: every R5 combat enemy is SEVERE or APEX. A first pass chained `glass_cult` and `rail_hunters` too, and informed won only 13% / 3% of those fights, so a failed sneak was a disguised death roll. Revisit after Phase 3.
+- The stakes line puts `Fight: <enemy>` first for any choice whose failure leads into a caught fight (`GameEngine._forced_fight_enemy_name`).
+- `ContentRepository.validate_all` allows exactly one choice only for a `caught_fight` scene whose single choice is combat.
+
+Results (seed base 100000):
+
+| Model | Phase 1 | + caught fights |
+|---|---|---|
+| random | 0.0% | 0.0% |
+| novice | 2.4% | 1.9% |
+| cautious | 98.0% | **79.0%** |
+| informed | 59.5% | 44.1% |
+| aggressive | 0.1% | 0.1% |
+
+Regional slot share and coverage still pass. Next (Phase 2 step 2, then Phase 3): make LOW/MODERATE fights cheaper for good play, starting with the Toll Gang (351 informed deaths in 1220 fights, now also the R2 caught fight), so informed overtakes cautious.
+
+`tests/test_runner.gd`: 3958 assertions, 0 failures (new `_test_caught_fights`; event counts 153 → 157, compatibility 97 → 101). `tools/data_package_audit.gd`: 9/9 (counts updated).

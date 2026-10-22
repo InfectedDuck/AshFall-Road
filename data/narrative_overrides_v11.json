@@ -15,7 +15,7 @@
           "index": 1,
           "outcomes": {
             "success": "You enter at a run and never let a boot settle. Dark shapes strike and miss behind every stride. The far bank takes you breathless and untouched.",
-            "failure": "A drowned curb catches your toe and throws you chest-deep. Leeches find skin before you stand. You rip them away with muddy fingers and carry infected bites onward."
+            "failure": "A drowned curb throws you chest-deep. Leeches find skin before you stand, and the breeding pool stirs toward the noise."
           }
         },
         {
@@ -316,7 +316,7 @@
           "index": 2,
           "outcomes": {
             "success": "You crawl beneath freight cars while rooftop attention remains on the road. Couplings hide each movement, and soot swallows the sound. You emerge beyond the final switch unnoticed, carrying no prize except an unchallenged route.",
-            "failure": "The rail yard extends through collapsed cars and blocked switches farther than the roof suggested. You crawl until elbows bleed and muscles shake, escaping observation only by spending the strength needed for the miles ahead."
+            "failure": "The rail yard runs farther than the roof suggested. Halfway through, a coupling drops under your weight with a clang, and a voice on the roof calls a number. Boots are on the ladders before you reach the next car."
           }
         }
       ]
@@ -836,7 +836,7 @@
           "index": 1,
           "outcomes": {
             "success": "You maintain the same measured pace while copied footsteps multiply beside you. The mimic waits for a stumble that never comes. Its final imitation continues alone after you turn the corner.",
-            "failure": "Loose tile shifts under one heel and your rhythm breaks. The answering stumble comes from inside the office, followed by a rush. You escape its first strike wounded, fatigued, and shaken by footsteps that remain perfectly yours."
+            "failure": "Loose tile shifts under one heel and your rhythm breaks. The answering stumble comes from inside the office, then the cable nest heaves and something long unfolds out of it."
           }
         }
       ]

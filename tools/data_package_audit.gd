@@ -205,10 +205,10 @@ func _check_callbacks_enabled(release, compatibility) -> void:
 			callback_events += 1
 	if callback_events != 15:
 		problems.append("expected 15 default callback events, found %d" % callback_events)
-	if release.events.size() != 153:
-		problems.append("expected the 153-event default release, found %d" % release.events.size())
-	if compatibility.living_road_enabled or compatibility.events.size() != 97 or compatibility.get_discovery_entries().size() != 11:
-		problems.append("ContentRepository.new(false) no longer provides the 97-event, 11-chapter compatibility configuration")
+	if release.events.size() != 157:
+		problems.append("expected the 157-event default release, found %d" % release.events.size())
+	if compatibility.living_road_enabled or compatibility.events.size() != 101 or compatibility.get_discovery_entries().size() != 11:
+		problems.append("ContentRepository.new(false) no longer provides the 101-event, 11-chapter compatibility configuration")
 	_record("Living Road callbacks load by default and compatibility stays explicit", problems)
 
 
