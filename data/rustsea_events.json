@@ -3,6 +3,7 @@
     {
       "id": "rustsea_green_line",
       "title": "A Voice on the Green Line",
+      "scene_role": "micro",
       "global": true,
       "narrative_priority": 11,
       "weight": 11,
@@ -17,12 +18,12 @@
           "b41_contact"
         ]
       },
-      "body": "The rail speaker wakes after midnight with a wet click, though the tunnel has no power and no wind. Salt clings to its grille like frost. A woman's voice comes through beneath the static, dictating coordinates and pausing between each one as if waiting for a pencil. When the message ends, the speaker gives a small pencil-scratch sound. The voice signs off with a name, Mara Venn, offered the way a signature is offered, without waiting to learn whether it means anything to you. Then she whispers, \"Do not trust the water when it knows your name.\"",
+      "body": "After midnight a dead rail speaker wakes with a wet click, though the tunnel has no power. Salt crusts its grille. A woman's voice dictates coordinates beneath the static, pausing after each for a pencil. She signs off as Mara Venn, then whispers: do not trust the water when it knows your name.",
       "choices": [
         {
           "label": "Follow the coordinates",
           "outcome": {
-            "text": "You leave the familiar tracks and follow the numbers through a service tunnel smelling of wet iron. The route ends where drowned platforms begin, beneath a wall of black water. Someone has recently tied a green thread around the nearest signal post.",
+            "text": "You follow the numbers down a service tunnel of wet iron. The route ends where drowned platforms begin under black water. A green thread circles the signal post, recently tied.",
             "add_flags": [
               "rustsea_green_line"
             ],
@@ -32,7 +33,7 @@
         {
           "label": "Trace the signal first",
           "outcome": {
-            "text": "You open the signal box and find its wire leading nowhere, then splitting beneath the salt into older cable. Mara's message repeats from a direction the map calls impassable. The ground ahead carries a slow vibration, almost too regular to notice.",
+            "text": "You open the signal box: its wire leads nowhere, then splits under salt. Mara's message repeats from ground the map calls impassable. A slow vibration runs beneath, almost too regular.",
             "add_flags": [
               "rustsea_green_line"
             ],
@@ -42,7 +43,7 @@
         {
           "label": "Silence the speaker",
           "outcome": {
-            "text": "You cut the speaker loose and leave it hissing beside the track. By morning, a green line has appeared across your paper map in pencil you do not remember using. It ends at a mark shaped like a drowned tower.",
+            "text": "You cut the speaker loose beside the track. By morning a green line crosses your map in unfamiliar pencil. It ends at a mark shaped like a drowned tower.",
             "add_flags": [
               "rustsea_map_self_marked"
             ]
@@ -54,19 +55,20 @@
           "requires_any_flags": [
             "b41_mara_helped"
           ],
-          "text": "The rail speaker wakes after midnight with a wet click, though the tunnel has no power and no wind. The voice under the static is Mara Venn's, and you know it before the numbers start: the woman who told you when the bunker floor warmed, who ate from your can with both hands and asked you to carry her name if she could not get out. So she is out, or her voice is. She dictates coordinates, pausing after each one for a pencil, then whispers, \"Do not trust the water when it knows your name.\""
+          "text": "You know Mara Venn's voice before the numbers start: the woman who warned you when the bunker floor warmed, who ate from your can with both hands after asking you to carry her name. She is out, or her voice is. She dictates coordinates, then whispers against trusting water that knows your name."
         },
         {
           "requires_any_flags": [
             "b41_mara_abandoned"
           ],
-          "text": "The rail speaker wakes after midnight with a wet click, though the tunnel has no power and no wind. You know the voice before the static clears, because it has followed you east: Mara Venn, flat and exact, whose sheets you lifted off the nails while she sat on the floor with one boot. For days the maintenance band has carried your callsign and the word thief in that voice. Tonight it does not say thief. It dictates coordinates, pausing after each one for a pencil, then whispers, \"Do not trust the water when it knows your name.\""
+          "text": "You know the voice before the static clears: Mara Venn, flat and exact. You lifted her sheets off the nails while she sat one-booted on the floor. For days the band has called you thief in her voice. Tonight it does not. She dictates coordinates instead, then warns you about water that knows names."
         }
       ]
     },
     {
       "id": "rustsea_quay_names",
       "title": "The Quay of Names",
+      "scene_role": "micro",
       "global": true,
       "weight": 1,
       "unique": true,
@@ -76,12 +78,12 @@
           "rustsea_map_self_marked"
         ]
       },
-      "body": "The terminus has sunk to its roofline. Water fills the concourse, black and still beneath cracked skylights. A tiled wall rises from it like a grave marker, covered in names scratched through soot and old paint. Some cuts are deep enough to have cost fingernails. Others are fresh charcoal. Several family names belonged to people supposedly admitted to East Citadel. Across the water, someone with a shuttered lantern is copying the wall onto banner cloth in charcoal, skipping names as they go. On the pillar beside them, a lantern crossed by three strokes is still drying.",
+      "body": "The terminus has sunk to its roofline in black water. A tiled wall rises from it, covered in names cut deep or fresh in charcoal. East Citadel family names appear among them. Across the water someone copies the wall, skipping names, while a lantern crossed by three strokes dries on a pillar.",
       "choices": [
         {
           "label": "Search for Mara's name",
           "outcome": {
-            "text": "Mara's name appears beneath a layer of soot, followed by an arrow and a time: green light, noon. Behind a loose tile, you find a station key and a note that says she was wrong about the route east.",
+            "text": "Mara's name sits under soot with an arrow and a time: green light, noon. Behind a loose tile wait a station key and a note: she misjudged the route east.",
             "add_flags": [
               "rustsea_mara_trace"
             ],
@@ -91,7 +93,7 @@
         {
           "label": "Copy every name",
           "outcome": {
-            "text": "You copy until your hand cramps and the ink begins to run in the damp, keeping pace with the charcoal across the water and taking down every name it skips. The list includes children, workers, and whole families whose records should have ended at the Citadel gate. One margin note reads: living people below.",
+            "text": "You copy until your hand cramps, matching the charcoal name for skipped name. The list holds children, workers, whole families the Citadel claims. One margin reads: living people below.",
             "add_flags": [
               "rustsea_names_copied",
               "rustsea_children_clue"
@@ -101,7 +103,7 @@
         {
           "label": "Deface the wall",
           "outcome": {
-            "text": "You smear the names under mud and salt faster than the charcoal across the water can take them down, and drag your sleeve through the drying lantern mark on the way out. The copier rolls up half a wall and leaves. Before you reach the tunnel mouth, a fresh lantern has been chalked on the pillar behind you, crossed by three strokes.",
+            "text": "You smear names with mud faster than the copier records. The copier leaves with half a wall. Behind you a fresh lantern chalks up, crossed three times.",
             "add_flags": [
               "rustsea_ash_marks_damaged"
             ]
@@ -112,6 +114,7 @@
     {
       "id": "rustsea_false_coordinates",
       "title": "The False Coordinates",
+      "scene_role": "micro",
       "global": true,
       "weight": 1,
       "unique": true,
@@ -120,12 +123,12 @@
           "rustsea_green_line"
         ]
       },
-      "body": "The signal leads into a white channel between salt ridges. The ground looks firm until the wind stops. Then a soft vibration travels through the crust and into your boots. Ahead, an overturned truck lies half-swallowed by salt. Its steel frame has been folded inward in long smooth bends, as if a hand enormous enough to close around it became impatient. The radio keeps repeating Mara's voice, but the words are wrong now: come closer, I cannot see you. The embankment is still a dozen shallow steps behind you, and the vibration has not reached it.",
+      "body": "The signal leads into a white channel where the ground looks firm until the wind stops. Then vibration climbs through the crust into your boots. A truck lies with its frame folded in bends. The embankment waits a dozen steps back. The radio repeats Mara's voice with wrong words: come closer, I cannot see you.",
       "choices": [
         {
           "label": "Retreat to the embankment",
           "outcome": {
-            "text": "You back away without running, keeping your steps shallow and slow. The vibration follows for several breaths, then fades beneath the salt. A raised service line takes you toward an old station that seems to have been waiting for you.",
+            "text": "You back away walking, steps shallow and slow. The vibration trails you for breaths, then sinks. A raised service line leads to an old station that seems to wait.",
             "add_flags": [
               "rustsea_salt_warning"
             ],
@@ -135,7 +138,7 @@
         {
           "label": "Cross before it rises",
           "outcome": {
-            "text": "You sprint over the channel as the salt breaks behind you in widening rings. Something pale moves beneath the crust without surfacing. On the far side, an old caravan lies arranged around a warm hollow in the ground.",
+            "text": "You sprint the channel as salt breaks behind you in widening rings. Something pale slides beneath the crust without surfacing. Across, a caravan rings a warm hollow in the ground.",
             "add_flags": [
               "rustsea_salt_warning"
             ],
@@ -145,7 +148,7 @@
         {
           "label": "Enter the hollow below",
           "outcome": {
-            "text": "You climb down through salt warm as skin, and the voice stops in the middle of a word, as if it no longer needs to call. Under you the vibration finds the rhythm of your breathing and settles into it. The heat rises. The white ground closes over the hollow without a sound, and the salt keeps no shape of you.",
+            "text": "You climb through salt warm as skin. The voice stops mid-word. Vibration finds your breathing and settles. Heat rises. The white ground closes over you.",
             "lethal": true
           }
         }
@@ -199,6 +202,7 @@
     {
       "id": "rustsea_salt_crown_wake",
       "title": "The Salt Crown's Wake",
+      "scene_role": "micro",
       "global": true,
       "weight": 1,
       "unique": true,
@@ -207,12 +211,12 @@
           "rustsea_salt_warning"
         ]
       },
-      "body": "The caravan did not crash. It was placed here. Wagons, pack animals, and people lie in a circular depression under a thin skin of salt, arranged around a hole that breathes warm mineral air. The dead have no obvious wounds; their mouths are open and packed with crystals. A survivor knocks faintly beneath a collapsed canvas roof. Far below, something gives a slow scrape against stone. A wagon door bears three words written in brown salt: do not make noise. The raised line you crossed on is still behind you. The nearest wagon's packs have never been opened.",
+      "body": "The caravan did not crash; it was placed here, wagons and people ringed around a hole breathing warm air. The dead show no wounds, mouths packed with salt crystals. A survivor knocks faintly under collapsed canvas. A wagon door reads: do not make noise. The nearest packs have never been opened.",
       "choices": [
         {
           "label": "Free the trapped survivor",
           "outcome": {
-            "text": "You cut the canvas loose one careful thread at a time. The survivor crawls free without speaking, then presses a folded map into your hand. Mara passed through yesterday, they mouth, and followed the voices toward the drowned tower.",
+            "text": "You cut the canvas thread by thread until the survivor crawls out silent. They press a folded map into your hand. Mara passed yesterday, they mouth, toward the drowned tower.",
             "add_flags": [
               "rustsea_survivor_saved",
               "rustsea_mara_trace"
@@ -228,7 +232,7 @@
             "difficulty": "risky"
           },
           "success": {
-            "text": "You lift each pack by its straps and set it on cloth, never on crust. Most tins are split. Two are not: a can of meat and a stoppered bottle of water, into your pack without a sound. The knocking keeps its count as you leave. Under the warning on the wagon door, a pinned strip of map leads toward a lamp on stilts.",
+            "text": "You lift each pack by its straps onto cloth. Two tins survived: meat and a stoppered bottle. Under the warning, a pinned map strip points to a lamp on stilts.",
             "items": {
               "canned_meat": 1,
               "clean_water": 1
@@ -239,7 +243,7 @@
             "next_event": "rustsea_cartographers_debt"
           },
           "failure": {
-            "text": "You lift the packs one by one and find every tin split by salt, nothing worth the noise of carrying. The careful lifting costs more than the tins were worth; your arms shake by the last one. You walk away from the knocking with nothing. Under the warning on the wagon door, a pinned strip of map leads toward a lamp on stilts.",
+            "text": "Every tin splits on salt. Your arms shake by the last pack. You leave the knocking with nothing, but the pinned strip still points to the lamp.",
             "pressures": {
               "fatigue": 6
             },
@@ -252,7 +256,7 @@
         {
           "label": "Climb into the hollow",
           "outcome": {
-            "text": "You lower yourself toward the warm scrape, and the salt folds around your boots like a closing hand. Under the canvas, the knocking stops. The breath from the hole changes rhythm, catching on your own, and the heat comes up through the crust faster than you can climb. The circle of salt smooths over as if nothing was ever arranged here.",
+            "text": "You lower yourself toward the warm scrape; salt folds over your boots. The knocking stops. Breath from the hole catches your rhythm as heat rises. The salt keeps you.",
             "lethal": true
           }
         }

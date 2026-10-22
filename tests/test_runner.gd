@@ -3533,7 +3533,7 @@ func _test_scene_roles_and_conditional_passages(content: ContentRepository) -> v
 			micros_earned = micros_earned and ContentRepository.word_count(str(promoted.get("body", ""))) < 60
 	_check(roles_valid, "Every declared scene role is a known role other than the implicit default")
 	_check(promotions_earned, "A scene that declares a longer role actually carries a longer introduction than the compact band allows")
-	_check(micros_earned and micro_count == 24, "Twenty-four basic scenes declare micro and carry introductions shorter than the compact band allows")
+	_check(micros_earned and micro_count == 28, "Twenty-eight basic scenes declare micro and carry introductions shorter than the compact band allows")
 	_check(promoted_scenes.size() >= 4, "The pilot promotions survive later packages")
 	_check(compact_events == content.events.size() - promoted_scenes.size(), "Every event outside that pilot set still authors its scene role implicitly")
 	_check(compact_events_in_band == compact_events, "All %d existing passages pass unchanged under the default compact band" % compact_events)

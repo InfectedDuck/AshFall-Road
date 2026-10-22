@@ -53,14 +53,14 @@
         {
           "index": 0,
           "outcomes": {
-            "victory": "Your first shots punch through the nearest skiff’s waterline. Its crew overturns while the others choose distance over rescue. Two dry shells, a sealed bottle, and a girder cleaver wired to the gunwale float inside a tied case, salvage from an ambush that leaves widening rings among the reeds."
+            "victory": "Your first shots punch through the nearest skiff's waterline. Its crew overturns while the others choose distance over rescue. Two dry shells, a sealed bottle, and a girder cleaver float inside a tied case."
           }
         },
         {
           "index": 1,
           "outcomes": {
             "success": "You name symptoms produced by the rainbow and point to stains on their own poles. The lead raider hesitates long enough for doubt to spread between boats. You enter thick reeds before anyone volunteers to test the water.",
-            "failure": "They have poled this stain for weeks and know precisely what it does and does not do. Nobody punishes the bluff. The lead rider holds his skiff against the path, opens your pack himself, and lifts out whatever tablets and bandages it is carrying. Then he hands it back, and every gun stays politely raised until you are past the last boat."
+            "failure": "They have poled this stain for weeks and know what it does. The lead rider opens your pack and lifts out its tablets and bandages. Then he hands it back, every gun politely raised until you pass the last boat."
           }
         },
         {
@@ -297,19 +297,19 @@
     },
     {
       "id": "industrial_scavs",
-      "body": "Figures stand along the warehouse roof at measured intervals: one at each stairwell, two behind a sandbagged sign, another watching the rail yard and nothing else. Their gear is repaired rather than scavenged, and no weapon wavers while they look you over.\n\nA woman with white welding marks across her mask asks what news travels east. Behind her a road map is pinned to plywood, marked over in three colors and corrected in a fourth, and a field set sits switched on beside it. The freight cars offer a way around, undercarriages sunk in soot and razor filings.",
+      "body": "Figures stand along the warehouse roof at measured intervals, weapons steady while they look you over. Their gear is repaired rather than scavenged. A woman with white welding marks across her mask asks what news travels east. Behind her a road map is pinned to plywood, marked in three colors, a field set switched on beside it. The freight cars offer a way around, undercarriages sunk in soot.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You trade names, closures, and one warning you would rather have kept. She tests each detail against the plywood, moves a marker two fingers north, and has a ration handed down from the sandbags. Her crew records your face without pretending that it is friendship, which is the honest version of both.",
-            "failure": "Your account disagrees with a signal report the field set took that morning, and they treat the disagreement as procedure rather than as insult. Two of them go through your pack with disciplined hands and keep whatever medicine it holds against the time you cost them. Then they walk you out the long way, at their pace, and it is a long way."
+            "success": "You trade names, closures, and one warning you would rather have kept. She tests each detail against the plywood, moves a marker two fingers north, and has a ration handed down from the sandbags.",
+            "failure": "Your account disagrees with a signal report the field set took that morning. Two of them go through your pack with disciplined hands and keep whatever medicine it holds. Then they walk you out the long way, at their pace."
           }
         },
         {
           "index": 1,
           "outcomes": {
-            "victory": "Their weakest guard proves neither weak nor alone, but you remain standing when the warehouse falls quiet. The masked woman calls the outcome earned rather than forgiven and slides rifle cartridges and a spike rifle across the roof before granting passage. A furnace maul leans where their smith worked beside a loop of dredge chain, and you take both."
+            "victory": "Their weakest guard is neither weak nor alone, but you stay standing when the warehouse falls quiet. The masked woman slides rifle cartridges and a spike rifle across the roof. You take a furnace maul and dredge chain as well."
           }
         },
         {
@@ -343,7 +343,7 @@
     },
     {
       "id": "industrial_office",
-      "body": "A reinforced office stands above the factory floor on pillars. Its door still reads SHELTER CAPACITY 8, and the frame is scratched in a band at chest height by considerably more than eight.\n\nA chemical lock guards the keypad. Personnel notices curl behind dusty glass, close enough to read, dense with anniversaries a manager might have used. Past them a long cabinet stands against the inner wall, a manifest card screwed to its door. An emergency kit is bracketed above the entrance, out of reach without a ladder. The wall panels are thin, and yellow insulation leaks from the seams.",
+      "body": "A reinforced office stands above the factory floor on pillars, its door still reading SHELTER CAPACITY 8 though the frame is scratched by considerably more than eight. A chemical lock guards the keypad. Personnel notices crowd behind dusty glass, dense with anniversaries. A long cabinet stands inside, a manifest card on its door. An emergency kit hangs above the entrance, out of reach.",
       "choices": [
         {
           "index": 0,
@@ -362,14 +362,14 @@
         {
           "index": 2,
           "outcomes": {
-            "success": "The manifest card records every issue and return in a clerk’s shorthand that gives up on dates partway down the column and switches to plain numbers. You read the last return as the number it plainly is and give it to the cabinet lock. The door swings on a hunting rifle and four rounds still in their sleeve.",
-            "failure": "You read the manifest three ways and the cabinet accepts none of them. After the third refusal something inside drops a bar across the mechanism and stops answering anything at all, which is the procedure working exactly as it was written to work. You spend the last of the light in front of a door that has finished deciding about you."
+            "success": "The manifest card lists issues in shorthand that abandons dates for plain numbers. You read the last return as the number it is and give it to the lock. Inside: a hunting rifle and four rounds in their sleeve.",
+            "failure": "You read the manifest three ways and the cabinet accepts none. Something inside drops a bar across the mechanism and stops answering: the procedure working as written. You spend the last of the light before a finished door."
           }
         },
         {
           "index": 3,
           "outcomes": {
-            "success": "You climb the pillar bracing with your boots turned sideways on the ribs and work the bracket loose one-handed, holding the kit against your chest as it comes free. The flare gun drops into your palm with three shells still clipped beside it. The bracket above the door hangs empty for the first time since this floor had a shift on it.",
+            "success": "You climb the pillar bracing, boots sideways on the ribs, and work the bracket loose one-handed. The flare gun drops into your palm with three shells still clipped beside it.",
             "failure": "The bracket holds; the pillar does not. You slide down its corroded face and spend several minutes on the floor deciding that nothing is broken. The kit stays mounted above the door, catching light you can no longer reach."
           }
         }
@@ -476,13 +476,13 @@
     },
     {
       "id": "industrial_alarm",
-      "body": "Red lamps ignite one after another down the assembly corridor. A flat voice announces shift evacuation while blast doors begin sealing in sequence toward you. The wall console can freeze the pattern if its surviving circuits still obey. Otherwise, the closing gaps form a race whose finish keeps narrowing. Each door bears dents at shoulder height and deep scratches near the floor, evidence that earlier workers learned exactly how little time the alarm allowed.",
+      "body": "Red lamps ignite one after another down the assembly corridor. A flat voice announces shift evacuation while blast doors begin sealing in sequence toward you. The wall console can freeze the pattern if its circuits still obey. Each door bears dents at shoulder height and scratches near the floor, left by workers who learned how little time the alarm allows.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
             "success": "You isolate the timing circuit before the nearest door completes its descent. Every barrier stops at a different height, leaving one clean passage through. The silent alarm lights continue counting a disaster no longer able to move.",
-            "failure": "The console holds one door and hurries the next. Steel comes down across your pack and drives it flat before you can cut the straps loose, and whatever it held takes that weight instead of your spine. You come out the far side lighter than you went in, breathing hard, with the red lamps still counting behind the closed steel."
+            "failure": "The console holds one door and hurries the next. Steel comes across your pack and drives it flat. Your food and water take that weight instead of your spine. You come out lighter, breathing hard, lamps counting behind the steel."
           }
         },
         {
@@ -496,13 +496,13 @@
     },
     {
       "id": "glass_cult",
-      "body": "Robed figures kneel in ranks across the fused plain, and the rank nearest you carries the worst scarring: old burns polished with oil until they shine like marks of office. Each pilgrim keeps a blade knapped from the ground itself across their knees. They pass a road blessing down the line in alternating halves, and a child walks the ranks listening for anyone who fumbles a half. Behind you a glass ridge would hide a body, though it has been storing the day's heat since morning. The procession lies between you and every route east.",
+      "body": "Robed figures kneel in ranks across the fused plain, the nearest rank worst scarred with old burns polished bright. Each pilgrim keeps a ground-knapped blade across their knees. They pass a road blessing down the line in halves while a child walks the ranks listening for fumbles. A glass ridge behind you would hide a body. The procession lies between you and every route east.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You give the blessing back with its forgotten final line, and the child stops walking. The rank in front of you opens. An older pilgrim presses two civil-defense tablets and a fistful of pale moss from the offering cloth into your hands, moss to chew, incense to burn, and counts you among the ones the flash decided to keep.",
-            "failure": "One half of the blessing arrives in the wrong order and the line stops answering. They rise as a single body, name you profane, and the flats of their blades find your ribs and your shoulders before the ranks let you out. Distance ends the pursuit. It does not end what your hands are doing."
+            "success": "You give the blessing back with its forgotten final line, and the child stops walking. An older pilgrim presses two civil-defense tablets and pale moss from the offering cloth into your hands, moss to chew and incense to burn.",
+            "failure": "One half of the blessing arrives in the wrong order and the line stops answering. They rise as one body and the flats of their blades find your ribs and shoulders. You get out, but your hands keep shaking after."
           }
         },
         {
@@ -620,13 +620,13 @@
     },
     {
       "id": "glass_antenna",
-      "body": "Hundreds of thin antennas rise straight out of the fused plain, all holding the same low note. Their shadows point in conflicting directions, and small arcs cross between neighboring tips whenever the wind leans one toward another. At the field's center the tones change in a pattern too regular to be weather, coordinates folded inside a warning. Reading them would cost hours and turn all this noise into a bearing you could walk by. The quiet rows along the edge carry weaker current and offer a crossing that teaches you nothing.",
+      "body": "Hundreds of thin antennas rise out of the fused plain, all holding the same low note. Small arcs cross between tips when the wind leans them together. At the center the tones change in a pattern too regular for weather: coordinates folded inside a warning, hours of reading for a bearing. The quiet edge rows carry weaker current and offer a safe crossing.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "success": "You separate the repeating group from the chorus by timing it against your own pulse, and once separated it will not hide again: the same bearing, over and over, folded inside a warning nobody stayed behind to hear. You mark it on your own map. For the first time in days you walk east without spending half your attention on the horizon.",
-            "failure": "Three frequencies line up inside your skull and refuse to come apart again. You leave the field on a bearing that keeps turning under you, stopping twice to be sick, and the ground will not hold level for the rest of the afternoon. The hours are gone and the pattern kept them."
+            "success": "You separate the repeating group from the chorus by timing it against your pulse. The same bearing, over and over: you mark it on your map and walk east lighter, attention free for the first time in days.",
+            "failure": "Three frequencies line up inside your skull and refuse to come apart. You leave on a bearing that keeps turning under you, stopping twice to be sick, and the ground will not hold level all afternoon."
           }
         },
         {
@@ -640,13 +640,13 @@
     },
     {
       "id": "glass_carcass",
-      "body": "A cargo crawler lies fused belly-down across the plain, tracks sunk into black glass as if the ground swallowed it while hot. Its armored hold remains sealed beneath buckled plates. The driver’s hatch hangs open above a ladder glazed sharp by the flash. Cutting cargo access risks moving metal that still carries impossible strain. Climbing into the cabin offers a smaller prize and edges capable of opening skin with almost no pressure.",
+      "body": "A cargo crawler lies fused belly-down across the plain, tracks sunk in black glass as if swallowed while hot. Its armored hold stays sealed beneath buckled plates. The driver's hatch hangs open above a ladder glazed sharp by the flash. Cutting in risks shifting metal under impossible strain. The cabin offers a smaller prize behind edges that open skin at a touch.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
             "success": "You release the stressed plates in sequence and let each settle before entering. Riot padding, rifle cartridges, and a clean rifle optic wait inside a hold distorted around them. The crawler keeps its larger secrets beneath glass you cannot cut.",
-            "failure": "A plate folds along a heat-weakened seam and pins you flat to the chassis. You lever it off before your breath runs out, but the knee took the fold, and it fills the trouser leg while you sit on the glass looking at it. The hold stays shut above you, still holding its strain."
+            "failure": "A plate folds along a heat-weakened seam and pins you flat. You lever it off before your breath runs out, but the knee took the fold and swells against the trouser leg. The hold stays shut above you."
           }
         },
         {
@@ -712,12 +712,12 @@
     },
     {
       "id": "rail_hunters",
-      "body": "Three sets of breathing keep pace beyond the reach of your lamp. They stop when you stop and start again one step after you move, which is discipline rather than accident. Turning now means picking the ground yourself instead of standing where they picked it. Killing the lamp costs you sight and costs them more, if the service alcoves you have been counting are where you think they are. The third road is two cartridges rolled into the open, and a pack that hears loose brass learns exactly what your pack is carrying.",
+      "body": "Three sets of breathing keep pace beyond your lamp's reach. They stop when you stop and start after, which is discipline, not accident. Turning now means choosing the ground instead of standing where they chose it. Killing the lamp costs you sight and costs them more, if the alcoves are where you think. The third road is two cartridges rolled into the open, advertising a full pack.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "victory": "You turn before the breathing reaches striking distance. Violence flashes across rails, pillars, and the narrow territory of your lamp. When the last hunter falls, pistol rounds, a smoke bomb, and a burst pipe-gun explain how patiently they planned for prey."
+            "victory": "You turn before the breathing reaches striking distance. Violence flashes across rails, pillars, and the narrow territory of your lamp. When the last hunter falls, pistol rounds, a smoke bomb, and a pipe-gun explain how patiently they planned for prey."
           }
         },
         {
@@ -730,8 +730,8 @@
         {
           "index": 2,
           "outcomes": {
-            "success": "The cartridges roll out of the light and stop against a boot you never see. Nobody thanks you. A voice low against the rail gives you three turnings and a warning about the fourth, and the breathing withdraws in order, unhurried, the way people leave a room they own. The line they sold you runs shorter than the one you had.",
-            "failure": "The brass lands and the breathing does not withdraw. It spreads. A knife comes out of the dark low and early, and you break their line with your forearm laid open and the price already gone from your pocket. What the offer bought them was proof that a full pack walks this stretch, and they will be listening for it."
+            "success": "The cartridges roll out of the light and stop against an unseen boot. A voice against the rail gives you three turnings and a warning about the fourth. The breathing withdraws in order, unhurried, and relief gets into your stride.",
+            "failure": "The brass lands and the breathing does not withdraw. It spreads. A knife comes out of the dark, and you break their line with your forearm laid open and the price gone from your pocket."
           }
         }
       ]
@@ -824,12 +824,12 @@
     },
     {
       "id": "rail_nest",
-      "body": "Stripped cable, ticket stubs, and other people's clothing fill the station office from floor to ceiling. Somebody has chalked STALKER on the door frame and cut three strokes beneath it, one for each time they came back and added another. Inside, something copies your footsteps at a delay too clean for echo, and when you shift your weight, cloth settles in imitation. Noise would bring it into the open before it has chosen its angle. One unchanged pace would give it nothing to correct toward.",
+      "body": "Stripped cable, ticket stubs, and strangers' clothing fill the station office floor to ceiling. Somebody chalked STALKER on the door frame with three strokes beneath, one per return. Inside, something copies your footsteps at a delay far too clean for echo. Noise would bring it out before it chooses its angle. One unchanged pace gives it nothing to correct toward.",
       "choices": [
         {
           "index": 0,
           "outcomes": {
-            "victory": "Your first violent sound draws the Ash Stalker from its cable nest exactly where expected. The tunnel magnifies the struggle into thunder. After it falls, salvage and radiation tablets emerge from the possessions woven around its sleeping place, with a pale cloak and a sealed gland vial among them. Strips of stalk-hide lie cut for wrapping feet, and you take them."
+            "victory": "Your first violent sound draws the Ash Stalker from its cable nest. After it falls, salvage and radiation tablets emerge from its sleeping place, with a pale cloak and gland vial among them. You take stalk-hide strips for wrapping feet."
           }
         },
         {
@@ -843,7 +843,7 @@
     },
     {
       "id": "rail_platform",
-      "body": "One vending machine glows at the end of a dead platform, its display requesting payment in a currency whose symbol no longer exists. Sealed food and water remain visible behind scratched plastic. The payment board can be reached through a narrow service slot carrying a steady electrical hum. Breaking the front offers direct access through safety glass designed to fragment inward, toward the hands of anyone impatient enough to test it.",
+      "body": "One vending machine glows at the end of a dead platform, its display asking payment in a dead currency whose symbol no longer exists. Sealed food and water wait behind scratched plastic. The payment board can be reached through a narrow service slot with its steady hum. Breaking the front means going through safety glass that fragments inward, toward impatient hands.",
       "choices": [
         {
           "index": 0,
