@@ -114,6 +114,32 @@ All four harness upgrades are in, measured at the fixed seed base 100000:
 
 Open before Phase 1 tuning: the three decisions at the top of this file (cautious win allowance, Bunker 41 vs gate ending routing, final target bands).
 
+## Decisions (22 October 2026)
+
+1. **No-combat wins:** add fights the survivor cannot avoid, so builds and XP matter. Target stays cautious 5–20%. Implemented in Phase 2 as "caught" scenes: a failed evade check in a combat scene chains into the fight.
+2. **Ending:** split by Bunker 41 engagement. "Mark it and leave" no longer writes `b41_contact`; only entering the bunker routes `final_gate_1` to the Warden.
+3. **Targets:** the recommended bands, as already encoded in `--check` (reach-R2 80–90%).
+
+## Phase 1 completion log (22 October 2026)
+
+- `ContentRepository` derives `story_continuation_ids`: a story event (`narrative_priority > 0`) is a continuation when its eligibility reads a flag written by a supplemental-pack event; openers are gated on nothing or on base-road flags (including Living Road source patches).
+- `GameEngine._select_next_event`: story events take at most `STORY_EVENTS_PER_REGION = 2` slots per region (counted in the new `story_events_in_region`, defaulted for old saves; the cap is applied before the combat and supply guarantees). Under the cap the LR focused-thread reservation and then the highest-priority continuation keep absolute precedence. Openers join the weighted draw at `STORY_OPENER_WEIGHT_BOOST = 2`; generic globals draw at half the weight of regional events. Boost 4 was measured and rejected: openers barely moved (the cap binds) and R4/R5 dropped under 50%.
+- `bunker41_rusted_hatch` "Mark it and leave" no longer adds `b41_contact`.
+- Report section 17 and `--check` now measure regional slot share (next_event chain scenes excluded: they add a scene rather than take a slot) and pool events under 1% of runs.
+- Results (seed base 100000; 200000 within ±1 point):
+
+| | before | after |
+|---|---|---|
+| Regional slot share R2–R6 | 24–34% | 51–55% |
+| Regional pool events under 1% of runs | 31 | 0 |
+| Gate runs reaching `final_gate_2` | 0% | ~75% |
+| Gate runs routed to the Warden (B41) | ~99% | ~22% |
+| Wins random / novice / cautious / informed / aggressive | 0.3 / 6.9 / 99.7 / 70.5 / 0.7% | 0.0 / 2.4 / 98.0 / 59.5 / 0.1% |
+
+- Thread openers now appear in roughly half as many runs as before (e.g. rusted hatch 57% → 25%, `rhea_meeting` 66% → 38% informed); an engaged thread still completes every time (tests).
+- Still open: the Citadel Guard is never fought, because `final_gate_1` has no combat choice. Moved to Phase 2 as content.
+- `tests/test_runner.gd`: 3925 assertions, 0 failures (new `_test_story_slot_selection`; N04 scheduling tests restated on engagement). `tools/data_package_audit.gd`: 9/9.
+
 ## Working rules
 
 - Change one subsystem at a time. After each change, run:

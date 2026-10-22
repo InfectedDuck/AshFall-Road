@@ -29,6 +29,9 @@ var combat_data: Dictionary = {}
 var legacy_v2_checks: Dictionary = {}
 var discovery_entries: Dictionary = {}
 var polished_event_ids: Dictionary = {}
+## Story events whose eligibility reads a flag written by another story event,
+## as opposed to thread openers gated only on base-road flags (or nothing).
+var story_continuation_ids: Dictionary = {}
 var living_road_enabled := false
 var load_errors: PackedStringArray = []
 
@@ -49,6 +52,7 @@ func reload() -> void:
 	events = _load_index("res://data/events.json", "events")
 	_apply_narrative_overrides("res://data/narrative_overrides_v1.json")
 	_apply_narrative_overrides("res://data/narrative_overrides_v11.json")
+	var base_event_ids := events.duplicate()
 	_merge_index(events, "res://data/bunker41_events.json", "events")
 	_merge_index(events, "res://data/rustsea_events.json", "events")
 	if living_road_enabled:
@@ -61,6 +65,7 @@ func reload() -> void:
 		for event_id: String in events:
 			if bool(events[event_id].get("living_road_callback", false)):
 				polished_event_ids[event_id] = true
+	_classify_story_continuations(base_event_ids)
 	items = _load_index("res://data/items.json", "items")
 	conditions = _load_index("res://data/conditions.json", "conditions")
 	adversaries = _load_index("res://data/adversaries.json", "adversaries")
@@ -69,6 +74,48 @@ func reload() -> void:
 	combat_data = _load_map("res://data/combat_content.json", "combat")
 	legacy_v2_checks = _load_map("res://data/legacy_v2_checks.json", "legacy_checks")
 	_load_discovery_entries()
+
+
+## BALANCE_FIX_PLAN Phase 1. Only a continuation keeps the absolute story
+## reservation in event selection; an opener joins the weighted draw. Flags the
+## base road writes (including Living Road source patches) open threads, so an
+## event gated only on those is an opener.
+func _classify_story_continuations(base_event_ids: Dictionary) -> void:
+	story_continuation_ids.clear()
+	var story_flags: Dictionary = {}
+	for event_id: String in events:
+		if not base_event_ids.has(event_id):
+			_collect_written_flags(events[event_id], story_flags)
+	for event_id: String in events:
+		var event: Dictionary = events[event_id]
+		if int(event.get("narrative_priority", 0)) <= 0:
+			continue
+		var eligibility: Dictionary = event.get("eligibility", {})
+		for flag: Variant in eligibility.get("requires_flags", []) + eligibility.get("requires_any_flags", []):
+			if story_flags.has(str(flag)):
+				story_continuation_ids[event_id] = true
+				break
+
+
+static func _collect_written_flags(node: Variant, into: Dictionary) -> void:
+	if typeof(node) == TYPE_DICTIONARY:
+		for key: Variant in node:
+			if str(key) == "add_flags":
+				for flag: Variant in node[key]:
+					into[str(flag)] = true
+			else:
+				_collect_written_flags(node[key], into)
+	elif typeof(node) == TYPE_ARRAY:
+		for child: Variant in node:
+			_collect_written_flags(child, into)
+
+
+func is_story_event(event: Dictionary) -> bool:
+	return int(event.get("narrative_priority", 0)) > 0
+
+
+func is_story_continuation(event: Dictionary) -> bool:
+	return story_continuation_ids.has(str(event.get("id", "")))
 
 
 ## A chapter is only real if the encounter that writes it exists in this build.

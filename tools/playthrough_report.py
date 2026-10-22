@@ -31,6 +31,9 @@ TARGET_WIN = {
     "aggressive": (0.02, 0.08),
 }
 TARGET_REACH_R2 = (0.80, 0.90)
+# BALANCE_FIX_PLAN Phase 1 "done when" bands, pooled over every present model.
+TARGET_REGIONAL_SHARE = 0.50
+TARGET_POOL_EVENT_RUNS = 0.01
 
 
 def load(directory):
@@ -94,6 +97,73 @@ def threat_label(threat):
     if threat >= 12:
         return "MODERATE"
     return "LOW"
+
+
+def region_pools():
+    with open("data/regions.json", encoding="utf-8") as handle:
+        regions = json.load(handle)["regions"]
+    return [list(r.get("event_pool", [])) for r in regions]
+
+
+def chain_event_ids():
+    """Supplemental-pack scenes with no narrative_priority and no region pool.
+
+    They are reached through an outcome's next_event, which adds a scene without
+    spending a travel slot, so they never displace a regional event.
+    """
+    ids = set()
+    for path in glob.glob("data/*_events.json"):
+        with open(path, encoding="utf-8") as handle:
+            for event in json.load(handle).get("events", []):
+                if int(event.get("narrative_priority", 0)) == 0:
+                    ids.add(event["id"])
+    return ids
+
+
+def selection_stats(policies):
+    """Phase 1 selection metrics, pooled over models.
+
+    share[r] is the fraction of travel-slot draws in region r that came from that
+    region's own pool (next_event chain scenes are excluded: they add a scene
+    rather than take a slot); pool_runs[ev] is how often a pool event was
+    resolved per run. A non-unique event can be counted twice in one run, which
+    is close enough for a 1% floor.
+    """
+    pools = region_pools()
+    chains = chain_event_ids()
+    total_runs = sum(a["runs"] for a in policies.values())
+    in_region = [0] * len(pools)
+    from_pool = [0] * len(pools)
+    seen = defaultdict(int)
+    for a in policies.values():
+        for ev, e in a["events"].items():
+            seen[ev] += e["seen"]
+            if ev in chains:
+                continue
+            for key, n in e["regions"].items():
+                r = int(key)
+                if 0 <= r < len(pools):
+                    in_region[r] += n
+                    if ev in pools[r]:
+                        from_pool[r] += n
+    share = [from_pool[r] / in_region[r] if in_region[r] else 0.0 for r in range(len(pools))]
+    pool_runs = {ev: seen.get(ev, 0) / total_runs if total_runs else 0.0 for pool in pools for ev in pool}
+    return share, pool_runs
+
+
+def check_selection(policies):
+    failures = []
+    share, pool_runs = selection_stats(policies)
+    for r, value in enumerate(share):
+        ok = value >= TARGET_REGIONAL_SHARE
+        print(f"[{'PASS' if ok else 'FAIL'}] R{r + 1} regional slot share {value:.1%} (target >= {TARGET_REGIONAL_SHARE:.0%})")
+        if not ok:
+            failures.append(f"R{r + 1} regional share {value:.3f} below {TARGET_REGIONAL_SHARE:.2f}")
+    rare = sorted((n, ev) for ev, n in pool_runs.items() if n < TARGET_POOL_EVENT_RUNS)
+    print(f"[{'PASS' if not rare else 'FAIL'}] regional pool events below {TARGET_POOL_EVENT_RUNS:.0%} of runs: {len(rare)}")
+    for n, ev in rare:
+        failures.append(f"pool event {ev} in {n:.3%} of runs")
+    return failures
 
 
 def check_targets(policies):
@@ -431,12 +501,29 @@ def main():
     w(table(["condition"] + list(policies), rows))
     w("")
 
+    w("\n## 17. Event selection (BALANCE_FIX_PLAN Phase 1)\n")
+    share, pool_runs = selection_stats(policies)
+    w("Share of travel-slot draws in each region that came from that region's own pool (all models pooled; next_event chain scenes excluded because they add a scene instead of taking a slot):\n")
+    w(table(["region"] + [f"R{r + 1}" for r in range(len(share))], [["regional share"] + [f"{v:.1%}" for v in share]]))
+    rare = sorted((n, ev) for ev, n in pool_runs.items() if n < TARGET_POOL_EVENT_RUNS)
+    w(f"\nRegional pool events resolved in fewer than {TARGET_POOL_EVENT_RUNS:.0%} of runs ({len(rare)}): " + (", ".join(f"{ev} ({n:.2%})" for n, ev in rare) or "none"))
+    rows = []
+    for p, a in policies.items():
+        gate1 = a["events"].get("final_gate_1", {}).get("seen", 0)
+        gate2 = a["events"].get("final_gate_2", {}).get("seen", 0)
+        warden = a["events"].get("bunker41_warden_remembers", {}).get("seen", 0)
+        guard = a["enemies"].get("citadel_guard", {}).get("fights", 0)
+        rows.append([p, gate1, pct(gate2, gate1), pct(warden, gate1), guard])
+    w("\nEnding routing (runs that reached the gate):\n")
+    w(table(["model", "final_gate_1", "→ final_gate_2", "→ warden (B41)", "Citadel Guard fights"], rows))
+    w("")
+
     with open(output, "w", encoding="utf-8") as handle:
         handle.write("\n".join(lines))
     print(f"Wrote {output}")
     if "--check" in flags:
         print("\n## Target check (BALANCE_FIX_PLAN Phase 0 bands)\n")
-        failures = check_targets(policies)
+        failures = check_targets(policies) + check_selection(policies)
         w2 = ["\n## Target check\n"]
         if failures:
             w2.append("FAIL: %d band(s) missed:\n" % len(failures))

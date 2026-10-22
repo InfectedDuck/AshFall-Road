@@ -347,6 +347,8 @@ func _migrate_run(run: Dictionary) -> Dictionary:
 		run["checkpoint_xp_awards"] = []
 	if not run.has("combat_opportunities_seen_in_region"):
 		run["combat_opportunities_seen_in_region"] = 0
+	if not run.has("story_events_in_region"):
+		run["story_events_in_region"] = 0
 	if not run.has("defeated_adversaries"):
 		run["defeated_adversaries"] = []
 	if not run.has("last_checkpoint_xp"):

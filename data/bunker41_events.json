@@ -85,7 +85,6 @@
           "outcome": {
             "text": "You paint a warning where any survivor might see it: DO NOT ENTER. By morning, ash has been pressed into the letters by careful fingertips. Someone has followed you to the hatch, read your warning, and chosen not to listen. Their lantern marks begin appearing eastward.",
             "add_flags": [
-              "b41_contact",
               "b41_ash_invite",
               "b41_unprepared"
             ]

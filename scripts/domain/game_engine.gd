@@ -16,6 +16,11 @@ const STAT_LABELS := {
 }
 const PRESSURES := ["fatigue", "radiation"]
 const EVENTS_PER_REGION := 5
+## BALANCE_FIX_PLAN Phase 1: story chapters may take at most this many of a
+## region's travel slots, and a thread opener's weight is multiplied by this
+## boost when it joins the ordinary draw.
+const STORY_EVENTS_PER_REGION := 2
+const STORY_OPENER_WEIGHT_BOOST := 2
 const FINAL_EVENT_ID := "final_gate_1"
 const HP_PER_HEART := 50
 const MAX_SATIETY := 4
@@ -136,7 +141,7 @@ func start_run(candidate: Dictionary, seed_value: int) -> Dictionary:
 		"talents": [], "level": ExperienceRules.STARTING_LEVEL, "experience": 0,
 		"xp_curve_version": ExperienceRules.RULES_VERSION, "unspent_stat_points": 0, "xp_award_ids": [],
 		"checkpoint_xp_awards": [], "rewarded_checkpoints": [], "combat_opportunities_seen_in_region": 0,
-		"region_index": 0, "events_in_region": 0, "total_events": 0, "hunger_clock": 0, "supply_seen_in_region": false,
+		"story_events_in_region": 0, "region_index": 0, "events_in_region": 0, "total_events": 0, "hunger_clock": 0, "supply_seen_in_region": false,
 		"event_history": [], "flags": [], "current_event_id": "", "pending_event_id": "", "pending_resolution": {},
 		"pending_combat_round": {}, "combat_state": {}, "last_result": {}, "condition_uses": {}, "checkpoint_action": "", "checkpoint_offers": [],
 		"last_checkpoint_xp": {}, "defeated_adversaries": [],
@@ -881,6 +886,7 @@ func leave_checkpoint() -> void:
 	run_state["events_in_region"] = 0
 	run_state["supply_seen_in_region"] = false
 	run_state["combat_opportunities_seen_in_region"] = 0
+	run_state["story_events_in_region"] = 0
 	run_state["last_checkpoint_xp"] = {}
 	if int(run_state["region_index"]) >= content.ordered_regions().size():
 		run_state["current_event_id"] = FINAL_EVENT_ID
@@ -1585,6 +1591,14 @@ func _select_next_event() -> void:
 			continue
 		eligible.append(event)
 	eligible = _apply_opening_guidance(eligible)
+	var story_cap_reached := int(run_state.get("story_events_in_region", 0)) >= STORY_EVENTS_PER_REGION
+	if story_cap_reached:
+		var road_events: Array = []
+		for event: Dictionary in eligible:
+			if not content.is_story_event(event):
+				road_events.append(event)
+		if not road_events.is_empty():
+			eligible = road_events
 	var combat_seen := int(run_state.get("combat_opportunities_seen_in_region", 0))
 	if combat_seen >= 2:
 		var noncombat_events: Array = []
@@ -1610,19 +1624,21 @@ func _select_next_event() -> void:
 		if not supply.is_empty():
 			eligible = supply
 			forced_role = true
-	if not forced_role:
+	if not forced_role and not story_cap_reached:
 		var reserved := _reserved_thread_event_id(eligible)
 		if reserved != "":
-			run_state["current_event_id"] = reserved
+			_take_slot(content.get_event(reserved))
 			return
-	if not forced_role and not eligible.is_empty():
+		# Only a continuation of a thread already under way keeps the absolute
+		# reservation. Openers stay in the weighted draw below.
 		var highest_priority := 0
 		for event: Dictionary in eligible:
-			highest_priority = maxi(highest_priority, int(event.get("narrative_priority", 0)))
+			if content.is_story_continuation(event):
+				highest_priority = maxi(highest_priority, int(event.get("narrative_priority", 0)))
 		if highest_priority > 0:
 			var priority_events: Array = []
 			for event: Dictionary in eligible:
-				if int(event.get("narrative_priority", 0)) == highest_priority:
+				if content.is_story_continuation(event) and int(event.get("narrative_priority", 0)) == highest_priority:
 					priority_events.append(event)
 			eligible = priority_events
 	if eligible.is_empty():
@@ -1630,14 +1646,31 @@ func _select_next_event() -> void:
 		return
 	var total_weight := 0
 	for event: Dictionary in eligible:
-		total_weight += max(1, int(event.get("weight", 1)))
+		total_weight += _draw_weight(event)
 	var pick := _random_range(1, total_weight)
 	for event: Dictionary in eligible:
-		pick -= max(1, int(event.get("weight", 1)))
+		pick -= _draw_weight(event)
 		if pick <= 0:
-			run_state["current_event_id"] = str(event["id"])
+			_take_slot(event)
 			return
-	run_state["current_event_id"] = str(eligible.back()["id"])
+	_take_slot(eligible.back())
+
+
+## Generic road filler (global, not story) draws at half the weight of a
+## regional event, so a region's own pool keeps most of its slots.
+func _draw_weight(event: Dictionary) -> int:
+	var weight: int = max(1, int(event.get("weight", 1)))
+	if content.is_story_event(event):
+		return weight * 2 * (STORY_OPENER_WEIGHT_BOOST if not content.is_story_continuation(event) else 1)
+	if bool(event.get("global", false)):
+		return weight
+	return weight * 2
+
+
+func _take_slot(event: Dictionary) -> void:
+	run_state["current_event_id"] = str(event["id"])
+	if content.is_story_event(event):
+		run_state["story_events_in_region"] = int(run_state.get("story_events_in_region", 0)) + 1
 
 
 ## Focused thread scheduling (plan §4, consequence map §5).

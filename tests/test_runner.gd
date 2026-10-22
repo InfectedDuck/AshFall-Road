@@ -45,6 +45,7 @@ func _run_all() -> void:
 	_test_content(content)
 	_test_living_road_expansion(content, ContentRepository.new(true))
 	_test_focused_thread_scheduling(ContentRepository.new(true), content)
+	_test_story_slot_selection(ContentRepository.new(true))
 	_test_bunker41_chain(content)
 	_test_rustsea_chain(content)
 	_test_d20_and_damage()
@@ -538,18 +539,26 @@ func _test_focused_thread_scheduling(living_content: ContentRepository, release_
 	_check(str(spent.run_state.get("current_event_id", "")) != "lr_voice_in_reeds", "The reservation offers an ordinary slot and never bypasses eligibility or the one-callback-per-region limit")
 
 	# Whole seeded journeys: the thread the survivor engaged with finishes.
+	# Since BALANCE_FIX_PLAN Phase 1 an opener is drawn by weight rather than
+	# reserved, so the guarantee starts once the survivor has met chapter one.
+	var isolated_engaged := 0
 	var isolated_total := 0
 	for spec: Dictionary in thread_specs:
+		var engaged := 0
 		var complete := 0
 		for seed_value in range(7000, 7040):
 			var history := _living_road_journey(living_content, seed_value, [str(spec["source"])], str(spec["source"]))
+			if str(spec["chapters"][0]) not in history:
+				continue
+			engaged += 1
 			var all_three := true
 			for chapter: Variant in spec["chapters"]:
 				all_three = all_three and str(chapter) in history
 			complete += int(all_three)
+		isolated_engaged += engaged
 		isolated_total += complete
-		_check(complete == 40, "A survivor whose only Living Road history is %s reaches all three of its chapters in forty seeded runs" % str(spec["thread"]))
-	_check(isolated_total == 200, "All five arcs complete across two hundred seeded runs and five different recorded histories")
+		_check(engaged >= 3 and complete == engaged, "A survivor whose only Living Road history is %s can meet its weighted opener in forty seeded runs (%d) and then reaches all three chapters every time (%d)" % [str(spec["thread"]), engaged, complete])
+	_check(isolated_total == isolated_engaged, "All five arcs complete in every one of the %d seeded runs that engaged them" % isolated_engaged)
 
 	var competing_flags: Array = ["lr_channel_helped", "lr_siren_silenced", "lr_bandits_escaped", "lr_filter_repaired", "lr_nightfire_shared", "b41_mara_helped"]
 	var focused_runs := 0
@@ -578,8 +587,8 @@ func _test_focused_thread_scheduling(living_content: ContentRepository, release_
 			for chapter: Variant in spec["chapters"]:
 				all_three = all_three and str(chapter) in history
 		focused_complete += int(all_three)
-	_check(focused_runs == 60 and focused_complete == 60, "With all five hooks live and the Bunker priorities competing, the focused thread completes in every one of sixty seeded runs")
-	_check(omen_seen == 60 and hatch_seen == 60 and green_seen == 60, "A reserved slot delays the omen, the rusted hatch, and the Green Line inside their own windows without making any of them unreachable")
+	_check(focused_runs >= 30 and focused_complete == focused_runs, "With all five hooks live and the Bunker openers competing, the focused thread completes in every run that engaged one (%d of %d, of sixty)" % [focused_complete, focused_runs])
+	_check(omen_seen >= 10 and hatch_seen >= 10 and green_seen >= 55, "Openers stay reachable through the weighted draw, omen (%d) and rusted hatch (%d), while the Green Line continuation keeps its reservation unless the story cap is spent (%d of sixty)" % [omen_seen, hatch_seen, green_seen])
 
 	# The reservation replaces a draw; it never adds one. Region length, combat
 	# density, and the supply guarantee are what hunger, fatigue, and XP pace on.
@@ -673,6 +682,104 @@ func _first_authored_outcome_flags(event: Dictionary) -> Array:
 			if choice.has(outcome_key):
 				return choice[outcome_key].get("add_flags", [])
 	return []
+
+
+## BALANCE_FIX_PLAN Phase 1. Story chapters take at most two of a region's
+## five slots, only continuations keep the absolute reservation, and openers
+## join the weighted draw, so the regional pools keep most of every region.
+func _test_story_slot_selection(living_content: ContentRepository) -> void:
+	var openers := ["bunker41_static", "bunker41_rusted_hatch", "rhea_meeting", "betrayal_vex_meeting", "hunt_spark_evidence", "lr_blue_van", "lr_embers_in_rain"]
+	var continuations := ["rhea_competence", "betrayal_vex_cache", "lr_voice_in_reeds", "rustsea_green_line", "bunker41_green_platform", "bunker41_fragment_calls", "tess_meeting"]
+	var classified := true
+	for event_id: String in openers:
+		classified = classified and not living_content.is_story_continuation(living_content.get_event(event_id))
+	for event_id: String in continuations:
+		classified = classified and living_content.is_story_continuation(living_content.get_event(event_id))
+	_check(classified, "Thread openers and continuations are derived from which events write their gating flags")
+	_check(not living_content.is_story_event(living_content.get_event("global_trader")) and not living_content.is_story_continuation(living_content.get_event("outskirts_bus")), "Generic globals and regional events are never story events")
+
+	var capped := _new_game(living_content, 9301)
+	capped.run_state["region_index"] = 2
+	capped.run_state["events_in_region"] = 2
+	capped.run_state["event_history"] = []
+	capped.run_state["flags"] = ["rhea_met"]
+	capped.run_state["story_events_in_region"] = 0
+	capped._select_next_event()
+	_check(str(capped.run_state.get("current_event_id", "")) == "rhea_competence" and int(capped.run_state.get("story_events_in_region", 0)) == 1, "Under the cap an eligible continuation reserves the slot and counts against the region's story allowance")
+	capped.run_state["story_events_in_region"] = GameEngine.STORY_EVENTS_PER_REGION
+	var capped_ok := true
+	for attempt in range(12):
+		capped._select_next_event()
+		capped_ok = capped_ok and not living_content.is_story_event(capped.current_event())
+	_check(capped_ok, "Once a region has spent its story slots, the remaining draws come from the road")
+	var restored := GameEngine.new(living_content)
+	var legacy_state: Dictionary = capped.run_state.duplicate(true)
+	legacy_state.erase("story_events_in_region")
+	var migrated: Dictionary = SaveService.new()._migrate_run(legacy_state)
+	restored.restore_run(migrated)
+	_check(int(restored.run_state.get("story_events_in_region", 0)) == 0, "A save written before the story cap restores with an unspent allowance")
+
+	var opener_taken := 0
+	var road_taken := 0
+	for seed_value in range(9310, 9350):
+		var draw := _new_game(living_content, seed_value)
+		draw.run_state["region_index"] = 1
+		draw.run_state["events_in_region"] = 1
+		draw.run_state["event_history"] = []
+		draw.run_state["flags"] = []
+		draw.run_state["story_events_in_region"] = 0
+		draw._select_next_event()
+		if living_content.is_story_event(draw.current_event()):
+			opener_taken += 1
+		else:
+			road_taken += 1
+	_check(opener_taken > 0 and road_taken > 0, "With only openers eligible, the draw mixes them with road events instead of reserving them (%d story, %d road)" % [opener_taken, road_taken])
+
+	# Regional share guard over a fixed seed set: a future chain must not be
+	# able to crowd a region's own pool out of its travel slots again. Every
+	# Living Road hook is live here, the worst case for story pressure, so the
+	# floor is 45%; the 50% target for real play is the playthrough --check.
+	var region_draws: Array = [0, 0, 0, 0, 0, 0]
+	var region_pool_draws: Array = [0, 0, 0, 0, 0, 0]
+	var story_within_cap := true
+	var regions: Array = living_content.ordered_regions()
+	for seed_value in range(9400, 9460):
+		var game := _new_game(living_content, seed_value)
+		for flag: String in ["lr_channel_helped", "lr_siren_silenced", "lr_bandits_escaped", "lr_filter_repaired", "lr_nightfire_shared"]:
+			game.run_state["flags"].append(flag)
+		for region_index in range(regions.size()):
+			game.run_state["region_index"] = region_index
+			game.run_state["events_in_region"] = 0
+			game.run_state["supply_seen_in_region"] = false
+			game.run_state["combat_opportunities_seen_in_region"] = 0
+			game.run_state["story_events_in_region"] = 0
+			var pool: Array = regions[region_index].get("event_pool", [])
+			for position in range(GameEngine.EVENTS_PER_REGION):
+				game._select_next_event()
+				var selected := game.current_event()
+				game._record_event(selected)
+				for flag: Variant in _first_authored_outcome_flags(selected):
+					if str(flag) not in game.run_state["flags"]:
+						game.run_state["flags"].append(str(flag))
+				game.run_state["events_in_region"] = position + 1
+				region_draws[region_index] += 1
+				region_pool_draws[region_index] += int(str(selected.get("id", "")) in pool)
+			story_within_cap = story_within_cap and int(game.run_state.get("story_events_in_region", 0)) <= GameEngine.STORY_EVENTS_PER_REGION
+	var share_ok := true
+	var shares: Array = []
+	for region_index in range(regions.size()):
+		var share := float(region_pool_draws[region_index]) / maxf(1.0, float(region_draws[region_index]))
+		shares.append("%d%%" % roundi(share * 100.0))
+		share_ok = share_ok and share >= 0.45
+	_check(story_within_cap, "No region draws more than %d story chapters into its travel slots" % GameEngine.STORY_EVENTS_PER_REGION)
+	_check(share_ok, "With every story hook live, each region still draws at least 45%% of its travel slots from its own pool over sixty fixed seeds (%s)" % ", ".join(shares))
+
+	var hatch := _new_game(living_content, 9501)
+	hatch.run_state["region_index"] = 4
+	hatch.run_state["current_event_id"] = "bunker41_rusted_hatch"
+	hatch.run_state["phase"] = "event"
+	hatch.resolve_choice(2)
+	_check("b41_ash_invite" in hatch.run_state["flags"] and "b41_contact" not in hatch.run_state["flags"], "Marking the hatch and leaving keeps the original Citadel gate; only entering Bunker Forty-One routes to its ending")
 
 
 func _test_bunker41_chain(content: ContentRepository) -> void:
