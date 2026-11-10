@@ -76,7 +76,7 @@
     },
     "v4": {
       "heavy": {
-        "damage": 2.0
+        "damage": 1.75
       },
       "brace": {
         "damage": 0.6,

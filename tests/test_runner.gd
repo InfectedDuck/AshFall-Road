@@ -47,6 +47,7 @@ func _run_all() -> void:
 	_test_focused_thread_scheduling(ContentRepository.new(true), content)
 	_test_story_slot_selection(ContentRepository.new(true))
 	_test_caught_fights(ContentRepository.new())
+	_test_region_gates(ContentRepository.new())
 	_test_bunker41_chain(content)
 	_test_rustsea_chain(content)
 	_test_d20_and_damage()
@@ -130,8 +131,8 @@ func _test_content(content: ContentRepository) -> void:
 		placeholder_symbols[symbol] = true
 	_check(placeholder_symbols.size() == 82, "Every item resolves to a distinct temporary inventory symbol")
 	_check(content.conditions.size() == 19, "Thirteen survival conditions, checkpoint Momentum, three mutant afflictions, and three combat boons are defined")
-	_check(content.adversaries.size() == 23, "Twelve original adversaries, Mutant Crows, four creature profiles, four Phase A mutants, the Reservoir Maw, and the Ossuary Hound are defined")
-	_check(content.events.size() == 101, "The base content plus Bunker Forty-One, the eight-scene Rust-Sea arc, and four caught fights is loaded")
+	_check(content.adversaries.size() == 29, "Six region gate elites, twelve original adversaries, Mutant Crows, four creature profiles, four Phase A mutants, the Reservoir Maw, and the Ossuary Hound are defined")
+	_check(content.events.size() == 108, "The base content plus Bunker Forty-One, the eight-scene Rust-Sea arc, four caught fights, six region gates, and the Citadel Guard is loaded")
 	var combat_choices := 0
 	var checked_choices := 0
 	var outcome_passages := 0
@@ -151,9 +152,9 @@ func _test_content(content: ContentRepository) -> void:
 					outcome_passages += 1
 					var outcome_words := ContentRepository.word_count(str(choice[outcome_key].get("text", "")))
 					_check(outcome_words >= int(band["outcome_min"]) and outcome_words <= int(band["outcome_max"]), "%s outcome prose fits its %s budget of %d–%d words" % [event.get("id", "event"), role, int(band["outcome_min"]), int(band["outcome_max"])])
-	_check(combat_choices == 25, "Twenty-five authored choices enter tactical combat: the leech and drone fights join the creature and Phase A mutant routes, and four caught fights follow failed evasions")
+	_check(combat_choices == 32, "Thirty-two authored choices enter tactical combat: the leech and drone fights join the creature and Phase A mutant routes, four caught fights follow failed evasions, and seven gate fights close the regions and the Citadel")
 	_check(checked_choices == 149, "All 149 checked choices use percentage rules: D01 adds the probe-grounded drone route")
-	_check(outcome_passages == 419, "All base, caught-fight, Bunker Forty-One, Rust-Sea, equipment-route, creature-victory, depleted-pack, N06 earned-route, E02 refusal, Phase A mutant-victory, D01 build-gate, and D02 agility-gate outcome passages remain present")
+	_check(outcome_passages == 426, "All base, caught-fight, Bunker Forty-One, Rust-Sea, equipment-route, creature-victory, depleted-pack, N06 earned-route, E02 refusal, Phase A mutant-victory, D01 build-gate, and D02 agility-gate outcome passages remain present")
 	var legacy_global_opening := "The road has been quiet long enough for that quiet to feel deliberate."
 	var global_openings_are_distinct := true
 	for event: Dictionary in content.events.values():
@@ -171,11 +172,22 @@ func _test_content(content: ContentRepository) -> void:
 	_check(adversary_profiles_valid, "Every adversary has a valid HP and damage profile")
 	_check(adversary_portraits_valid, "Every adversary has a stable portrait placeholder ID")
 	_check(adversary_xp_valid, "Every adversary has an authored XP reward")
-	var expected_xp := {"mutant_crows": 18, "feral_dogs": 22, "pox_dogs": 22, "marsh_leeches": 24, "road_bandits": 24, "toll_gang": 30, "ash_stalkers": 36, "bile_spewer": 38, "bog_raiders": 44, "vault_scavs": 46, "drone_swarm": 48, "tunnel_hunters": 52, "cinder_mauler": 58, "glass_cult": 62, "citadel_guard": 75, "salt_colossus": 90, "warden_machine": 100}
+	# GAMEPLAY_REVAMP_PLAN §4.2/§4.3: optional fights pay XP and Scrap by threat
+	# tier. The Warden keeps the 100 XP ceiling; gate elites are pinned in
+	# _test_region_gates because a gate must not level the avoider.
+	var tier_xp := {"LOW": 20, "MODERATE": 30, "DANGEROUS": 45, "SEVERE": 60, "APEX": 90}
+	var tier_scrap := {"LOW": 1, "MODERATE": 2, "DANGEROUS": 3, "SEVERE": 4, "APEX": 5}
 	var rewards_match := true
-	for adversary_id: String in expected_xp:
-		rewards_match = rewards_match and int(content.get_adversary(adversary_id).get("xp_reward", 0)) == int(expected_xp[adversary_id])
-	_check(rewards_match, "All thirteen launch plus four Phase A adversaries retain the balanced XP reward table")
+	var tiered_adversaries := 0
+	for adversary: Dictionary in content.adversaries.values():
+		var adversary_id := str(adversary.get("id", ""))
+		if adversary_id.begins_with("gate_"):
+			continue
+		tiered_adversaries += 1
+		var tier := _threat_tier(int(adversary.get("threat", 0)))
+		var expected_reward := 100 if adversary_id == "warden_machine" else int(tier_xp[tier])
+		rewards_match = rewards_match and int(adversary.get("xp_reward", 0)) == expected_reward and int(adversary.get("scrap_reward", 0)) == int(tier_scrap[tier])
+	_check(rewards_match and tiered_adversaries == 23, "Every ordinary adversary pays the XP and Scrap of its threat tier (20/30/45/60/90 XP, 1-5 Scrap; the Warden pays 100 XP)")
 	var paid_choice := _new_game(content, 5019)
 	paid_choice.run_state["region_index"] = 5
 	paid_choice.run_state["current_event_id"] = "rail_hunters"
@@ -242,7 +254,7 @@ func _test_living_road_expansion(release_content: ContentRepository, living_cont
 		for error: String in validation_errors:
 			print("LIVING ROAD VALIDATION: %s" % error)
 	_check(validation_errors.is_empty(), "Living Road expansion content passes narrative, reachability, item, and callback validation")
-	_check(not release_content.living_road_enabled and release_content.events.size() == 101, "The explicit compatibility repository keeps the baseline callback-free")
+	_check(not release_content.living_road_enabled and release_content.events.size() == 108, "The explicit compatibility repository keeps the baseline callback-free")
 	var v11_document: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/narrative_overrides_v11.json"))
 	var polished_baseline_live := typeof(v11_document) == TYPE_DICTIONARY
 	var polished_baseline_count := 0
@@ -257,7 +269,7 @@ func _test_living_road_expansion(release_content: ContentRepository, living_cont
 					polished_baseline_live = polished_baseline_live and str(polished_choice[outcome_key].get("text", "")) == str(choice_override["outcomes"][outcome_key])
 	_check(polished_baseline_live and polished_baseline_count == 43, "The remaining baseline prose polish is live in compatibility mode")
 	_check(release_content.polished_event_ids.size() == 76 and release_content.load_errors.is_empty(), "All 76 baseline events use polished prose in compatibility mode")
-	_check(living_content.living_road_enabled and living_content.events.size() == 157, "The expanded release loads fifteen callbacks, twelve betrayals, eleven Rhea chapters, twelve Tess/Mina chapters, and six hunts")
+	_check(living_content.living_road_enabled and living_content.events.size() == 164, "The expanded release loads fifteen callbacks, twelve betrayals, eleven Rhea chapters, twelve Tess/Mina chapters, and six hunts")
 	_check(living_content.get_discovery_entries().size() == 54, "The Road Ledger contains fifty-four spoiler-safe chapters")
 	var callback_ids: Array = []
 	var callback_id_set: Dictionary = {}
@@ -358,7 +370,7 @@ func _test_living_road_expansion(release_content: ContentRepository, living_cont
 
 
 func _test_default_expansion_activation(default_content: ContentRepository) -> void:
-	_check(default_content.living_road_enabled and default_content.events.size() == 157, "The no-argument content repository activates the full expansion release")
+	_check(default_content.living_road_enabled and default_content.events.size() == 164, "The no-argument content repository activates the full expansion release")
 	_check(default_content.get_discovery_entries().size() == 54, "The default release Chronicle includes all fifty-four reachable chapters")
 	var hooks := {"outskirts_child_radio": true, "outskirts_market": true, "outskirts_cache": true}
 	var hook_count := 0
@@ -649,6 +661,8 @@ func _living_road_journey(content: ContentRepository, seed_value: int, flags: Ar
 		if phase in ["death", "victory"]:
 			break
 		if phase == "event":
+			if _win_forced_fight(game):
+				continue
 			var index := _first_available_noncombat_choice(game)
 			if index < 0:
 				break
@@ -814,6 +828,54 @@ func _test_caught_fights(content: ContentRepository) -> void:
 	plain.run_state["current_event_id"] = "outskirts_bandits"
 	plain.run_state["phase"] = "event"
 	_check(not str(plain.get_choice_preview(plain.current_event()["choices"][1]).get("stakes_text", "")).contains("Fight:"), "The opening region's evasions stay forgiving and never chain into a fight")
+
+
+## GAMEPLAY_REVAMP_PLAN §4.1 and §4.3. Every region ends at a gate fight that
+## cannot be skipped or fled, spends no travel slot, and opens the checkpoint;
+## every victory pays Scrap, the road's gold.
+func _test_region_gates(content: ContentRepository) -> void:
+	var gates_ok := true
+	for region: Dictionary in content.ordered_regions():
+		var gate: Dictionary = content.get_event(str(region.get("gate_event", "")))
+		gates_ok = gates_ok and not gate.is_empty() and "gate_fight" in gate.get("tags", []) and gate.get("choices", []).size() == 1
+		gates_ok = gates_ok and gate["choices"][0].has("combat") and not bool(gate["choices"][0]["combat"].get("can_flee", true))
+		gates_ok = gates_ok and int(content.get_adversary(str(gate["choices"][0]["combat"].get("adversary_id", ""))).get("scrap_reward", 0)) > 0
+	_check(gates_ok, "Every region names a single-fight gate with no escape and a Scrap bounty")
+
+	var game := _new_game(content, 9701)
+	game.run_state["phase"] = "result"
+	game.run_state["events_in_region"] = GameEngine.EVENTS_PER_REGION - 1
+	var total_before := int(game.run_state["total_events"])
+	game.continue_after_result()
+	_check(str(game.run_state.get("phase", "")) == "checkpoint", "The fifth travel scene still opens the checkpoint first, so the survivor can rest, trade, and level before the gate")
+	game.run_state["survivor"]["vitals"]["health"] = 100
+	var food := game.available_food_items()
+	_check(not food.is_empty() and bool(game.rest_at_checkpoint(str(food[0])).get("success", false)) and int(game.run_state["survivor"]["vitals"]["health"]) == 100 + game.rest_heal_amount(), "A night's rest recovers thirty percent of max HP")
+	game.leave_checkpoint()
+	_check(str(game.run_state.get("current_event_id", "")) == "outskirts_gate_overpass" and int(game.run_state["region_index"]) == 0 and bool(game.run_state.get("gate_cleared_in_region", false)), "Leaving the Outskirts checkpoint means facing Cutter's Crew")
+	var flee_preview := game.get_choice_preview(game.current_event()["choices"][0])
+	_check(int(flee_preview.get("flee_chance", 0)) == -1, "The gate preview says there is no escape")
+	var fatigue_before := int(game.run_state["survivor"]["pressures"]["fatigue"])
+	var scrap_before := game.get_item_quantity("scrap_parts")
+	_check(_win_forced_fight(game), "The teaching gate can be fought and won")
+	_check(game.get_item_quantity("scrap_parts") - scrap_before >= int(content.get_adversary("gate_cutter_crew").get("scrap_reward", 0)), "Beating a gate pays its full Scrap bounty")
+	game.continue_after_result()
+	_check(int(game.run_state["region_index"]) == 1 and str(game.run_state.get("phase", "")) == "event" and not bool(game.run_state.get("gate_cleared_in_region", true)), "Clearing the gate opens the next region, whose own gate is still ahead")
+	_check(int(game.run_state["total_events"]) == total_before + 1, "The gate spends no travel slot")
+	_check(int(game.run_state["survivor"]["pressures"]["fatigue"]) <= fatigue_before + 3 * 8 + 5, "The gate adds no travel tick of its own")
+
+	var legacy := _new_game(content, 9702)
+	legacy.run_state.erase("gate_cleared_in_region")
+	legacy.run_state["events_in_region"] = GameEngine.EVENTS_PER_REGION
+	_check(not bool(SaveService.new()._migrate_run(legacy.run_state.duplicate(true)).get("gate_cleared_in_region", true)), "A run saved before gates existed meets its gate on leaving the checkpoint")
+
+	var caught := _new_game(content, 9703)
+	caught.run_state["current_event_id"] = "flats_toll_run_down"
+	caught.run_state["phase"] = "event"
+	var caught_scrap := caught.get_item_quantity("scrap_parts")
+	_win_forced_fight(caught)
+	var full := int(content.get_adversary("toll_gang").get("scrap_reward", 0))
+	_check(caught.get_item_quantity("scrap_parts") - caught_scrap >= ceili(float(full) / 2.0) and caught.get_item_quantity("scrap_parts") - caught_scrap <= full + 1, "A caught fight pays half the Scrap bounty, rounded up (plus any salvage roll)")
 
 
 func _test_bunker41_chain(content: ContentRepository) -> void:
@@ -1220,8 +1282,11 @@ func _test_ui_components(content: ContentRepository) -> void:
 	var ui_palette := UiPaletteWidget.create("default")
 	var hud = SurvivorHudWidget.new()
 	root.add_child(hud)
+	candidate["inventory"]["scrap_parts"] = 7
 	hud.configure(candidate, ui_palette, 1.0, true, {"level": 1, "experience": 0, "unspent_stat_points": 0})
 	_check(hud.get_child_count() == 1, "Reusable HUD builds compact identity, hearts, food, and utility controls")
+	var scrap_purse := hud.find_child("ScrapPurse", true, false) as Label
+	_check(scrap_purse != null and "SCRAP 7" in scrap_purse.text and "currency" in scrap_purse.tooltip_text, "The HUD shows the Scrap purse as the road's currency")
 	_check(hud.find_child("ExperienceBar", true, false) is ProgressBar, "The active-run HUD includes compact level and XP progress")
 	var conditions_link := hud.make_conditions_link(2, 1.0)
 	root.add_child(conditions_link)
@@ -1791,7 +1856,7 @@ func _test_experience_progression(content: ContentRepository) -> void:
 		_check(ExperienceRules.level_for_xp(threshold) == index + 1, "XP threshold %d reaches level %d" % [threshold, index + 1])
 		if threshold > 0:
 			_check(ExperienceRules.level_for_xp(threshold - 1) == index, "XP immediately below %d remains level %d" % [threshold, index])
-	_check(ExperienceRules.check_bonus("easy") == 0 and ExperienceRules.check_bonus("favorable") == 2 and ExperienceRules.check_bonus("risky") == 4 and ExperienceRules.check_bonus("hard") == 7 and ExperienceRules.check_bonus("desperate") == 10, "Named check difficulties map to their authored XP bonuses")
+	_check(ExperienceRules.check_bonus("easy") == 0 and ExperienceRules.check_bonus("favorable") == 1 and ExperienceRules.check_bonus("risky") == 2 and ExperienceRules.check_bonus("hard") == 3 and ExperienceRules.check_bonus("desperate") == 5, "Named check difficulties map to their halved revamp XP bonuses (0/1/2/3/5)")
 
 	var game := _new_game(content, 5050)
 	_check(int(game.run_state["level"]) == 1 and int(game.run_state["experience"]) == 0 and int(game.run_state["unspent_stat_points"]) == 0, "A new run starts at level one without XP or carried stat points")
@@ -1808,7 +1873,7 @@ func _test_experience_progression(content: ContentRepository) -> void:
 	checkpoint_game.run_state["phase"] = "checkpoint"
 	var checkpoint_award := checkpoint_game._award_checkpoint_experience()
 	checkpoint_game._award_checkpoint_experience()
-	_check(int(checkpoint_award.get("awarded", 0)) == 10 and int(checkpoint_game.run_state["experience"]) == 10 and checkpoint_game.run_state["checkpoint_xp_awards"] == [0], "A checkpoint awards ten XP exactly once without granting an automatic level")
+	_check(int(checkpoint_award.get("awarded", 0)) == 5 and int(checkpoint_game.run_state["experience"]) == 5 and checkpoint_game.run_state["checkpoint_xp_awards"] == [0], "A checkpoint awards five XP exactly once without granting an automatic level")
 
 	var event_game := _new_game(content, 5054)
 	event_game.run_state["current_event_id"] = "outskirts_siren"
@@ -1849,7 +1914,7 @@ func _test_experience_progression(content: ContentRepository) -> void:
 	push_game.run_state["phase"] = "checkpoint"
 	push_game.run_state["survivor"]["pressures"]["fatigue"] = 40
 	var pressed_on := push_game.press_on_from_checkpoint()
-	_check(bool(pressed_on.get("success", false)) and str(push_game.run_state.get("phase", "")) == "event" and "momentum" in push_game.run_state["survivor"]["conditions"] and int(push_game.run_state["survivor"]["pressures"]["fatigue"]) == 45, "Pressing on trades recovery for one-check Momentum and normal travel Fatigue")
+	_check(bool(pressed_on.get("success", false)) and str(push_game.run_state.get("phase", "")) == "event" and str(push_game.run_state.get("current_event_id", "")) == push_game.region_gate_event_id() and "momentum" in push_game.run_state["survivor"]["conditions"] and int(push_game.run_state["survivor"]["pressures"]["fatigue"]) == 40, "Pressing on trades recovery for one-check Momentum and walks straight into the region gate")
 	push_game.run_state["current_event_id"] = "outskirts_siren"
 	var momentum_choice: Dictionary = push_game.current_event().get("choices", [])[1]
 	var momentum_chance := int(push_game.get_choice_preview(momentum_choice).get("chance", 0))
@@ -1946,7 +2011,7 @@ func _test_combat_rules(content: ContentRepository) -> void:
 	game.run_state["pending_combat_round"]["player_roll"] = 20
 	var victory_round := game.resolve_prepared_combat_round()
 	_check(bool(victory_round.get("presentation", {}).get("enemy_defeated", false)), "Cinematic presentation identifies a killing blow even after combat state is cleared")
-	_check(int(game.run_state["experience"]) == 26 and game.run_state.get("defeated_adversaries", []) == ["feral_dogs"], "Combat victory grants the authored enemy XP plus journey XP exactly once")
+	_check(int(game.run_state["experience"]) == int(content.get_adversary("feral_dogs")["xp_reward"]) + ExperienceRules.JOURNEY_XP and game.run_state.get("defeated_adversaries", []) == ["feral_dogs"], "Combat victory grants the authored enemy XP plus journey XP exactly once")
 	var victory_xp_before := int(game.run_state["experience"])
 	var victory_award_id := str(game.run_state.get("xp_award_ids", [""])[0])
 	game.award_experience(22, "Feral Dogs defeated", victory_award_id)
@@ -1990,7 +2055,8 @@ func _test_combat_v4_switch(content: ContentRepository) -> void:
 	_test_combat_upcoming(content)
 
 
-## Gameplay plan B2: stronger v4 telegraphs. Heavy x2.0 punishes attacks,
+## Gameplay plan B2: stronger v4 telegraphs. Heavy x1.75 punishes attacks
+## (x2.0 until GAMEPLAY_REVAMP_PLAN §4.4 capped single-hit burst),
 ## Sweep/Heavy reward the correct defend, Brace taxes attacks but pays
 ## defenders with Fatigue, Recover is a free punish. All numbers come from
 ## combat_content.json v4; saved v3 fights keep old numbers.
@@ -1998,18 +2064,18 @@ func _test_combat_v4_telegraphs(content: ContentRepository) -> void:
 	var Rules = load("res://scripts/domain/narrative_combat.gd")
 	_check(content.combat_data.has("v4"), "v4 tuning lives in combat_content.json, not code")
 	var v4tab: Dictionary = content.combat_data.get("v4", {})
-	_check(float((v4tab.get("heavy", {}) as Dictionary).get("damage", 0.0)) == 2.0, "v4 Heavy hits x2.0 from data")
+	_check(float((v4tab.get("heavy", {}) as Dictionary).get("damage", 0.0)) == 1.75, "v4 Heavy hits x1.75 from data")
 	_check(float((v4tab.get("brace", {}) as Dictionary).get("incoming", 0.0)) == 0.3, "v4 Brace receives 30% from data")
 	_check(float((v4tab.get("brace", {}) as Dictionary).get("damage", 0.0)) == 0.6, "v4 Brace counters at ~60% strike from data")
 	_check(float((v4tab.get("recover", {}) as Dictionary).get("bonus", 0.0)) == 0.5, "v4 Recover grants +50% from data")
 	_check(float((v4tab.get("recover", {}) as Dictionary).get("damage", 1.0)) == 0.0, "v4 Recover deals no damage from data")
 	_check(int(v4tab.get("brace_defend_recovery", 0)) == 6, "v4 Brace defend recovery is 6 Fatigue from data")
 	_check(float((v4tab.get("finisher", {}) as Dictionary).get("bonus", 0.0)) == 2.0, "v4 Finisher bonus is x3.0 from data")
-	# Heavy: v4 commits x2.0, v3 keeps x1.5.
+	# Heavy: v4 commits x1.75, v3 keeps x1.5.
 	var heavy_v4 := _v4_fixture(content, "road_bandits", 7201, "heavy")
-	_check(float(heavy_v4.run_state["combat_state"]["committed_move"].get("damage", 0.0)) == 2.0, "v4 Heavy commits x2.0 damage")
+	_check(float(heavy_v4.run_state["combat_state"]["committed_move"].get("damage", 0.0)) == 1.75, "v4 Heavy commits x1.75 damage")
 	var heavy_preview: Dictionary = heavy_v4.combat_action_preview("attack")
-	_check("Heavy (v4)" in " ".join(heavy_preview.get("effects", [])), "v4 Heavy attack preview warns of the punish")
+	_check("Heavy (v4): x1.75 damage" in " ".join(heavy_preview.get("effects", [])), "v4 Heavy attack preview warns of the punish with the multiplier the data sets")
 	var heavy_v3 := _v4_fixture(content, "road_bandits", 7202, "heavy", 3)
 	_check(float(heavy_v3.run_state["combat_state"]["committed_move"].get("damage", 0.0)) == 1.5, "v3 Heavy stays x1.5")
 	# Heavy attack-into: v4 applies the enemy critical_condition on a landed hit.
@@ -2370,7 +2436,7 @@ func _test_combat_recovery(content: ContentRepository) -> void:
 	var resumed_victory := GameEngine.new(content)
 	resumed_victory.restore_run(prepared_victory.run_state)
 	var victory_result := resumed_victory.resolve_prepared_combat_round()
-	_check(bool(victory_result.get("enemy_defeated", false)) and int(resumed_victory.run_state["experience"]) == 26, "A prepared killing blow restored before resolution grants combat and journey XP once")
+	_check(bool(victory_result.get("enemy_defeated", false)) and int(resumed_victory.run_state["experience"]) == int(content.get_adversary("feral_dogs")["xp_reward"]) + ExperienceRules.JOURNEY_XP, "A prepared killing blow restored before resolution grants combat and journey XP once")
 	var resolved_victory := GameEngine.new(content)
 	resolved_victory.restore_run(resumed_victory.run_state)
 	var xp_after_victory := int(resolved_victory.run_state["experience"])
@@ -2389,6 +2455,8 @@ func _test_complete_run(content: ContentRepository) -> void:
 		if game.run_state["phase"] == "result":
 			game.run_state["survivor"]["vitals"]["satiety"] = 4
 			game.continue_after_result()
+			continue
+		if _win_forced_fight(game):
 			continue
 		var choice := _first_available_noncombat_choice(game)
 		game.resolve_choice(choice, 20)
@@ -2577,7 +2645,7 @@ func _test_betrayal_arc() -> void:
 	for event_id: String in betrayal_ids:
 		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
 		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
-	_check(expanded.events.size() == 157, "Betrayal, Rhea, Tess/Mina, and hunt events join the expanded release")
+	_check(expanded.events.size() == 164, "Betrayal, Rhea, Tess/Mina, and hunt events join the expanded release")
 	var cache := _new_game(expanded, 4242)
 	cache.run_state["region_index"] = 2
 	_check(not cache._event_eligible(expanded.get_event("betrayal_vex_cache")), "The sealed package is not offered before Vex is trusted")
@@ -2637,7 +2705,7 @@ func _test_rhea_arc() -> void:
 	for event_id: String in rhea_ids:
 		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
 		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
-	_check(expanded.events.size() == 157, "Rhea, Tess/Mina, and hunt chapters join the expanded release")
+	_check(expanded.events.size() == 164, "Rhea, Tess/Mina, and hunt chapters join the expanded release")
 	_check(expanded.get_discovery_entries().size() == 54, "Tess, Mina, and hunt chapters join the Chronicle denominator")
 	# The Maw exists as a flood boss with drainage counterplay.
 	var maw: Dictionary = expanded.get_adversary("reservoir_maw")
@@ -2715,7 +2783,7 @@ func _test_rhea_arc() -> void:
 	var bought := _new_game(expanded, 4315)
 	bought.run_state["current_event_id"] = "rhea_betrayal_smuggler"
 	bought.run_state["phase"] = "event"
-	bought.run_state["survivor"]["inventory"]["scrap_parts"] = 3
+	bought.run_state["survivor"]["inventory"]["scrap_parts"] = 2
 	bought.resolve_choice(2)
 	_check("rhea_betrayed_smuggler" in bought.run_state["flags"] and int(bought.get_item_quantity("scrap_parts")) == 0, "Buying the line spends the salvage and still witnesses")
 	# Filtration: kill the Maw, ride the drain, wedge the door, or climb.
@@ -2783,7 +2851,7 @@ func _test_stage3_companions_hunts() -> void:
 	for event_id: String in ["tess_meeting", "tess_work", "tess_boundary", "tess_past", "tess_crisis", "tess_ending", "mina_meeting", "mina_aid", "mina_vow", "mina_trial", "mina_vigil", "mina_ending", "hunt_spark_evidence", "hunt_spark_prep", "hunt_spark_confront", "hunt_hound_evidence", "hunt_hound_prep", "hunt_hound_confront"]:
 		_check(not expanded.get_event(event_id).is_empty(), "%s loads in the expanded release" % event_id)
 		_check(baseline.get_event(event_id).is_empty(), "%s stays out of the compatibility baseline" % event_id)
-	_check(expanded.events.size() == 157, "Twelve companion chapters and six hunt scenes join the expanded release")
+	_check(expanded.events.size() == 164, "Twelve companion chapters and six hunt scenes join the expanded release")
 	_check(expanded.get_discovery_entries().size() == 54, "Fourteen companion and hunt chapters join the Chronicle")
 	# Cross-run unlock: a witnessed betrayal in any past life opens Tess and Mina.
 	_check(StoryDiscoveryRules.betrayal_witnessed(["ledger_rhea_betrayal_shelter:betrayed"]), "A betrayed Shelter account counts as witnessed")
@@ -3299,8 +3367,9 @@ func _test_choice_stakes(content: ContentRepository) -> void:
 
 
 ## Latest_plan Week 2: checkpoint trading. Three saved offers per checkpoint,
-## browsed free and bought once instead of resting or pressing on, with stock
-## that reopening or restarting cannot refresh.
+## browsed free and bought with Scrap before resting or pressing on (the
+## revamp keeps the counter open all stop), with stock that reopening or
+## restarting cannot refresh.
 func _test_checkpoint_trading(content: ContentRepository) -> void:
 	_check(not content.get_trade_catalog().is_empty() and content.get_trade_catalog().get("equipment", []).size() >= 20, "The trade catalog lists a regional equipment ladder with set prices")
 	var game := _new_game(content, 9501)
@@ -3339,15 +3408,24 @@ func _test_checkpoint_trading(content: ContentRepository) -> void:
 	melee.run_state["survivor"]["inventory"]["salvage_cleaver"] = 1
 	melee.generate_checkpoint_offers()
 	_check(str(melee.run_state["checkpoint_offers"][1].get("item_id", "")) == "cloth_bandage", "A melee build is offered medicine instead")
-	# Purchasing commits the checkpoint activity through the transaction.
+	# GAMEPLAY_REVAMP_PLAN §4.3: Scrap is the road's gold and the counter stays
+	# open for the whole stop. A purchase commits through the transaction but
+	# never replaces Rest or Press On.
 	var store := _TradeStore.new()
 	var deal := preload("res://scripts/services/combat_transaction.gd").new().execute(game, store, {}, "trade", [2])
-	_check(bool(deal.get("success", false)) and str(game.run_state.get("checkpoint_action", "")) == "barter", "Buying an offer commits Barter as the checkpoint activity")
+	_check(bool(deal.get("success", false)) and str(game.run_state.get("checkpoint_action", "")) == "", "Buying an offer commits the purchase without spending the checkpoint's activity")
 	_check(bool(store.saved.get("checkpoint_offers", [])[2].get("sold", false)), "The committed stock persists with the purchase marked sold")
 	_check(game.get_item_quantity("clean_water") == 2, "The food price leaves the pack on purchase")
-	_check(not bool(game.accept_trade(0).get("success", false)), "One activity per checkpoint: a second purchase is refused")
-	_check(not bool(game.rest_at_checkpoint().get("success", false)), "Barter forecloses Rest like any other commitment")
 	_check(game.get_item_quantity("canned_meat") == 4, "The food purchase actually arrives")
+	_check(not bool(game.accept_trade(2).get("success", false)) and game.get_item_quantity("canned_meat") == 4, "A sold offer cannot be bought twice")
+	var scrap_before_gear := game.get_item_quantity("scrap_parts")
+	var gear_cost := int(offers[0].get("cost", {}).get("scrap_parts", 0))
+	_check(bool(game.accept_trade(0).get("success", false)) and gear_cost > 0 and game.get_item_quantity("scrap_parts") == scrap_before_gear - gear_cost, "The counter stays open: a second offer is bought with Scrap at its listed price")
+	_check(bool(game.rest_at_checkpoint().get("success", false)) and str(game.run_state.get("checkpoint_action", "")) == "rest", "Buying leaves Rest available")
+	var bartered_save: Dictionary = _new_game(content, 9505).run_state.duplicate(true)
+	bartered_save["phase"] = "checkpoint"
+	bartered_save["checkpoint_action"] = "barter"
+	_check(str(SaveService.new()._migrate_run(bartered_save).get("checkpoint_action", "x")) == "", "A stop saved under the old one-purchase rule may still Rest or Press On")
 	game.leave_checkpoint()
 	_check(str(game.run_state.get("phase", "")) == "event" and game.run_state.get("checkpoint_offers", []).is_empty(), "Leaving clears the old stock for the next checkpoint")
 	# Old saves without offers receive them once, then keep them.
@@ -3402,8 +3480,8 @@ func _test_receipt_item_icons(content: ContentRepository) -> void:
 	buying.run_state["survivor"]["inventory"]["scrap_parts"] = 4
 	buying.resolve_choice(1)
 	var receipt: Dictionary = buying.run_state["last_result"]
-	_check("Scrap Parts -2" in receipt.get("changes", []) and "Bitter Tonic +1" in receipt.get("changes", []), "A paid choice keeps its exact receipt wording")
-	_check(receipt.get("item_changes", []) == [{"id": "scrap_parts", "delta": -2}, {"id": "bitter_tonic", "delta": 1}], "A paid choice structures its cost before its reward")
+	_check("Scrap Parts -1" in receipt.get("changes", []) and "Bitter Tonic +1" in receipt.get("changes", []), "A paid choice keeps its exact receipt wording")
+	_check(receipt.get("item_changes", []) == [{"id": "scrap_parts", "delta": -1}, {"id": "bitter_tonic", "delta": 1}], "A paid choice structures its cost before its reward")
 	var ui = MainUI.new()
 	ui.bootstrap_on_ready = false
 	root.add_child(ui)
@@ -3422,7 +3500,7 @@ func _test_receipt_item_icons(content: ContentRepository) -> void:
 	_check(rows.size() == 2, "Each changed item renders its own icon row on the result screen")
 	var first_row := rows[0] as HBoxContainer
 	var first_icon := first_row.get_child(0)
-	_check(first_icon != null and str((first_row.get_child(1) as Label).text) == "Scrap Parts  -2", "A spent item shows its icon beside its quantity")
+	_check(first_icon != null and str((first_row.get_child(1) as Label).text) == "Scrap Parts  -1", "A spent item shows its icon beside its quantity")
 	ui.game.run_state["last_result"] = {"event_id": "global_map", "outcome_text": "The stranger binds the wound.", "changes": ["Canned Meat -1"], "xp_awards": [], "resolution": {}}
 	ui._show_result()
 	_check(ui.page.find_children("ReceiptItemRow_*", "", true, false).is_empty(), "A result without entries renders its text receipt with no icon rows")
@@ -3598,6 +3676,26 @@ func _combat_game(content: ContentRepository, seed_value: int, event_id: String,
 	return game
 
 
+## The tier the player reads on a fight button, straight from the engine.
+func _threat_tier(threat: int) -> String:
+	return GameEngine.new(ContentRepository.new(false))._threat_label(threat)
+
+
+## Region gates and caught fights offer only the fight. Scripted journeys that
+## measure the road rather than combat win them with one natural-20 blow.
+func _win_forced_fight(game: GameEngine) -> bool:
+	var choices: Array = game.current_event().get("choices", [])
+	if choices.is_empty() or not choices.all(func(choice: Dictionary) -> bool: return choice.has("combat")):
+		return false
+	if not bool(game.start_combat(0).get("combat_started", false)):
+		return false
+	game.run_state["combat_state"]["enemy_health"] = 1
+	game.prepare_combat_action("attack")
+	game.run_state["pending_combat_round"]["player_roll"] = 20
+	game.resolve_prepared_combat_round()
+	return true
+
+
 func _first_available_noncombat_choice(game: GameEngine) -> int:
 	var choices: Array = game.current_event().get("choices", [])
 	for index in range(choices.size()):
@@ -3674,7 +3772,7 @@ func _test_scene_roles_and_conditional_passages(content: ContentRepository) -> v
 			micros_earned = micros_earned and ContentRepository.word_count(str(promoted.get("body", ""))) < 60
 	_check(roles_valid, "Every declared scene role is a known role other than the implicit default")
 	_check(promotions_earned, "A scene that declares a longer role actually carries a longer introduction than the compact band allows")
-	_check(micros_earned and micro_count == 32, "Thirty-two basic scenes declare micro and carry introductions shorter than the compact band allows")
+	_check(micros_earned and micro_count == 39, "Thirty-nine basic scenes declare micro and carry introductions shorter than the compact band allows")
 	_check(promoted_scenes.size() >= 4, "The pilot promotions survive later packages")
 	_check(compact_events == content.events.size() - promoted_scenes.size(), "Every event outside that pilot set still authors its scene role implicitly")
 	_check(compact_events_in_band == compact_events, "All %d existing passages pass unchanged under the default compact band" % compact_events)
@@ -4618,7 +4716,7 @@ func _test_legal_actions_and_item_reach(content: ContentRepository) -> void:
 	_check(earliest < 2, "A Smoke Bomb can be earned before the Drowned Marches ask for one")
 	var tanker: Dictionary = content.get_event("flats_tanker")["choices"][0]["success"]
 	var tanker_reward: Dictionary = tanker["items"]
-	_check(tanker_reward.size() == 3 and int(tanker_reward.get("frame_pack", 0)) == 1 and int(tanker_reward.get("scrap_parts", 0)) == 2 and int(tanker_reward.get("smoke_bomb", 0)) == 1, "Cutting the locker keeps both authored rewards and adds the repacked flare casing")
+	_check(tanker_reward.size() == 3 and int(tanker_reward.get("frame_pack", 0)) == 1 and int(tanker_reward.get("scrap_parts", 0)) == 1 and int(tanker_reward.get("smoke_bomb", 0)) == 1, "Cutting the locker keeps both authored rewards and adds the repacked flare casing")
 	_check("smoke charge" in str(tanker.get("text", "")), "The locker's outcome names the charge it now hands over")
 
 	var raiders := _route_game(content, 7413, "marsh_raiders")
@@ -4736,7 +4834,7 @@ func _test_returning_stories(content: ContentRepository, living_content: Content
 		{"event": "lr_voice_in_reeds", "region": 2, "flags": ["widow_pool_cleared"], "items": {}, "writes": "lr_family_reunited", "pays": "climbing_rope"},
 		{"event": "lr_quiet_column", "region": 1, "flags": ["lr_siren_silenced"], "items": {"scrap_parts": 1}, "writes": "lr_column_sheltered", "pays": ""},
 		{"event": "lr_pharmacy_witness", "region": 1, "flags": ["lr_bandit_leader_disarmed"], "items": {"pipe_pistol": 1}, "writes": "lr_ledger_clue", "pays": ""},
-		{"event": "lr_cup_passed_east", "region": 3, "flags": ["lr_filter_stripped"], "items": {"scrap_parts": 2}, "writes": "lr_water_shared", "pays": "clean_water"},
+		{"event": "lr_cup_passed_east", "region": 3, "flags": ["lr_filter_stripped"], "items": {"scrap_parts": 1}, "writes": "lr_water_shared", "pays": "clean_water"},
 		{"event": "lr_embers_in_rain", "region": 2, "flags": ["lr_nightfire_robbed"], "items": {}, "writes": "lr_caravan_debt_owed", "pays": "canned_meat"},
 		{"event": "lr_warm_windows", "region": 5, "flags": ["kilnback_rhythm_known"], "items": {}, "writes": "lr_caravan_two_fires", "pays": "stun_baton"},
 	]
@@ -4806,18 +4904,18 @@ func _test_returning_stories(content: ContentRepository, living_content: Content
 		for key: String in ["success", "failure", "critical_success"]:
 			if choice.has(key):
 				gate_outcomes += 1
-				routed_default = routed_default and stranger.resolve_outcome_next_event(choice[key]) == "final_gate_2"
+				routed_default = routed_default and stranger.resolve_outcome_next_event(choice[key]) == "final_gate_guard"
 				routed_bunker = routed_bunker and veteran.resolve_outcome_next_event(choice[key]) == "bunker41_warden_remembers"
-	_check(gate_outcomes == 5 and routed_default, "All five first-gate outcomes send a survivor who never touched Bunker Forty-One to the standard screening")
+	_check(gate_outcomes == 5 and routed_default, "All five first-gate outcomes send a survivor who never touched Bunker Forty-One to the Citadel Guard before the standard screening")
 	_check(routed_bunker, "All five send a survivor who entered or marked the bunker to the Warden that remembers them")
 	var heard := _route_game(content, 7632, "final_gate_1")
 	heard.run_state["flags"] = ["b41_voice_heard"]
-	_check(heard.resolve_outcome_next_event(gate_one["choices"][1]["failure"]) == "final_gate_2" and heard.resolve_body(gate_one) != str(gate_one.get("body", "")), "Hearing the salt-flats voice earns a recognition line at the gate but not the Bunker finale")
+	_check(heard.resolve_outcome_next_event(gate_one["choices"][1]["failure"]) == "final_gate_guard" and heard.resolve_body(gate_one) != str(gate_one.get("body", "")), "Hearing the salt-flats voice earns a recognition line at the gate but not the Bunker finale")
 	# The route is selected when the prepared choice resolves, so restoring a
 	# concealed roll must retain the survivor's history rather than silently
 	# taking the default route.
 	for prepared_history: Dictionary in [
-		{"flags": [], "next": "final_gate_2", "label": "standard screening"},
+		{"flags": [], "next": "final_gate_guard", "label": "standard screening"},
 		{"flags": ["b41_contact"], "next": "bunker41_warden_remembers", "label": "Bunker finale"},
 	]:
 		var prepared_gate := _route_game(content, 76321 + int(prepared_history["flags"].size()), "final_gate_1")
@@ -4847,7 +4945,12 @@ func _test_returning_stories(content: ContentRepository, living_content: Content
 	walker.run_state["region_index"] = 6
 	walker.resolve_choice(1, 20)
 	walker.continue_after_result()
-	_check(str(walker.run_state.get("current_event_id", "")) == "final_gate_2", "The first gate's outcome chains into the screening")
+	_check(str(walker.run_state.get("current_event_id", "")) == "final_gate_guard", "The first gate's outcome brings out the Citadel Guard")
+	var guard_choice: Dictionary = walker.current_event()["choices"][0]
+	_check(walker.current_event()["choices"].size() == 1 and not bool(guard_choice["combat"].get("can_flee", true)), "The Citadel Guard is a fight with no escape")
+	_check(_win_forced_fight(walker), "The Citadel Guard can be beaten")
+	walker.continue_after_result()
+	_check(str(walker.run_state.get("current_event_id", "")) == "final_gate_2", "Beating the guard chains into the screening")
 	walker.resolve_choice(0, 20)
 	walker.continue_after_result()
 	_check(str(walker.run_state.get("current_event_id", "")) == "final_gate_3", "Blinding the Warden chains into One Person Through")

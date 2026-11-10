@@ -293,9 +293,10 @@ func validate_all() -> PackedStringArray:
 			errors.append("Event '%s' introduction must contain %d-%d words for a %s scene (found %d)" % [event_id, int(band["body_min"]), int(band["body_max"]), role, introduction_words])
 		_validate_passage_variants(event_id, "introduction", event, "body_variants", int(band["body_min"]), int(band["body_max"]), produced_flags, errors)
 		var choices: Array = event.get("choices", [])
-		# A caught fight (BALANCE_FIX_PLAN Phase 2) is the one scene with no way
-		# around it: a single combat choice, reached only through next_event.
-		var caught_fight: bool = "caught_fight" in event.get("tags", []) and choices.size() == 1 and typeof(choices[0]) == TYPE_DICTIONARY and choices[0].has("combat")
+		# Caught fights and region gates (GAMEPLAY_REVAMP_PLAN §4.1) are the
+		# scenes with no way around them: a single combat choice.
+		var tags: Array = event.get("tags", [])
+		var caught_fight: bool = ("caught_fight" in tags or "gate_fight" in tags) and choices.size() == 1 and typeof(choices[0]) == TYPE_DICTIONARY and choices[0].has("combat")
 		if not caught_fight and (choices.size() < 2 or choices.size() > 4):
 			errors.append("Event '%s' must have two to four choices" % event_id)
 		if "supply_opportunity" in event.get("tags", []) and not _event_has_two_satiety_route(event):
@@ -312,6 +313,10 @@ func validate_all() -> PackedStringArray:
 		var slot := str(item.get("equipment_slot", ""))
 		if slot not in ["", "weapon", "armor", "accessory", "backpack"]:
 			errors.append("Item '%s' uses invalid equipment slot '%s'" % [item_id, slot])
+		# GAMEPLAY_REVAMP_PLAN §4.3: weapons and armor carry an explicit tier so
+		# the shop ladder and the balance telemetry agree on what an upgrade is.
+		if slot in ["weapon", "armor"] and int(item.get("tier", 0)) not in [1, 2, 3]:
+			errors.append("%s '%s' needs a tier from 1 to 3" % [slot.capitalize(), item_id])
 		if slot == "weapon":
 			var combat: Dictionary = item.get("combat", {})
 			if combat.is_empty() or str(combat.get("attack_stat", "")) not in GameEngine.STATS:
@@ -394,6 +399,15 @@ func _validate_trade_catalog(errors: PackedStringArray) -> void:
 			errors.append("Trade catalog offers duplicate equipment '%s'" % str(entry.get("id", "")))
 		seen[str(entry.get("id", ""))] = true
 		_validate_trade_cost(entry.get("cost", {}), str(entry.get("id", "")), errors)
+		# The shop ladder: tier 2 from the second region at 5-6 Scrap, tier 3
+		# from the fourth at 8-10, so two or three won fights buy one upgrade.
+		var tier := int(offered.get("tier", 0))
+		var scrap_price := int(entry.get("cost", {}).get("scrap_parts", 0))
+		var first_region := int(entry.get("min_region", 0))
+		if tier == 2 and (first_region < 1 or scrap_price < 5 or scrap_price > 6):
+			errors.append("Trade catalog tier-2 '%s' must open in region 2 or later for 5-6 Scrap" % str(entry.get("id", "")))
+		if tier == 3 and (first_region < 3 or scrap_price < 8 or scrap_price > 10):
+			errors.append("Trade catalog tier-3 '%s' must open in region 4 or later for 8-10 Scrap" % str(entry.get("id", "")))
 	for key: String in ["ammunition", "medical", "food"]:
 		var offer: Dictionary = trade_catalog.get(key, {})
 		if int(offer.get("quantity", 0)) <= 0:

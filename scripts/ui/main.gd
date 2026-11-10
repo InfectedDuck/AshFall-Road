@@ -2010,26 +2010,30 @@ func _show_checkpoint() -> void:
 	_show_checkpoint_talents(checkpoint_column)
 	checkpoint_column.add_child(HSeparator.new())
 	checkpoint_column.add_child(_eyebrow("2 — How do you leave?"))
+	# GAMEPLAY_REVAMP_PLAN §4.1: the region's gate fight waits past this stop,
+	# so the checkpoint names it before the survivor decides how to prepare.
+	var gate_warning := game.region_gate_warning()
+	if gate_warning != "":
+		var gate_label := _role_label(gate_warning, "label", _c("danger"))
+		gate_label.name = "CheckpointGateWarning"
+		gate_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		checkpoint_column.add_child(gate_label)
 	var checkpoint_action := str(game.run_state.get("checkpoint_action", ""))
 	if checkpoint_action == "rest":
 		# This receipt must wrap on a narrow phone. As a single-line tracked label
 		# it enlarged the scroll column and pushed the pinned departure off-screen.
-		checkpoint_column.add_child(_role_label("REST COMPLETE • Fatigue reached 0 • HP +25 • one food consumed", "flavour", _c("success")))
+		checkpoint_column.add_child(_role_label("REST COMPLETE • Fatigue reached 0 • HP +%d • one food consumed" % game.rest_heal_amount(), "flavour", _c("success")))
+		_show_checkpoint_barter(checkpoint_column)
 		var continue_after_rest := _button("CONTINUE JOURNEY AFTER REST", _leave_checkpoint)
 		_add_button_atlas_icon(continue_after_rest, "navigation")
 		body.add_child(_checkpoint_departure(continue_after_rest))
-	elif checkpoint_action == "barter":
-		checkpoint_column.add_child(_role_label("BARTER COMPLETE • One purchase made • the trader packs up and the stock is gone", "flavour", _c("success")))
-		var continue_after_barter := _button("CONTINUE JOURNEY AFTER BARTER", _leave_checkpoint)
-		_add_button_atlas_icon(continue_after_barter, "navigation")
-		body.add_child(_checkpoint_departure(continue_after_barter))
 	else:
-		checkpoint_column.add_child(_role_label("REST • Consume one food, restore its satiety, set Fatigue to 0, and recover 25 HP.", "flavour", _c("icon_ink")))
+		checkpoint_column.add_child(_role_label("REST • Consume one food, restore its satiety, set Fatigue to 0, and recover %d HP." % game.rest_heal_amount(), "flavour", _c("icon_ink")))
 		var rest_button := _button("CHOOSE FOOD & REST", _show_rest_food, game.available_food_items().is_empty())
 		_add_button_atlas_icon(rest_button, "rest")
 		body.add_child(_checkpoint_departure(rest_button))
 		_show_checkpoint_barter(checkpoint_column)
-		checkpoint_column.add_child(_role_label("PRESS ON • Keep your food and gain Momentum: +1 to every stat for the next checked choice. Normal travel adds 5 Fatigue.", "flavour", _c("icon_ink")))
+		checkpoint_column.add_child(_role_label("PRESS ON • Keep your food and gain Momentum: +1 to every stat for the next checked choice or the first exchange of the fight ahead.", "flavour", _c("icon_ink")))
 		var press_on_button := _button("CONTINUE JOURNEY — GAIN MOMENTUM", _press_on_checkpoint)
 		_add_button_atlas_icon(press_on_button, "press_on")
 		body.add_child(_checkpoint_departure(press_on_button))
@@ -2113,14 +2117,15 @@ func _choose_talent(talent_id: String) -> void:
 	_run_gameplay_action("select_talent", [talent_id], _after_checkpoint_choice)
 
 
-## Checkpoint trading: one of three saved offers may be purchased instead of
-## resting or pressing on. Prices show before commitment; buying packs the
-## trader up. Reopening this screen cannot refresh the stock.
+## Checkpoint trading: the counter stays open for the whole stop, so any of
+## the three saved offers may be bought with Scrap before resting or pressing
+## on. Prices show before commitment. Reopening this screen cannot refresh the
+## stock.
 func _show_checkpoint_barter(checkpoint_column: Control) -> void:
 	var offers: Array = game.checkpoint_offers()
 	if offers.is_empty():
 		return
-	checkpoint_column.add_child(_role_label("BARTER • Buy one of three offers instead of resting or gaining Momentum. Prices show in full before you commit.", "flavour", _c("icon_ink")))
+	checkpoint_column.add_child(_role_label("BARTER • YOU CARRY %d SCRAP • Scrap is the road's currency: fights pay it, and it buys any of these offers before you rest or press on. Prices show in full before you commit." % game.get_item_quantity("scrap_parts"), "flavour", _c("icon_ink")))
 	for index in range(offers.size()):
 		var preview: Dictionary = game.trade_preview(index)
 		checkpoint_column.add_child(_role_label(str(preview.get("summary", "No offer.")), "prose"))

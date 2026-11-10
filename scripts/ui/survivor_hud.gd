@@ -124,6 +124,17 @@ func configure(survivor: Dictionary, palette: Dictionary, font_scale: float = 1.
 	food_meter.name = "FoodMeter"
 	food_meter.configure(4, satiety, 1.0, "◆", "◇", accent, muted, int(MEAL_ICON_SIZE * font_scale), "Meal reserve", "food")
 	meal_row.add_child(food_meter)
+	# Scrap is the road's currency (GAMEPLAY_REVAMP_PLAN 4.3): fights pay it and
+	# checkpoints sell gear for it, so the purse is always on screen.
+	var scrap_label := Label.new()
+	scrap_label.name = "ScrapPurse"
+	var scrap := int(survivor.get("inventory", {}).get("scrap_parts", 0))
+	scrap_label.text = "  SCRAP %d" % scrap
+	scrap_label.tooltip_text = "Scrap: the road's currency. Fights pay it; checkpoints sell gear for it."
+	scrap_label.accessibility_name = "Scrap, the road's currency: %d" % scrap
+	scrap_label.add_theme_font_size_override("font_size", int(9 * font_scale))
+	scrap_label.add_theme_color_override("font_color", accent if scrap > 0 else muted)
+	meal_row.add_child(scrap_label)
 	vitals_block.add_child(meal_row)
 
 	var capsule = StatsCapsuleWidget.new()

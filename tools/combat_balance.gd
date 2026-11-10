@@ -8,12 +8,12 @@ extends SceneTree
 const Fixtures = preload("res://tests/narrative_combat_tests.gd")
 const Rules = preload("res://scripts/domain/narrative_combat.gd")
 
-const FIXTURE_VERSION := 6
+const FIXTURE_VERSION := 7
 const SEEDS_PER_ROW := 1000
 const POLICY_SEED_OFFSET := 1000003
 const EXCHANGE_LIMIT := 60
 ## Every adversary in the package, not a prototype subset.
-const BENCHMARK_ENEMIES := ["road_bandits", "feral_dogs", "ash_stalkers", "toll_gang", "marsh_leeches", "bog_raiders", "drone_swarm", "vault_scavs", "glass_cult", "tunnel_hunters", "citadel_guard", "warden_machine", "mutant_crows", "reed_widow", "kilnback", "shutter_skitters", "cable_eater", "pox_dogs", "bile_spewer", "cinder_mauler", "salt_colossus", "reservoir_maw", "ossuary_hound"]
+const BENCHMARK_ENEMIES := ["road_bandits", "feral_dogs", "ash_stalkers", "toll_gang", "marsh_leeches", "bog_raiders", "drone_swarm", "vault_scavs", "glass_cult", "tunnel_hunters", "citadel_guard", "warden_machine", "mutant_crows", "reed_widow", "kilnback", "shutter_skitters", "cable_eater", "pox_dogs", "bile_spewer", "cinder_mauler", "salt_colossus", "reservoir_maw", "ossuary_hound", "gate_cutter_crew", "gate_toll_captain", "gate_weir_raiders", "gate_foundry_sentinel", "gate_choir_champion", "gate_pack_leader"]
 ## State variants are extra evidence, so they run against a representative
 ## subset rather than multiplying the standard comparison.
 const SCENARIO_ENEMIES := ["feral_dogs", "road_bandits", "warden_machine"]
@@ -106,6 +106,97 @@ const BUILDS := [
 		"expected_ammo": "pistol_rounds", "expected_ammo_per_attack": 1,
 	},
 ]
+## GAMEPLAY_REVAMP_PLAN 4.4/4.6: the survivor each region's enemies are tuned
+## against. A fighter spends every level on the attack stat (one on Grit at
+## level 4) and climbs the weapon tiers with the Scrap fights pay; an avoider
+## levels slowly, spends on the stats road checks use and carries a starter
+## blade until a cheap upgrade late. These run only when named with --builds;
+## the default benchmark stays the fourteen controlled comparisons above.
+const REVAMP_BUILDS := [
+	{
+		"id": "fighter_r1", "label": "Fighter R1 (L1)", "tier": "revamp", "family": "execution", "weapon": "salvage_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 5, "agility": 3, "wits": 2, "grit": 3, "presence": 2},
+		"expected_total": 15, "expected_attack_stat": "strength", "expected_mastered": false,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "fighter_r2", "label": "Fighter R2 (L2)", "tier": "revamp", "family": "execution", "weapon": "salvage_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 6, "agility": 3, "wits": 2, "grit": 3, "presence": 2},
+		"expected_total": 16, "expected_attack_stat": "strength", "expected_mastered": true,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "fighter_r3", "label": "Fighter R3 (L3)", "tier": "revamp", "family": "execution", "weapon": "bone_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 7, "agility": 3, "wits": 2, "grit": 3, "presence": 2},
+		"expected_total": 17, "expected_attack_stat": "strength", "expected_mastered": true,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "fighter_r4", "label": "Fighter R4 (L4)", "tier": "revamp", "family": "execution", "weapon": "bone_cleaver", "armor": "tire_armor",
+		"stats": {"strength": 7, "agility": 3, "wits": 2, "grit": 4, "presence": 2},
+		"expected_total": 18, "expected_attack_stat": "strength", "expected_mastered": true,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "fighter_r5", "label": "Fighter R5 (L5)", "tier": "revamp", "family": "execution", "weapon": "kiln_sword", "armor": "tire_armor",
+		"stats": {"strength": 8, "agility": 3, "wits": 2, "grit": 4, "presence": 2},
+		"expected_total": 19, "expected_attack_stat": "strength", "expected_mastered": true,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "fighter_r6", "label": "Fighter R6 (L6)", "tier": "revamp", "family": "execution", "weapon": "kiln_sword", "armor": "riot_padding",
+		"stats": {"strength": 9, "agility": 3, "wits": 2, "grit": 4, "presence": 2},
+		"expected_total": 20, "expected_attack_stat": "strength", "expected_mastered": true,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "avoider_r1", "label": "Avoider R1 (L1)", "tier": "revamp", "family": "execution", "weapon": "salvage_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 5, "agility": 3, "wits": 2, "grit": 3, "presence": 2},
+		"expected_total": 15, "expected_attack_stat": "strength", "expected_mastered": false,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "avoider_r2", "label": "Avoider R2 (L1)", "tier": "revamp", "family": "execution", "weapon": "salvage_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 5, "agility": 3, "wits": 2, "grit": 3, "presence": 2},
+		"expected_total": 15, "expected_attack_stat": "strength", "expected_mastered": false,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "avoider_r3", "label": "Avoider R3 (L2)", "tier": "revamp", "family": "execution", "weapon": "salvage_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 5, "agility": 4, "wits": 2, "grit": 3, "presence": 2},
+		"expected_total": 16, "expected_attack_stat": "strength", "expected_mastered": false,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "avoider_r4", "label": "Avoider R4 (L2)", "tier": "revamp", "family": "execution", "weapon": "salvage_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 5, "agility": 4, "wits": 2, "grit": 3, "presence": 2},
+		"expected_total": 16, "expected_attack_stat": "strength", "expected_mastered": false,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "avoider_r5", "label": "Avoider R5 (L3)", "tier": "revamp", "family": "execution", "weapon": "silvered_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 5, "agility": 4, "wits": 3, "grit": 3, "presence": 2},
+		"expected_total": 17, "expected_attack_stat": "strength", "expected_mastered": false,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+	{
+		"id": "avoider_r6", "label": "Avoider R6 (L3)", "tier": "revamp", "family": "execution", "weapon": "silvered_cleaver", "armor": "scrap_vest",
+		"stats": {"strength": 5, "agility": 4, "wits": 3, "grit": 3, "presence": 2},
+		"expected_total": 17, "expected_attack_stat": "strength", "expected_mastered": false,
+		"expected_ammo": "", "expected_ammo_per_attack": 0,
+	},
+]
+## 4.4 per-tier targets for the expected fighter reading tells: exchanges to
+## win and the share of max HP lost. GATE is every forced gate fight.
+const TIER_TARGETS := {
+	"LOW": {"exchanges": 3, "hp_lost": 0.12}, "MODERATE": {"exchanges": 4, "hp_lost": 0.20},
+	"DANGEROUS": {"exchanges": 5, "hp_lost": 0.28}, "SEVERE": {"exchanges": 6, "hp_lost": 0.36},
+	"GATE": {"exchanges": 6, "hp_lost": 0.45}, "APEX": {"exchanges": 7, "hp_lost": 0.50},
+}
+
+
+static func all_builds() -> Array:
+	return BUILDS + REVAMP_BUILDS
 
 
 func _init() -> void:
@@ -125,7 +216,7 @@ func _run() -> void:
 	var enemies: Array = options["enemies"]
 	var build_ids: Array = options["builds"]
 	var selected_builds: Array = []
-	for build: Dictionary in BUILDS:
+	for build: Dictionary in all_builds():
 		if str(build["id"]) in build_ids:
 			selected_builds.append(build)
 	var output_path := str(options["output"])
@@ -157,6 +248,9 @@ func _run() -> void:
 				scenario_rows.append(scenario_row)
 				print(JSON.stringify(scenario_row))
 				await process_frame
+	for row: Dictionary in rows:
+		if str(row["tier"]) == "revamp" and str(row["strategy"]) == "read_tells":
+			print("TUNE enemy=%s build=%s win=%.3f hp_lost=%.1f%% exchanges=%.2f" % [row["enemy"], row["build"], float(row["win_rate"]), float(row["hp_lost_share"]) * 100.0, float(row["mean_victory_exchanges"])])
 	var skill_gap := summarize_skill_gap(rows)
 	var per_enemy := summarize_per_enemy(rows)
 	for enemy: String in enemies:
@@ -231,7 +325,7 @@ func _parse_options(args: PackedStringArray) -> Dictionary:
 			"--builds":
 				var builds: Array[String] = []
 				var known: Array[String] = []
-				for build: Dictionary in BUILDS:
+				for build: Dictionary in all_builds():
 					known.append(str(build["id"]))
 				for entry: String in value.split(",", true):
 					var build_id := entry.strip_edges()
@@ -291,6 +385,8 @@ func _simulate(factory, enemy: String, build: Dictionary, strategy: String, stat
 	var seeds := float(seeds_per_row)
 	row["win_rate"] = snappedf(float(row["wins"]) / seeds, 0.001)
 	row["mean_hp_spent"] = snappedf(float(row["hp_spent"]) / seeds, 0.1)
+	row["max_hp"] = GameEngine.max_hearts_for_grit(int(build["stats"]["grit"])) * 50
+	row["hp_lost_share"] = snappedf(float(row["hp_spent"]) / seeds / float(row["max_hp"]), 0.001)
 	row["mean_ammo"] = snappedf(float(row["ammo"]) / seeds, 0.01)
 	row["mean_conditions"] = snappedf(float(row["conditions"]) / seeds, 0.01)
 	row["mean_exchanges"] = snappedf(float(row["exchanges"]) / seeds, 0.01)

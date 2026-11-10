@@ -102,25 +102,29 @@ func _starting_inventory(stats: Dictionary) -> Dictionary:
 		if int(stats[stat]) > int(stats[highest_stat]):
 			highest_stat = stat
 	var inventory := {"canned_meat": 2, "clean_water": 2, "cloth_bandage": 1}
+	# GAMEPLAY_REVAMP_PLAN: fights decide the run, so every kit can fight from
+	# the first scene. Ranged kits carry enough rounds for the opening regions
+	# and every kit wears armor; Grit already brings the biggest HP pool.
 	match highest_stat:
 		"strength":
 			inventory["salvage_cleaver"] = 1
 			inventory["scrap_vest"] = 1
 		"agility":
 			inventory["pipe_pistol"] = 1
-			inventory["pistol_rounds"] = 6
+			inventory["pistol_rounds"] = 20
 			inventory["runner_jacket"] = 1
 		"wits":
 			inventory["shock_probe"] = 1
 			inventory["field_scanner"] = 1
+			inventory["scrap_vest"] = 1
 		"grit":
 			inventory["wrecking_bar"] = 1
 			inventory["plated_coat"] = 1
-			inventory["scrap_buckler"] = 1
 		"presence":
 			inventory["holdout_revolver"] = 1
-			inventory["revolver_rounds"] = 4
+			inventory["revolver_rounds"] = 20
 			inventory["trader_token"] = 1
+			inventory["scrap_vest"] = 1
 	return inventory
 
 
@@ -141,7 +145,7 @@ func start_run(candidate: Dictionary, seed_value: int) -> Dictionary:
 		"talents": [], "level": ExperienceRules.STARTING_LEVEL, "experience": 0,
 		"xp_curve_version": ExperienceRules.RULES_VERSION, "unspent_stat_points": 0, "xp_award_ids": [],
 		"checkpoint_xp_awards": [], "rewarded_checkpoints": [], "combat_opportunities_seen_in_region": 0,
-		"story_events_in_region": 0, "region_index": 0, "events_in_region": 0, "total_events": 0, "hunger_clock": 0, "supply_seen_in_region": false,
+		"story_events_in_region": 0, "gate_cleared_in_region": false, "region_index": 0, "events_in_region": 0, "total_events": 0, "hunger_clock": 0, "supply_seen_in_region": false,
 		"event_history": [], "flags": [], "current_event_id": "", "pending_event_id": "", "pending_resolution": {},
 		"pending_combat_round": {}, "combat_state": {}, "last_result": {}, "condition_uses": {}, "checkpoint_action": "", "checkpoint_offers": [],
 		"last_checkpoint_xp": {}, "defeated_adversaries": [],
@@ -615,6 +619,11 @@ func continue_after_result() -> void:
 		run_state["pending_event_id"] = ""
 		run_state["phase"] = "event"
 		return
+	# The region's travel slots are spent, so this result closed its gate
+	# fight. A gate is not travel: no pressure tick, no slot.
+	if int(run_state["events_in_region"]) >= EVENTS_PER_REGION:
+		_advance_region()
+		return
 	_apply_travel_pressure()
 	_apply_hunger_tick()
 	_update_death_state()
@@ -623,14 +632,39 @@ func continue_after_result() -> void:
 	run_state["events_in_region"] = int(run_state["events_in_region"]) + 1
 	run_state["total_events"] = int(run_state["total_events"]) + 1
 	if int(run_state["events_in_region"]) >= EVENTS_PER_REGION:
-		run_state["current_event_id"] = ""
-		run_state["phase"] = "checkpoint"
-		run_state["checkpoint_action"] = ""
-		generate_checkpoint_offers()
-		_award_checkpoint_experience()
+		_enter_checkpoint()
 	else:
 		_select_next_event()
 		run_state["phase"] = "event"
+
+
+## GAMEPLAY_REVAMP_PLAN §4.1: every region ends at a gate fight that cannot
+## be skipped or fled. It comes after the checkpoint, so the survivor rests,
+## trades, and spends level-ups before it. Returns "" for a region without one.
+func region_gate_event_id() -> String:
+	var gate := str(current_region().get("gate_event", ""))
+	return gate if gate != "" and content.events.has(gate) else ""
+
+
+## The line the checkpoint shows about the fight that waits past it. "" when
+## the region has no gate or the survivor already walked into it.
+func region_gate_warning() -> String:
+	var gate := region_gate_event_id()
+	if gate == "" or bool(run_state.get("gate_cleared_in_region", false)):
+		return ""
+	var event: Dictionary = content.get_event(gate)
+	var adversary: Dictionary = content.get_adversary(str(event.get("adversary_id", "")))
+	if adversary.is_empty():
+		return ""
+	return "GATE AHEAD • %s • %s THREAT • No way around and no escape. Rest, trade, and spend your points first." % [str(adversary.get("name", "Enemy")), _threat_label(int(adversary.get("threat", 0)))]
+
+
+func _enter_checkpoint() -> void:
+	run_state["current_event_id"] = ""
+	run_state["phase"] = "checkpoint"
+	run_state["checkpoint_action"] = ""
+	generate_checkpoint_offers()
+	_award_checkpoint_experience()
 
 
 func rest_at_checkpoint(food_id: String = "") -> Dictionary:
@@ -646,9 +680,19 @@ func rest_at_checkpoint(food_id: String = "") -> Dictionary:
 	_change_satiety(nutrition)
 	var fatigue_before := int(run_state["survivor"]["pressures"].get("fatigue", 0))
 	run_state["survivor"]["pressures"]["fatigue"] = 0
-	_change_health(25)
+	var healed := _change_health(rest_heal_amount())
 	run_state["checkpoint_action"] = "rest"
-	return {"success": true, "text": "You eat %s, dress your wounds, and sleep lightly. Satiety +%d, Fatigue %d → 0, HP +25." % [content.get_item(selected).get("name", selected), nutrition, fatigue_before]}
+	return {"success": true, "text": "You eat %s, dress your wounds, and sleep lightly. Satiety +%d, Fatigue %d → 0, HP +%d." % [content.get_item(selected).get("name", selected), nutrition, fatigue_before, healed]}
+
+
+## GAMEPLAY_REVAMP_PLAN §7: fights are the centre of the run, so a night's rest
+## has to recover a real share of a fight's cost.
+const REST_HEAL_SHARE := 0.30
+const REST_HEAL_MIN := 25
+
+
+func rest_heal_amount() -> int:
+	return maxi(REST_HEAL_MIN, roundi(float(run_state.get("survivor", {}).get("vitals", {}).get("max_health", 0)) * REST_HEAL_SHARE))
 
 
 func press_on_from_checkpoint() -> Dictionary:
@@ -778,12 +822,13 @@ func select_talent(talent_id: String) -> Dictionary:
 	return {"success": true, "talent_id": talent_id, "text": "%s learned." % str(definition.get("name", talent_id))}
 
 
-## Checkpoint trading: Rest, Barter, or Press On, one activity per checkpoint.
-## Three offers are generated once when the checkpoint opens and saved with
-## the run: compatible equipment from the authored regional ladder, ammunition
-## for a ranged build or medical supplies for a melee one, and food. Browsing
-## previews are pure; only a purchase commits the activity, and reopening the
-## screen or restarting cannot refresh the stock.
+## Checkpoint trading. Three offers are generated once when the checkpoint
+## opens and saved with the run: the gear upgrade this survivor can use from
+## the authored regional ladder, ammunition for a ranged build or medical
+## supplies for a melee one, and food. Scrap is the currency; the counter stays
+## open for the whole stop and buying never replaces Rest or Press On. Browsing
+## previews are pure, and reopening the screen or restarting cannot refresh
+## the stock.
 func checkpoint_offers() -> Array:
 	if str(run_state.get("phase", "")) != "checkpoint":
 		return []
@@ -809,17 +854,63 @@ func _owns_item(item_id: String) -> bool:
 	return false
 
 
+## GAMEPLAY_REVAMP_PLAN §4.3: Scrap buys power, so the gear slot sells an
+## upgrade rather than the first thing on the shelf. In order: the strongest
+## weapon this build can wield that clearly beats the one in hand, then
+## better armor, then the first other piece of kit not yet owned. The pick is
+## a pure function of the saved run, so restarts cannot reroll it.
+const SHOP_WEAPON_UPGRADE_FACTOR := 1.1
+
+
 func _gear_offer(catalog: Dictionary, region: int) -> Dictionary:
+	var equipment: Dictionary = run_state.get("survivor", {}).get("equipment", {})
+	var weapon_floor := shop_weapon_score(str(equipment.get("weapon", ""))) * SHOP_WEAPON_UPGRADE_FACTOR
+	var armor_floor := int(content.get_item(str(equipment.get("armor", ""))).get("damage_reduction", 0))
+	var best_weapon: Dictionary = {}
+	var best_armor: Dictionary = {}
+	var first_other: Dictionary = {}
 	for entry: Variant in catalog.get("equipment", []):
 		var item_id := str(entry.get("id", ""))
 		if int(entry.get("min_region", 0)) > region or item_id == "":
 			continue
-		if _owns_item(item_id):
+		if _owns_item(item_id) or equipment_lock_reason(item_id) != "":
 			continue
-		if equipment_lock_reason(item_id) != "":
-			continue
-		return {"kind": "equipment", "item_id": item_id, "quantity": 1, "cost": (entry.get("cost", {}) as Dictionary).duplicate(true), "sold": false}
+		var item: Dictionary = content.get_item(item_id)
+		match str(item.get("equipment_slot", "")):
+			"weapon":
+				var score := shop_weapon_score(item_id)
+				if score > weapon_floor:
+					weapon_floor = score
+					best_weapon = entry
+			"armor":
+				var reduction := int(item.get("damage_reduction", 0))
+				if reduction > armor_floor:
+					armor_floor = reduction
+					best_armor = entry
+			_:
+				if first_other.is_empty():
+					first_other = entry
+	for entry: Dictionary in [best_weapon, best_armor, first_other]:
+		if not entry.is_empty():
+			return {"kind": "equipment", "item_id": str(entry.get("id", "")), "quantity": 1, "cost": (entry.get("cost", {}) as Dictionary).duplicate(true), "sold": false}
 	return _medical_offer(catalog, true)
+
+
+## Expected damage of a weapon in this survivor's hands, from base stats only
+## (build identity, the same rule affinity and mastery use): the stat scaling
+## new fights use, the unwieldy penalties when the affinity is not met, and
+## nothing for bare hands.
+func shop_weapon_score(item_id: String) -> float:
+	var item: Dictionary = content.get_item(item_id)
+	var combat: Dictionary = item.get("combat", {})
+	if combat.is_empty():
+		return 0.0
+	var base_stats: Dictionary = run_state.get("survivor", {}).get("stats", {})
+	var stat_value := int(base_stats.get(str(combat.get("attack_stat", "strength")), 1))
+	var score := (float(combat.get("damage_min", 0)) + float(combat.get("damage_max", 0))) * 0.5 * CombatRules.stat_damage_multiplier_v3(stat_value)
+	if not bool(CombatRules.affinity_status(item, base_stats).get("met", true)):
+		score *= CombatRules.AFFINITY_DAMAGE_FACTOR * (1.0 - float(CombatRules.AFFINITY_CHANCE_PENALTY) / 100.0)
+	return score
 
 
 func _supply_offer(catalog: Dictionary) -> Dictionary:
@@ -860,8 +951,8 @@ func trade_preview(index: int) -> Dictionary:
 	var summary := "%s ×%d — price %s" % [item_name, int(offer.get("quantity", 1)), trade_cost_text(offer.get("cost", {}))]
 	if bool(offer.get("sold", false)):
 		return {"available": false, "reason": "Already purchased.", "sold": true, "summary": summary, "offer": offer}
-	if str(run_state.get("checkpoint_action", "")) != "":
-		return {"available": false, "reason": "You already chose how to leave this checkpoint.", "summary": summary, "offer": offer}
+	# GAMEPLAY_REVAMP_PLAN §4.3: Scrap is the road's gold, so the counter stays
+	# open for the whole stop. Buying never replaces Rest or Press On.
 	var cost: Dictionary = offer.get("cost", {})
 	for item_id: String in cost:
 		if get_item_quantity(item_id) < int(cost[item_id]):
@@ -880,7 +971,6 @@ func accept_trade(index: int) -> Dictionary:
 	_change_item(str(offer.get("item_id", "")), int(offer.get("quantity", 1)))
 	var stored: Array = run_state["checkpoint_offers"]
 	stored[index]["sold"] = true
-	run_state["checkpoint_action"] = "barter"
 	var item_name := str(content.get_item(str(offer.get("item_id", ""))).get("name", offer.get("item_id", "")))
 	return {"success": true, "text": "Traded %s for %s ×%d." % [trade_cost_text(cost), item_name, int(offer.get("quantity", 1))], "changes": changes}
 
@@ -903,19 +993,30 @@ func _award_checkpoint_experience() -> Dictionary:
 func leave_checkpoint() -> void:
 	if str(run_state.get("phase", "")) != "checkpoint":
 		return
+	run_state["checkpoint_action"] = ""
+	run_state["checkpoint_offers"] = []
+	var gate := region_gate_event_id()
+	if gate != "" and not bool(run_state.get("gate_cleared_in_region", false)):
+		run_state["gate_cleared_in_region"] = true
+		run_state["current_event_id"] = gate
+		run_state["phase"] = "event"
+		return
+	_advance_region()
+
+
+func _advance_region() -> void:
 	run_state["region_index"] = int(run_state["region_index"]) + 1
 	run_state["events_in_region"] = 0
 	run_state["supply_seen_in_region"] = false
 	run_state["combat_opportunities_seen_in_region"] = 0
 	run_state["story_events_in_region"] = 0
+	run_state["gate_cleared_in_region"] = false
 	run_state["last_checkpoint_xp"] = {}
 	if int(run_state["region_index"]) >= content.ordered_regions().size():
 		run_state["current_event_id"] = FINAL_EVENT_ID
 	else:
 		_change_pressure("fatigue", 5)
 		_select_next_event()
-	run_state["checkpoint_action"] = ""
-	run_state["checkpoint_offers"] = []
 	run_state["phase"] = "event"
 
 
@@ -1505,6 +1606,7 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 	var condition_changes: Array = []
 	_apply_outcome(outcome, changes, condition_changes, item_changes)
 	_apply_victory_loot(adversary, changes, item_changes)
+	_apply_scrap_bounty(adversary, event, changes, item_changes)
 	var xp_awards: Array = []
 	_append_xp_award(xp_awards, award_experience(int(adversary.get("xp_reward", 0)), "%s defeated" % str(adversary.get("name", "Enemy")), "%s:victory" % encounter_id))
 	for award: Variant in _event_experience_awards(event, {}, {}, outcome, encounter_id):
@@ -1546,6 +1648,20 @@ func _apply_victory_loot(adversary: Dictionary, changes: Array, item_changes: Ar
 		return
 	var resolved_text := _resolved_outcome_text
 	_apply_outcome({"items": rolled}, changes, [], item_changes)
+	_resolved_outcome_text = resolved_text
+
+
+## GAMEPLAY_REVAMP_PLAN §4.3: Scrap is the road's gold, and fights are where
+## it comes from. Every victory pays the adversary's scrap_reward; a caught
+## fight pays half, rounded up.
+func _apply_scrap_bounty(adversary: Dictionary, event: Dictionary, changes: Array, item_changes: Array) -> void:
+	var bounty := int(adversary.get("scrap_reward", 0))
+	if "caught_fight" in event.get("tags", []):
+		bounty = ceili(float(bounty) / 2.0)
+	if bounty <= 0 or not content.items.has("scrap_parts"):
+		return
+	var resolved_text := _resolved_outcome_text
+	_apply_outcome({"items": {"scrap_parts": bounty}}, changes, [], item_changes)
 	_resolved_outcome_text = resolved_text
 
 

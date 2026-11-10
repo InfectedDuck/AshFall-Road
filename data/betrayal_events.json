@@ -389,10 +389,10 @@
         {
           "label": "Buy the debt out",
           "approach": "social",
-          "requires": {"items": {"scrap_parts": 2}, "reason": "You carry no salvage to pay with"},
-          "costs": {"items": {"scrap_parts": 2}},
+          "requires": {"items": {"scrap_parts": 1}, "reason": "You carry no salvage to pay with"},
+          "costs": {"items": {"scrap_parts": 1}},
           "outcome": {
-            "text": "You lay two salvage bundles on the scarred counter and watch him mark the page paid in full. Ink, pencil, initial: the whole liturgy of clean. Your name owes nothing now, in the only place it was ever written. Slate slides a sealed tonic across the counter with the stamped receipt, prompt payment acknowledged in marsh herbs.",
+            "text": "You lay a salvage bundle on the scarred counter and watch him mark the page paid in full. Ink, pencil, initial: the whole liturgy of clean. Your name owes nothing now, in the only place it was ever written. Slate slides a sealed tonic across the counter with the stamped receipt, prompt payment acknowledged in marsh herbs.",
             "items": {"bitter_tonic": 1},
             "add_flags": ["slate_closed"]
           }

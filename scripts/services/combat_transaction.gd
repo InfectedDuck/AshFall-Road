@@ -73,8 +73,8 @@ func _availability(game, operation: String) -> String:
 		"rest", "press_on", "allocate", "select_talent", "trade", "leave_checkpoint":
 			if phase != "checkpoint":
 				return "This action requires a checkpoint."
-			if operation == "leave_checkpoint" and str(game.run_state.get("checkpoint_action", "")) not in ["rest", "barter"]:
-				return "Choose Rest, Barter, or Press On before leaving."
+			if operation == "leave_checkpoint" and str(game.run_state.get("checkpoint_action", "")) != "rest":
+				return "Choose Rest or Press On before leaving."
 		"continue":
 			if phase != "result":
 				return "No event result is waiting."

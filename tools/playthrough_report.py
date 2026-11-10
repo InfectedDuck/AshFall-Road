@@ -20,17 +20,34 @@ ORDER = ["random", "novice", "cautious", "informed", "aggressive"]
 REGIONS = ["Shattered Outskirts", "Salt Flats", "Drowned Marches", "Hollow Industrial", "Glass Wastes", "The Underrail"]
 
 # BALANCE_FIX_PLAN Phase 0 target bands (recommended starting targets, Oct 2026).
-# Win rates are per-model victory shares; reach-R2 applies to every model.
-# The pre-tuning baseline fails several of these on purpose: the check defines
-# the destination that Phases 1-5 must turn green.
+# Win rates are per-model victory shares. The pre-tuning baseline fails several
+# of these on purpose: the check defines the destination the phases must turn
+# green.
 TARGET_WIN = {
+    # GAMEPLAY_REVAMP_PLAN §1 (23 Oct 2026): fighting decides the run. A
+    # survivor who never takes an optional fight should win 3-4%; the check
+    # band is 2-5% (§4.6). The informed band is the proposed 15-25%, not the
+    # harder 10-15% option left open in §8.3.
     "random": (0.00, 0.01),
     "novice": (0.02, 0.05),
-    "cautious": (0.05, 0.20),
+    "cautious": (0.02, 0.05),
     "informed": (0.15, 0.25),
-    "aggressive": (0.02, 0.08),
+    "aggressive": (0.05, 0.10),
 }
 TARGET_REACH_R2 = (0.80, 0.90)
+# Reach-R2 is the onboarding band ("the Shattered Outskirts teaches, it doesn't
+# filter"). It gates on the novice model, the one the human check compares
+# testers against; a single band cannot hold both a uniform-random player and a
+# skilled one, so the other models are printed for information only.
+REACH_R2_MODELS = ("novice",)
+# GAMEPLAY_REVAMP_PLAN 1: the order that must hold between models.
+WIN_ORDER = [("informed", "aggressive"), ("aggressive", "novice"), ("aggressive", "cautious"), ("novice", "random"), ("cautious", "random")]
+TARGET_NOVICE_CAUTIOUS_GAP = 0.03
+# GAMEPLAY_REVAMP_PLAN 4.6: the avoider's gate-survival gradient.
+TARGET_CAUTIOUS_GATE_R1_MIN = 0.85
+TARGET_CAUTIOUS_GATE_R6_MAX = 0.45
+FIGHT_SOURCES = ("fight_optional", "fight_caught", "fight_gate")
+SOURCE_LABELS = {"road": "road", "fight_optional": "optional fights", "fight_caught": "caught fights", "fight_gate": "gate fights", "shop": "shop"}
 # BALANCE_FIX_PLAN Phase 1 "done when" bands, pooled over every present model.
 TARGET_REGIONAL_SHARE = 0.50
 TARGET_POOL_EVENT_RUNS = 0.01
@@ -106,10 +123,12 @@ def region_pools():
 
 
 def chain_event_ids():
-    """Supplemental-pack scenes with no narrative_priority and no region pool.
+    """Scenes that add to a region without spending one of its travel slots.
 
-    They are reached through an outcome's next_event, which adds a scene without
-    spending a travel slot, so they never displace a regional event.
+    Supplemental-pack scenes with no narrative_priority and no region pool are
+    reached through an outcome's next_event. Gate fights follow the checkpoint
+    and caught fights follow a failed evasion; neither displaces a regional
+    event either.
     """
     ids = set()
     for path in glob.glob("data/*_events.json"):
@@ -117,7 +136,36 @@ def chain_event_ids():
             for event in json.load(handle).get("events", []):
                 if int(event.get("narrative_priority", 0)) == 0:
                     ids.add(event["id"])
+    with open("data/events.json", encoding="utf-8") as handle:
+        for event in json.load(handle).get("events", []):
+            if set(event.get("tags", [])) & {"gate_fight", "caught_fight"}:
+                ids.add(event["id"])
     return ids
+
+
+def economy_shares(agg):
+    """Share of XP, Scrap and tier-2+ gear that came from fights.
+
+    Shop gear is bought with Scrap, so the gear share is given both for fight
+    loot alone and for fight loot plus purchases.
+    """
+    eco = agg.get("economy", {})
+    total = lambda field: sum(b.get(field, 0) for b in eco.values())
+    fights = lambda field: sum(eco.get(src, {}).get(field, 0) for src in FIGHT_SOURCES)
+    share = lambda n, d: n / d if d else 0.0
+    return {
+        "xp": share(fights("xp"), total("xp")),
+        "scrap": share(fights("scrap"), total("scrap")),
+        "gear_t2": share(fights("gear_t2"), total("gear_t2")),
+        "gear_t2_with_shop": share(fights("gear_t2") + eco.get("shop", {}).get("gear_t2", 0), total("gear_t2")),
+    }
+
+
+def gate_survival(agg, region):
+    gate = agg.get("gates", {}).get(str(region))
+    if not gate or not gate.get("fights"):
+        return None
+    return gate["won"] / gate["fights"]
 
 
 def selection_stats(policies):
@@ -187,10 +235,13 @@ def check_targets(policies):
             failures.append(f"{model} win {win:.3f} outside {lo:.3f}-{hi:.3f}")
         r2 = agg["arrivals"].get("1", {}).get("count", 0) / runs if runs else 0.0
         lo2, hi2 = TARGET_REACH_R2
-        ok2 = lo2 - 1e-9 <= r2 <= hi2 + 1e-9
-        print(f"[{'PASS' if ok2 else 'FAIL'}] {model} reach-R2 {r2:.1%} (target {lo2:.0%}-{hi2:.0%})")
-        if not ok2:
-            failures.append(f"{model} reach-R2 {r2:.3f} outside {lo2:.3f}-{hi2:.3f}")
+        if model in REACH_R2_MODELS:
+            ok2 = lo2 - 1e-9 <= r2 <= hi2 + 1e-9
+            print(f"[{'PASS' if ok2 else 'FAIL'}] {model} reach-R2 {r2:.1%} (target {lo2:.0%}-{hi2:.0%})")
+            if not ok2:
+                failures.append(f"{model} reach-R2 {r2:.3f} outside {lo2:.3f}-{hi2:.3f}")
+        else:
+            print(f"[INFO] {model} reach-R2 {r2:.1%} (band applies to: {', '.join(REACH_R2_MODELS)})")
         if agg["errors"]:
             print(f"[FAIL] {model} engine errors: {agg['errors']}")
             failures.append(f"{model} had {agg['errors']} engine errors")
@@ -201,6 +252,46 @@ def check_targets(policies):
             failures.append(f"{model} had {agg['unfinished']} unfinished runs")
         else:
             print(f"[PASS] {model} unfinished runs: 0")
+    return failures + check_order(policies) + check_gate_gradient(policies)
+
+
+def check_order(policies):
+    """informed > aggressive > novice ~ cautious > random."""
+    failures = []
+    win = {m: (a["victories"] / a["runs"] if a["runs"] else 0.0) for m, a in policies.items()}
+    for better, worse in WIN_ORDER:
+        if better not in win or worse not in win:
+            print(f"[SKIP] order {better} > {worse}: model missing")
+            continue
+        ok = win[better] > win[worse]
+        print(f"[{'PASS' if ok else 'FAIL'}] order {better} {win[better]:.1%} > {worse} {win[worse]:.1%}")
+        if not ok:
+            failures.append(f"order broken: {better} {win[better]:.3f} is not above {worse} {win[worse]:.3f}")
+    if "novice" in win and "cautious" in win:
+        gap = abs(win["novice"] - win["cautious"])
+        ok = gap <= TARGET_NOVICE_CAUTIOUS_GAP + 1e-9
+        print(f"[{'PASS' if ok else 'FAIL'}] novice and cautious within {TARGET_NOVICE_CAUTIOUS_GAP:.0%} of each other (gap {gap:.1%})")
+        if not ok:
+            failures.append(f"novice/cautious gap {gap:.3f} above {TARGET_NOVICE_CAUTIOUS_GAP:.2f}")
+    return failures
+
+
+def check_gate_gradient(policies):
+    """The avoider's gates: R1 teaches, R6 stops most of what is left."""
+    failures = []
+    agg = policies.get("cautious")
+    if agg is None or "gates" not in agg:
+        print("[SKIP] cautious gate gradient: no gate telemetry in directory")
+        return failures
+    first, last = gate_survival(agg, 0), gate_survival(agg, 5)
+    for label, value, ok, rule in (
+        ("R1", first, first is not None and first >= TARGET_CAUTIOUS_GATE_R1_MIN, f">= {TARGET_CAUTIOUS_GATE_R1_MIN:.0%}"),
+        ("R6", last, last is not None and last <= TARGET_CAUTIOUS_GATE_R6_MAX, f"<= {TARGET_CAUTIOUS_GATE_R6_MAX:.0%}"),
+    ):
+        shown = "no fights" if value is None else f"{value:.1%}"
+        print(f"[{'PASS' if ok else 'FAIL'}] cautious {label} gate survival {shown} (target {rule})")
+        if not ok:
+            failures.append(f"cautious {label} gate survival {shown} misses {rule}")
     return failures
 
 
@@ -256,18 +347,20 @@ def main():
 
     # 3. Arrival vitals
     w("## 3. Condition on arrival at each region (means)\n")
-    for p in [x for x in ("novice", "informed", "cautious") if x in policies]:
+    for p in [x for x in ("novice", "cautious", "informed", "aggressive") if x in policies]:
         a = policies[p]
         w(f"**{p}**\n")
         rows = []
-        for i in range(6):
+        for i in range(7):
             b = a["arrivals"].get(str(i))
             if not b:
                 continue
             c = b["count"]
-            rows.append([f"R{i+1}", int(c), pct(b["hp_pct"], c), mean(b["hp"], c, 0), mean(b["hp_max"], c, 0), mean(b["satiety"], c), mean(b["fatigue"], c, 0),
-                         mean(b["radiation"], c, 0), mean(b["level"], c), mean(b["food"], c), mean(b["healing"], c), mean(b["ammo"], c), mean(b["scrap"], c), pct(b["unarmed"], c), mean(b["conditions"], c, 2)])
-        w(table(["region", "arrivals", "HP %", "HP", "max HP", "satiety", "fatigue", "radiation", "level", "food items", "healing items", "ammo", "scrap", "unarmed", "conditions"], rows))
+            tier2 = b.get("weapon_t2", 0) + b.get("weapon_t3", 0)
+            rows.append([f"R{i+1}" if i < 6 else "Citadel", int(c), pct(b["hp_pct"], c), mean(b["hp"], c, 0), mean(b["hp_max"], c, 0), mean(b["satiety"], c), mean(b["fatigue"], c, 0),
+                         mean(b["radiation"], c, 0), mean(b["level"], c, 2), mean(b.get("weapon_tier", 0), c, 2) if "weapon_tier" in b else "–", pct(tier2, c) if "weapon_tier" in b else "–", pct(b.get("weapon_t3", 0), c) if "weapon_tier" in b else "–",
+                         mean(b["food"], c), mean(b["healing"], c), mean(b["ammo"], c), mean(b["scrap"], c), pct(b["unarmed"], c), mean(b["conditions"], c, 2)])
+        w(table(["region", "arrivals", "HP %", "HP", "max HP", "satiety", "fatigue", "radiation", "level", "weapon tier", "tier 2+", "tier 3", "food items", "healing items", "ammo", "scrap", "unarmed", "conditions"], rows))
         w("")
 
     # 4. Death causes
@@ -518,11 +611,48 @@ def main():
     w(table(["model", "final_gate_1", "→ final_gate_2", "→ warden (B41)", "Citadel Guard fights"], rows))
     w("")
 
+    # 18. Economy by source
+    if any("economy" in a for a in policies.values()):
+        w("\n## 18. Where power comes from (GAMEPLAY_REVAMP_PLAN 4.6)\n")
+        w("Per run. `road` is scene outcomes plus journey and checkpoint XP; gear counts equipment pieces gained; tier 2+ counts tier-2 and tier-3 weapons and armor.\n")
+        rows = []
+        for p, a in policies.items():
+            eco = a.get("economy", {})
+            r = a["runs"]
+            for src in ("road", "fight_optional", "fight_caught", "fight_gate", "shop"):
+                b = eco.get(src, {})
+                rows.append([p, SOURCE_LABELS[src], mean(b.get("xp", 0), r), mean(b.get("scrap", 0), r, 2), mean(b.get("scrap_spent", 0), r, 2), mean(b.get("gear", 0), r, 2), mean(b.get("gear_t2", 0), r, 2)])
+        w(table(["model", "source", "XP", "Scrap gained", "Scrap spent", "gear", "tier 2+ gear"], rows))
+        w("\nShare that came from fights (R2 target: at least 60% of Scrap and of tier-2+ gear):\n")
+        rows = []
+        for p, a in policies.items():
+            sh = economy_shares(a)
+            rows.append([p, f"{sh['xp']:.0%}", f"{sh['scrap']:.0%}", f"{sh['gear_t2']:.0%}", f"{sh['gear_t2_with_shop']:.0%}"])
+        w(table(["model", "XP from fights", "Scrap from fights", "tier 2+ gear from fight loot", "… plus shop purchases"], rows))
+        w("")
+
+    # 19. Gate fights
+    if any(a.get("gates") for a in policies.values()):
+        w("\n## 19. Gate fights (survived / attempts · mean HP lost as a share of max HP · mean level)\n")
+        rows = []
+        for p, a in policies.items():
+            row = [p]
+            for region in range(7):
+                g = a.get("gates", {}).get(str(region))
+                if not g or not g.get("fights"):
+                    row.append("–")
+                    continue
+                n = g["fights"]
+                row.append(f"{pct(g['won'], n)} of {int(n)} · {pct(g['hp_lost_pct'], n)} · L{g['level'] / n:.1f}")
+            rows.append(row)
+        w(table(["model"] + [f"R{i+1}" for i in range(6)] + ["Citadel"], rows))
+        w("")
+
     with open(output, "w", encoding="utf-8") as handle:
         handle.write("\n".join(lines))
     print(f"Wrote {output}")
     if "--check" in flags:
-        print("\n## Target check (BALANCE_FIX_PLAN Phase 0 bands)\n")
+        print("\n## Target check (GAMEPLAY_REVAMP_PLAN 1 bands, order and gate gradient)\n")
         failures = check_targets(policies) + check_selection(policies)
         w2 = ["\n## Target check\n"]
         if failures:

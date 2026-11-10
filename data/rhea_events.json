@@ -617,13 +617,13 @@
           "approach": "social",
           "requires": {
             "items": {
-              "scrap_parts": 3
+              "scrap_parts": 2
             },
             "reason": "You carry nothing worth their attention"
           },
           "costs": {
             "items": {
-              "scrap_parts": 3
+              "scrap_parts": 2
             }
           },
           "outcome": {
@@ -736,13 +736,13 @@
           "approach": "force",
           "requires": {
             "items": {
-              "scrap_parts": 3
+              "scrap_parts": 2
             },
             "reason": "You carry no salvage to wedge the door"
           },
           "costs": {
             "items": {
-              "scrap_parts": 3
+              "scrap_parts": 2
             }
           },
           "outcome": {

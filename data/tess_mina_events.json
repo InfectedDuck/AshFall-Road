@@ -63,7 +63,7 @@
           "check": {"stat": "grit", "difficulty": "favorable"},
           "success": {
             "text": "You keep her pace through the whole claim and split the wire coil for coil. She pays exact and prompt, counts it twice in front of you, and admits the count pleases her. Reliability, you are learning, is her entire love language.",
-            "items": {"scrap_parts": 2},
+            "items": {"scrap_parts": 1},
             "add_flags": ["tess_worked"]
           },
           "failure": {
@@ -79,7 +79,7 @@
           "check": {"stat": "wits", "difficulty": "favorable"},
           "success": {
             "text": "You spot the high-grade runs she was mixing with common wire and re-sort the claim by assay. The split jumps a full tier. She studies your method, adopts it on the spot, and pays the improved share without being asked. Respect, earned twice over.",
-            "items": {"scrap_parts": 2},
+            "items": {"scrap_parts": 1},
             "add_flags": ["tess_worked"]
           },
           "failure": {
@@ -257,7 +257,7 @@
           "approach": "social",
           "outcome": {
             "text": "You promise to walk east now and find her western claim when the road allows, and she accepts the honest shape of it. She presses a stamped coil into your pack as earnest: her mark, her work, her trust made metal. Parting, for once, feels like a plan rather than a loss.",
-            "items": {"scrap_parts": 2},
+            "items": {"scrap_parts": 1},
             "add_flags": ["tess_friends", "tess_closed"]
           }
         },

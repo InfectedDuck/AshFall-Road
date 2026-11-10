@@ -349,6 +349,13 @@ func _migrate_run(run: Dictionary) -> Dictionary:
 		run["combat_opportunities_seen_in_region"] = 0
 	if not run.has("story_events_in_region"):
 		run["story_events_in_region"] = 0
+	if not run.has("gate_cleared_in_region"):
+		# A run saved before gates existed meets its gate on leaving the checkpoint.
+		run["gate_cleared_in_region"] = false
+	if str(run.get("checkpoint_action", "")) == "barter":
+		# Buying no longer spends the checkpoint's one activity: a stop saved
+		# after a purchase may still Rest or Press On.
+		run["checkpoint_action"] = ""
 	if not run.has("defeated_adversaries"):
 		run["defeated_adversaries"] = []
 	if not run.has("last_checkpoint_xp"):

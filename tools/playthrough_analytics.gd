@@ -28,7 +28,7 @@ extends SceneTree
 
 const Rules = preload("res://scripts/domain/narrative_combat.gd")
 
-const ANALYTICS_VERSION := 1
+const ANALYTICS_VERSION := 2
 const POLICIES := ["random", "novice", "cautious", "informed", "aggressive"]
 const STEP_CAP := 2500
 const COMBAT_ROUND_CAP := 80
@@ -126,11 +126,14 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 		"combat_actions": {}, "items_gained": {}, "items_spent": {}, "items_used": {},
 		"conditions_applied": {}, "checkpoints": [], "starvation_ticks": 0,
 		"events_seen": [], "upkeep_uses": 0,
+		# GAMEPLAY_REVAMP_PLAN 4.6: XP, Scrap and gear by where they came from.
+		"economy": {},
 	}
 	if _cross_run_memory:
 		run["memory_applied"] = _memory_pool.size()
 	var region_marker := -1
 	var fight: Dictionary = {}
+	var fight_kind := "optional"
 	var steps := 0
 	while steps < STEP_CAP:
 		steps += 1
@@ -176,7 +179,9 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 				run["events_seen"].append(event_id)
 				if bool(result.get("combat_started", false)):
 					var state: Dictionary = game.run_state.get("combat_state", {})
-					fight = {"enemy": str(state.get("adversary_id", "")), "event": event_id, "region": region,
+					var event_tags: Array = content.get_event(event_id).get("tags", [])
+					fight_kind = "gate" if "gate_fight" in event_tags else ("caught" if "caught_fight" in event_tags else "optional")
+					fight = {"enemy": str(state.get("adversary_id", "")), "event": event_id, "region": region, "kind": fight_kind,
 						"hp_start": int(before["hp"]), "hp_max": int(before["hp_max"]), "rounds": 0,
 						"result": "", "items_used": 0, "fatigue_start": int(before["fatigue"]), "level": int(game.run_state.get("level", 1)),
 						"max_hit_share": 0.0, "big_hits": 0}
@@ -240,6 +245,7 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 				run["errors"] = int(run["errors"]) + 1
 				break
 		_record_deltas(game, before, run, step_kind)
+		_record_economy(game, before, run, "fight_%s" % fight_kind if step_kind == "combat" else ("shop" if step_kind == "checkpoint" else "road"))
 		if step_kind == "event" and not run["choices"].is_empty() and str(game.run_state.get("phase", "")) != "combat":
 			(run["choices"].back() as Dictionary)["hp_after"] = int(game.run_state["survivor"]["vitals"]["health"])
 		if step_kind == "combat" and fight.is_empty() and not run["choices"].is_empty():
@@ -294,6 +300,7 @@ func _state_snapshot(game: GameEngine) -> Dictionary:
 		"inventory": (survivor["inventory"] as Dictionary).duplicate(),
 		"conditions": (survivor["conditions"] as Array).duplicate(),
 		"defeated": (game.run_state.get("defeated_adversaries", []) as Array).size(),
+		"xp": int(game.run_state.get("experience", 0)),
 	}
 
 
@@ -320,6 +327,8 @@ func _vitals_snapshot(game: GameEngine) -> Dictionary:
 		"food": food, "healing": healing, "ammo": ammo, "conditions": (survivor["conditions"] as Array).size(),
 		"weapon": str(survivor["equipment"].get("weapon", "")), "armor": str(survivor["equipment"].get("armor", "")),
 		"scrap": int(survivor["inventory"].get("scrap_parts", 0)),
+		"weapon_tier": int(content.get_item(str(survivor["equipment"].get("weapon", ""))).get("tier", 0)),
+		"armor_tier": int(content.get_item(str(survivor["equipment"].get("armor", ""))).get("tier", 0)),
 	}
 
 
@@ -349,6 +358,34 @@ func _record_deltas(game: GameEngine, before: Dictionary, run: Dictionary, sourc
 		if condition_id not in before["conditions"]:
 			var key := "%s|%s" % [str(condition_id), source]
 			run["conditions_applied"][key] = int(run["conditions_applied"].get(key, 0)) + 1
+
+
+## GAMEPLAY_REVAMP_PLAN 4.6: what one step paid, by source. Sources are
+## `road` (scene outcomes, journey and checkpoint XP), `fight_optional`,
+## `fight_caught`, `fight_gate` and `shop` (purchases; Scrap spent there is
+## recorded as `scrap_spent`). Gear counts equipment gained; `gear_t2` counts
+## tier-2 and tier-3 weapons and armor.
+func _record_economy(game: GameEngine, before: Dictionary, run: Dictionary, source: String) -> void:
+	var bucket: Dictionary = run["economy"].get(source, {"xp": 0, "scrap": 0, "scrap_spent": 0, "gear": 0, "gear_t2": 0})
+	bucket["xp"] = int(bucket["xp"]) + maxi(0, int(game.run_state.get("experience", 0)) - int(before["xp"]))
+	var inventory: Dictionary = game.run_state["survivor"]["inventory"]
+	var previous: Dictionary = before["inventory"]
+	var scrap_delta := int(inventory.get("scrap_parts", 0)) - int(previous.get("scrap_parts", 0))
+	if scrap_delta > 0:
+		bucket["scrap"] = int(bucket["scrap"]) + scrap_delta
+	else:
+		bucket["scrap_spent"] = int(bucket["scrap_spent"]) - scrap_delta
+	for item_id: String in inventory:
+		var delta := int(inventory[item_id]) - int(previous.get(item_id, 0))
+		if delta <= 0:
+			continue
+		var item: Dictionary = content.get_item(item_id)
+		if str(item.get("equipment_slot", "")) == "":
+			continue
+		bucket["gear"] = int(bucket["gear"]) + delta
+		if int(item.get("tier", 0)) >= 2:
+			bucket["gear_t2"] = int(bucket["gear_t2"]) + delta
+	run["economy"][source] = bucket
 
 
 # ---------------------------------------------------------------------------
@@ -838,7 +875,9 @@ func _checkpoint(game: GameEngine, policy: String, rng: RandomNumberGenerator) -
 		if not food.is_empty() and roll == 0:
 			return _rest(game, record, str(food[rng.randi_range(0, food.size() - 1)]))
 		if not affordable.is_empty() and roll <= 1:
-			return _trade(game, record, int(affordable[rng.randi_range(0, affordable.size() - 1)]))
+			var pick := int(affordable[rng.randi_range(0, affordable.size() - 1)])
+			if bool(game.accept_trade(pick).get("success", false)):
+				record["trade"] = "%s:%s" % [str(offers[pick].get("kind", "")), str(offers[pick].get("item_id", ""))]
 		return _press_on(game, record)
 	_equip_best(game)
 	var survivor: Dictionary = game.run_state["survivor"]
@@ -847,37 +886,79 @@ func _checkpoint(game: GameEngine, policy: String, rng: RandomNumberGenerator) -
 	var food_count := 0
 	for food_id: String in food:
 		food_count += game.get_item_quantity(food_id)
-	# A trade worth more than a rest?
-	var best_trade := -1
-	var best_trade_value := 0.0
-	for index in range(offers.size()):
-		if not bool(game.trade_preview(index).get("available", false)):
-			continue
-		var offer: Dictionary = offers[index]
-		var value := _item_value(game, str(offer.get("item_id", ""))) * float(offer.get("quantity", 1))
-		if str(offer.get("kind", "")) == "food" and food_count >= 3:
-			value *= 0.3
-		for cost_id: String in offer.get("cost", {}):
-			value -= _item_value(game, cost_id) * float(offer["cost"][cost_id])
-		if value > best_trade_value:
-			best_trade_value = value
-			best_trade = index
+	# GAMEPLAY_REVAMP_PLAN: the counter stays open for the whole stop, so buy
+	# every offer worth more than its price first, then rest or press on.
+	var bought: Array = []
+	# A fighter who sees an upgrade it cannot afford yet saves for it instead of
+	# spending the Scrap on bandages.
+	var saving := false
+	if policy in ["informed", "aggressive"] and not offers.is_empty():
+		var gear: Dictionary = offers[0]
+		saving = str(gear.get("kind", "")) == "equipment" and not bool(gear.get("sold", false)) and _gear_offer_value(game, str(gear.get("item_id", ""))) >= 80.0 and not bool(game.trade_preview(0).get("available", false))
+	for _attempt in range(offers.size()):
+		var best_trade := -1
+		var best_trade_value := 0.0
+		for index in range(offers.size()):
+			if not bool(game.trade_preview(index).get("available", false)):
+				continue
+			var offer: Dictionary = offers[index]
+			var value := _item_value(game, str(offer.get("item_id", ""))) * float(offer.get("quantity", 1))
+			if str(offer.get("kind", "")) == "equipment":
+				value = _gear_offer_value(game, str(offer.get("item_id", "")))
+			elif saving and offer.get("cost", {}).has("scrap_parts"):
+				value *= 0.4
+			if str(offer.get("kind", "")) == "food" and food_count >= 3:
+				value *= 0.3
+			for cost_id: String in offer.get("cost", {}):
+				value -= _item_value(game, cost_id) * float(offer["cost"][cost_id])
+			if value > best_trade_value:
+				best_trade_value = value
+				best_trade = index
+		var threshold := 10.0
+		if policy == "novice":
+			threshold = 10.0 if rng.randi_range(0, 1) == 0 else INF
+		if best_trade < 0 or best_trade_value <= threshold:
+			break
+		var offer_record: Dictionary = offers[best_trade]
+		if not bool(game.accept_trade(best_trade).get("success", false)):
+			break
+		bought.append("%s:%s" % [str(offer_record.get("kind", "")), str(offer_record.get("item_id", ""))])
+		_equip_best(game)
+		offers = game.checkpoint_offers()
+	record["trade"] = ",".join(bought)
+	food = game.available_food_items()
 	var rest_value := 0.0
 	if not food.is_empty():
-		rest_value = minf(25.0, float(survivor["vitals"]["max_health"] - survivor["vitals"]["health"])) + fatigue * 0.9 - 10.0
+		rest_value = minf(float(game.rest_heal_amount()), float(survivor["vitals"]["max_health"] - survivor["vitals"]["health"])) + fatigue * 0.9 - 10.0
 		if policy == "novice":
-			rest_value = 50.0 if hp_ratio < 0.7 or fatigue >= 40 else -1.0
+			# Every checkpoint now warns of the gate ahead and tells the player
+			# to rest first, so even a new player sleeps unless nearly unhurt.
+			rest_value = 50.0 if hp_ratio < 0.9 or fatigue >= 40 else -1.0
 	if policy == "novice":
 		if rest_value > 0.0:
 			return _rest(game, record, _best_item(game, "satiety"))
-		if best_trade >= 0 and rng.randi_range(0, 1) == 0:
-			return _trade(game, record, best_trade)
 		return _press_on(game, record)
-	if rest_value >= best_trade_value and rest_value > 15.0:
+	if rest_value > 15.0:
 		return _rest(game, record, _cheapest_food(game))
-	if best_trade >= 0 and best_trade_value > 10.0:
-		return _trade(game, record, best_trade)
 	return _press_on(game, record)
+
+
+## What a piece of gear on the counter is worth to the models: a real weapon
+## or armor upgrade is worth saving for, other unowned kit a few Scrap, and
+## anything that would sit in the pack nothing.
+func _gear_offer_value(game: GameEngine, item_id: String) -> float:
+	var item: Dictionary = content.get_item(item_id)
+	var equipment: Dictionary = game.run_state["survivor"]["equipment"]
+	match str(item.get("equipment_slot", "")):
+		"weapon":
+			var current := str(equipment.get("weapon", ""))
+			var held := _weapon_score(game, current) if current != "" else 0.0
+			return 120.0 if _weapon_score(game, item_id) > held * 1.05 else 0.0
+		"armor":
+			return 80.0 if int(item.get("damage_reduction", 0)) > int(content.get_item(str(equipment.get("armor", ""))).get("damage_reduction", 0)) else 0.0
+		"":
+			return _item_value(game, item_id)
+	return 35.0 if str(equipment.get(str(item.get("equipment_slot", "")), "")) == "" else 0.0
 
 
 func _cheapest_food(game: GameEngine) -> String:
@@ -929,14 +1010,23 @@ func _allocation_stat(game: GameEngine, policy: String, rng: RandomNumberGenerat
 		if int(stats["grit"]) < 7:
 			return "grit"
 		return "agility" if int(stats["agility"]) < 6 else attack_stat
+	if policy == "informed":
+		# GAMEPLAY_REVAMP_PLAN: fights decide the run, so the informed build
+		# is damage first, a sound HP pool second, then everything else.
+		if int(stats.get(attack_stat, 1)) < 6:
+			return attack_stat
+		if int(stats["grit"]) < 5:
+			return "grit"
+		if int(stats.get(attack_stat, 1)) < 9:
+			return attack_stat
 	if int(stats.get(attack_stat, 1)) < 6:
 		return attack_stat
 	if int(stats["grit"]) < 6:
 		return "grit"
 	if policy == "aggressive":
 		return attack_stat
-	# Informed: alternate between the weakest of wits/agility (most common
-	# event checks and flee) and the attack stat.
+	# Informed past its build: alternate between the weakest of wits/agility
+	# (most common event checks and flee) and the attack stat.
 	var weakest := "wits" if int(stats["wits"]) <= int(stats["agility"]) else "agility"
 	return weakest if int(stats[weakest]) < int(stats.get(attack_stat, 1)) - 2 else attack_stat
 
@@ -956,6 +1046,7 @@ func _new_aggregate() -> Dictionary:
 		"conditions_applied": {}, "checkpoints": {}, "talents": {}, "talent_outcomes": {},
 		"archetypes": {}, "start_weapons": {}, "final_weapons": {}, "allocations": {},
 		"runs_with_memory": 0,
+		"economy": {}, "gates": {},
 		"died_with": {"healing": 0, "food": 0, "both": 0, "deaths_counted": 0},
 		"runs_list": [],
 	}
@@ -1004,8 +1095,9 @@ func _merge_run(agg: Dictionary, run: Dictionary) -> void:
 	for arrival: Dictionary in run["region_arrivals"]:
 		var key := str(arrival["region"])
 		var bucket: Dictionary = agg["arrivals"].get(key, {})
-		for field: String in ["hp", "hp_max", "satiety", "fatigue", "radiation", "level", "food", "healing", "ammo", "conditions", "scrap"]:
+		for field: String in ["hp", "hp_max", "satiety", "fatigue", "radiation", "level", "food", "healing", "ammo", "conditions", "scrap", "weapon_tier", "armor_tier"]:
 			_bump(bucket, field, float(arrival[field]))
+		_bump(bucket, "weapon_t%d" % int(arrival["weapon_tier"]))
 		_bump(bucket, "count")
 		_bump(bucket, "hp_pct", float(arrival["hp"]) / maxf(1.0, float(arrival["hp_max"])))
 		_bump(bucket, "unarmed", float(str(arrival["weapon"]) == ""))
@@ -1061,6 +1153,25 @@ func _merge_run(agg: Dictionary, run: Dictionary) -> void:
 		bucket["level"] = int(bucket["level"]) + int(fight["level"])
 		_bump(bucket["regions"], str(fight["region"]))
 		agg["enemies"][enemy] = bucket
+	# Forced gate fights by region: the avoider's only fights, so their
+	# survival curve is the difficulty curve of an avoiding run.
+	for fight: Dictionary in run["fights"]:
+		if str(fight.get("kind", "")) != "gate":
+			continue
+		var gate: Dictionary = agg["gates"].get(str(fight["region"]), {"fights": 0, "won": 0, "died": 0, "rounds": 0, "hp_lost_pct": 0.0, "hp_start_pct": 0.0, "level": 0})
+		gate["fights"] = int(gate["fights"]) + 1
+		gate["won"] = int(gate["won"]) + int(str(fight["result"]) == "won")
+		gate["died"] = int(gate["died"]) + int(str(fight["result"]) == "died")
+		gate["rounds"] = int(gate["rounds"]) + int(fight["rounds"])
+		gate["hp_lost_pct"] = float(gate["hp_lost_pct"]) + float(int(fight["hp_start"]) - int(fight.get("hp_end", 0))) / maxf(1.0, float(fight["hp_max"]))
+		gate["hp_start_pct"] = float(gate["hp_start_pct"]) + float(fight["hp_start"]) / maxf(1.0, float(fight["hp_max"]))
+		gate["level"] = int(gate["level"]) + int(fight["level"])
+		agg["gates"][str(fight["region"])] = gate
+	for source: String in run["economy"]:
+		var totals: Dictionary = agg["economy"].get(source, {})
+		for field: String in run["economy"][source]:
+			_bump(totals, field, float(run["economy"][source][field]))
+		agg["economy"][source] = totals
 	for action: String in run["combat_actions"]:
 		var src: Dictionary = run["combat_actions"][action]
 		var bucket: Dictionary = agg["combat_actions"].get(action, {"used": 0, "success": 0})
@@ -1074,8 +1185,8 @@ func _merge_run(agg: Dictionary, run: Dictionary) -> void:
 		_bump(agg["held_at_end"], item_id, float(run["final_inventory"][item_id]))
 	for checkpoint: Dictionary in run["checkpoints"]:
 		_bump(agg["checkpoints"], "%d|%s" % [int(checkpoint["region"]), str(checkpoint["action"])])
-		if str(checkpoint["trade"]) != "":
-			_bump(agg["checkpoints"], "trade|%s" % str(checkpoint["trade"]))
+		for purchase: String in str(checkpoint["trade"]).split(",", false):
+			_bump(agg["checkpoints"], "trade|%s" % purchase)
 		if str(checkpoint["talent"]) != "":
 			_bump(agg["talents"], str(checkpoint["talent"]))
 		for stat: String in checkpoint["allocated"]:

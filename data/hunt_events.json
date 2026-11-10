@@ -29,7 +29,7 @@
           "approach": "force",
           "outcome": {
             "text": "You spend the hour harvesting shed copper instead of tracking, filling your pack with bright, valuable weight. The beast can keep its nest. Your pack grows heavier and your curiosity lighter, which is sometimes the smarter trade.",
-            "items": {"scrap_parts": 2},
+            "items": {"scrap_parts": 1},
             "add_flags": ["hunt_spark_declined"]
           }
         },
@@ -130,7 +130,7 @@
           "approach": "evade",
           "outcome": {
             "text": "At the last breath you choose the copper over the kill, stripping the side runs while it watches, sated and incurious. Your pack fills with bright metal. The hunt ends uncompleted but profitable, which the road counts as wisdom as often as not.",
-            "items": {"scrap_parts": 3},
+            "items": {"scrap_parts": 2},
             "add_flags": ["hunt_spark_closed"]
           }
         }
@@ -165,7 +165,7 @@
           "approach": "force",
           "outcome": {
             "text": "You gather the shed plates and the best of the leftovers, leaving the den and its owner strictly alone. Bone is valuable and unguarded, right up until it is guarded. You choose the profitable version of this story and walk on heavier.",
-            "items": {"scrap_parts": 2},
+            "items": {"scrap_parts": 1},
             "add_flags": ["hunt_hound_declined"]
           }
         },
@@ -266,7 +266,7 @@
           "approach": "evade",
           "outcome": {
             "text": "While it patrols the far ridge you slip in, take the best loose salvage, and get clear before the wind turns. No kill, no glory, but a heavy pack and unbroken skin. The canyon keeps its master. You keep the profit, which spends just as well.",
-            "items": {"scrap_parts": 3},
+            "items": {"scrap_parts": 2},
             "add_flags": ["hunt_hound_closed"]
           }
         }

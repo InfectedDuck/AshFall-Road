@@ -1,18 +1,20 @@
 class_name ExperienceRules
 extends RefCounted
 
-const RULES_VERSION := 1
+const RULES_VERSION := 2
+## v2 (GAMEPLAY_REVAMP_PLAN §4.2): the road pays little XP; fights pay by
+## threat tier through each adversary's xp_reward.
 const STARTING_LEVEL := 1
 const MAX_LEVEL := 8
-const JOURNEY_XP := 4
-const CHECKPOINT_XP := 10
+const JOURNEY_XP := 1
+const CHECKPOINT_XP := 5
 const LEVEL_THRESHOLDS := [0, 40, 88, 144, 208, 280, 360, 456]
 const CHECK_BONUSES := {
 	"easy": 0,
-	"favorable": 2,
-	"risky": 4,
-	"hard": 7,
-	"desperate": 10,
+	"favorable": 1,
+	"risky": 2,
+	"hard": 3,
+	"desperate": 5,
 }
 
 

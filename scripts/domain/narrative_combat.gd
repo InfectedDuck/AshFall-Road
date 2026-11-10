@@ -692,7 +692,7 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 			var foe: Dictionary = game.content.get_adversary(str(state.get("adversary_id", "")))
 			var crit_id := str(foe.get("combat", {}).get("critical_condition", ""))
 			var crit_name := str(game.content.get_condition(crit_id).get("name", crit_id)) if crit_id != "" else "injury"
-			effects.append("Heavy (v4): x2.0 damage; attacking risks %s; Dodge negates for Opening." % crit_name)
+			effects.append("Heavy (v4): x%s damage; attacking risks %s; Dodge negates for Opening." % [str(snappedf(float(move.get("damage", 2.0)), 0.01)), crit_name])
 		if is_v4(game) and move_id == "sweep" and action in ["attack", "opportunity"]:
 			effects.append("Sweep (v4): Block negates for Riposte; Dodging it is risky.")
 		if float(move.get("bonus", 0.0)) > 0.0:

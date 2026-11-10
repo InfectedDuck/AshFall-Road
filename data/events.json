@@ -402,7 +402,7 @@
           "success": {
             "text": "You stop the motor and salvage its charge pack. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you.",
             "items": {
-              "scrap_parts": 2
+              "scrap_parts": 1
             },
             "add_flags": []
           },
@@ -620,7 +620,7 @@
           "success": {
             "text": "The shelf holds tools and a sealed canteen. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
-              "scrap_parts": 2,
+              "scrap_parts": 1,
               "clean_water": 1
             }
           },
@@ -816,7 +816,7 @@
             "text": "Inside are road flares, a frame pack, and one flare casing repacked by hand into a smoke charge. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
             "items": {
               "frame_pack": 1,
-              "scrap_parts": 2,
+              "scrap_parts": 1,
               "smoke_bomb": 1
             }
           },
@@ -1101,7 +1101,7 @@
           "success": {
             "text": "You recover valuable components without waking the grid. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
             "items": {
-              "scrap_parts": 3,
+              "scrap_parts": 2,
               "stimulant": 1
             }
           },
@@ -1805,7 +1805,7 @@
           "success": {
             "text": "You recover useful parts and a sealed filter mask. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
-              "scrap_parts": 3,
+              "scrap_parts": 2,
               "filter_mask": 1
             }
           },
@@ -1976,7 +1976,7 @@
           "success": {
             "text": "The swarm drops harmlessly. Their cells are valuable. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
-              "scrap_parts": 3,
+              "scrap_parts": 1,
               "field_scanner": 1
             }
           },
@@ -2105,7 +2105,7 @@
           "success": {
             "text": "You strip a heavy bundle of useful metal. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
             "items": {
-              "scrap_parts": 4
+              "scrap_parts": 2
             }
           },
           "failure": {
@@ -2521,7 +2521,7 @@
           "success": {
             "text": "The pallet contains sealed tools and food. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
             "items": {
-              "scrap_parts": 3,
+              "scrap_parts": 2,
               "ration_bar": 1
             }
           },
@@ -2916,7 +2916,7 @@
           "success": {
             "text": "The fragment is a fallen drone core worth stripping. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
-              "scrap_parts": 4,
+              "scrap_parts": 2,
               "field_scanner": 1
             }
           },
@@ -3851,7 +3851,7 @@
           "success": {
             "text": "The maintenance housing contains a usable access core. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
-              "scrap_parts": 2
+              "scrap_parts": 1
             },
             "add_flags": [
               "access_core"
@@ -4232,7 +4232,7 @@
           "success": {
             "text": "A drainage grate hides useful parts. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
-              "scrap_parts": 2
+              "scrap_parts": 1
             }
           },
           "failure": {
@@ -4510,7 +4510,7 @@
           "success": {
             "text": "You recover the trigger and useful wire. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
             "items": {
-              "scrap_parts": 2
+              "scrap_parts": 1
             }
           },
           "failure": {
@@ -4611,7 +4611,7 @@
           "modifier": 1,
           "success": {
             "text": "The first lock accepts your reconstruction. The choice holds. You gather yourself quickly, listening for pursuit while the place settles back into its uneasy rhythm around you. The memory follows you into the next mile.",
-            "next_event": "final_gate_2",
+            "next_event": "final_gate_guard",
             "variants": [
               {
                 "requires_any_flags": [
@@ -4627,7 +4627,7 @@
             "pressures": {
               "health": -20
             },
-            "next_event": "final_gate_2",
+            "next_event": "final_gate_guard",
             "variants": [
               {
                 "requires_any_flags": [
@@ -4642,7 +4642,7 @@
             "add_conditions": [
               "focused"
             ],
-            "next_event": "final_gate_2",
+            "next_event": "final_gate_guard",
             "variants": [
               {
                 "requires_any_flags": [
@@ -4669,7 +4669,7 @@
           },
           "success": {
             "text": "The guard delays execution and moves you to secondary screening. For a moment, the road loosens its grip. You check your gear, steady your breathing, and move before the surrounding ruins can change their mind.",
-            "next_event": "final_gate_2",
+            "next_event": "final_gate_guard",
             "variants": [
               {
                 "requires_any_flags": [
@@ -4688,7 +4688,7 @@
             "add_conditions": [
               "shaken"
             ],
-            "next_event": "final_gate_2",
+            "next_event": "final_gate_guard",
             "variants": [
               {
                 "requires_any_flags": [
@@ -5062,6 +5062,194 @@
               "rad_tabs": 1,
               "stalkhide_wraps": 1
             }
+          }
+        }
+      ]
+    },
+    {
+      "id": "outskirts_gate_overpass",
+      "scene_role": "micro",
+      "title": "Cutter's Crew",
+      "body": "The only ramp out of the Outskirts climbs a cracked overpass, and Cutter's crew has strung wire across it at knee height. Four of them wait behind car doors bolted into a wall. Nobody asks for payment. They have watched you come all morning, and the way east runs through them.",
+      "weight": 1,
+      "unique": true,
+      "adversary_id": "gate_cutter_crew",
+      "tags": [
+        "gate_fight"
+      ],
+      "choices": [
+        {
+          "label": "Take the overpass",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "gate_cutter_crew",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "Cutter goes over the rail and the rest of the crew scatter into the ruins. Their wire comes down, and the road east is open."
+          }
+        }
+      ]
+    },
+    {
+      "id": "flats_gate_captain",
+      "scene_role": "micro",
+      "title": "The Captain's Barrier",
+      "body": "Where the flats meet the salt road, a barrier of welded bus frames blocks the only firm ground. The Toll Captain sits on its roof in a pressed uniform with a ledger on his knee. His collectors told him about you, and he has set your price at everything you carry.",
+      "weight": 1,
+      "unique": true,
+      "adversary_id": "gate_toll_captain",
+      "tags": [
+        "gate_fight"
+      ],
+      "choices": [
+        {
+          "label": "Break the barrier",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "gate_toll_captain",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "The Captain's ledger lies open in the salt, pages lifting in the wind. His crew carry him off the road, and the barrier swings for anyone who walks."
+          }
+        }
+      ]
+    },
+    {
+      "id": "marsh_gate_weir",
+      "scene_role": "micro",
+      "title": "The Weir",
+      "body": "The marsh drains through one concrete weir, and the raiders have chained their skiffs across it in a line. Their boss stands in the middle boat with a harpoon gun and a dry coat. The water on either side is too deep to wade. The only crossing runs through them.",
+      "weight": 1,
+      "unique": true,
+      "adversary_id": "gate_weir_raiders",
+      "tags": [
+        "gate_fight"
+      ],
+      "choices": [
+        {
+          "label": "Cross the weir",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "gate_weir_raiders",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "The boss goes into the water with his harpoon and does not come up. The skiffs drift apart on their chains. Someone left a bandage roll on the weir.",
+            "items": {
+              "cloth_bandage": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "industrial_gate_sentinel",
+      "scene_role": "micro",
+      "title": "The Foundry Gate",
+      "body": "The only way out of the industrial belt runs through a foundry gate, and something still guards it. A sentinel frame on treads rolls out of the loading bay as its drone escort lifts off its back. A speaker repeats a shift code nobody has known for years.",
+      "weight": 1,
+      "unique": true,
+      "adversary_id": "gate_foundry_sentinel",
+      "tags": [
+        "gate_fight"
+      ],
+      "choices": [
+        {
+          "label": "Bring it down",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "gate_foundry_sentinel",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "The sentinel grinds to a stop with its rotors still turning. Its escort drops around it one by one, and a first-aid locker in the bay still holds a kit.",
+            "items": {
+              "cloth_bandage": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "glass_gate_champion",
+      "scene_role": "micro",
+      "title": "The Choir's Champion",
+      "body": "At the edge of the glass the cult has raised a ring of fused stones, and one champion waits inside it in a robe sewn with mirror shards. The others kneel along the ring and sing. The rule is old and simple: whoever leaves the wastes eastward walks through the champion.",
+      "weight": 1,
+      "unique": true,
+      "adversary_id": "gate_choir_champion",
+      "tags": [
+        "gate_fight"
+      ],
+      "choices": [
+        {
+          "label": "Enter the ring",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "gate_choir_champion",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "The champion kneels in the ring and does not rise. The song stops, and an old pilgrim presses a bandage roll into your hand as the circle opens.",
+            "items": {
+              "cloth_bandage": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rail_gate_pack_leader",
+      "scene_role": "micro",
+      "title": "The Last Platform",
+      "body": "The last platform before the Citadel line is lit by a fire in an oil drum. The hunters' leader waits beside it, taller than the rest, with a rail spike for a weapon and a necklace of other travelers' tags. The pack fills the dark behind you. It wants a fair fight.",
+      "weight": 1,
+      "unique": true,
+      "adversary_id": "gate_pack_leader",
+      "tags": [
+        "gate_fight"
+      ],
+      "choices": [
+        {
+          "label": "Face the leader",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "gate_pack_leader",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "The leader falls against the oil drum and fire spills across the rails. The pack melts back into the tunnels, leaving a field kit by the drum.",
+            "items": {
+              "cloth_bandage": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "final_gate_guard",
+      "scene_role": "micro",
+      "title": "The Guard at the Wall",
+      "body": "Past the outer door a side hatch opens, and the Citadel Guard steps out in full plate with a shock maul in hand. Floodlights follow him. Whatever the loudspeaker decided about you, he has decided differently, and the inner lock is behind him.",
+      "weight": 1,
+      "unique": true,
+      "adversary_id": "citadel_guard",
+      "tags": [
+        "gate_fight"
+      ],
+      "choices": [
+        {
+          "label": "Fight the guard",
+          "approach": "combat",
+          "combat": {
+            "adversary_id": "citadel_guard",
+            "can_flee": false
+          },
+          "victory": {
+            "text": "The guard goes down against the blast door, plate scorched and maul skidding across the concrete. Above you the loudspeaker falls silent, and the inner lock begins to turn.",
+            "next_event": "final_gate_2"
           }
         }
       ]

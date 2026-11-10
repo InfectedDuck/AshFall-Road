@@ -1427,14 +1427,14 @@
               "lr_filter_stripped"
             ],
             "items": {
-              "scrap_parts": 2
+              "scrap_parts": 1
             },
             "reason": "You have no housing to fit back",
             "hidden_when_locked": true
           },
           "costs": {
             "items": {
-              "scrap_parts": 2
+              "scrap_parts": 1
             }
           },
           "success": {

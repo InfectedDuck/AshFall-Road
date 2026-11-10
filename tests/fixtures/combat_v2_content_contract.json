@@ -1,54 +1,54 @@
 {
-  "comment": "Combat-v2 contract including the September 2026 difficulty tuning. Enemy HP/damage and crow sequence intentionally increased; weapon, shield and reward contracts retained.",
+  "comment": "Combat-v2 contract re-pinned for the November 2026 gameplay revamp (GAMEPLAY_REVAMP_PLAN 4.2/4.4): enemy HP, damage and XP follow the regional curve and the threat-tier reward table. Sequences, weapon and shield contracts retained.",
   "adversaries": [
     {
       "id": "road_bandits",
       "combat": {
-        "max_health": 200,
-        "damage_min": 44,
-        "damage_max": 66,
+        "max_health": 180,
+        "damage_min": 27,
+        "damage_max": 40,
         "weapon_name": "Hunting bows and blades",
         "critical_condition": "bleeding",
         "flee_difficulty": "favorable"
       },
       "sequence": ["strike", "brace", "heavy", "recover"],
       "organic": true,
-      "xp_reward": 24
+      "xp_reward": 30
     },
     {
       "id": "feral_dogs",
       "combat": {
-        "max_health": 150,
-        "damage_min": 38,
-        "damage_max": 58,
+        "max_health": 130,
+        "damage_min": 21,
+        "damage_max": 32,
         "weapon_name": "Teeth and claws",
         "critical_condition": "bleeding",
         "flee_difficulty": "favorable"
       },
       "sequence": ["strike", "heavy", "recover"],
       "organic": true,
-      "xp_reward": 22
+      "xp_reward": 20
     },
     {
       "id": "ash_stalkers",
       "combat": {
-        "max_health": 240,
-        "damage_min": 52,
-        "damage_max": 80,
+        "max_health": 420,
+        "damage_min": 45,
+        "damage_max": 67,
         "weapon_name": "Hooked claws",
         "critical_condition": "bleeding",
         "flee_difficulty": "risky"
       },
       "sequence": ["strike", "heavy", "sweep", "recover"],
       "organic": true,
-      "xp_reward": 36
+      "xp_reward": 45
     },
     {
       "id": "toll_gang",
       "combat": {
-        "max_health": 240,
-        "damage_min": 48,
-        "damage_max": 72,
+        "max_health": 190,
+        "damage_min": 27,
+        "damage_max": 40,
         "weapon_name": "Clubs and revolvers",
         "critical_condition": "shaken",
         "flee_difficulty": "risky"
@@ -60,107 +60,107 @@
     {
       "id": "marsh_leeches",
       "combat": {
-        "max_health": 120,
-        "damage_min": 32,
-        "damage_max": 48,
+        "max_health": 250,
+        "damage_min": 35,
+        "damage_max": 53,
         "weapon_name": "Feeding swarm",
         "critical_condition": "bleeding",
         "flee_difficulty": "favorable"
       },
       "sequence": ["sweep", "strike", "recover"],
       "organic": true,
-      "xp_reward": 24
+      "xp_reward": 30
     },
     {
       "id": "bog_raiders",
       "combat": {
         "max_health": 270,
-        "damage_min": 54,
-        "damage_max": 80,
+        "damage_min": 35,
+        "damage_max": 52,
         "weapon_name": "Patched shotguns",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
       },
       "sequence": ["strike", "sweep", "brace"],
       "organic": true,
-      "xp_reward": 44
+      "xp_reward": 45
     },
     {
       "id": "drone_swarm",
       "combat": {
-        "max_health": 280,
-        "damage_min": 56,
-        "damage_max": 88,
+        "max_health": 420,
+        "damage_min": 44,
+        "damage_max": 66,
         "weapon_name": "Security emitters",
         "critical_condition": "burned",
         "flee_difficulty": "hard"
       },
       "sequence": ["strike", "charge", "heavy", "recover"],
       "organic": false,
-      "xp_reward": 48
+      "xp_reward": 60
     },
     {
       "id": "vault_scavs",
       "combat": {
-        "max_health": 300,
-        "damage_min": 58,
-        "damage_max": 85,
+        "max_health": 350,
+        "damage_min": 39,
+        "damage_max": 58,
         "weapon_name": "Rifles and work axes",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
       },
       "sequence": ["brace", "strike", "heavy", "recover"],
       "organic": true,
-      "xp_reward": 46
+      "xp_reward": 45
     },
     {
       "id": "glass_cult",
       "combat": {
-        "max_health": 340,
-        "damage_min": 64,
-        "damage_max": 96,
+        "max_health": 460,
+        "damage_min": 43,
+        "damage_max": 64,
         "weapon_name": "Glass blades",
         "critical_condition": "bleeding",
         "flee_difficulty": "desperate"
       },
       "sequence": ["strike", "sweep", "heavy", "recover"],
       "organic": true,
-      "xp_reward": 62
+      "xp_reward": 60
     },
     {
       "id": "tunnel_hunters",
       "combat": {
-        "max_health": 320,
-        "damage_min": 68,
-        "damage_max": 100,
+        "max_health": 450,
+        "damage_min": 43,
+        "damage_max": 64,
         "weapon_name": "Hidden knives",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
       },
       "sequence": ["strike", "heavy", "brace"],
       "organic": true,
-      "xp_reward": 52
+      "xp_reward": 60
     },
     {
       "id": "citadel_guard",
       "combat": {
-        "max_health": 430,
-        "damage_min": 85,
-        "damage_max": 128,
+        "max_health": 460,
+        "damage_min": 45,
+        "damage_max": 68,
         "weapon_name": "Service rifles",
         "critical_condition": "shaken",
         "flee_difficulty": "desperate"
       },
       "sequence": ["brace", "strike", "charge", "heavy", "recover"],
       "organic": true,
-      "xp_reward": 75
+      "xp_reward": 90
     },
     {
       "id": "warden_machine",
       "combat": {
-        "max_health": 600,
-        "damage_min": 105,
-        "damage_max": 158,
+        "max_health": 570,
+        "damage_min": 53,
+        "damage_max": 80,
         "weapon_name": "Rotary cannon",
         "critical_condition": "burned",
         "flee_difficulty": "desperate"
@@ -172,23 +172,23 @@
     {
       "id": "mutant_crows",
       "combat": {
-        "max_health": 110,
-        "damage_min": 36,
-        "damage_max": 54,
+        "max_health": 140,
+        "damage_min": 21,
+        "damage_max": 32,
         "weapon_name": "Beaks and talons",
         "critical_condition": "shaken",
         "flee_difficulty": "easy"
       },
       "sequence": ["strike", "sweep", "strike", "recover"],
       "organic": true,
-      "xp_reward": 18
+      "xp_reward": 20
     },
     {
       "id": "reed_widow",
       "combat": {
-        "max_health": 160,
-        "damage_min": 36,
-        "damage_max": 56,
+        "max_health": 250,
+        "damage_min": 31,
+        "damage_max": 47,
         "weapon_name": "Grasping limbs and undertow",
         "critical_condition": "sprain",
         "flee_difficulty": "risky"
@@ -200,93 +200,93 @@
     {
       "id": "kilnback",
       "combat": {
-        "max_health": 300,
-        "damage_min": 62,
-        "damage_max": 88,
+        "max_health": 420,
+        "damage_min": 37,
+        "damage_max": 56,
         "weapon_name": "Scorched plate edges",
         "critical_condition": "burned",
         "flee_difficulty": "favorable"
       },
       "sequence": ["brace", "heavy", "strike", "recover"],
       "organic": true,
-      "xp_reward": 50
+      "xp_reward": 60
     },
     {
       "id": "shutter_skitters",
       "combat": {
-        "max_health": 115,
-        "damage_min": 28,
-        "damage_max": 44,
+        "max_health": 130,
+        "damage_min": 21,
+        "damage_max": 32,
         "weapon_name": "Biting plates and clustered bodies",
         "critical_condition": "infection",
         "flee_difficulty": "easy"
       },
       "sequence": ["sweep", "strike", "brace", "recover"],
       "organic": true,
-      "xp_reward": 16
+      "xp_reward": 20
     },
     {
       "id": "cable_eater",
       "combat": {
-        "max_health": 250,
-        "damage_min": 54,
-        "damage_max": 80,
+        "max_health": 450,
+        "damage_min": 48,
+        "damage_max": 72,
         "weapon_name": "Live segments and electrical discharge",
         "critical_condition": "burned",
         "flee_difficulty": "risky"
       },
       "sequence": ["charge", "strike", "sweep", "brace", "recover"],
       "organic": true,
-      "xp_reward": 44
+      "xp_reward": 45
     },
     {
       "id": "pox_dogs",
       "combat": {
         "max_health": 130,
-        "damage_min": 34,
-        "damage_max": 50,
+        "damage_min": 21,
+        "damage_max": 32,
         "weapon_name": "Cysted teeth and claws",
         "critical_condition": "spore_cough",
         "flee_difficulty": "favorable"
       },
       "sequence": ["strike", "sweep", "recover"],
       "organic": true,
-      "xp_reward": 22
+      "xp_reward": 20
     },
     {
       "id": "bile_spewer",
       "combat": {
-        "max_health": 220,
-        "damage_min": 48,
-        "damage_max": 70,
+        "max_health": 320,
+        "damage_min": 35,
+        "damage_max": 52,
         "weapon_name": "Bile jets and grasping gut-tendrils",
         "critical_condition": "gutrot",
         "flee_difficulty": "risky"
       },
       "sequence": ["strike", "heavy", "brace", "recover"],
       "organic": true,
-      "xp_reward": 38
+      "xp_reward": 45
     },
     {
       "id": "cinder_mauler",
       "combat": {
-        "max_health": 340,
-        "damage_min": 70,
-        "damage_max": 100,
+        "max_health": 480,
+        "damage_min": 47,
+        "damage_max": 70,
         "weapon_name": "Superheated plate fists",
         "critical_condition": "burned",
         "flee_difficulty": "hard"
       },
       "sequence": ["strike", "heavy", "brace", "recover"],
       "organic": true,
-      "xp_reward": 58
+      "xp_reward": 60
     },
     {
       "id": "salt_colossus",
       "combat": {
-        "max_health": 450,
-        "damage_min": 85,
-        "damage_max": 125,
+        "max_health": 600,
+        "damage_min": 56,
+        "damage_max": 84,
         "weapon_name": "Crawler-plated avalanche fists",
         "critical_condition": "gutrot",
         "flee_difficulty": "desperate"

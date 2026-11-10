@@ -381,14 +381,14 @@ func _items_opportunities_and_transactions() -> void:
 	game = fixture("road_bandits")
 	var smoke := round_for(game, "use_item", 0, 20, "smoke_bomb")
 	check.call(smoke["flee_success"] and game.get_item_quantity("smoke_bomb") == 1 and game.run_state["survivor"]["vitals"]["health"] == 400, "Smoke consumes one and escapes without damage")
-	check.call(game.run_state["experience"] == 4 and game.run_state["survivor"]["pressures"]["fatigue"] == 5, "Smoke grants journey XP only and escape Fatigue")
+	check.call(game.run_state["experience"] == ExperienceRules.JOURNEY_XP and game.run_state["survivor"]["pressures"]["fatigue"] == 5, "Smoke grants journey XP only and escape Fatigue")
 	game = fixture("warden_machine")
 	check.call(not game.combat_action_preview("use_item", "smoke_bomb")["available"] and not game.combat_action_preview("flee")["available"], "No-escape encounters reject Smoke and Flee")
 	game = fixture("road_bandits")
 	var failed_flee := round_for(game, "flee", 1, 10)
 	check.call(not bool(failed_flee.get("flee_success", false)) and game.run_state["experience"] == 0 and failed_flee["enemy_damage"] > 0, "Failed fleeing receives response without XP")
 	var escaped := round_for(game, "flee", 20, 20)
-	check.call(escaped["flee_success"] and game.run_state["experience"] == 4, "Successful fleeing grants no combat XP")
+	check.call(escaped["flee_success"] and game.run_state["experience"] == ExperienceRules.JOURNEY_XP, "Successful fleeing grants no combat XP")
 	game = fixture("warden_machine", "")
 	for expected in [25, 35, 45, 45]:
 		move_to(game, "recover")
@@ -444,7 +444,7 @@ func _items_opportunities_and_transactions() -> void:
 		store.marker_failing = false
 		if death: transaction.resolve(game, store)
 		check.call(game.run_state == after, "Victory/death saving never duplicates rewards")
-		check.call((store.marker != "") if death else game.run_state["experience"] == int(content.adversaries["road_bandits"]["xp_reward"]) + 4, "Death secured or combat victory XP applied once")
+		check.call((store.marker != "") if death else game.run_state["experience"] == int(content.adversaries["road_bandits"]["xp_reward"]) + ExperienceRules.JOURNEY_XP, "Death secured or combat victory XP applied once")
 		if not death:
 			check.call(game.run_state["last_result"]["resolution"]["success_chance"] < 100, "Victory retains the original hit chance rather than displaying guaranteed success")
 
