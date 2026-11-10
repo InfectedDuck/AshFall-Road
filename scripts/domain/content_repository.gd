@@ -26,6 +26,10 @@ var adversaries: Dictionary = {}
 var talents: Dictionary = {}
 var trade_catalog: Dictionary = {}
 var combat_data: Dictionary = {}
+## Build rework: loadout synergies (loadout_rules.gd) in authored order, and
+## the bonus for wearing one synergy of each pair type.
+var synergies: Dictionary = {}
+var synergy_full_kit: Dictionary = {}
 var legacy_v2_checks: Dictionary = {}
 var discovery_entries: Dictionary = {}
 var polished_event_ids: Dictionary = {}
@@ -72,6 +76,8 @@ func reload() -> void:
 	talents = _load_index("res://data/talents.json", "talents")
 	trade_catalog = _load_map("res://data/checkpoint_offers.json", "catalog")
 	combat_data = _load_map("res://data/combat_content.json", "combat")
+	synergies = _load_index("res://data/loadout_synergies.json", "synergies")
+	synergy_full_kit = _load_map("res://data/loadout_synergies.json", "full_kit")
 	legacy_v2_checks = _load_map("res://data/legacy_v2_checks.json", "legacy_checks")
 	_load_discovery_entries()
 
@@ -329,6 +335,9 @@ func validate_all() -> PackedStringArray:
 				errors.append("Ranged weapon '%s' must consume ammunition" % item_id)
 			if item.has("affinity_min") and (int(item.get("affinity_min", 0)) < 2 or int(item.get("affinity_min", 0)) > 6):
 				errors.append("Weapon '%s' affinity_min must be a base stat from 2 to 6" % item_id)
+			# Build rework: every weapon scales with a second, different stat.
+			if str(item.get("support_stat", "")) not in GameEngine.STATS or str(item.get("support_stat", "")) == str(combat.get("attack_stat", "")):
+				errors.append("Weapon '%s' needs a support_stat different from its attack stat" % item_id)
 		var effects: Dictionary = item.get("effects", {})
 		for condition_id: Variant in effects.get("remove_conditions", []):
 			var removed_id := str(condition_id)
@@ -373,6 +382,7 @@ func validate_all() -> PackedStringArray:
 	_validate_trade_catalog(errors)
 	_validate_polished_prose(errors)
 	_validate_narrative_combat(errors)
+	_validate_synergies(errors)
 	_validate_item_acquisition(errors)
 	if living_road_enabled:
 		_validate_living_road(errors)
@@ -454,6 +464,80 @@ func _validate_narrative_combat(errors: PackedStringArray) -> void:
 	for category: String in combat_data.get("narration", {}):
 		if combat_data["narration"][category].size() < 3:
 			errors.append("Combat narration needs three variants: " + category)
+
+
+## Build rework: a synergy links two or three of weapon, armor and accessory,
+## names what each slot needs in words, grants at least one known effect, and
+## can actually be worn. Every weapon, armor and accessory belongs to at least
+## one synergy, so no piece of gear is a dead end for build-making.
+func _validate_synergies(errors: PackedStringArray) -> void:
+	const Loadout = preload("res://scripts/domain/loadout_rules.gd")
+	if synergies.is_empty():
+		errors.append("Missing loadout synergies")
+		return
+	if str(synergy_full_kit.get("name", "")).is_empty() or (synergy_full_kit.get("effects", {}) as Dictionary).is_empty():
+		errors.append("Loadout synergies need a named full-kit bonus with effects")
+	_validate_synergy_effects("full kit", synergy_full_kit.get("effects", {}), errors)
+	var families: Dictionary = combat_data.get("families", {})
+	var covered: Dictionary = {}
+	var pair_types: Dictionary = {}
+	for synergy_id: String in synergies:
+		var synergy: Dictionary = synergies[synergy_id]
+		var requires: Dictionary = synergy.get("requires", {})
+		var labels: Dictionary = synergy.get("labels", {})
+		if str(synergy.get("name", "")).is_empty():
+			errors.append("Synergy '%s' needs a name" % synergy_id)
+		if requires.size() < 2 or requires.size() > 3:
+			errors.append("Synergy '%s' must link two or three slots" % synergy_id)
+		if (synergy.get("effects", {}) as Dictionary).is_empty():
+			errors.append("Synergy '%s' needs at least one effect" % synergy_id)
+		_validate_synergy_effects(synergy_id, synergy.get("effects", {}), errors)
+		pair_types[Loadout.pair_key(synergy)] = true
+		for slot: String in requires:
+			if slot not in Loadout.SLOTS or typeof(requires[slot]) != TYPE_DICTIONARY:
+				errors.append("Synergy '%s' uses invalid slot '%s'" % [synergy_id, slot])
+				continue
+			if str(labels.get(slot, "")).is_empty():
+				errors.append("Synergy '%s' needs a label for its %s" % [synergy_id, slot])
+			var requirement: Dictionary = requires[slot]
+			for key: String in requirement:
+				if key not in ["ids", "signature", "two_handed", "ranged", "weight", "shield"]:
+					errors.append("Synergy '%s' uses unknown requirement '%s'" % [synergy_id, key])
+			for required_id: Variant in requirement.get("ids", []):
+				if str(items.get(str(required_id), {}).get("equipment_slot", "")) != slot:
+					errors.append("Synergy '%s' names '%s', which does not go in the %s slot" % [synergy_id, required_id, slot])
+			for family: Variant in requirement.get("signature", []):
+				if not families.has(str(family)):
+					errors.append("Synergy '%s' names unknown weapon family '%s'" % [synergy_id, family])
+			for weight: Variant in requirement.get("weight", []):
+				if str(weight) not in Loadout.WEIGHTS:
+					errors.append("Synergy '%s' names unknown armor weight '%s'" % [synergy_id, weight])
+			var matched := 0
+			for item_id: String in items:
+				var item: Dictionary = items[item_id]
+				if str(item.get("equipment_slot", "")) == slot and Loadout.matches(requirement, item):
+					matched += 1
+					covered[item_id] = true
+			if matched == 0:
+				errors.append("Synergy '%s' can never be worn: nothing fits its %s" % [synergy_id, slot])
+	for pair: String in Loadout.FULL_KIT_PAIRS:
+		if not pair_types.has(pair):
+			errors.append("Loadout synergies need at least one %s link" % pair)
+	for item_id: String in items:
+		if str(items[item_id].get("equipment_slot", "")) in Loadout.SLOTS and not covered.has(item_id):
+			errors.append("Item '%s' belongs to no loadout synergy" % item_id)
+
+
+func _validate_synergy_effects(label: String, effects: Variant, errors: PackedStringArray) -> void:
+	const Loadout = preload("res://scripts/domain/loadout_rules.gd")
+	if typeof(effects) != TYPE_DICTIONARY:
+		errors.append("Synergy '%s' effects must be a table" % label)
+		return
+	for key: String in effects:
+		if key not in Loadout.EFFECT_KEYS:
+			errors.append("Synergy '%s' uses unknown effect '%s'" % [label, key])
+		elif int(effects[key]) == 0 or (key == "damage_taken") != (int(effects[key]) < 0):
+			errors.append("Synergy '%s' effect '%s' must be a bonus: positive, or negative for damage taken" % [label, key])
 
 
 func _validate_polished_prose(errors: PackedStringArray) -> void:

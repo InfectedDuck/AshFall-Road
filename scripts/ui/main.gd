@@ -1215,6 +1215,11 @@ func _show_minimal_stat_details(body: VBoxContainer) -> void:
 		copy.add_child(header)
 		copy.add_child(_role_label(str(explanations.get(stat, "")), "flavour", _c("text")))
 		copy.add_child(_role_label(_equipment_stat_adjustment_text(stat), "caption", _c("muted")))
+		# Captions do not wrap by role; this one names a weapon, so it must, or a
+		# long name widens the whole sheet past the screen.
+		var weapon_caption := _role_label(_stat_weapon_text(stat), "caption", _c("muted"))
+		weapon_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		copy.add_child(weapon_caption)
 		var status_effect := _condition_stat_adjustment(stat)
 		if str(status_effect.get("text", "")) != "":
 			copy.add_child(_role_label(str(status_effect["text"]), "caption", _c("danger") if bool(status_effect.get("penalty", false)) else _c("success")))
@@ -1248,7 +1253,24 @@ func _stat_hover_text(stat: String) -> String:
 		fitted.remove_at(fitted.size() - 1)
 	if not fitted.is_empty():
 		parts.append("Answers: %s%s" % [", ".join(fitted), " +%d more" % hidden if hidden > 0 else ""])
+	parts.append(_stat_weapon_text(stat))
 	return "\n".join(parts)
+
+
+## What one point of this stat is worth to the weapon in hand (build rework).
+func _stat_weapon_text(stat: String) -> String:
+	var weapon_id := str(game.run_state.get("survivor", {}).get("equipment", {}).get("weapon", ""))
+	var scaling: Dictionary = game.weapon_scaling(weapon_id)
+	var weapon_name := str(content.get_item(weapon_id).get("name", weapon_id))
+	if not scaling.is_empty() and str(scaling["main_stat"]) == stat:
+		return "WEAPON: main stat of %s • +%s%% damage per point" % [weapon_name, _percent_text(float(scaling["main_percent"]))]
+	if not scaling.is_empty() and str(scaling["support_stat"]) == stat:
+		return "WEAPON: support stat of %s • +%s%% damage per point" % [weapon_name, _percent_text(float(scaling["support_percent"]))]
+	return "WEAPON: no effect on %s damage" % weapon_name if not scaling.is_empty() else "WEAPON: none equipped"
+
+
+func _percent_text(value: float) -> String:
+	return "%d" % roundi(value) if is_equal_approx(value, roundf(value)) else "%.1f" % value
 
 
 func _equipment_stat_adjustment_text(stat: String) -> String:
@@ -2264,7 +2286,13 @@ func _refresh_level_draft_controls() -> void:
 			detail += "  •  +%d HEART / +%d HP" % [int(preview["heart_gain"]), int(preview["heart_gain"]) * GameEngine.HP_PER_HEART]
 		detail += "\n" + GameEngine.stat_milestone_text(int(current_stats[stat]), proposed) + " (base only; gear never unlocks)."
 		if is_instance_valid(detail_label):
-			var weapon: Dictionary = content.get_item(str(game.run_state["survivor"]["equipment"].get("weapon", "")))
+			var weapon_id := str(game.run_state["survivor"]["equipment"].get("weapon", ""))
+			var weapon: Dictionary = content.get_item(weapon_id)
+			var scaling: Dictionary = game.weapon_scaling(weapon_id)
+			if not scaling.is_empty() and stat in [str(scaling["main_stat"]), str(scaling["support_stat"])]:
+				var scaling_after: Dictionary = game.weapon_scaling(weapon_id, {stat: proposed - int(current_stats[stat])})
+				var share := float(scaling["main_percent"]) if stat == str(scaling["main_stat"]) else float(scaling["support_percent"])
+				detail += "\n%s damage x%.2f → x%.2f  (+%s%% per point, %s stat)" % [str(weapon.get("name", weapon_id)), float(scaling["multiplier"]), float(scaling_after["multiplier"]), _percent_text(share), "main" if stat == str(scaling["main_stat"]) else "support"]
 			if str(weapon.get("combat", {}).get("attack_stat", "")) == stat:
 				detail += "\n" + str(weapon.get("signature", "")).capitalize() + (" MASTERY UNLOCKS ON CONFIRM" if int(current_stats[stat]) < 6 and proposed >= 6 else " • mastery at base 6" if proposed < 6 else " • mastered")
 				var affinity_min := int(weapon.get("affinity_min", 0))
@@ -2703,6 +2731,7 @@ func _show_inventory(reset_filter: bool = true) -> void:
 	for slot: String in GameEngine.EQUIPMENT_SLOTS:
 		equipment_grid.add_child(_equipment_slot(slot))
 	body.add_child(equipment_grid)
+	body.add_child(_loadout_synergy_summary())
 
 	# A narrow phone needs two equipment rows. Put its five filters above the
 	# pack so their vertical rail cannot impose another 240px minimum height.
@@ -2742,6 +2771,20 @@ func _show_inventory(reset_filter: bool = true) -> void:
 	scroll.set_deferred("scroll_vertical", inventory_scroll_offset)
 	body.add_child(_inventory_weight_footer())
 	_popup_center_responsive(inventory_popup)
+
+
+## Build rework: which synergies the worn weapon, armor and accessory switch
+## on together, with their summed effect, directly under the equipment row.
+func _loadout_synergy_summary() -> Label:
+	var loadout: Dictionary = game.loadout_synergies()
+	var names: Array = loadout.get("names", [])
+	if names.is_empty():
+		var empty := _label("NO SYNERGY • a weapon, armor and accessory that match link up. Open a piece of gear to see its partners.", 11, COLOR_MUTED)
+		empty.name = "LoadoutSynergySummary"
+		return empty
+	var summary := _label("SYNERGY • %s\n%s" % [" • ".join(PackedStringArray(names)), str(loadout.get("effects_text", ""))], 12, _c("success") if bool(loadout.get("full_kit", false)) else _accent_color())
+	summary.name = "LoadoutSynergySummary"
+	return summary
 
 
 func _equipment_slot(slot: String) -> Button:
@@ -2954,7 +2997,13 @@ func _show_item_detail(item_id: String) -> void:
 	detail_column.add_child(_label(str(item.get("description", "")), 15))
 	var quantity := game.get_item_quantity(item_id)
 	detail_column.add_child(_label(_item_effect_text(item), 13, _accent_color()))
+	var scaling_text := _weapon_scaling_text(item_id)
+	if scaling_text != "":
+		detail_column.add_child(_label(scaling_text, 13, _c("text")))
 	detail_column.add_child(_label("×%d  •  %.1f kg each  •  %.1f kg total" % [quantity, float(item.get("weight", 0.0)), float(item.get("weight", 0.0)) * quantity], 12, COLOR_MUTED))
+	var synergy_rows: Array = game.item_synergies(item_id)
+	if not synergy_rows.is_empty():
+		detail_column.add_child(_item_synergy_panel(synergy_rows, _is_item_equipped(item_id)))
 	if item.has("signature"):
 		_show_contextual_tip("weapon_mastery")
 	var comparison: Dictionary = EquipmentComparisonScript.compare(game, item_id)
@@ -2993,6 +3042,34 @@ func _show_item_detail(item_id: String) -> void:
 		drop_row.add_child(drop_all)
 		body.add_child(drop_row)
 	_popup_bottom_responsive(item_detail_popup, 0.92, 0.78 if bool(comparison.get("available", false)) else 0.62)
+
+
+## "Scales with Strength 6 (+15% per point) and Grit 3 (+7.5% per point)".
+func _weapon_scaling_text(item_id: String) -> String:
+	var scaling: Dictionary = game.weapon_scaling(item_id)
+	if scaling.is_empty():
+		return ""
+	var text := "SCALES WITH %s %d (+%s%% damage per point)" % [str(scaling["main_stat"]).capitalize(), int(scaling["main_value"]), _percent_text(float(scaling["main_percent"]))]
+	if str(scaling["support_stat"]) != "":
+		text += " and %s %d (+%s%% per point)" % [str(scaling["support_stat"]).capitalize(), int(scaling["support_value"]), _percent_text(float(scaling["support_percent"]))]
+	return text + "\nIn your hands: x%.2f base damage." % float(scaling["multiplier"])
+
+
+## Every synergy this item can join: what the partner slot needs, what the
+## link grants, and whether it is on. Rows arrive from LoadoutRules.for_item.
+func _item_synergy_panel(rows: Array, equipped: bool) -> Control:
+	var panel := PanelContainer.new()
+	panel.name = "ItemSynergyPanel"
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 3)
+	panel.add_child(column)
+	column.add_child(_label("SYNERGIES", 12, _accent_color()))
+	for row: Dictionary in rows:
+		var state := "ACTIVE" if bool(row["active"]) else "READY: equip to switch on" if bool(row["would_activate"]) and not equipped else "needs %s" % str(row["partner"])
+		var color := _c("success") if bool(row["active"]) else _c("text") if bool(row["would_activate"]) and not equipped else COLOR_MUTED
+		column.add_child(_label("◆ %s • %s\n    with %s: %s" % [str(row["name"]), state, str(row["partner"]), str(row["effects_text"])], 12, color))
+	return panel
 
 
 ## Read-only comparison rows. Every value arrives from EquipmentComparison,

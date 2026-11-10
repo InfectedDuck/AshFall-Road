@@ -69,6 +69,7 @@ static func compare(game, item_id: String) -> Dictionary:
 		"stats": _stat_rows(before, after),
 		"approaches": _approach_rows(game, current_id, item_id),
 		"carry": _carry_section(before, after),
+		"synergies": _synergy_section(before, after),
 		"notes": [],
 	}
 
@@ -102,6 +103,7 @@ static func _blank(item_id: String) -> Dictionary:
 		"stats": [],
 		"approaches": [],
 		"carry": {},
+		"synergies": {"current": [], "proposed": [], "gained": [], "lost": []},
 		"notes": [],
 	}
 
@@ -183,10 +185,41 @@ static func _defense_side(game, sandbox) -> Dictionary:
 		"armor_rating": rating,
 		"block_chance": int(NarrativeCombat.preview(sandbox, "block").get("chance", 0)),
 		"dodge_chance": int(NarrativeCombat.preview(sandbox, "dodge").get("chance", 0)),
-		"sample_taken": int(CombatRules.mitigate_damage(SAMPLE_HIT, rating)["final"]),
+		"sample_taken": _sample_taken(sandbox, rating),
 		"shield_name": str(accessory.get("name", "")) if bool(accessory.get("shield", false)) else "",
 		"shield_active": shield_active,
 	}
+
+
+## The sample hit after armor and after the loadout's damage-taken synergies,
+## the same order a real enemy hit resolves in.
+static func _sample_taken(sandbox, rating: int) -> int:
+	var taken := int(CombatRules.mitigate_damage(SAMPLE_HIT, rating)["final"])
+	var synergy_taken := int(NarrativeCombat.loadout(sandbox).get("effects", {}).get("damage_taken", 0))
+	if synergy_taken != 0:
+		taken = maxi(1, roundi(float(taken) * (1.0 + float(synergy_taken) / 100.0)))
+	return taken
+
+
+## Which synergies the swap switches on and off. Rows carry display text.
+static func _synergy_section(before, after) -> Dictionary:
+	var current: Dictionary = before.loadout_synergies()
+	var proposed: Dictionary = after.loadout_synergies()
+	var current_ids: Array = []
+	var proposed_ids: Array = []
+	for row: Dictionary in current["active"]:
+		current_ids.append(row["id"])
+	for row: Dictionary in proposed["active"]:
+		proposed_ids.append(row["id"])
+	var gained: Array = []
+	var lost: Array = []
+	for row: Dictionary in proposed["active"]:
+		if row["id"] not in current_ids:
+			gained.append(row)
+	for row: Dictionary in current["active"]:
+		if row["id"] not in proposed_ids:
+			lost.append(row)
+	return {"current": current["active"], "proposed": proposed["active"], "gained": gained, "lost": lost}
 
 
 static func _stat_rows(before, after) -> Array:
@@ -254,6 +287,10 @@ static func _notes(game, report: Dictionary) -> Array:
 	var proposed_affinity: Dictionary = proposed_weapon.get("affinity", {})
 	if bool(proposed_affinity.get("required", false)) and not bool(proposed_affinity.get("met", true)):
 		notes.append("Unwieldy: needs base %s %d (you have %d) • −15 hit, −25%% damage until the stat is raised." % [str(proposed_affinity.get("stat", "")).capitalize(), int(proposed_affinity.get("minimum", 0)), int(proposed_affinity.get("have", 0))])
+	for row: Dictionary in report["synergies"]["gained"]:
+		notes.append("Synergy gained: %s (%s) • %s." % [row["name"], row["requirement"], row["effects_text"]])
+	for row: Dictionary in report["synergies"]["lost"]:
+		notes.append("Synergy lost: %s • %s." % [row["name"], row["effects_text"]])
 	var carry: Dictionary = report["carry"]
 	if bool(carry["over_current"]) and not bool(carry["over_proposed"]):
 		notes.append("Capacity: this clears the overweight Agility penalty.")

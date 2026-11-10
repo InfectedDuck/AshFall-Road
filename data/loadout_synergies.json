@@ -1,0 +1,519 @@
+{
+  "version": 1,
+  "full_kit": {
+    "name": "Road-Ready",
+    "summary": "A weapon, armor and accessory that all work together",
+    "effects": {
+      "damage": 10,
+      "damage_taken": -10
+    }
+  },
+  "synergies": [
+    {
+      "id": "skirmisher",
+      "name": "Skirmisher",
+      "labels": {
+        "weapon": "one-handed weapon",
+        "armor": "light armor"
+      },
+      "requires": {
+        "weapon": {
+          "two_handed": false
+        },
+        "armor": {
+          "weight": [
+            "light"
+          ]
+        }
+      },
+      "effects": {
+        "dodge": 5,
+        "opening_damage": 25
+      }
+    },
+    {
+      "id": "vanguard",
+      "name": "Vanguard",
+      "labels": {
+        "weapon": "one-handed counter weapon",
+        "armor": "medium or heavy armor"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "counter"
+          ],
+          "two_handed": false
+        },
+        "armor": {
+          "weight": [
+            "medium",
+            "heavy"
+          ]
+        }
+      },
+      "effects": {
+        "block": 5,
+        "riposte_damage": 25
+      }
+    },
+    {
+      "id": "brawler",
+      "name": "Brawler",
+      "labels": {
+        "weapon": "one-handed execution weapon",
+        "armor": "medium or heavy armor"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "execution"
+          ],
+          "two_handed": false
+        },
+        "armor": {
+          "weight": [
+            "medium",
+            "heavy"
+          ]
+        }
+      },
+      "effects": {
+        "execute_damage": 20,
+        "damage_taken": -5
+      }
+    },
+    {
+      "id": "juggernaut",
+      "name": "Juggernaut",
+      "labels": {
+        "weapon": "two-handed melee weapon",
+        "armor": "heavy armor"
+      },
+      "requires": {
+        "weapon": {
+          "two_handed": true,
+          "ranged": false
+        },
+        "armor": {
+          "weight": [
+            "heavy"
+          ]
+        }
+      },
+      "effects": {
+        "damage": 10,
+        "damage_taken": -10
+      }
+    },
+    {
+      "id": "sharpshooter",
+      "name": "Sharpshooter",
+      "labels": {
+        "weapon": "two-handed firearm",
+        "armor": "light armor"
+      },
+      "requires": {
+        "weapon": {
+          "two_handed": true,
+          "ranged": true
+        },
+        "armor": {
+          "weight": [
+            "light"
+          ]
+        }
+      },
+      "effects": {
+        "accuracy": 10,
+        "first_strike_damage": 50
+      }
+    },
+    {
+      "id": "enforcer",
+      "name": "Enforcer",
+      "labels": {
+        "weapon": "suppression weapon",
+        "armor": "medium or heavy armor"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "suppression"
+          ]
+        },
+        "armor": {
+          "weight": [
+            "medium",
+            "heavy"
+          ]
+        }
+      },
+      "effects": {
+        "damage": 5,
+        "damage_taken": -10
+      }
+    },
+    {
+      "id": "shield_wall",
+      "name": "Shield Wall",
+      "labels": {
+        "weapon": "one-handed weapon",
+        "accessory": "shield"
+      },
+      "requires": {
+        "weapon": {
+          "two_handed": false
+        },
+        "accessory": {
+          "shield": true
+        }
+      },
+      "effects": {
+        "riposte_damage": 20
+      }
+    },
+    {
+      "id": "deadeye",
+      "name": "Deadeye",
+      "labels": {
+        "weapon": "precision weapon",
+        "accessory": "Sniper Scope or Field Scanner"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "precision"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "sniper_scope",
+            "field_scanner"
+          ]
+        }
+      },
+      "effects": {
+        "accuracy": 10,
+        "opening_damage": 15
+      }
+    },
+    {
+      "id": "quickdraw",
+      "name": "Quickdraw",
+      "labels": {
+        "weapon": "one-handed firearm",
+        "accessory": "Gunslinger Holster"
+      },
+      "requires": {
+        "weapon": {
+          "two_handed": false,
+          "ranged": true
+        },
+        "accessory": {
+          "ids": [
+            "gunslinger_holster"
+          ]
+        }
+      },
+      "effects": {
+        "first_strike_damage": 50,
+        "momentum_start": 1
+      }
+    },
+    {
+      "id": "predator",
+      "name": "Predator",
+      "labels": {
+        "weapon": "execution weapon",
+        "accessory": "Wolf-Fang Charm"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "execution"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "wolf_fang_charm"
+          ]
+        }
+      },
+      "effects": {
+        "execute_damage": 25,
+        "victory_heal": 15
+      }
+    },
+    {
+      "id": "lawbringer",
+      "name": "Lawbringer",
+      "labels": {
+        "weapon": "suppression weapon",
+        "accessory": "Brass Star or Trader Token"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "suppression"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "brass_star",
+            "trader_token"
+          ]
+        }
+      },
+      "effects": {
+        "damage": 15
+      }
+    },
+    {
+      "id": "live_wire",
+      "name": "Live Wire",
+      "labels": {
+        "weapon": "disruption weapon",
+        "accessory": "Mechanic Gloves or Grounding Straps"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "disruption"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "mechanic_gloves",
+            "grounding_straps"
+          ]
+        }
+      },
+      "effects": {
+        "accuracy": 5,
+        "opportunity_damage": 50
+      }
+    },
+    {
+      "id": "anchor",
+      "name": "Anchor",
+      "labels": {
+        "weapon": "counter weapon",
+        "accessory": "Dredge Chain"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "counter"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "dredge_chain"
+          ]
+        }
+      },
+      "effects": {
+        "block": 10,
+        "riposte_damage": 15
+      }
+    },
+    {
+      "id": "gambler",
+      "name": "Gambler",
+      "labels": {
+        "weapon": "any weapon",
+        "accessory": "Lucky Die"
+      },
+      "requires": {
+        "weapon": {},
+        "accessory": {
+          "ids": [
+            "lucky_die"
+          ]
+        }
+      },
+      "effects": {
+        "opportunity_damage": 40
+      }
+    },
+    {
+      "id": "trickster",
+      "name": "Trickster",
+      "labels": {
+        "weapon": "precision or disruption weapon",
+        "accessory": "Mirror Shard or Stalkhide Wraps"
+      },
+      "requires": {
+        "weapon": {
+          "signature": [
+            "precision",
+            "disruption"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "mirror_shard",
+            "stalkhide_wraps"
+          ]
+        }
+      },
+      "effects": {
+        "dodge": 5,
+        "opening_damage": 20
+      }
+    },
+    {
+      "id": "bastion",
+      "name": "Bastion",
+      "labels": {
+        "armor": "heavy armor",
+        "accessory": "shield"
+      },
+      "requires": {
+        "armor": {
+          "weight": [
+            "heavy"
+          ]
+        },
+        "accessory": {
+          "shield": true
+        }
+      },
+      "effects": {
+        "block": 10,
+        "damage_taken": -10
+      }
+    },
+    {
+      "id": "buckler_dance",
+      "name": "Buckler Dance",
+      "labels": {
+        "armor": "light armor",
+        "accessory": "shield"
+      },
+      "requires": {
+        "armor": {
+          "weight": [
+            "light"
+          ]
+        },
+        "accessory": {
+          "shield": true
+        }
+      },
+      "effects": {
+        "dodge": 10
+      }
+    },
+    {
+      "id": "phantom",
+      "name": "Phantom",
+      "labels": {
+        "armor": "light armor",
+        "accessory": "Stalkhide Wraps, Gunslinger Holster, Signal Compass or Lucky Die"
+      },
+      "requires": {
+        "armor": {
+          "weight": [
+            "light"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "stalkhide_wraps",
+            "gunslinger_holster",
+            "signal_compass",
+            "lucky_die"
+          ]
+        }
+      },
+      "effects": {
+        "dodge": 10
+      }
+    },
+    {
+      "id": "wastelander",
+      "name": "Wastelander",
+      "labels": {
+        "armor": "a wasteland wrap, cloak or hide",
+        "accessory": "Filter Mask"
+      },
+      "requires": {
+        "armor": {
+          "ids": [
+            "hazmat_wrap",
+            "dust_cloak",
+            "ashen_wrap",
+            "stalker_cloak",
+            "mutant_hide_vest"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "filter_mask"
+          ]
+        }
+      },
+      "effects": {
+        "damage_taken": -10,
+        "victory_heal": 10
+      }
+    },
+    {
+      "id": "road_warden",
+      "name": "Road Warden",
+      "labels": {
+        "armor": "medium or heavy armor",
+        "accessory": "Brass Star, Trader Token, Dredge Chain or Wolf-Fang Charm"
+      },
+      "requires": {
+        "armor": {
+          "weight": [
+            "medium",
+            "heavy"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "brass_star",
+            "trader_token",
+            "dredge_chain",
+            "wolf_fang_charm"
+          ]
+        }
+      },
+      "effects": {
+        "damage_taken": -8
+      }
+    },
+    {
+      "id": "field_rig",
+      "name": "Field Rig",
+      "labels": {
+        "armor": "light or medium armor",
+        "accessory": "Field Scanner, Mechanic Gloves, Grounding Straps, Sniper Scope or Mirror Shard"
+      },
+      "requires": {
+        "armor": {
+          "weight": [
+            "light",
+            "medium"
+          ]
+        },
+        "accessory": {
+          "ids": [
+            "field_scanner",
+            "mechanic_gloves",
+            "grounding_straps",
+            "sniper_scope",
+            "mirror_shard"
+          ]
+        }
+      },
+      "effects": {
+        "accuracy": 5
+      }
+    }
+  ]
+}

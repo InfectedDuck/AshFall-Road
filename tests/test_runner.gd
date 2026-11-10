@@ -81,6 +81,7 @@ func _run_all() -> void:
 	_test_experience_progression(content)
 	_test_combat_rules(content)
 	_test_combat_v4_switch(content)
+	_test_build_rework(content)
 	_test_combat_recovery(content)
 	_test_complete_run(content)
 	_test_save_migration_and_death_marker(content)
@@ -2028,17 +2029,18 @@ func _test_combat_rules(content: ContentRepository) -> void:
 	_check("Feral Dogs" in str(death_summary.get("cause", "")) and not death_summary.get("equipment", []).is_empty(), "Permadeath history records the responsible enemy and final equipped loadout")
 
 
-## Gameplay plan B1: combat rules v4 switch. New fights start on v4 while
-## saved v3 fights keep v3 behaviour; nothing else changes yet.
+## Gameplay plan B1: combat rules v4 switch. Fights on v4 or later use the v4
+## rules while saved v3 fights keep v3 behaviour. New fights now start on v5
+## (build rework), which keeps every v4 rule; see _test_build_rework.
 func _test_combat_v4_switch(content: ContentRepository) -> void:
 	var RulesV4 = load("res://scripts/domain/narrative_combat.gd")
-	_check(int(RulesV4.VERSION) == 4, "Combat rules version is 4 for new fights")
+	_check(int(RulesV4.V4_VERSION) == 4 and int(RulesV4.VERSION) == 5, "Combat rules v4 stays numbered 4; new fights start on version 5")
 	var fresh := _new_game(content, 710)
 	fresh.run_state["current_event_id"] = "outskirts_dogs"
 	fresh.run_state["phase"] = "event"
 	var started := fresh.start_combat(0)
 	_check(bool(started.get("combat_started", false)), "Dogs event starts tactical combat for the v4 check")
-	_check(int(fresh.run_state["combat_state"].get("combat_rules_version", 0)) == 4, "A new fight starts on combat rules v4")
+	_check(int(fresh.run_state["combat_state"].get("combat_rules_version", 0)) == 5, "A new fight starts on combat rules v5")
 	_check(bool(RulesV4.is_v4(fresh)), "is_v4 reports a new fight as v4")
 	# A saved v3 fight keeps v3 behaviour after restore.
 	fresh.run_state["combat_state"]["combat_rules_version"] = 3
@@ -2415,6 +2417,266 @@ func _v4_fixture(content: ContentRepository, enemy_id: String, seed_value: int, 
 		game.run_state["combat_state"]["move_index"] = seq.find(move_id)
 		Rules.commit_move(game)
 	return game
+
+
+## Build rework (docs/BUILD_REWORK.md), combat rules v5: a fixture fight on
+## the given stats and worn gear, parked on one enemy move.
+func _build_fixture(content: ContentRepository, seed_value: int, stats: Dictionary, equipment: Dictionary, extra_items: Dictionary = {}, move_id: String = "heavy") -> GameEngine:
+	var Rules = load("res://scripts/domain/narrative_combat.gd")
+	var game := GameEngine.new(content)
+	var survivor: Dictionary = game.create_candidates(seed_value)[0]
+	survivor["stats"] = stats.duplicate(true)
+	survivor["vitals"] = {"health": 400, "max_health": 400, "max_hearts": 8, "satiety": 4}
+	survivor["conditions"] = []
+	var inventory: Dictionary = extra_items.duplicate(true)
+	var worn := {"weapon": "", "armor": "", "accessory": "", "backpack": ""}
+	for slot: String in equipment:
+		worn[slot] = equipment[slot]
+		inventory[equipment[slot]] = 1
+	survivor["inventory"] = inventory
+	survivor["equipment"] = worn
+	game.start_run(survivor, seed_value)
+	game.run_state["current_event_id"] = "outskirts_dogs"
+	game.run_state["phase"] = "event"
+	game.start_combat(0)
+	var state: Dictionary = game.run_state["combat_state"]
+	state["adversary_id"] = "road_bandits"
+	state["enemy_health"] = int(content.get_adversary("road_bandits")["combat"]["max_health"])
+	state["enemy_max_health"] = state["enemy_health"]
+	state["can_flee"] = true
+	Rules.initialize(game)
+	var sequence: Array = content.get_adversary("road_bandits")["narrative_combat"]["sequence"]
+	game.run_state["combat_state"]["move_index"] = sequence.find(move_id)
+	Rules.commit_move(game)
+	return game
+
+
+func _effects_text(preview: Dictionary) -> String:
+	return "\n".join(PackedStringArray(preview.get("effects", [])))
+
+
+## Build rework pillar 1: weapon damage is linear in the main stat plus half
+## the weapon's support stat. Pillar 2: weapon, armor and accessory that match
+## switch on synergies. Both are v5-only; a saved v4 fight keeps its numbers.
+func _test_build_rework(content: ContentRepository) -> void:
+	var Rules = load("res://scripts/domain/narrative_combat.gd")
+	var Loadout = load("res://scripts/domain/loadout_rules.gd")
+	var even := {"strength": 3, "agility": 3, "wits": 3, "grit": 3, "presence": 3}
+
+	# --- Pillar 1: the scaling formula -------------------------------------
+	_check(is_equal_approx(CombatResolver.stat_damage_multiplier_v5(CombatResolver.weapon_power(5, 3)), 1.325), "v5 scaling: main 5 with support 3 deals x1.325, the old curve's value at stat 5")
+	_check(is_equal_approx(CombatResolver.stat_damage_multiplier_v5(CombatResolver.weapon_power(6, 3)) - CombatResolver.stat_damage_multiplier_v5(CombatResolver.weapon_power(5, 3)), 0.15), "v5 scaling: every main-stat point adds 15% of base damage")
+	_check(is_equal_approx(CombatResolver.stat_damage_multiplier_v5(CombatResolver.weapon_power(5, 4)) - CombatResolver.stat_damage_multiplier_v5(CombatResolver.weapon_power(5, 3)), 0.075), "v5 scaling: every support-stat point adds 7.5% of base damage")
+	_check(is_equal_approx(CombatResolver.stat_damage_multiplier_v5(CombatResolver.weapon_power(1, 1)), 0.575) and CombatResolver.stat_damage_multiplier_v5(CombatResolver.weapon_power(1, 1)) < CombatResolver.stat_damage_multiplier_v3(1), "v5 scaling: a neglected weapon stat hits softer than it did on the old curve")
+	_check(CombatResolver.stat_damage_multiplier_v5(CombatResolver.weapon_power(8, 6)) > CombatResolver.stat_damage_multiplier_v3(8), "v5 scaling: an invested build hits harder than it did on the old curve")
+	for item_id: String in content.items:
+		var weapon: Dictionary = content.items[item_id]
+		if str(weapon.get("equipment_slot", "")) == "weapon":
+			_check(str(weapon.get("support_stat", "")) in GameEngine.STATS and str(weapon["support_stat"]) != str(weapon["combat"]["attack_stat"]), "%s names a support stat different from its attack stat" % item_id)
+
+	var plain := _build_fixture(content, 9101, {"strength": 5, "agility": 2, "wits": 2, "grit": 3, "presence": 2}, {"weapon": "salvage_cleaver"})
+	var plain_profile: Dictionary = plain.get_player_weapon_profile()
+	var plain_stats: Dictionary = plain.combat_effective_stats()
+	_check(str(plain_profile.get("damage_scaling", "")) == "v5" and str(plain_profile.get("support_stat", "")) == "grit", "A new fight scales the Salvage Cleaver on v5 with Grit as its support stat")
+	_check(int(plain_profile["stat_value"]) == int(plain_stats["strength"]) and int(plain_profile["support_value"]) == int(plain_stats["grit"]), "v5 scaling reads effective stats, gear bonuses included")
+	var plain_multiplier := 0.35 + 0.15 * (float(plain_profile["stat_value"]) + 0.5 * float(plain_profile["support_value"]))
+	_check(is_equal_approx(float(plain_profile["damage_multiplier"]), plain_multiplier), "The weapon profile reports the v5 damage multiplier")
+	_check(int(plain_profile["damage_min"]) == roundi(36.0 * plain_multiplier) and int(plain_profile["damage_max"]) == roundi(56.0 * plain_multiplier), "The weapon profile's damage range is base damage times the v5 multiplier")
+	_check("Weapon damage x%.2f: Strength %d (+15%% per point), Grit %d (+7.5%% per point)." % [plain_multiplier, int(plain_profile["stat_value"]), int(plain_profile["support_value"])] in _effects_text(plain.combat_action_preview("attack")), "The attack preview states how both stats feed weapon damage")
+	var gritty := _build_fixture(content, 9101, {"strength": 5, "agility": 2, "wits": 2, "grit": 5, "presence": 2}, {"weapon": "salvage_cleaver"})
+	var gritty_profile: Dictionary = gritty.get_player_weapon_profile()
+	_check(is_equal_approx(float(gritty_profile["damage_multiplier"]) - float(plain_profile["damage_multiplier"]), 0.15) and int(gritty_profile["damage_max"]) > int(plain_profile["damage_max"]), "Two points in the support stat add 15% weapon damage")
+	_check(int(gritty.combat_action_preview("attack")["chance"]) == int(plain.combat_action_preview("attack")["chance"]), "The support stat raises damage only, never hit chance")
+	var strong := _build_fixture(content, 9101, {"strength": 6, "agility": 2, "wits": 2, "grit": 3, "presence": 2}, {"weapon": "salvage_cleaver"})
+	_check(is_equal_approx(float(strong.get_player_weapon_profile()["damage_multiplier"]) - float(plain_profile["damage_multiplier"]), 0.15), "One point in the main stat adds 15% weapon damage")
+	var bare := _build_fixture(content, 9102, even, {})
+	var bare_profile: Dictionary = bare.get_player_weapon_profile()
+	_check(str(bare_profile.get("support_stat", "x")) == "" and is_equal_approx(float(bare_profile["damage_multiplier"]), 0.35 + 0.15 * float(bare_profile["stat_value"])), "Bare hands scale on Strength alone")
+	var scaling: Dictionary = plain.weapon_scaling("salvage_cleaver")
+	_check(str(scaling["main_stat"]) == "strength" and str(scaling["support_stat"]) == "grit" and is_equal_approx(float(scaling["multiplier"]), plain_multiplier) and is_equal_approx(float(scaling["main_percent"]), 15.0) and is_equal_approx(float(scaling["support_percent"]), 7.5), "weapon_scaling reports both stats, their worth per point and the multiplier")
+	_check(is_equal_approx(float(plain.weapon_scaling("salvage_cleaver", {"strength": 1})["multiplier"]) - plain_multiplier, 0.15) and is_equal_approx(float(plain.weapon_scaling("salvage_cleaver", {"grit": 2})["multiplier"]) - plain_multiplier, 0.15), "weapon_scaling previews unspent stat points")
+	_check(plain.weapon_scaling("runner_jacket").is_empty(), "weapon_scaling is empty for gear that is not a weapon")
+	var worn_bonus: Dictionary = content.get_item("salvage_cleaver").get("modifiers", {}).get("stats", {})
+	var rifle_bonus: Dictionary = content.get_item("hunting_rifle").get("modifiers", {}).get("stats", {})
+	var wits_in_hand := int(plain.combat_effective_stats()["wits"]) - int(worn_bonus.get("wits", 0)) + int(rifle_bonus.get("wits", 0))
+	_check(int(rifle_bonus.get("wits", 0)) > 0 and int(plain.weapon_scaling("hunting_rifle")["main_value"]) == wits_in_hand, "A spare weapon's scaling counts its own stat bonus, as if it were in hand")
+
+	# --- A saved v4 fight keeps v4 numbers ---------------------------------
+	_check(bool(Rules.is_v5(plain)) and bool(Rules.is_v4(plain)), "A new fight is v5, and v5 keeps every v4 rule")
+	var saved := _build_fixture(content, 9103, {"strength": 5, "agility": 2, "wits": 2, "grit": 3, "presence": 2}, {"weapon": "salvage_cleaver", "armor": "runner_jacket"})
+	var v5_dodge := int(saved.combat_action_preview("dodge")["chance"])
+	_check("Skirmisher" in saved.combat_action_preview("attack").get("synergies", []), "A v5 fight previews its active synergies")
+	saved.run_state["combat_state"]["combat_rules_version"] = 4
+	var restored := GameEngine.new(content)
+	restored.restore_run(saved.run_state)
+	_check(not bool(Rules.is_v5(restored)) and bool(Rules.is_v4(restored)), "A saved v4 fight restores as v4, not v5")
+	var restored_profile: Dictionary = restored.get_player_weapon_profile()
+	_check(str(restored_profile.get("damage_scaling", "")) == "v3" and str(restored_profile.get("support_stat", "x")) == "" and is_equal_approx(float(restored_profile["damage_multiplier"]), CombatResolver.stat_damage_multiplier_v3(int(restored_profile["stat_value"]))), "A saved v4 fight keeps the old damage curve and no support stat")
+	_check((restored.combat_action_preview("attack").get("synergies", []) as Array).is_empty() and (Rules.loadout(restored)["names"] as Array).is_empty(), "A saved v4 fight has no loadout synergies")
+	_check(int(restored.combat_action_preview("dodge")["chance"]) == v5_dodge - 5 and v5_dodge < 85, "A saved v4 fight dodges without the Skirmisher bonus")
+	_check("SYNERGY" not in " ".join(PackedStringArray(restored.combat_presentation_snapshot()["status_labels"])), "A saved v4 fight shows no synergy status")
+	restored.prepare_combat_action("attack")
+	_check(int(restored.run_state["pending_combat_round"].get("synergy_damage_taken", -1)) == 0, "A round prepared in a saved v4 fight carries no synergy mitigation")
+
+	# --- Pillar 2: matching and evaluation ---------------------------------
+	_check(content.synergies.size() == 21 and str(content.synergy_full_kit.get("name", "")) == "Road-Ready", "Twenty-one loadout synergies and the Road-Ready full kit load from data")
+	_check(Loadout.weight_class(content.get_item("runner_jacket")) == "light" and Loadout.weight_class(content.get_item("scrap_vest")) == "medium" and Loadout.weight_class(content.get_item("plated_coat")) == "heavy" and Loadout.weight_class(content.get_item("salvage_cleaver")) == "", "Armor weight follows protection: light to rating 2, medium at 3, heavy from 4")
+	var skirmisher: Dictionary = Loadout.evaluate(content, {"weapon": "salvage_cleaver", "armor": "runner_jacket", "accessory": ""})
+	_check(skirmisher["names"] == ["Skirmisher"] and not bool(skirmisher["full_kit"]) and int(skirmisher["effects"]["dodge"]) == 5 and int(skirmisher["effects"]["opening_damage"]) == 25, "A one-handed weapon with light armor is a Skirmisher")
+	_check((Loadout.evaluate(content, {"weapon": "salvage_cleaver", "armor": "", "accessory": ""})["names"] as Array).is_empty(), "A single piece of gear switches on nothing")
+	var wall: Dictionary = Loadout.evaluate(content, {"weapon": "wrecking_bar", "armor": "plated_coat", "accessory": "road_shield"})
+	_check(wall["names"] == ["Vanguard", "Shield Wall", "Bastion", "Road-Ready"] and bool(wall["full_kit"]), "A counter weapon, heavy armor and a shield link all three ways into a full kit")
+	_check(int(wall["effects"]["block"]) == 15 and int(wall["effects"]["riposte_damage"]) == 45 and int(wall["effects"]["damage_taken"]) == -20 and int(wall["effects"]["damage"]) == 10, "A full kit sums its three synergies and the Road-Ready bonus")
+	var two_links: Dictionary = Loadout.evaluate(content, {"weapon": "wrecking_bar", "armor": "plated_coat", "accessory": "lucky_die"})
+	_check(two_links["names"] == ["Vanguard", "Gambler"] and not bool(two_links["full_kit"]), "Two links without the third are not a full kit")
+	var hunter: Dictionary = Loadout.evaluate(content, {"weapon": "hunting_rifle", "armor": "scout_leathers", "accessory": "sniper_scope"})
+	_check(hunter["names"] == ["Sharpshooter", "Deadeye", "Field Rig", "Road-Ready"] and int(hunter["effects"]["accuracy"]) == 25, "A rifle, light armor and a scope make a marksman's full kit")
+	var empty_rifle: Dictionary = Loadout.evaluate(content, {"weapon": "hunting_rifle", "armor": "scout_leathers", "accessory": "sniper_scope"}, false)
+	_check(empty_rifle["names"] == ["Field Rig"], "An unloaded firearm holds no weapon synergy")
+	_check(Loadout.evaluate(content, {"weapon": "bone_cleaver", "armor": "kiln_plates", "accessory": ""})["names"] == ["Juggernaut"] and Loadout.evaluate(content, {"weapon": "bone_cleaver", "armor": "runner_jacket", "accessory": ""})["names"] == [], "A two-handed melee weapon links with heavy armor only")
+	for synergy_id: String in content.synergies:
+		var synergy: Dictionary = content.synergies[synergy_id]
+		for key: String in synergy["effects"]:
+			if key in ["accuracy", "block", "dodge"]:
+				_check(int(synergy["effects"][key]) % 5 == 0, "%s %s is a multiple of five, the step combat chances round to" % [synergy_id, key])
+	_check(Loadout.requirement_text(content.synergies["skirmisher"]) == "One-handed weapon + light armor" and Loadout.effects_text(content.synergies["bastion"]["effects"]) == "+10 Block, −10% damage taken", "Synergy requirement and effect text read in plain words")
+
+	# --- Pillar 2: every effect reaches the fight --------------------------
+	var skirm := _build_fixture(content, 9110, {"strength": 5, "agility": 2, "wits": 2, "grit": 3, "presence": 2}, {"weapon": "salvage_cleaver", "armor": "runner_jacket"})
+	var bare_armor := _build_fixture(content, 9110, {"strength": 5, "agility": 2, "wits": 2, "grit": 3, "presence": 2}, {"weapon": "salvage_cleaver"})
+	skirm.run_state["combat_state"]["round"] = 1
+	bare_armor.run_state["combat_state"]["round"] = 1
+	var calm: Dictionary = skirm.combat_action_preview("attack")
+	_check("Synergy" not in _effects_text(calm) and int(calm["damage_max"]) == int(bare_armor.combat_action_preview("attack")["damage_max"]), "A conditional synergy adds nothing until its condition holds")
+	skirm.run_state["combat_state"]["opening"] = true
+	bare_armor.run_state["combat_state"]["opening"] = true
+	var opened: Dictionary = skirm.combat_action_preview("attack")
+	_check("Synergy (Skirmisher): Opening +25% damage." in _effects_text(opened) and int(opened["damage_max"]) > int(bare_armor.combat_action_preview("attack")["damage_max"]), "Skirmisher adds 25% damage to an attack on an Opening")
+	_check("Synergy (Skirmisher): +5 Dodge." in _effects_text(skirm.combat_action_preview("dodge")), "Skirmisher's Dodge bonus is named on the Dodge preview")
+	_check("SYNERGY • SKIRMISHER" in skirm.combat_presentation_snapshot()["status_labels"], "The combat screen names the active synergy")
+
+	var kit := _build_fixture(content, 9111, {"strength": 2, "agility": 2, "wits": 2, "grit": 2, "presence": 2}, {"weapon": "wrecking_bar", "armor": "plated_coat", "accessory": "road_shield"})
+	var kit_block := int(kit.combat_action_preview("block")["chance"])
+	kit.run_state["combat_state"]["combat_rules_version"] = 4
+	var old_block := int(kit.combat_action_preview("block")["chance"])
+	kit.run_state["combat_state"]["combat_rules_version"] = Rules.VERSION
+	_check(kit_block == old_block + 15 and kit_block < 85, "Vanguard and Bastion add 15 points of Block (%d → %d)" % [old_block, kit_block])
+	kit.run_state["combat_state"]["riposte"] = true
+	_check("Riposte +45% damage" in _effects_text(kit.combat_action_preview("attack")), "Vanguard and Shield Wall add 45% damage to a Riposte")
+	kit.run_state["combat_state"]["riposte"] = false
+	_check("−20% damage taken" in _effects_text(kit.combat_action_preview("attack")), "An attack into an enemy blow names the kit's damage reduction")
+	var kit_take := int(kit.combat_action_preview("attack").get("expected_take", 0))
+	kit.prepare_combat_action("attack")
+	_check(int(kit.run_state["pending_combat_round"]["synergy_damage_taken"]) == -20, "A prepared round snapshots the loadout's damage reduction")
+	kit.run_state["pending_combat_round"]["player_roll"] = 20
+	kit.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var kit_round: Dictionary = kit.resolve_prepared_combat_round()
+	var after_armor := int(kit_round["enemy_raw_damage"]) - int(kit_round["armor_blocked"])
+	_check(after_armor > 5 and int(kit_round["synergy_blocked"]) == after_armor - maxi(1, roundi(float(after_armor) * 0.8)), "The enemy's hit loses 20% after armor to the loadout (%d of %d)" % [int(kit_round.get("synergy_blocked", 0)), after_armor])
+	var kit_log := ""
+	for entry: Variant in kit_round.get("entries", []):
+		kit_log += str((entry as Dictionary).get("text", "")) + "\n"
+	_check("SYNERGY −%d" % int(kit_round["synergy_blocked"]) in kit_log, "The combat log shows what the synergy took off the hit")
+	_check(kit_take > 0, "The attack preview's expected damage taken accounts for the kit (%d)" % kit_take)
+	var no_kit := _build_fixture(content, 9111, {"strength": 2, "agility": 2, "wits": 2, "grit": 2, "presence": 2}, {"weapon": "wrecking_bar", "armor": "plated_coat"}, {}, "heavy")
+	no_kit.prepare_combat_action("attack")
+	no_kit.run_state["pending_combat_round"]["player_roll"] = 20
+	no_kit.run_state["pending_combat_round"]["enemy_roll"] = 10
+	var no_kit_round: Dictionary = no_kit.resolve_prepared_combat_round()
+	_check(int(no_kit_round.get("synergy_blocked", -1)) == 0 and int(no_kit_round["enemy_damage"]) > int(kit_round["enemy_damage"]), "Without damage-taken synergies the same hit lands in full")
+
+	var gunner := _build_fixture(content, 9112, even, {"weapon": "pipe_pistol", "accessory": "gunslinger_holster"}, {"pistol_rounds": 8})
+	_check(int(gunner.run_state["combat_state"]["momentum"]) == 1, "Quickdraw starts the fight with one Momentum")
+	var first: Dictionary = gunner.combat_action_preview("attack")
+	_check("first exchange +50% damage" in _effects_text(first), "Quickdraw names its first-exchange damage")
+	gunner.run_state["combat_state"]["round"] = 1
+	var later: Dictionary = gunner.combat_action_preview("attack")
+	_check("first exchange" not in _effects_text(later) and int(first["damage_max"]) > int(later["damage_max"]), "The first-exchange bonus is gone from the second exchange on")
+	var dry := _build_fixture(content, 9112, even, {"weapon": "pipe_pistol", "accessory": "gunslinger_holster"})
+	_check(int(dry.run_state["combat_state"]["momentum"]) == 0 and (Rules.loadout(dry)["names"] as Array).is_empty(), "A pistol with no rounds draws nothing from its holster")
+
+	var hunter_fight := _build_fixture(content, 9113, even, {"weapon": "hunting_rifle", "accessory": "sniper_scope"}, {"rifle_rounds": 8})
+	hunter_fight.run_state["combat_state"]["round"] = 1
+	var aimed := int(hunter_fight.combat_action_preview("attack")["chance"])
+	hunter_fight.run_state["combat_state"]["combat_rules_version"] = 4
+	var unaimed := int(hunter_fight.combat_action_preview("attack")["chance"])
+	_check(aimed == unaimed + 10 and aimed < 95, "Deadeye adds 10 points of accuracy (%d → %d)" % [unaimed, aimed])
+
+	var predator := _build_fixture(content, 9114, {"strength": 5, "agility": 2, "wits": 2, "grit": 3, "presence": 2}, {"weapon": "salvage_cleaver", "accessory": "wolf_fang_charm"})
+	predator.run_state["combat_state"]["round"] = 1
+	_check("weakened enemy" not in _effects_text(predator.combat_action_preview("attack")), "Predator waits for a weakened enemy")
+	predator.run_state["combat_state"]["enemy_health"] = int(float(predator.run_state["combat_state"]["enemy_max_health"]) * 0.3)
+	_check("+25% damage to a weakened enemy" in _effects_text(predator.combat_action_preview("attack")), "Predator adds 25% damage against a weakened enemy")
+	predator.run_state["combat_state"]["enemy_health"] = 1
+	predator.run_state["survivor"]["vitals"]["health"] = 200
+	predator.prepare_combat_action("attack")
+	predator.run_state["pending_combat_round"]["player_roll"] = 20
+	predator.run_state["pending_combat_round"]["enemy_roll"] = 1
+	predator.resolve_prepared_combat_round()
+	_check(str(predator.run_state["phase"]) == "result" and "HP +15 (synergy)" in predator.run_state["last_result"].get("changes", []), "Predator heals 15 HP when the fight is won")
+	var old_predator := _build_fixture(content, 9114, {"strength": 5, "agility": 2, "wits": 2, "grit": 3, "presence": 2}, {"weapon": "salvage_cleaver", "accessory": "wolf_fang_charm"})
+	old_predator.run_state["combat_state"]["combat_rules_version"] = 4
+	old_predator.run_state["combat_state"]["enemy_health"] = 1
+	old_predator.run_state["survivor"]["vitals"]["health"] = 200
+	old_predator.prepare_combat_action("attack")
+	old_predator.run_state["pending_combat_round"]["player_roll"] = 20
+	old_predator.run_state["pending_combat_round"]["enemy_roll"] = 1
+	old_predator.resolve_prepared_combat_round()
+	_check(str(old_predator.run_state["phase"]) == "result" and "HP +15 (synergy)" not in old_predator.run_state["last_result"].get("changes", []), "A saved v4 fight wins without the synergy heal")
+
+	var gambler := _build_fixture(content, 9115, even, {"weapon": "salvage_cleaver", "accessory": "lucky_die"})
+	gambler.run_state["combat_state"]["opportunity_ready"] = true
+	var chance_taken: Dictionary = gambler.combat_action_preview("opportunity")
+	_check(bool(chance_taken.get("available", false)) and "Opportunity +40% damage" in _effects_text(chance_taken), "Gambler adds 40% damage to an Opportunity")
+
+	# --- What the screens read ---------------------------------------------
+	var worn_rows: Array = skirm.item_synergies("salvage_cleaver")
+	var by_id := {}
+	for row: Dictionary in worn_rows:
+		by_id[row["id"]] = row
+	_check(by_id.has("skirmisher") and bool(by_id["skirmisher"]["active"]) and str(by_id["skirmisher"]["partner"]) == "light armor" and str(by_id["skirmisher"]["effects_text"]) == "+5 Dodge, Opening +25% damage", "An item sheet row names the partner, the effect, and that the synergy is on")
+	_check(by_id.has("predator") and not bool(by_id["predator"]["active"]) and not bool(by_id["predator"]["would_activate"]) and str(by_id["predator"]["partner"]) == "Wolf-Fang Charm", "An item sheet row names the missing partner of a synergy that is off")
+	var charm_rows: Array = skirm.item_synergies("wolf_fang_charm")
+	var charm_ready := false
+	for row: Dictionary in charm_rows:
+		if str(row["id"]) == "predator":
+			charm_ready = bool(row["would_activate"]) and not bool(row["active"])
+	_check(charm_ready, "An unworn charm reports the synergy it would switch on with the weapon in hand")
+	_check(skirm.item_synergies("canned_meat").is_empty(), "Supplies have no synergies")
+	var summary: Dictionary = skirm.loadout_synergies()
+	_check(summary["names"] == ["Skirmisher"] and (summary["active"] as Array).size() == 1 and str(summary["active"][0]["requirement"]) == "One-handed weapon + light armor" and str(summary["effects_text"]) == "+5 Dodge, Opening +25% damage", "The inventory summary lists active synergies and their summed effect")
+
+	var shopper := _new_game(content, 9120)
+	var shopper_survivor: Dictionary = shopper.run_state["survivor"]
+	shopper_survivor["stats"] = {"strength": 5, "agility": 3, "wits": 3, "grit": 3, "presence": 3}
+	shopper_survivor["conditions"] = []
+	shopper_survivor["inventory"] = {"salvage_cleaver": 1, "runner_jacket": 1, "plated_coat": 1, "road_shield": 1}
+	shopper_survivor["equipment"] = {"weapon": "salvage_cleaver", "armor": "runner_jacket", "accessory": "", "backpack": ""}
+	var swap: Dictionary = EquipmentComparison.compare(shopper, "plated_coat")
+	var swap_notes := "\n".join(PackedStringArray(swap["notes"]))
+	_check("Synergy gained: Brawler" in swap_notes and "Synergy lost: Skirmisher" in swap_notes, "The comparison names the synergies a swap switches on and off")
+	var shield: Dictionary = EquipmentComparison.compare(shopper, "road_shield")
+	_check("Synergy gained: Shield Wall" in "\n".join(PackedStringArray(shield["notes"])) and "Synergy gained: Buckler Dance" in "\n".join(PackedStringArray(shield["notes"])) and "Synergy gained: Road-Ready" in "\n".join(PackedStringArray(shield["notes"])), "Completing the third link reports the full kit as gained")
+	_check(int(swap["defense"]["proposed"]["sample_taken"]) == maxi(1, roundi(float(CombatResolver.mitigate_damage(40, 4)["final"]) * 0.95)), "The comparison's sample hit includes the loadout's damage reduction")
+
+	# --- Content rules ------------------------------------------------------
+	var scratch := ContentRepository.new(false)
+	_check(scratch.validate_all().is_empty(), "The scratch repository starts valid before the synergy probes")
+	scratch.synergies["skirmisher"]["effects"]["luck"] = 5
+	_check("Synergy 'skirmisher' uses unknown effect 'luck'" in "\n".join(scratch.validate_all()), "Validation rejects an effect the engine does not know")
+	scratch.synergies["skirmisher"]["effects"].erase("luck")
+	scratch.synergies["bastion"]["effects"]["damage_taken"] = 10
+	_check("must be a bonus" in "\n".join(scratch.validate_all()), "Validation rejects a synergy that makes the wearer worse")
+	scratch.synergies["bastion"]["effects"]["damage_taken"] = -10
+	scratch.synergies["predator"]["requires"]["accessory"]["ids"] = ["salvage_cleaver"]
+	_check("which does not go in the accessory slot" in "\n".join(scratch.validate_all()), "Validation rejects a synergy that names gear from the wrong slot")
+	scratch.synergies["predator"]["requires"]["accessory"]["ids"] = ["wolf_fang_charm"]
+	scratch.synergies.erase("gambler")
+	scratch.synergies.erase("phantom")
+	_check("Item 'lucky_die' belongs to no loadout synergy" in "\n".join(scratch.validate_all()), "Validation rejects gear that no synergy can use")
+	var scratch_two := ContentRepository.new(false)
+	scratch_two.items["salvage_cleaver"].erase("support_stat")
+	_check("Weapon 'salvage_cleaver' needs a support_stat" in "\n".join(scratch_two.validate_all()), "Validation rejects a weapon without a support stat")
 
 
 func _test_combat_recovery(content: ContentRepository) -> void:
@@ -3616,6 +3878,16 @@ func _test_stat_status_lines(content: ContentRepository) -> void:
 		if row != null and str(row.text).begins_with("STATUS:"):
 			status_text += str(row.text) + "\n"
 	_check("Shaken -1" in status_text and "Focused +2" in status_text, "Opening stats shows the statuses affecting each ability")
+	# Captions do not wrap by role, and this one carries a weapon name: left
+	# unwrapped it widened the whole sheet past a 393px screen.
+	var weapon_rows := 0
+	var weapon_rows_wrap := true
+	for node: Node in ui.stat_details_popup.find_children("*", "Label", true, false):
+		var row := node as Label
+		if row != null and str(row.text).begins_with("WEAPON:"):
+			weapon_rows += 1
+			weapon_rows_wrap = weapon_rows_wrap and row.autowrap_mode != TextServer.AUTOWRAP_OFF
+	_check(weapon_rows == GameEngine.STATS.size() and weapon_rows_wrap, "Every ability row states its weapon scaling on a line that wraps inside the sheet")
 	ui.game.run_state["survivor"]["conditions"] = ["focused"]
 	var clear := ui._condition_stat_adjustment("wits")
 	_check(str(clear.get("text", "")) == "STATUS: Focused +2" and not bool(clear.get("penalty", false)), "A helpful status reads as a boon, not a warning")
@@ -4497,6 +4769,9 @@ func _test_pilot_scene_batch(content: ContentRepository) -> void:
 	weak.run_state["survivor"]["stats"] = {"strength": 2, "agility": 2, "wits": 2, "grit": 2, "presence": 2}
 	weak.run_state["survivor"]["inventory"]["bone_cleaver"] = 1
 	weak.run_state["survivor"]["equipment"]["weapon"] = "bone_cleaver"
+	# Affinity alone: no armor or accessory, so no loadout synergy moves accuracy.
+	weak.run_state["survivor"]["equipment"]["armor"] = ""
+	weak.run_state["survivor"]["equipment"]["accessory"] = ""
 	weak.run_state["current_event_id"] = "outskirts_dogs"
 	weak.run_state["phase"] = "event"
 	weak.start_combat(0)
@@ -4506,6 +4781,8 @@ func _test_pilot_scene_batch(content: ContentRepository) -> void:
 	met.run_state["survivor"]["stats"] = {"strength": 4, "agility": 2, "wits": 2, "grit": 2, "presence": 2}
 	met.run_state["survivor"]["inventory"]["bone_cleaver"] = 1
 	met.run_state["survivor"]["equipment"]["weapon"] = "bone_cleaver"
+	met.run_state["survivor"]["equipment"]["armor"] = ""
+	met.run_state["survivor"]["equipment"]["accessory"] = ""
 	met.run_state["current_event_id"] = "outskirts_dogs"
 	met.run_state["phase"] = "event"
 	met.start_combat(0)

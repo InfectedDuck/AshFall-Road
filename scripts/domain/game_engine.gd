@@ -5,6 +5,7 @@ const CombatRules = preload("res://scripts/domain/combat_resolver.gd")
 const NarrativeCombat = preload("res://scripts/domain/narrative_combat.gd")
 const ExperienceRules = preload("res://scripts/domain/experience_rules.gd")
 const TalentRules = preload("res://scripts/domain/talent_rules.gd")
+const LoadoutRules = preload("res://scripts/domain/loadout_rules.gd")
 
 const STATS := ["strength", "agility", "wits", "grit", "presence"]
 const STAT_LABELS := {
@@ -907,7 +908,8 @@ func shop_weapon_score(item_id: String) -> float:
 		return 0.0
 	var base_stats: Dictionary = run_state.get("survivor", {}).get("stats", {})
 	var stat_value := int(base_stats.get(str(combat.get("attack_stat", "strength")), 1))
-	var score := (float(combat.get("damage_min", 0)) + float(combat.get("damage_max", 0))) * 0.5 * CombatRules.stat_damage_multiplier_v3(stat_value)
+	var support_value := int(base_stats.get(str(item.get("support_stat", "")), 0))
+	var score := (float(combat.get("damage_min", 0)) + float(combat.get("damage_max", 0))) * 0.5 * CombatRules.stat_damage_multiplier_v5(CombatRules.weapon_power(stat_value, support_value))
 	if not bool(CombatRules.affinity_status(item, base_stats).get("met", true)):
 		score *= CombatRules.AFFINITY_DAMAGE_FACTOR * (1.0 - float(CombatRules.AFFINITY_CHANCE_PENALTY) / 100.0)
 	return score
@@ -1193,6 +1195,60 @@ func combat_action_preview(action: String, item_id: String = "") -> Dictionary:
 	return NarrativeCombat.preview(self, action, item_id)
 
 
+## Build rework: the synergies the worn loadout switches on, for the inventory
+## and the combat screen. Each entry carries display text; `effects` is the sum.
+func loadout_synergies() -> Dictionary:
+	var evaluated: Dictionary = NarrativeCombat.loadout(self)
+	var rows: Array = []
+	for synergy: Dictionary in evaluated.get("active", []):
+		rows.append({"id": str(synergy.get("id", "")), "name": str(synergy.get("name", "")), "requirement": LoadoutRules.requirement_text(synergy), "effects_text": LoadoutRules.effects_text(synergy.get("effects", {}))})
+	if bool(evaluated.get("full_kit", false)):
+		rows.append({"id": "full_kit", "name": str(content.synergy_full_kit.get("name", "Full kit")), "requirement": str(content.synergy_full_kit.get("summary", "")), "effects_text": LoadoutRules.effects_text(content.synergy_full_kit.get("effects", {}))})
+	return {"active": rows, "names": evaluated.get("names", []).duplicate(), "full_kit": bool(evaluated.get("full_kit", false)), "effects": evaluated.get("effects", {}).duplicate(), "effects_text": LoadoutRules.effects_text(evaluated.get("effects", {}))}
+
+
+## Every synergy an item can be part of, with what its partner slot needs and
+## whether it is switched on right now (or would be if this item were worn).
+func item_synergies(item_id: String) -> Array:
+	if run_state.is_empty() or not NarrativeCombat.is_v5(self):
+		return []
+	var equipment: Dictionary = run_state.get("survivor", {}).get("equipment", {})
+	var item: Dictionary = content.get_item(item_id)
+	var worn_weapon := str(equipment.get("weapon", "")) == item_id
+	return LoadoutRules.for_item(content, item, equipment, NarrativeCombat.weapon_loaded(self) or not worn_weapon)
+
+
+## How a weapon turns stats into damage in this survivor's hands, for the item
+## sheet and the level-up screen. Uses effective stats, as a fight does;
+## `stat_gains` previews points not spent yet. The multiplier leaves out the
+## unwieldy penalty of a weapon whose affinity is not met.
+func weapon_scaling(item_id: String, stat_gains: Dictionary = {}) -> Dictionary:
+	var item: Dictionary = content.get_item(item_id)
+	var combat: Dictionary = item.get("combat", {})
+	if combat.is_empty():
+		return {}
+	var stats: Dictionary = combat_effective_stats().duplicate()
+	var worn_id := str(run_state.get("survivor", {}).get("equipment", {}).get("weapon", ""))
+	if item_id != worn_id:
+		# Read a spare weapon as if it were in hand: its own stat bonuses count
+		# and the equipped weapon's do not.
+		var leaving: Dictionary = content.get_item(worn_id).get("modifiers", {}).get("stats", {}) if worn_id != "" else {}
+		var arriving: Dictionary = item.get("modifiers", {}).get("stats", {})
+		for stat: String in leaving:
+			stats[stat] = int(stats.get(stat, 0)) - int(leaving[stat])
+		for stat: String in arriving:
+			stats[stat] = int(stats.get(stat, 0)) + int(arriving[stat])
+	var main := str(combat.get("attack_stat", "strength"))
+	var support := str(item.get("support_stat", ""))
+	var main_value := maxi(0, int(stats.get(main, 0)) + int(stat_gains.get(main, 0)))
+	var support_value := maxi(0, int(stats.get(support, 0)) + int(stat_gains.get(support, 0))) if support != "" else 0
+	return {
+		"main_stat": main, "main_value": main_value, "main_percent": CombatRules.V5_PER_POINT * 100.0,
+		"support_stat": support, "support_value": support_value, "support_percent": CombatRules.V5_PER_POINT * CombatRules.V5_SUPPORT_WEIGHT * 100.0,
+		"multiplier": CombatRules.stat_damage_multiplier_v5(CombatRules.weapon_power(main_value, support_value)),
+	}
+
+
 func get_total_weight() -> float:
 	var total := 0.0
 	for item_id: String in run_state.get("survivor", {}).get("inventory", {}):
@@ -1398,6 +1454,11 @@ func combat_presentation_snapshot() -> Dictionary:
 		for talent_id: Variant in owned_talents:
 			talent_names.append(str(content.get_talent(str(talent_id)).get("name", talent_id)).to_upper())
 		status_labels.append("TALENTS • " + " • ".join(talent_names))
+	var synergy_names: Array[String] = []
+	for synergy_name: Variant in NarrativeCombat.loadout(self).get("names", []):
+		synergy_names.append(str(synergy_name).to_upper())
+	if not synergy_names.is_empty():
+		status_labels.append("SYNERGY • " + " • ".join(synergy_names))
 	var pending: Dictionary = run_state.get("pending_combat_round", {})
 	return {
 		"round": int(state.get("round", 0)) + 1,
@@ -1605,6 +1666,12 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 	var item_changes: Array = run_state["combat_state"].get("entry_cost_items", []).duplicate()
 	var condition_changes: Array = []
 	_apply_outcome(outcome, changes, condition_changes, item_changes)
+	# Build rework (v5): a synergy can patch the survivor up after a won fight.
+	if int(round_result.get("combat_rules_version", 1)) >= NarrativeCombat.VERSION and int(run_state["survivor"]["vitals"].get("health", 0)) > 0:
+		var victory_heal := int(NarrativeCombat.loadout(self).get("effects", {}).get("victory_heal", 0))
+		var healed := _change_health(victory_heal) if victory_heal > 0 else 0
+		if healed > 0:
+			changes.append("HP +%d (synergy)" % healed)
 	_apply_victory_loot(adversary, changes, item_changes)
 	_apply_scrap_bounty(adversary, event, changes, item_changes)
 	var xp_awards: Array = []
@@ -1616,7 +1683,7 @@ func _complete_combat_victory(critical_kill: bool, round_result: Dictionary) -> 
 	run_state["defeated_adversaries"] = defeated
 	_record_event(event)
 	var resolution := {"rules_version": D20Resolver.RULES_VERSION, "roll": int(round_result.get("player_roll", 0)), "outcome": "critical_success" if critical_kill else "success", "succeeded": true, "breakdown": [], "success_chance": 100}
-	if int(round_result.get("combat_rules_version", 1)) == NarrativeCombat.VERSION:
+	if int(round_result.get("combat_rules_version", 1)) >= NarrativeCombat.V4_VERSION:
 		resolution["success_chance"] = int(round_result["chance"])
 		resolution["required_roll"] = int(round_result["required_roll"])
 	run_state["last_result"] = {"event_id": str(event.get("id", "")), "event_title": str(event.get("title", "Event")), "choice": str(choice.get("label", "Fight")), "resolution": resolution, "outcome_text": _resolved_result_text(outcome, "The enemy falls."), "changes": changes, "condition_changes": condition_changes, "item_changes": item_changes, "combat_log": run_state["combat_state"].get("log", []).duplicate(true), "xp_awards": xp_awards}

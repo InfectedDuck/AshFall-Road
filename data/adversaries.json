@@ -65,9 +65,9 @@
       "portrait_id": "enemy_stalker",
       "loot": ["glow_moss"],
       "combat": {
-        "max_health": 420,
-        "damage_min": 45,
-        "damage_max": 67,
+        "max_health": 540,
+        "damage_min": 47,
+        "damage_max": 70,
         "weapon_name": "Hooked claws",
         "critical_condition": "bleeding",
         "flee_difficulty": "risky"
@@ -186,9 +186,9 @@
       "portrait_id": "enemy_drones",
       "loot": ["scrap_parts", "field_scanner"],
       "combat": {
-        "max_health": 420,
-        "damage_min": 44,
-        "damage_max": 66,
+        "max_health": 525,
+        "damage_min": 53,
+        "damage_max": 79,
         "weapon_name": "Security emitters",
         "critical_condition": "burned",
         "flee_difficulty": "hard"
@@ -215,9 +215,9 @@
       "field_note": "Four claimants at rest; charcoal crop and silver forelock; weapons down, eyes up.",
       "loot": ["rifle_rounds", "medkit"],
       "combat": {
-        "max_health": 350,
-        "damage_min": 39,
-        "damage_max": 58,
+        "max_health": 440,
+        "damage_min": 42,
+        "damage_max": 63,
         "weapon_name": "Rifles and work axes",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
@@ -244,9 +244,9 @@
       "field_note": "Five pilgrims in road cloth; veiled leader, tired eyes; burns worn as rank.",
       "loot": ["rad_tabs", "purifier_ampoule"],
       "combat": {
-        "max_health": 460,
-        "damage_min": 43,
-        "damage_max": 64,
+        "max_health": 575,
+        "damage_min": 45,
+        "damage_max": 67,
         "weapon_name": "Glass blades",
         "critical_condition": "bleeding",
         "flee_difficulty": "desperate"
@@ -273,9 +273,9 @@
       "field_note": "Bound locs and wrapped braid; green-stained jaws; wrapped dark that listens.",
       "loot": ["smoke_bomb", "pistol_rounds"],
       "combat": {
-        "max_health": 450,
-        "damage_min": 43,
-        "damage_max": 64,
+        "max_health": 545,
+        "damage_min": 45,
+        "damage_max": 67,
         "weapon_name": "Hidden knives",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
@@ -301,9 +301,9 @@
       "field_note": "Blunt bob and mustache; maintained kit, clean walls; rifles at rest, eyes forward.",
       "loot": ["riot_padding", "rifle_rounds"],
       "combat": {
-        "max_health": 460,
-        "damage_min": 45,
-        "damage_max": 68,
+        "max_health": 535,
+        "damage_min": 47,
+        "damage_max": 71,
         "weapon_name": "Service rifles",
         "critical_condition": "shaken",
         "flee_difficulty": "desperate"
@@ -330,9 +330,9 @@
       "portrait_id": "enemy_warden",
       "loot": ["signal_compass"],
       "combat": {
-        "max_health": 570,
-        "damage_min": 53,
-        "damage_max": 80,
+        "max_health": 670,
+        "damage_min": 55,
+        "damage_max": 83,
         "weapon_name": "Rotary cannon",
         "critical_condition": "burned",
         "flee_difficulty": "desperate"
@@ -426,9 +426,9 @@
       "description": "A heat-seeking mass that breathes on the tank's pressure cycle.",
       "portrait_id": "enemy_kilnback",
       "combat": {
-        "max_health": 420,
-        "damage_min": 37,
-        "damage_max": 56,
+        "max_health": 490,
+        "damage_min": 38,
+        "damage_max": 57,
         "weapon_name": "Scorched plate edges",
         "critical_condition": "burned",
         "flee_difficulty": "favorable"
@@ -498,9 +498,9 @@
       "portrait_id": "enemy_cable_eater",
       "loot": ["scrap_parts"],
       "combat": {
-        "max_health": 450,
-        "damage_min": 48,
-        "damage_max": 72,
+        "max_health": 575,
+        "damage_min": 58,
+        "damage_max": 87,
         "weapon_name": "Live segments and electrical discharge",
         "critical_condition": "burned",
         "flee_difficulty": "risky"
@@ -596,9 +596,9 @@
       "portrait_id": "enemy_cinder_mauler",
       "loot": ["kiln_plates", "scrap_parts"],
       "combat": {
-        "max_health": 480,
-        "damage_min": 47,
-        "damage_max": 70,
+        "max_health": 600,
+        "damage_min": 49,
+        "damage_max": 74,
         "weapon_name": "Superheated plate fists",
         "critical_condition": "burned",
         "flee_difficulty": "hard"
@@ -625,9 +625,9 @@
       "portrait_id": "enemy_salt_colossus",
       "loot": ["choir_incense", "rifle_rounds"],
       "combat": {
-        "max_health": 600,
-        "damage_min": 56,
-        "damage_max": 84,
+        "max_health": 800,
+        "damage_min": 77,
+        "damage_max": 116,
         "weapon_name": "Crawler-plated avalanche fists",
         "critical_condition": "gutrot",
         "flee_difficulty": "desperate"
@@ -654,9 +654,9 @@
       "portrait_id": "enemy_maw",
       "loot": ["purifier_ampoule", "scrap_parts"],
       "combat": {
-        "max_health": 580,
-        "damage_min": 51,
-        "damage_max": 76,
+        "max_health": 780,
+        "damage_min": 62,
+        "damage_max": 93,
         "weapon_name": "Intake plates and drowning weight",
         "critical_condition": "gutrot",
         "flee_difficulty": "hard"
@@ -695,9 +695,9 @@
       "portrait_id": "enemy_hound",
       "loot": ["cloth_bandage", "scrap_parts"],
       "combat": {
-        "max_health": 400,
-        "damage_min": 40,
-        "damage_max": 60,
+        "max_health": 500,
+        "damage_min": 42,
+        "damage_max": 63,
         "weapon_name": "Plated fangs and raking claws",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
@@ -819,7 +819,7 @@
       "portrait_id": "enemy_drones",
       "loot": ["scrap_parts", "field_scanner"],
       "combat": {
-        "max_health": 470,
+        "max_health": 515,
         "damage_min": 40,
         "damage_max": 60,
         "weapon_name": "Security emitters",
@@ -848,7 +848,7 @@
       "field_note": "Five pilgrims in road cloth; veiled leader, tired eyes; burns worn as rank.",
       "loot": ["rad_tabs", "purifier_ampoule"],
       "combat": {
-        "max_health": 420,
+        "max_health": 490,
         "damage_min": 38,
         "damage_max": 56,
         "weapon_name": "Glass blades",
@@ -877,7 +877,7 @@
       "field_note": "Bound locs and wrapped braid; green-stained jaws; wrapped dark that listens.",
       "loot": ["smoke_bomb", "pistol_rounds"],
       "combat": {
-        "max_health": 380,
+        "max_health": 445,
         "damage_min": 38,
         "damage_max": 56,
         "weapon_name": "Hidden knives",

@@ -84,6 +84,27 @@ static func stat_damage_multiplier_v3(stat_value: int) -> float:
 	return 1.3 + 0.10 * float(safe_stat - 5)
 
 
+## Build rework (docs/BUILD_REWORK.md, combat rules v5): weapon damage is
+## linear in "power", the weapon's main stat plus half of its support stat.
+## Every main-stat point is worth +15% of the weapon's base damage and every
+## support point +7.5%, at any stat value, so a level-up or a +1 item is a
+## step the player can see. Power 6.5 (main 5, support 3) lands on x1.33, the
+## old curve's value at stat 5, so an ordinary starting build keeps its
+## damage; a neglected weapon stat now hits far softer and an invested one
+## far harder. Fights started on rules v2-v4 keep their own curves.
+const V5_BASE := 0.35
+const V5_PER_POINT := 0.15
+const V5_SUPPORT_WEIGHT := 0.5
+
+
+static func weapon_power(main_value: int, support_value: int) -> float:
+	return float(maxi(0, main_value)) + V5_SUPPORT_WEIGHT * float(maxi(0, support_value))
+
+
+static func stat_damage_multiplier_v5(power: float) -> float:
+	return V5_BASE + V5_PER_POINT * maxf(0.0, power)
+
+
 static func damage_for_roll(roll: int, minimum: int, maximum: int, multiplier: float = 1.0) -> int:
 	var face := clampi(roll, 1, 20)
 	var base := roundi(lerpf(float(minimum), float(maximum), float(face - 1) / 19.0))

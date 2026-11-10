@@ -576,6 +576,23 @@ def main():
         w(table(["weapon", "runs", "mean regions", "victory"], rows))
         w("")
 
+    # Build rework: loadout synergies worn at the end of the run.
+    if any("final_synergies" in a for a in policies.values()):
+        w("Loadout synergies worn at the end of the run (share of runs):\n")
+        rows = []
+        for p, a in policies.items():
+            rows.append([p, pct(a.get("runs_with_synergy", 0), a["runs"]), pct(a.get("runs_with_full_kit", 0), a["runs"])])
+        w(table(["model", "any synergy", "Road-Ready full kit"], rows))
+        w("")
+        for p in [x for x in ("informed",) if x in policies]:
+            a = policies[p]
+            rows = []
+            for name, b in sorted(a.get("final_synergies", {}).items(), key=lambda kv: -kv[1]["runs"]):
+                rows.append([name, b["runs"], mean(b["regions"], b["runs"], 2), pct(b["victories"], b["runs"])])
+            w(f"Synergy worn at the end of the run (**{p}**):\n")
+            w(table(["synergy", "runs", "mean regions", "victory"], rows))
+            w("")
+
     # 15. Combat actions & conditions
     w("## 15. Combat actions (roll met the needed number)\n")
     rows = []

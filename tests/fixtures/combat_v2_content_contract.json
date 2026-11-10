@@ -32,9 +32,9 @@
     {
       "id": "ash_stalkers",
       "combat": {
-        "max_health": 420,
-        "damage_min": 45,
-        "damage_max": 67,
+        "max_health": 540,
+        "damage_min": 47,
+        "damage_max": 70,
         "weapon_name": "Hooked claws",
         "critical_condition": "bleeding",
         "flee_difficulty": "risky"
@@ -88,9 +88,9 @@
     {
       "id": "drone_swarm",
       "combat": {
-        "max_health": 420,
-        "damage_min": 44,
-        "damage_max": 66,
+        "max_health": 525,
+        "damage_min": 53,
+        "damage_max": 79,
         "weapon_name": "Security emitters",
         "critical_condition": "burned",
         "flee_difficulty": "hard"
@@ -102,9 +102,9 @@
     {
       "id": "vault_scavs",
       "combat": {
-        "max_health": 350,
-        "damage_min": 39,
-        "damage_max": 58,
+        "max_health": 440,
+        "damage_min": 42,
+        "damage_max": 63,
         "weapon_name": "Rifles and work axes",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
@@ -116,9 +116,9 @@
     {
       "id": "glass_cult",
       "combat": {
-        "max_health": 460,
-        "damage_min": 43,
-        "damage_max": 64,
+        "max_health": 575,
+        "damage_min": 45,
+        "damage_max": 67,
         "weapon_name": "Glass blades",
         "critical_condition": "bleeding",
         "flee_difficulty": "desperate"
@@ -130,9 +130,9 @@
     {
       "id": "tunnel_hunters",
       "combat": {
-        "max_health": 450,
-        "damage_min": 43,
-        "damage_max": 64,
+        "max_health": 545,
+        "damage_min": 45,
+        "damage_max": 67,
         "weapon_name": "Hidden knives",
         "critical_condition": "bleeding",
         "flee_difficulty": "hard"
@@ -144,9 +144,9 @@
     {
       "id": "citadel_guard",
       "combat": {
-        "max_health": 460,
-        "damage_min": 45,
-        "damage_max": 68,
+        "max_health": 535,
+        "damage_min": 47,
+        "damage_max": 71,
         "weapon_name": "Service rifles",
         "critical_condition": "shaken",
         "flee_difficulty": "desperate"
@@ -158,9 +158,9 @@
     {
       "id": "warden_machine",
       "combat": {
-        "max_health": 570,
-        "damage_min": 53,
-        "damage_max": 80,
+        "max_health": 670,
+        "damage_min": 55,
+        "damage_max": 83,
         "weapon_name": "Rotary cannon",
         "critical_condition": "burned",
         "flee_difficulty": "desperate"
@@ -200,9 +200,9 @@
     {
       "id": "kilnback",
       "combat": {
-        "max_health": 420,
-        "damage_min": 37,
-        "damage_max": 56,
+        "max_health": 490,
+        "damage_min": 38,
+        "damage_max": 57,
         "weapon_name": "Scorched plate edges",
         "critical_condition": "burned",
         "flee_difficulty": "favorable"
@@ -228,9 +228,9 @@
     {
       "id": "cable_eater",
       "combat": {
-        "max_health": 450,
-        "damage_min": 48,
-        "damage_max": 72,
+        "max_health": 575,
+        "damage_min": 58,
+        "damage_max": 87,
         "weapon_name": "Live segments and electrical discharge",
         "critical_condition": "burned",
         "flee_difficulty": "risky"
@@ -270,9 +270,9 @@
     {
       "id": "cinder_mauler",
       "combat": {
-        "max_health": 480,
-        "damage_min": 47,
-        "damage_max": 70,
+        "max_health": 600,
+        "damage_min": 49,
+        "damage_max": 74,
         "weapon_name": "Superheated plate fists",
         "critical_condition": "burned",
         "flee_difficulty": "hard"
@@ -284,9 +284,9 @@
     {
       "id": "salt_colossus",
       "combat": {
-        "max_health": 600,
-        "damage_min": 56,
-        "damage_max": 84,
+        "max_health": 800,
+        "damage_min": 77,
+        "damage_max": 116,
         "weapon_name": "Crawler-plated avalanche fists",
         "critical_condition": "gutrot",
         "flee_difficulty": "desperate"

@@ -6,14 +6,19 @@ extends RefCounted
 ## for saved v3 fights (v3 scaling + brood/heat/flood/charge/prediction/bleed
 ## traits, weapon switching, environmental interactions). New fights use v4,
 ## which starts identical to v3; B2 onward adds v4-only telegraphs behind
-## is_v4() so saved v3 fights never change behaviour.
+## is_v4() so saved v3 fights never change behaviour. Version 5 is the build
+## rework (docs/BUILD_REWORK.md): linear stat scaling with a support stat and
+## loadout synergies, both behind is_v5() so a saved v4 fight finishes on the
+## numbers it started with.
 
 const Legacy = preload("res://scripts/domain/combat_resolver.gd")
 const XP = preload("res://scripts/domain/experience_rules.gd")
 const TalentRules = preload("res://scripts/domain/talent_rules.gd")
-const VERSION := 4
+const Loadout = preload("res://scripts/domain/loadout_rules.gd")
+const VERSION := 5
 const LEGACY_VERSION := 2
 const V3_VERSION := 3
+const V4_VERSION := 4
 ## Every unresolved exchange is exertion, including successful defenses and
 ## waiting through recovery. Long fights must reach the shared strain penalties.
 const FATIGUE_PER_EXCHANGE := 3
@@ -56,6 +61,8 @@ static func hit_damage(roll: int, chance: int, minimum: int, maximum: int) -> in
 static func initialize(game) -> void:
 	var state: Dictionary = game.run_state["combat_state"]
 	state.merge({"combat_rules_version": VERSION, "move_index": 0, "riposte": false, "opening": false, "interrupt_cooldown": 0, "opportunity_ready": false, "opportunity_used": false, "opportunity_chance": 15, "narration_indices": {}, "exploit_used": false, "field_medicine_used": false, "suppression_carry": 0.0, "momentum": 0}, true)
+	# Build rework (v5): a synergy can start the fight with Momentum banked.
+	state["momentum"] = clampi(int(loadout(game).get("effects", {}).get("momentum_start", 0)), 0, MOMENTUM_MAX)
 	# Stage 1-2 traits: brood (Reed Widow), heat/shell (Kilnback), flood/drains
 	# (Reservoir Maw). Defaults keep every other fight exactly on legacy v2
 	# behavior. All keys persist in the saved combat_state, so prepared actions
@@ -151,11 +158,60 @@ static func is_legacy_v2_fight(game) -> bool:
 	return int(state.get("combat_rules_version", VERSION)) <= LEGACY_VERSION
 
 
-## B1: v4 gate. New fights start on VERSION (4); saved v3 fights keep v3
-## behaviour. B2+ checks this before applying stronger telegraphs.
+## B1: v4 gate. Fights started on v4 or later use the stronger telegraphs;
+## saved v3 fights keep v3 behaviour.
 static func is_v4(game) -> bool:
 	var state: Dictionary = game.run_state.get("combat_state", {})
+	return int(state.get("combat_rules_version", VERSION)) >= V4_VERSION
+
+
+## Build rework: v5 gate. New fights start on VERSION (5). With no fight in
+## progress (item sheets, the equipment comparison) this reads true, so the
+## numbers shown are the ones the next fight will use.
+static func is_v5(game) -> bool:
+	var state: Dictionary = game.run_state.get("combat_state", {})
 	return int(state.get("combat_rules_version", VERSION)) >= VERSION
+
+
+## True while the equipped weapon can actually attack: a firearm without the
+## rounds for one shot fights as bare hands.
+static func weapon_loaded(game) -> bool:
+	var weapon_id := str(game.run_state.get("survivor", {}).get("equipment", {}).get("weapon", ""))
+	var item: Dictionary = game.content.get_item(weapon_id)
+	var ammo := str(item.get("ammo_type", ""))
+	return ammo == "" or game.get_item_quantity(ammo) >= int(item.get("combat", {}).get("ammo_per_attack", 0))
+
+
+## The loadout synergies in force: active list, names, and summed effects
+## (see loadout_rules.gd). Empty for fights on rules older than v5.
+static func loadout(game) -> Dictionary:
+	if not is_v5(game):
+		return {"active": [], "names": [], "full_kit": false, "effects": {}}
+	var equipment: Dictionary = game.run_state.get("survivor", {}).get("equipment", {})
+	return Loadout.evaluate(game.content, equipment, weapon_loaded(game))
+
+
+## Adds one synergy effect to a preview and notes it for the effects line.
+static func _synergy_bonus(effects: Dictionary, key: String, notes: Array) -> float:
+	var value := int(effects.get(key, 0))
+	if value == 0:
+		return 0.0
+	notes.append((str(Loadout.EFFECT_TEXT[key]) % value).replace("-", "−"))
+	return float(value)
+
+
+## "Weapon damage x1.55: Strength 6 (+15% per point), Grit 3 (+7.5% per point)."
+static func scaling_text(profile: Dictionary) -> String:
+	var per_point := Legacy.V5_PER_POINT * 100.0
+	var text := "Weapon damage x%.2f: %s %d (+%s%% per point)" % [float(profile.get("damage_multiplier", 1.0)), str(profile.get("attack_stat", "strength")).capitalize(), int(profile.get("stat_value", 0)), percent_text(per_point)]
+	if str(profile.get("support_stat", "")) != "":
+		text += ", %s %d (+%s%% per point)" % [str(profile["support_stat"]).capitalize(), int(profile.get("support_value", 0)), percent_text(per_point * Legacy.V5_SUPPORT_WEIGHT)]
+	return text + "."
+
+
+## 15.0 reads "15", 7.5 reads "7.5".
+static func percent_text(value: float) -> String:
+	return "%d" % roundi(value) if is_equal_approx(value, roundf(value)) else "%.1f" % value
 
 
 ## B2: v4 tuning numbers live in data, not code. Brace defend recovery is the
@@ -209,7 +265,11 @@ static func expected_take_for(game, move: Dictionary, action: String) -> int:
 		return 0
 	var raw: int = expected_raw_for(game, move)
 	var mitigated: Dictionary = Legacy.mitigate_damage(raw, int(game._armor_rating()))
-	return maxi(0, int(mitigated.get("final", raw)))
+	var final_take := int(mitigated.get("final", raw))
+	var synergy_taken := int(loadout(game).get("effects", {}).get("damage_taken", 0))
+	if synergy_taken != 0:
+		final_take = maxi(1, roundi(float(final_take) * (1.0 + float(synergy_taken) / 100.0)))
+	return maxi(0, final_take)
 
 
 ## B4: chip data for the committed move. Domain owns labels, icons, colours
@@ -568,7 +628,8 @@ static func weapon_profile(game) -> Dictionary:
 	var needed := int(item.get("combat", {}).get("ammo_per_attack", 0))
 	var loaded: bool = ammo == "" or game.get_item_quantity(ammo) >= needed
 	var base_stats: Dictionary = game.run_state.get("survivor", {}).get("stats", {})
-	var result := Legacy.weapon_profile(item, game.combat_effective_stats(), loaded, base_stats)
+	var effective_stats: Dictionary = game.combat_effective_stats()
+	var result := Legacy.weapon_profile(item, effective_stats, loaded, base_stats)
 	var armed: bool = loaded and not item.get("combat", {}).is_empty()
 	result["item_id"] = weapon_id if armed else ""
 	result["unloaded"] = not loaded
@@ -586,11 +647,24 @@ static func weapon_profile(game) -> Dictionary:
 	if game.run_state.get("combat_state", {}).is_empty():
 		use_v3 = true
 	var multiplier := Legacy.stat_damage_multiplier_v3(int(result["stat_value"])) if use_v3 else Legacy.stat_damage_multiplier(int(result["stat_value"]))
+	# Build rework (v5): linear scaling on the main stat plus half the weapon's
+	# support stat. Bare hands have no support stat.
+	var use_v5 := is_v5(game)
+	var support := str(item.get("support_stat", "")) if armed and use_v5 else ""
+	var support_value := maxi(0, int(effective_stats.get(support, 0))) if support != "" else 0
+	if use_v5:
+		multiplier = Legacy.stat_damage_multiplier_v5(Legacy.weapon_power(int(result["stat_value"]), support_value))
 	if armed and bool(result.get("affinity", {}).get("required", false)) and not bool(result["affinity"].get("met", true)):
 		multiplier *= Legacy.AFFINITY_DAMAGE_FACTOR
 	result["unrounded_min"] = float(base["damage_min"]) * multiplier
 	result["unrounded_max"] = float(base["damage_max"]) * multiplier
-	result["damage_scaling"] = "v3" if use_v3 else "v2"
+	result["damage_scaling"] = "v5" if use_v5 else "v3" if use_v3 else "v2"
+	result["support_stat"] = support
+	result["support_value"] = support_value
+	result["damage_multiplier"] = multiplier
+	if use_v5:
+		result["damage_min"] = maxi(1, roundi(float(result["unrounded_min"])))
+		result["damage_max"] = maxi(int(result["damage_min"]), roundi(float(result["unrounded_max"])))
 	return result
 
 
@@ -606,6 +680,12 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		result.merge({"available": false, "reason": "Unknown combat action."}, true)
 	var effects: Array = result["effects"]
 	effects.append("If combat continues: Fatigue +%d (up to 100)." % FATIGUE_PER_EXCHANGE)
+	var synergy: Dictionary = loadout(game)
+	var synergy_effects: Dictionary = synergy.get("effects", {})
+	var synergy_names := ", ".join(PackedStringArray(synergy.get("names", [])))
+	var synergy_notes: Array[String] = []
+	var first_exchange: bool = not state.is_empty() and int(state.get("round", 0)) == 0
+	result["synergies"] = synergy.get("names", []).duplicate()
 	var tested_stat := "strength" if action == "block" else "agility" if action in ["dodge", "flee"] else str(profile["attack_stat"])
 	# switch_weapon tests the new weapon's stat so its preview is honest; the
 	# enemy still resolves its committed move either way.
@@ -629,6 +709,10 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		var bonus := float(move.get("bonus", 0.0))
 		var family := str(profile["family"])
 		var mastered := bool(profile["mastered"])
+		bonus += _synergy_bonus(synergy_effects, "damage", synergy_notes) / 100.0
+		chance += _synergy_bonus(synergy_effects, "accuracy", synergy_notes)
+		if first_exchange:
+			bonus += _synergy_bonus(synergy_effects, "first_strike_damage", synergy_notes) / 100.0
 		var affinity: Dictionary = profile.get("affinity", {})
 		if bool(affinity.get("required", false)) and not bool(affinity.get("met", true)):
 			chance -= float(Legacy.AFFINITY_CHANCE_PENALTY)
@@ -636,15 +720,18 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		if bool(state.get("riposte", false)):
 			chance += 10.0
 			bonus += (0.65 if mastered else 0.5) if family == "counter" else 0.25
+			bonus += _synergy_bonus(synergy_effects, "riposte_damage", synergy_notes) / 100.0
 			effects.append("Riposte: +10 points accuracy and bonus damage; consumed by this action.")
 		if bool(state.get("opening", false)):
 			chance += 20.0
 			if family == "precision":
 				bonus += 0.4 if mastered else 0.3
+			bonus += _synergy_bonus(synergy_effects, "opening_damage", synergy_notes) / 100.0
 			effects.append("Opening: +20 points accuracy; consumed by this action.")
 		var bloodlust: bool = game.has_method("has_talent") and game.has_talent("bloodlust")
 		if family == "execution" and int(state.get("enemy_health", 1)) * 5 <= int(state.get("enemy_max_health", 1)) * (3 if bloodlust else 2):
 			bonus += 0.45 if mastered else 0.3
+			bonus += _synergy_bonus(synergy_effects, "execute_damage", synergy_notes) / 100.0
 			if bloodlust:
 				chance -= TalentRules.BLOODLUST_ACCURACY_PENALTY
 				effects.append("Bloodlust: enemy at or below 60% HP; −10 accuracy with this bonus.")
@@ -657,6 +744,7 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		if action == "opportunity":
 			chance += 20.0
 			bonus += 0.75
+			bonus += _synergy_bonus(synergy_effects, "opportunity_damage", synergy_notes) / 100.0
 			effects.append("Opportunity: +20 points accuracy, +75% weapon damage; one use.")
 			if not bool(state.get("opportunity_ready", false)) or bool(state.get("opportunity_used", false)):
 				result.merge({"available": false, "reason": "Opportunity not ready."}, true)
@@ -755,6 +843,8 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 					effects.append("No blood in the air. It knits itself on recover; a silvered Riposte or cautery stops that.")
 			if str(profile.get("damage_scaling", "v3")) == "v3" and int(result["effective_stat"]) > 5:
 				effects.append("V3 scaling: +10%% damage per stat point above 5 (stat %d)." % int(result["effective_stat"]))
+		if str(profile.get("damage_scaling", "")) == "v5":
+			effects.append(scaling_text(profile))
 		if str(profile.get("ammo_type", "")) != "":
 			var patient: bool = action == "attack" and bool(state.get("opening", false)) and game.has_method("has_talent") and game.has_talent("patient_shot") and str(profile.get("item_id", "")) != ""
 			if patient:
@@ -772,16 +862,22 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 			var fin_family := str(profile["family"])
 			var fin_mastered := bool(profile["mastered"])
 			var fin_bonus := v4_finisher_bonus(game) + float(move.get("bonus", 0.0))
+			fin_bonus += _synergy_bonus(synergy_effects, "damage", synergy_notes) / 100.0
+			if first_exchange:
+				fin_bonus += _synergy_bonus(synergy_effects, "first_strike_damage", synergy_notes) / 100.0
 			if bool(state.get("riposte", false)):
 				fin_bonus += (0.65 if fin_mastered else 0.5) if fin_family == "counter" else 0.25
+				fin_bonus += _synergy_bonus(synergy_effects, "riposte_damage", synergy_notes) / 100.0
 				effects.append("Riposte: bonus damage; consumed by this action.")
 			if bool(state.get("opening", false)):
 				if fin_family == "precision":
 					fin_bonus += 0.4 if fin_mastered else 0.3
+				fin_bonus += _synergy_bonus(synergy_effects, "opening_damage", synergy_notes) / 100.0
 				effects.append("Opening: consumed by this action.")
 			var fin_bloodlust: bool = game.has_method("has_talent") and game.has_talent("bloodlust")
 			if fin_family == "execution" and int(state.get("enemy_health", 1)) * 5 <= int(state.get("enemy_max_health", 1)) * (3 if fin_bloodlust else 2):
 				fin_bonus += 0.45 if fin_mastered else 0.3
+				fin_bonus += _synergy_bonus(synergy_effects, "execute_damage", synergy_notes) / 100.0
 				effects.append("Execution: enemy weak; bonus damage.")
 			var fin_defense := float(move.get("incoming", 1.0))
 			var fin_shell := shell_damage_taken_bonus(game)
@@ -819,6 +915,7 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 		if not block and str(equipment.get("armor", "")) in ["runner_jacket", "scout_leathers"]:
 			chance += 10.0
 			effects.append("Light armor: +10 percentage points Dodge.")
+		chance += _synergy_bonus(synergy_effects, action, synergy_notes)
 		chance += float(move.get(action, 0))
 		result["chance"] = probability(chance, 85)
 		effects.append("Enemy movement: %+d percentage points." % int(move.get(action, 0)))
@@ -923,6 +1020,10 @@ static func preview(game, action: String, item_id: String = "") -> Dictionary:
 			result.merge({"available": false, "reason": "No such interaction here."}, true)
 		else:
 			result["chance"] = 100
+	if float(move.get("damage", 0.0)) > 0.0:
+		_synergy_bonus(synergy_effects, "damage_taken", synergy_notes)
+	if not synergy_notes.is_empty():
+		effects.append("Synergy (%s): %s." % [synergy_names, ", ".join(PackedStringArray(synergy_notes))])
 	# B4: expected incoming for this button. Defends read as take 0 on success;
 	# attacks, items, switches, interacts and failed flees take the midpoint.
 	var take: int = expected_take_for(game, move, action)
@@ -954,6 +1055,7 @@ static func prepare(game, action: String, item_id: String = "") -> Dictionary:
 		"talents": game.run_state.get("talents", []).duplicate(true) if game.run_state.has("talents") else [],
 		"preview": action_preview.duplicate(true), "move": state["committed_move"].duplicate(true),
 		"enemy": enemy.duplicate(true), "armor": game._armor_rating(),
+		"synergy_damage_taken": int(loadout(game).get("effects", {}).get("damage_taken", 0)),
 		"trait_brood": int(state.get("trait_brood", 0)),
 		"trait_nest_destroyed": bool(state.get("trait_nest_destroyed", false)),
 		"trait_heat": int(state.get("trait_heat", 0)),
@@ -1004,7 +1106,7 @@ static func resolve(game) -> Dictionary:
 	var pre_enemy := int(state["enemy_health"])
 	var pending_version := int(pending.get("combat_rules_version", VERSION))
 	var legacy_fight := pending_version <= LEGACY_VERSION
-	var v4_fight := pending_version >= VERSION
+	var v4_fight := pending_version >= V4_VERSION
 	var result := {"combat_rules_version": pending_version, "action": action, "player_roll": roll, "enemy_roll": int(pending["enemy_roll"]), "chance": int(action_preview["chance"]), "required_roll": int(action_preview["required_roll"]), "move_id": str(move["id"]), "entries": [], "player_damage": 0, "enemy_damage": 0}
 	game.run_state["phase"] = "combat"
 	state["round"] = int(state["round"]) + 1
@@ -1553,12 +1655,18 @@ static func resolve_enemy(game, pending: Dictionary, result: Dictionary, defende
 	var raw := Legacy.damage_for_roll(roll, minimum, maximum)
 	var mitigation := Legacy.mitigate_damage(raw, int(pending["armor"]))
 	var after_armor := int(mitigation["final"])
-	var after_suppression := maxi(1, roundi(float(after_armor) * (1.0 - suppression)))
+	# Build rework (v5): loadout synergies trim the hit after armor. The share
+	# is snapshotted when the round is prepared, so a round prepared under
+	# older rules reads 0 and resolves exactly as before.
+	var synergy_taken := int(pending.get("synergy_damage_taken", 0))
+	var after_synergy := after_armor if synergy_taken == 0 else maxi(1, roundi(float(after_armor) * (1.0 + float(synergy_taken) / 100.0)))
+	var after_suppression := maxi(1, roundi(float(after_synergy) * (1.0 - suppression)))
 	var exposed := maxi(1, roundi(float(after_suppression) * exposure))
 	var damage := 0 if defended else exposed
 	result["enemy_raw_damage"] = raw
 	result["armor_blocked"] = int(mitigation["blocked"])
-	result["suppression_blocked"] = after_armor - after_suppression
+	result["synergy_blocked"] = after_armor - after_synergy
+	result["suppression_blocked"] = after_synergy - after_suppression
 	result["exposure_damage"] = exposed - after_suppression
 	result["defense_blocked"] = exposed if defended else 0
 	# Grit specialization (base 8, once per run): survive a lethal combat hit
@@ -1579,7 +1687,8 @@ static func resolve_enemy(game, pending: Dictionary, result: Dictionary, defende
 	elif roll in [1, 20]:
 		narration = passage(game, pending, "enemy_critical" if roll == 20 else "enemy_fumble", pending["preview"]["profile"])
 	var label := "CRITICAL SUCCESS" if roll == 20 else "CRITICAL FAILURE" if roll == 1 else "ENEMY ATTACK"
-	game._add_combat_entry(result, kind, "%s\n%s • ROLL %d • RAW %d • ARMOR −%d • SUPPRESSION −%d • EXPOSURE +%d • DEFENSE −%d • HP −%d" % [narration, label, roll, raw, result["armor_blocked"], result["suppression_blocked"], result["exposure_damage"], result["defense_blocked"], result["enemy_damage"]], int(result["enemy_damage"]), "enemy")
+	var synergy_text := " • SYNERGY −%d" % int(result["synergy_blocked"]) if synergy_taken != 0 else ""
+	game._add_combat_entry(result, kind, "%s\n%s • ROLL %d • RAW %d • ARMOR −%d%s • SUPPRESSION −%d • EXPOSURE +%d • DEFENSE −%d • HP −%d" % [narration, label, roll, raw, result["armor_blocked"], synergy_text, result["suppression_blocked"], result["exposure_damage"], result["defense_blocked"], result["enemy_damage"]], int(result["enemy_damage"]), "enemy")
 	var block_fumble := str(pending["action"]) == "block" and int(pending["player_roll"]) == 1
 	if not defended and (roll == 20 or block_fumble) and int(game.run_state["survivor"]["vitals"]["health"]) > 0:
 		var condition_id := str(combat.get("critical_condition", ""))
@@ -1591,7 +1700,7 @@ static func resolve_enemy(game, pending: Dictionary, result: Dictionary, defende
 	# crit. A landed Heavy response applies the enemy's critical_condition on
 	# any hit, so trading blows with a telegraphed Heavy is a real mistake.
 	# Saved v3 fights keep the old crit-only behaviour.
-	var pending_v4 := int(pending.get("combat_rules_version", VERSION)) >= VERSION
+	var pending_v4 := int(pending.get("combat_rules_version", VERSION)) >= V4_VERSION
 	var heavy_attack := str(pending.get("action", "")) in ["attack", "opportunity"] and str(pending.get("move", {}).get("id", "")) == "heavy"
 	if pending_v4 and heavy_attack and not defended and int(result.get("enemy_damage", 0)) > 0 and int(game.run_state["survivor"]["vitals"]["health"]) > 0 and not result.has("critical_condition"):
 		var heavy_condition := str(combat.get("critical_condition", ""))

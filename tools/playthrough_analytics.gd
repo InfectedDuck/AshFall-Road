@@ -32,10 +32,26 @@ const ANALYTICS_VERSION := 2
 const POLICIES := ["random", "novice", "cautious", "informed", "aggressive"]
 const STEP_CAP := 2500
 const COMBAT_ROUND_CAP := 80
+## Attacks a model expects to make in one fight, for valuing a firearm by the
+## ammunition left for it.
+const FIGHT_SHOTS := 5.0
 const HARMFUL_CONDITIONS := ["bleeding", "sprain", "infection", "fever", "shaken", "concussed", "burned", "irradiated", "exhausted", "gutrot", "spore_cough", "mind_static"]
 const TALENT_FOR_FAMILY := {"execution": "bloodlust", "precision": "patient_shot", "disruption": "exploit_weakness", "counter": "retaliation", "suppression": "sustained_pressure"}
 
+## Build rework (docs/BUILD_REWORK.md): the models that read an item sheet
+## build a kit around its synergies; `random` and `novice` wear what they find.
+const LoadoutRules = preload("res://scripts/domain/loadout_rules.gd")
+const SYNERGY_AWARE := ["cautious", "informed", "aggressive"]
+## What one point of each synergy effect is worth to those models, on one
+## rough scale: a percent of damage dealt or avoided in every exchange is 1.
+const SYNERGY_WORTH := {
+	"damage": 1.0, "accuracy": 1.0, "block": 0.4, "dodge": 0.4, "riposte_damage": 0.2,
+	"opening_damage": 0.3, "opportunity_damage": 0.15, "execute_damage": 0.3,
+	"first_strike_damage": 0.15, "damage_taken": -1.0, "momentum_start": 5.0, "victory_heal": 0.4,
+}
+
 var content: ContentRepository
+var _policy := ""
 
 ## Phase 0: optional cross-run memory. With --cross-run-memory, witnessed
 ## flags earned by finished runs carry into later runs of the same
@@ -109,6 +125,7 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 	var candidates := game.create_candidates(seed_value)
 	var candidate: Dictionary = candidates[candidate_index % candidates.size()]
 	game.start_run(candidate, seed_value)
+	_policy = policy
 	if _cross_run_memory:
 		var flags: Array = game.run_state.get("flags", [])
 		for flag: String in _memory_pool:
@@ -274,6 +291,7 @@ func _play(seed_value: int, candidate_index: int, policy: String) -> Dictionary:
 	run["talents"] = (game.run_state.get("talents", []) as Array).duplicate()
 	run["final_stats"] = (game.run_state["survivor"]["stats"] as Dictionary).duplicate()
 	run["final_equipment"] = (game.run_state["survivor"]["equipment"] as Dictionary).duplicate()
+	run["final_synergies"] = LoadoutRules.evaluate(content, run["final_equipment"])["names"]
 	run["final_inventory"] = (game.run_state["survivor"]["inventory"] as Dictionary).duplicate()
 	run["final_vitals"] = _vitals_snapshot(game)
 	if _cross_run_memory:
@@ -494,7 +512,15 @@ func _weapon_score(game: GameEngine, item_id: String) -> float:
 		return 0.0
 	var stat_value := float(profile.get("stat_value", 1))
 	var accuracy := 55.0 + 35.0 * stat_value / (stat_value + 5.0)
-	return (float(profile.get("unrounded_min", 0)) + float(profile.get("unrounded_max", 0))) * 0.5 * accuracy / 100.0
+	var score := (float(profile.get("unrounded_min", 0)) + float(profile.get("unrounded_max", 0))) * 0.5 * accuracy / 100.0
+	# A firearm is worth the shots that are left for it: with fewer than a
+	# fight's worth, the rest of that fight is bare hands.
+	var item: Dictionary = content.get_item(item_id)
+	var per_attack := int(item.get("combat", {}).get("ammo_per_attack", 0))
+	if per_attack > 0 and str(item.get("ammo_type", "")) != "":
+		var shots := float(game.get_item_quantity(str(item["ammo_type"]))) / float(per_attack)
+		score *= minf(1.0, shots / FIGHT_SHOTS)
+	return score
 
 
 func _equip_best(game: GameEngine) -> void:
@@ -528,6 +554,52 @@ func _equip_best(game: GameEngine) -> void:
 		game.equip_item(best_weapon)
 	if best_armor != str(equipment.get("armor", "")) and best_armor != "":
 		game.equip_item(best_armor)
+	if _policy in SYNERGY_AWARE:
+		_equip_for_synergy(game)
+
+
+func _synergy_value(weapon_id: String, armor_id: String, accessory_id: String) -> float:
+	var effects: Dictionary = LoadoutRules.evaluate(content, {"weapon": weapon_id, "armor": armor_id, "accessory": accessory_id})["effects"]
+	var value := 0.0
+	for key: String in SYNERGY_WORTH:
+		value += float(SYNERGY_WORTH[key]) * float(effects.get(key, 0))
+	return value
+
+
+## Kit building for the models that read the item sheet. The weapon and the
+## armor rating are already settled; among the armor that protects as well as
+## the best they hold, and every accessory they carry, they wear the pair that
+## switches on the most synergy with that weapon.
+func _equip_for_synergy(game: GameEngine) -> void:
+	var equipment: Dictionary = game.run_state["survivor"]["equipment"]
+	var weapon_id := str(equipment.get("weapon", ""))
+	var worn_armor := str(equipment.get("armor", ""))
+	var worn_accessory := str(equipment.get("accessory", ""))
+	var rating := int(content.get_item(worn_armor).get("damage_reduction", 0)) if worn_armor != "" else -1
+	var armors: Array[String] = [worn_armor]
+	var accessories: Array[String] = [worn_accessory]
+	for item_id: String in game.run_state["survivor"]["inventory"]:
+		var item: Dictionary = content.get_item(item_id)
+		match str(item.get("equipment_slot", "")):
+			"armor":
+				if int(item.get("damage_reduction", 0)) == rating:
+					armors.append(item_id)
+			"accessory":
+				accessories.append(item_id)
+	var pick_armor := worn_armor
+	var pick_accessory := worn_accessory
+	var best_value := _synergy_value(weapon_id, worn_armor, worn_accessory)
+	for armor_id: String in armors:
+		for accessory_id: String in accessories:
+			var value := _synergy_value(weapon_id, armor_id, accessory_id)
+			if value > best_value + 0.01:
+				best_value = value
+				pick_armor = armor_id
+				pick_accessory = accessory_id
+	if pick_armor != worn_armor and pick_armor != "":
+		game.equip_item(pick_armor)
+	if pick_accessory != worn_accessory and pick_accessory != "":
+		game.equip_item(pick_accessory)
 
 
 # ---------------------------------------------------------------------------
@@ -958,7 +1030,17 @@ func _gear_offer_value(game: GameEngine, item_id: String) -> float:
 			return 80.0 if int(item.get("damage_reduction", 0)) > int(content.get_item(str(equipment.get("armor", ""))).get("damage_reduction", 0)) else 0.0
 		"":
 			return _item_value(game, item_id)
-	return 35.0 if str(equipment.get(str(item.get("equipment_slot", "")), "")) == "" else 0.0
+	var slot := str(item.get("equipment_slot", ""))
+	if str(equipment.get(slot, "")) == "":
+		return 35.0
+	# A second accessory is worth buying when it completes a kit the worn one
+	# does not: ten points is a solid synergy, such as +10 accuracy.
+	if slot == "accessory" and _policy in SYNERGY_AWARE and int(game.run_state["survivor"]["inventory"].get(item_id, 0)) == 0:
+		var weapon_id := str(equipment.get("weapon", ""))
+		var armor_id := str(equipment.get("armor", ""))
+		var gain := _synergy_value(weapon_id, armor_id, item_id) - _synergy_value(weapon_id, armor_id, str(equipment.get("accessory", "")))
+		return 60.0 if gain >= 10.0 else 0.0
+	return 0.0
 
 
 func _cheapest_food(game: GameEngine) -> String:
@@ -1025,8 +1107,13 @@ func _allocation_stat(game: GameEngine, policy: String, rng: RandomNumberGenerat
 		return "grit"
 	if policy == "aggressive":
 		return attack_stat
-	# Informed past its build: alternate between the weakest of wits/agility
-	# (most common event checks and flee) and the attack stat.
+	# Informed past its build: bring the weapon's support stat (half a main
+	# point of damage) up to a working level, then alternate between the
+	# weakest of wits/agility (most common event checks and flee) and the
+	# attack stat.
+	var support_stat := str(game.get_player_weapon_profile().get("support_stat", ""))
+	if support_stat != "" and int(stats.get(support_stat, 1)) < 5:
+		return support_stat
 	var weakest := "wits" if int(stats["wits"]) <= int(stats["agility"]) else "agility"
 	return weakest if int(stats[weakest]) < int(stats.get(attack_stat, 1)) - 2 else attack_stat
 
@@ -1045,6 +1132,7 @@ func _new_aggregate() -> Dictionary:
 		"items_gained": {}, "items_spent": {}, "items_used": {}, "held_at_end": {},
 		"conditions_applied": {}, "checkpoints": {}, "talents": {}, "talent_outcomes": {},
 		"archetypes": {}, "start_weapons": {}, "final_weapons": {}, "allocations": {},
+		"final_synergies": {}, "runs_with_synergy": 0, "runs_with_full_kit": 0,
 		"runs_with_memory": 0,
 		"economy": {}, "gates": {},
 		"died_with": {"healing": 0, "food": 0, "both": 0, "deaths_counted": 0},
@@ -1204,6 +1292,15 @@ func _merge_run(agg: Dictionary, run: Dictionary) -> void:
 		bucket["victories"] = int(bucket["victories"]) + int(result == "victory")
 		bucket["hearts"] = int(bucket["hearts"]) + int(run["start_hearts"])
 		agg[field_pair[0]][field_pair[1]] = bucket
+	var synergy_names: Array = run.get("final_synergies", [])
+	agg["runs_with_synergy"] = int(agg["runs_with_synergy"]) + int(not synergy_names.is_empty())
+	agg["runs_with_full_kit"] = int(agg["runs_with_full_kit"]) + int("Road-Ready" in synergy_names)
+	for synergy_name: Variant in synergy_names:
+		var bucket: Dictionary = agg["final_synergies"].get(str(synergy_name), {"runs": 0, "regions": 0, "victories": 0})
+		bucket["runs"] = int(bucket["runs"]) + 1
+		bucket["regions"] = int(bucket["regions"]) + mini(reached, 6)
+		bucket["victories"] = int(bucket["victories"]) + int(result == "victory")
+		agg["final_synergies"][str(synergy_name)] = bucket
 	agg["runs_list"].append({
 		"seed": run["seed"], "archetype": run["archetype"], "hearts": run["start_hearts"], "result": result,
 		"region": final_region, "events": run["events_resolved"], "level": run["level"],
